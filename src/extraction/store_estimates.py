@@ -156,27 +156,26 @@ async def extract_and_store(
                     out = await extract_document(content, model, os.environ["OPENROUTER_API_KEY"])
                     rows = rows_for(project_id, doc, out, model)
                     if vision:
-                        # Pages whose tables the parser left as images. The text path runs first and
-                        # stays authoritative; this only adds rows the text path could not see.
-                        from src.extraction.page_vision import extract_pages, vision_pages
+                        # Pages whose tables the parser left as images or as garbled text. The text
+                        # path runs first and stays authoritative; this only adds rows it could not see.
+                        from src.extraction.page_vision import extract_pages, page_count, vision_pages
 
-                        pages = vision_pages(content)
-                        if pages:
-                            pdf = await asyncio.to_thread(_pdf_bytes, s3, bucket, project_id, doc)
-                            if pdf:
-                                vclient = httpx.AsyncClient(
-                                    base_url="https://openrouter.ai/api/v1",
-                                    headers={"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}"},
-                                    timeout=300)
-                                try:
-                                    vout = await extract_pages(
-                                        pdf, pages, model, os.environ["OPENROUTER_API_KEY"],
-                                        project_id, doc, client=vclient)
-                                finally:
-                                    await vclient.aclose()
-                                rows.extend(vout["rows"])
-                                totals["vision_pages"] += len(vout["pages"])
-                                totals["vision_rows"] += len(vout["rows"])
+                        pdf = await asyncio.to_thread(_pdf_bytes, s3, bucket, project_id, doc)
+                        pages = vision_pages(content, page_count(pdf) if pdf else None)
+                        if pdf and pages:
+                            vclient = httpx.AsyncClient(
+                                base_url="https://openrouter.ai/api/v1",
+                                headers={"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}"},
+                                timeout=300)
+                            try:
+                                vout = await extract_pages(
+                                    pdf, pages, model, os.environ["OPENROUTER_API_KEY"],
+                                    project_id, doc, client=vclient)
+                            finally:
+                                await vclient.aclose()
+                            rows.extend(vout["rows"])
+                            totals["vision_pages"] += len(vout["pages"])
+                            totals["vision_rows"] += len(vout["rows"])
                     if rows:
                         vectors = await asyncio.to_thread(embed_documents, [estimate_text(r) for r in rows])
                         for r, v in zip(rows, vectors):

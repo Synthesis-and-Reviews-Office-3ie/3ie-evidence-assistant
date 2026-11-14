@@ -134,6 +134,15 @@ It is a fallback and opt-in: `scripts/extract_estimates.py --vision`. The text p
 
 The trigger is not only image items. Paper 121328483 is the second case: its parsed table text is a broken font mapping (`????? ?? ???????a114 a116a115`), so the text reader stored 15 nonsense rows from it and missed the 13 hand-typed index values. `looks_garbled` in `table_rules.py` detects that text, `table_units` now skips garbled tables so no garbage reaches the model, and `vision_pages` adds those pages to the image reader. Between them the two papers account for 31 of the 47 missing estimates.
 
+### Vision result (14 November 2026)
+
+The vision path works technically: the model returned valid JSON for every page. Two papers were tested.
+
+- **Paper 121766336 is not the paper.** It is a 12-page policy brief. Its text contains no "income", "expenditure", "table" or "regression", and the impact paper behind the hand-typed numbers is not in the collection at all; only this brief carries the id. Its 18 missing values cannot be found in this corpus and should not be counted against the extractor. This is a provenance issue, not an extraction one.
+- **Paper 121328483 is the garbled one.** Vision recovered all 13 hand-typed estimates and all 13 standard errors. The document now stores 217 rows, 16 from the one readable table and 201 from page images, replacing the 15 nonsense rows.
+
+Stored recall after this is 291 of 325 estimates (90%) and 276 of 305 standard errors (90%). Excluding the 18 values whose paper is absent, the attainable recall is 291 of 307 (95%).
+
 ## Derivation and consistency rules
 
 - `t = estimate / se`; `se` from a CI as `(high - low) / (2 * z)` at the stated level; `p` from `t` and df when df is known; stars to a p-bound otherwise.

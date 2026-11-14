@@ -93,11 +93,28 @@ def garbled_table_pages(content_list: Sequence[Dict[str, Any]], max_pages: int =
     return sorted(pages)[:max_pages]
 
 
-def vision_pages(content_list: Sequence[Dict[str, Any]], max_pages: int = 12) -> List[int]:
-    """Pages to read from images: those with image items and those whose table text is garbled."""
+def vision_pages(content_list: Sequence[Dict[str, Any]], pdf_pages: Optional[int] = None,
+                 max_pages: int = 12, full_scan_cap: int = 40) -> List[int]:
+    """Pages to read from images.
+
+    Usually the pages with image items plus the pages whose table text is garbled. When the parser
+    found no table at all, the tables are somewhere else in the document, so every page up to
+    `full_scan_cap` is scanned instead (paper 121766336 has 51 items, no tables, and 18 needed
+    estimates).
+    """
+    if pdf_pages and not any(item.get("type") == "table" for item in content_list):
+        return list(range(1, min(int(pdf_pages), full_scan_cap) + 1))
     pages = set(table_image_pages(content_list, max_pages))
     pages.update(garbled_table_pages(content_list, max_pages))
     return sorted(pages)[:max_pages]
+
+
+def page_count(pdf_bytes: bytes) -> int:
+    document = _open_pdf(pdf_bytes)
+    try:
+        return document.page_count
+    finally:
+        document.close()
 
 
 def render_page_png(pdf_bytes: bytes, page_number: int, dpi: int = 200) -> bytes:

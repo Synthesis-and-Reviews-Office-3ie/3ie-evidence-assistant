@@ -25,6 +25,12 @@ def test_image_pages_are_capped():
     assert len(table_image_pages(content, max_pages=5)) == 5
 
 
+def test_a_document_with_no_parsed_tables_scans_every_page():
+    content = [{"type": "text", "page_idx": 0}, {"type": "image", "page_idx": 3}]
+    pages = vision_pages(content, pdf_pages=9, full_scan_cap=40)
+    assert pages == list(range(1, 10))
+
+
 def test_garbled_table_pages_are_read_from_images():
     content = [
         {"type": "image", "page_idx": 2},

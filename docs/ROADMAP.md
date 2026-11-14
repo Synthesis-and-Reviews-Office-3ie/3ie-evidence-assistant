@@ -101,6 +101,8 @@ The reader, the index and the citations changed over 12 and 13 November. The pla
 
 The extraction side changed on 14 November; the role filter, quote work and the reader sit on the retrieval and reading side.
 
+- **Image and garbled pages (14 November).** Vision reads pages whose tables the parser left as images or as broken text (`scripts/extract_estimates.py --vision`). Tested on two papers: the garbled paper recovered 13 of 13 hand-typed estimates and standard errors; the other "paper" is a policy brief, and its impact paper is not in the collection, so its 18 values are unattainable here. Stored recall is 90% of estimates and standard errors overall, 95% against the values whose papers are actually present.
+
 ### ▶ Next up (after the model review, 10 November 2026)
 
 > Since 9 November 2026 answers come from the "read every relevant study, then synthesise" pipeline with
