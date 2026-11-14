@@ -2,7 +2,7 @@
 
 from src.extraction.table_rules import (
     DESCRIPTIVE, RESULTS, UNKNOWN,
-    classify_table, is_descriptive_column, is_non_outcome_label,
+    classify_table, is_descriptive_column, is_non_outcome_label, looks_garbled,
 )
 
 
@@ -48,3 +48,8 @@ def test_descriptive_columns():
     assert is_descriptive_column("SD")
     assert not is_descriptive_column("Coefficient")
     assert not is_descriptive_column("Standard error")
+
+
+def test_garbled_table_text_is_detected():
+    assert looks_garbled("| ????? ?? ???????a114 ????a116a115 ?? ??a80? ???a |", min_chars=10)
+    assert not looks_garbled("| Outcome | Coefficient | Standard error |\n| --- | --- | --- |")

@@ -21,6 +21,7 @@ import re
 from typing import Any, Dict, List, Optional, Sequence
 
 from src.extraction.table_estimates import parse_number
+from src.extraction.table_rules import looks_garbled
 
 VISION_PROMPT = """You are given one page of an academic paper as an image. Find any table that
 reports estimated effects of a programme or treatment: a regression table, a difference-in-differences
@@ -76,6 +77,27 @@ def _open_pdf(pdf_bytes: bytes):
     except ImportError:
         import fitz
         return fitz.open(stream=pdf_bytes, filetype="pdf")
+
+
+def garbled_table_pages(content_list: Sequence[Dict[str, Any]], max_pages: int = 12) -> List[int]:
+    """Pages whose tables the parser returned as broken text, so the text reader cannot use them."""
+    pages = set()
+    for item in content_list:
+        if item.get("type") != "table" or not looks_garbled(item.get("text")):
+            continue
+        page = item.get("page_idx")
+        try:
+            pages.add(int(page) + 1)
+        except (TypeError, ValueError):
+            continue
+    return sorted(pages)[:max_pages]
+
+
+def vision_pages(content_list: Sequence[Dict[str, Any]], max_pages: int = 12) -> List[int]:
+    """Pages to read from images: those with image items and those whose table text is garbled."""
+    pages = set(table_image_pages(content_list, max_pages))
+    pages.update(garbled_table_pages(content_list, max_pages))
+    return sorted(pages)[:max_pages]
 
 
 def render_page_png(pdf_bytes: bytes, page_number: int, dpi: int = 200) -> bytes:

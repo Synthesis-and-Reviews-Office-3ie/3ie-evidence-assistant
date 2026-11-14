@@ -48,6 +48,21 @@ _NON_OUTCOME = (
     "mean", "average", "clusters", "number of clusters",
 )
 _NON_OUTCOME_EXACT = {"n", "obs", "sd", "se", "r2", "r²"}
+# Font-mapping failures leave runs like "?????? a114 a116" where letters should be.
+_GARBLE_ARTIFACT = re.compile(r"[a-z]\d{2,3}")
+
+
+def looks_garbled(text: object, min_chars: int = 40) -> bool:
+    """True when the parser's text is a broken font mapping rather than words.
+
+    Paper 121328483 is the example: its tables come through as "????? ?? ???????a114 a116a115",
+    which no text reader can interpret. Such a table should be skipped by the text path and read
+    from the page image instead.
+    """
+    value = str(text or "")
+    if len(value) < min_chars:
+        return False
+    return value.count("?") / len(value) > 0.03 or len(_GARBLE_ARTIFACT.findall(value)) >= 8
 
 
 def _fold(text: object) -> str:

@@ -186,12 +186,15 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
 
 def table_units(content_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """Each table with its page, caption and the text items just before and after it."""
+    from src.extraction.table_rules import looks_garbled
+
     units = []
     for i, item in enumerate(content_list):
         if item.get("type") != "table":
             continue
         text = str(item.get("text") or item.get("table_body") or "")
-        if "|" not in text:
+        if "|" not in text or looks_garbled(text):
+            # A garbled table has a broken font mapping; the page image is read instead.
             continue
         around = []
         for j in list(range(max(0, i - CONTEXT_ITEMS), i)) + list(range(i + 1, min(len(content_list), i + 1 + CONTEXT_ITEMS))):

@@ -132,6 +132,8 @@ Paper 121766336 has no table text at all: 51 parsed items and six images, and 18
 
 It is a fallback and opt-in: `scripts/extract_estimates.py --vision`. The text path runs first and stays authoritative; vision rows are added on top, capped at 12 pages per document. The cost is one vision call per image page, which for 121766336 is six. Seven tests in `tests/test_page_vision.py` cover page selection, rendering, and row building. The model call itself has not been run against the live API yet, because the network has been failing TLS handshakes.
 
+The trigger is not only image items. Paper 121328483 is the second case: its parsed table text is a broken font mapping (`????? ?? ???????a114 a116a115`), so the text reader stored 15 nonsense rows from it and missed the 13 hand-typed index values. `looks_garbled` in `table_rules.py` detects that text, `table_units` now skips garbled tables so no garbage reaches the model, and `vision_pages` adds those pages to the image reader. Between them the two papers account for 31 of the 47 missing estimates.
+
 ## Derivation and consistency rules
 
 - `t = estimate / se`; `se` from a CI as `(high - low) / (2 * z)` at the stated level; `p` from `t` and df when df is known; stars to a p-bound otherwise.

@@ -1,7 +1,7 @@
 """Integration of table typing and structure into the table reader (src/extraction/table_estimates.py)."""
 
 from src.extraction.table_estimates import (
-    _drop_non_outcome_rows, _should_skip, _structure_hint, _table_analysis,
+    _drop_non_outcome_rows, _should_skip, _structure_hint, _table_analysis, table_units,
 )
 
 RESULTS = "| Outcome | Coefficient | Standard error |\n| --- | --- | --- |\n| Food | 0.52 | 0.12 |"
@@ -39,3 +39,12 @@ def test_non_outcome_rows_are_dropped_and_real_effects_kept():
     kept, dropped = _drop_non_outcome_rows(raw)
     assert [r["outcome"] for r in kept] == ["Food consumption", "Average effect of T1"]
     assert dropped == 2
+
+
+def test_garbled_tables_are_skipped_by_the_text_path():
+    garbled = {"type": "table", "page_idx": 0,
+               "text": "| ????? ?? ???????a114 ????a116a115 ?? ??a80? ???a |"}
+    assert table_units([garbled]) == []
+    plain = {"type": "table", "page_idx": 0,
+             "text": "| Outcome | Coefficient |\n| --- | --- |\n| Food | 0.52 |"}
+    assert len(table_units([plain])) == 1

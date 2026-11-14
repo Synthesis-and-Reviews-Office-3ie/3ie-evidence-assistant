@@ -2,7 +2,9 @@
 
 import pytest
 
-from src.extraction.page_vision import build_rows, render_page_png, table_image_pages
+from src.extraction.page_vision import (
+    build_rows, garbled_table_pages, render_page_png, table_image_pages, vision_pages,
+)
 
 DOC = {"id": "doc-1", "filename": "paper.pdf"}
 
@@ -21,6 +23,17 @@ def test_image_pages_are_one_based_deduplicated_and_sorted():
 def test_image_pages_are_capped():
     content = [{"type": "image", "page_idx": i} for i in range(40)]
     assert len(table_image_pages(content, max_pages=5)) == 5
+
+
+def test_garbled_table_pages_are_read_from_images():
+    content = [
+        {"type": "image", "page_idx": 2},
+        {"type": "table", "page_idx": 5,
+         "text": "| ?????? a114 a116 a115 a80 a91 a92 a93 a94 a95 a96 |"},
+        {"type": "table", "page_idx": 9, "text": "| Outcome | Coef |\n| --- | --- |\n| Food | 0.5 |"},
+    ]
+    assert garbled_table_pages(content) == [6]
+    assert vision_pages(content) == [3, 6]
 
 
 def _tiny_pdf() -> bytes:

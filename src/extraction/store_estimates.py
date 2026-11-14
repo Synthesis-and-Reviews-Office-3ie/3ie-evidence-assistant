@@ -158,9 +158,9 @@ async def extract_and_store(
                     if vision:
                         # Pages whose tables the parser left as images. The text path runs first and
                         # stays authoritative; this only adds rows the text path could not see.
-                        from src.extraction.page_vision import extract_pages, table_image_pages
+                        from src.extraction.page_vision import extract_pages, vision_pages
 
-                        pages = table_image_pages(content)
+                        pages = vision_pages(content)
                         if pages:
                             pdf = await asyncio.to_thread(_pdf_bytes, s3, bucket, project_id, doc)
                             if pdf:
