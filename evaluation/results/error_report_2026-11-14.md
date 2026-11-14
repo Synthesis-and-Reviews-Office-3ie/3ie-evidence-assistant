@@ -6,13 +6,13 @@ Studies mapped to the key: 36. Hand-typed estimates: 325, standard errors: 305.
 
 | Category | Estimates | Standard errors |
 | --- | --- | --- |
-| exact | 294 | 278 |
+| exact | 299 | 283 |
 | document is not the paper | 18 | 18 |
 | rounding 2dp | 2 | 0 |
 | rounding 1% | 1 | 2 |
 | sign flipped | 1 | 0 |
 | outcome present, value differs | 1 | 1 |
-| value not found | 8 | 6 |
+| value not found | 3 | 1 |
 
 ## Every remaining error
 
@@ -27,16 +27,6 @@ Studies mapped to the key: 36. Hand-typed estimates: 325, standard errors: 305.
 | 121305126 | 63bcc2c07899_PDFs_of_include | Income | estimate | -0.59 | -0.6 | value not found | 14 | paper present |
 | 121305126 | 63bcc2c07899_PDFs_of_include | Income | se | 0.53 | 0.35 | value not found | 14 | paper present |
 | 121327988 | d6f0a637496f_PDFs_of_include | Income | se | 691.179 | 691.149 | rounding 1% | 62 | paper present |
-| 121475285 | 1464d3d16709_PDFs_of_include | Expenditure  | se | 0.01 | 0.02 | value not found | 105 | paper present |
-| 121475285 | 1464d3d16709_PDFs_of_include | Expenditure  | estimate | 0.72 | 1.13 | value not found | 105 | paper present |
-| 121475285 | 1464d3d16709_PDFs_of_include | Expenditure  | se | 1.5 | 0.14 | value not found | 105 | paper present |
-| 121475285 | 1464d3d16709_PDFs_of_include | Expenditure  | estimate | 1.69 | 1.13 | value not found | 105 | paper present |
-| 121475285 | 1464d3d16709_PDFs_of_include | Expenditure  | se | 2.15 | 0.14 | value not found | 105 | paper present |
-| 121475285 | 1464d3d16709_PDFs_of_include | Expenditure  | estimate | 0.23 | 0.22 | value not found | 105 | paper present |
-| 121475285 | 1464d3d16709_PDFs_of_include | Expenditure  | estimate | 6.12 | 7.92 | value not found | 105 | paper present |
-| 121475285 | 1464d3d16709_PDFs_of_include | Expenditure  | se | 1.57 | 0.14 | value not found | 105 | paper present |
-| 121475285 | 1464d3d16709_PDFs_of_include | Expenditure  | estimate | 9.34 | 10.18 | value not found | 105 | paper present |
-| 121475285 | 1464d3d16709_PDFs_of_include | Expenditure  | se | 2.26 | 0.14 | value not found | 105 | paper present |
 | 121766336 | a99618599493_PDFs_of_include | Total income | estimate | 155.4295 | None | document is not the paper | 0 | wrong version |
 | 121766336 | a99618599493_PDFs_of_include | Total income | se | 121.73 | None | document is not the paper | 0 | wrong version |
 | 121766336 | a99618599493_PDFs_of_include | Total income | estimate | 126.991 | None | document is not the paper | 0 | wrong version |

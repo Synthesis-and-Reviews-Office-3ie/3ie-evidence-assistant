@@ -162,6 +162,9 @@ class Interpretation:
     warnings: List[str] = field(default_factory=list)
     layout: str = LAYOUT_COLUMNS
     row_roles: Dict[str, int] = field(default_factory=dict)
+    # Non-role column headers, when the columns name outcomes and the rows are treatment arms with
+    # a standard-error row beneath each ("Tot | logTot | Food", arms TUP*2014 down the first column).
+    outcome_columns: List[str] = field(default_factory=list)
 
 
 def _split_row(line: str) -> List[str]:
@@ -344,6 +347,10 @@ def interpret_table(text: str, notes: str = "") -> Interpretation:
     columns, warnings = resolve_consistency(columns, grid)
     row_roles = _row_roles(grid)
     layout = LAYOUT_ROWS if ESTIMATE in row_roles and len(row_roles) >= 2 else LAYOUT_COLUMNS
+    se_rows = sum(1 for row in grid.body if _all_parenthesised(row[1:]))
+    unnamed_headers = [_flat(c) for c in (grid.headers[-1] if grid.headers else [])
+                       if _flat(c) and _role_from_header(_flat(c))[0] is None]
+    outcome_columns = unnamed_headers if len(unnamed_headers) >= 2 and se_rows >= 2 else []
 
     def index_of(role: str) -> Optional[int]:
         return next((c.index for c in columns if c.role == role), None)
@@ -380,6 +387,7 @@ def interpret_table(text: str, notes: str = "") -> Interpretation:
         warnings=warnings,
         layout=layout,
         row_roles=row_roles,
+        outcome_columns=outcome_columns,
     )
 
 

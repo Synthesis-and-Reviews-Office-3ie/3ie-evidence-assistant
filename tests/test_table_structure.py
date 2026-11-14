@@ -45,6 +45,17 @@ def test_treatment_row_with_a_parenthesised_se_row():
     assert result.row_roles.get(SE) == 1
 
 
+def test_outcome_columns_with_arms_and_se_rows():
+    table = """| | Tot | Food |
+| --- | --- | --- |
+| TUP*2014 | -0.10 | 0.01 |
+| | (0.09) | (0.04) |
+| TUP*2015 | 0.03 | 0.05 |
+| | (0.09) | (0.04) |"""
+    result = interpret_table(table)
+    assert result.outcome_columns == ["Tot", "Food"]
+
+
 def test_statistics_in_rows_with_outcomes_in_columns():
     table = """| | (1) | (2) |
 | --- | --- | --- |

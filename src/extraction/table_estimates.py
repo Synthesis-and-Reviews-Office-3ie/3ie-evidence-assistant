@@ -39,6 +39,10 @@ TABLE (Markdown, page {page}):
 INFERRED STRUCTURE (from the headers, notes and arithmetic; may be empty or wrong, and the table itself wins):
 {structure}
 
+If the column headers name outcomes (Tot, logTot, Food, Savings) and the first column names
+treatment arms (for example TUP*2014), return one estimate for each arm and column, and read the
+standard error from the row printed directly beneath that arm in parentheses.
+
 First decide: does this table report estimated effects of a programme or treatment, such as
 regression coefficients, differences between treatment and control (or before and after),
 impact estimates or marginal effects? Descriptive statistics, sample descriptions, balance
@@ -264,6 +268,10 @@ def _structure_hint(result) -> str:
     from src.extraction.table_structure import LAYOUT_ROWS
 
     parts: List[str] = []
+    if result.outcome_columns:
+        parts.append("the column headers are outcomes (" + ", ".join(result.outcome_columns[:6])
+                     + "); each row is a treatment arm and the row printed beneath it holds that "
+                       "arm's standard errors in parentheses")
     if result.layout == LAYOUT_ROWS:
         parts.append("statistics are in rows and outcomes or models are in the columns")
     for index, name in ((result.estimate, "estimate"), (result.se, "standard error"),
