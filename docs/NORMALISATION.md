@@ -126,6 +126,12 @@ The collection was re-extracted with compute temporarily on Small. It processed 
 
 Stored-row recall against the hand-typed key, over the 36 studies that map by id, is 278 of 325 estimates (86%) and 263 of 305 standard errors (86%), against 44% and 47% for the old rows. The 2.6 times growth measured in the A/B did not appear in production: the A/B counted in-memory estimates before grounding, while the writer stores grounded rows only, and skipping descriptive tables offsets the increase. The stored table is in fact a little smaller than the old one at 18,176 rows, while matching about twice as many of the hand-typed numbers. Every stored row carries an embedding. Compute can return to Micro; watch the Disk IO graph for a day.
 
+## Image tables (14 November 2026, code only)
+
+Paper 121766336 has no table text at all: 51 parsed items and six images, and 18 of the 47 missing hand-typed estimates come from there. `src/extraction/page_vision.py` reads those pages: it collects the pages that hold image items, renders each page to PNG with PyMuPDF, and sends the page image to the vision model with the same table task. Rows are built directly in the `effect_estimates` shape, and a cell such as `311** (119)` is split into estimate and standard error.
+
+It is a fallback and opt-in: `scripts/extract_estimates.py --vision`. The text path runs first and stays authoritative; vision rows are added on top, capped at 12 pages per document. The cost is one vision call per image page, which for 121766336 is six. Seven tests in `tests/test_page_vision.py` cover page selection, rendering, and row building. The model call itself has not been run against the live API yet, because the network has been failing TLS handshakes.
+
 ## Derivation and consistency rules
 
 - `t = estimate / se`; `se` from a CI as `(high - low) / (2 * z)` at the stated level; `p` from `t` and df when df is known; stars to a p-bound otherwise.

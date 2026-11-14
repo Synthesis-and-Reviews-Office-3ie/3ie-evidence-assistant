@@ -76,6 +76,18 @@ def _r2():
                         aws_secret_access_key=os.environ["R2_SECRET_ACCESS_KEY"], region_name="auto")
 
 
+def _pdf_bytes(s3, bucket: str, project_id: str, doc: Dict[str, Any]) -> bytes:
+    """The uploaded PDF, for the image-table fallback. Empty when the key is not found."""
+    for key in (f"rags/{project_id}/input-pdfs/{doc['id']}.pdf",
+                f"rags/{project_id}/input-pdfs/{doc['filename']}.pdf",
+                f"rags/{project_id}/inputs/{doc['id']}.pdf"):
+        try:
+            return s3.get_object(Bucket=bucket, Key=key)["Body"].read()
+        except Exception:
+            continue
+    return b""
+
+
 async def _post(db: httpx.AsyncClient, rows: List[Dict[str, Any]]) -> Optional[str]:
     """Insert with retries. Returns an error message, or None.
 
@@ -102,6 +114,7 @@ async def extract_and_store(
     doc_keys: Optional[Iterable[str]] = None,
     model: str = DEFAULT_MODEL,
     skip_done: bool = False,
+    vision: bool = False,
     log: Callable[[str], None] = print,
 ) -> Dict[str, int]:
     """
@@ -115,7 +128,8 @@ async def extract_and_store(
     headers = {"apikey": key, "Authorization": f"Bearer {key}", "Content-Type": "application/json"}
     bucket, s3 = os.environ.get("R2_BUCKET_NAME", "devchat-pdfs"), _r2()
     wanted = set(doc_keys) if doc_keys is not None else None
-    totals = {"docs": 0, "estimates": 0, "kept": 0, "results_tables": 0, "tables": 0, "errors": 0}
+    totals = {"docs": 0, "estimates": 0, "kept": 0, "results_tables": 0, "tables": 0, "errors": 0,
+              "vision_pages": 0, "vision_rows": 0}
 
     async with httpx.AsyncClient(base_url=url, headers=headers, timeout=120) as db:
         docs = (await db.get("/documents", params={
@@ -141,6 +155,28 @@ async def extract_and_store(
                     content = json.loads(obj["Body"].read()).get("content_list") or []
                     out = await extract_document(content, model, os.environ["OPENROUTER_API_KEY"])
                     rows = rows_for(project_id, doc, out, model)
+                    if vision:
+                        # Pages whose tables the parser left as images. The text path runs first and
+                        # stays authoritative; this only adds rows the text path could not see.
+                        from src.extraction.page_vision import extract_pages, table_image_pages
+
+                        pages = table_image_pages(content)
+                        if pages:
+                            pdf = await asyncio.to_thread(_pdf_bytes, s3, bucket, project_id, doc)
+                            if pdf:
+                                vclient = httpx.AsyncClient(
+                                    base_url="https://openrouter.ai/api/v1",
+                                    headers={"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}"},
+                                    timeout=300)
+                                try:
+                                    vout = await extract_pages(
+                                        pdf, pages, model, os.environ["OPENROUTER_API_KEY"],
+                                        project_id, doc, client=vclient)
+                                finally:
+                                    await vclient.aclose()
+                                rows.extend(vout["rows"])
+                                totals["vision_pages"] += len(vout["pages"])
+                                totals["vision_rows"] += len(vout["rows"])
                     if rows:
                         vectors = await asyncio.to_thread(embed_documents, [estimate_text(r) for r in rows])
                         for r, v in zip(rows, vectors):
