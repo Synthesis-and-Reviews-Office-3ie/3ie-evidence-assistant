@@ -39,7 +39,12 @@ def _matches(confirmed: str, extracted: Sequence[str], threshold: float = 0.6) -
         return True
     for name in extracted:
         other = _tokens(name)
-        if other and len(target & other) / len(target) >= threshold:
+        if not other:
+            continue
+        # Either the extracted name covers most of the confirmed one, or the confirmed name is
+        # contained in a longer extracted label ("Poultry ownership" inside "Poultry ownership among
+        # cash transfer recipients").
+        if len(target & other) / len(target) >= threshold or target <= other:
             return True
     return False
 

@@ -178,6 +178,14 @@ A few papers report their headline result in a figure rather than a table, and a
 - The vision prompt now also reads values printed on a figure (data labels, callouts such as `0.12***` or `[0.05, 0.19]`), and never estimates from axis positions, bar heights or line positions. A plot with printed values is treated like a table; a bare plot returns "no table".
 - `outcome_confirmation.py` asks the paper's text which outcomes it reports as primary and secondary, with a quote for each, and compares that list with the extracted outcome names. A confirmed outcome with no matching extracted name is logged as a review flag. It runs for documents that go through vision, so the extra call stays bounded to the risky documents.
 
+## Prose estimates (14 November 2026)
+
+Paper 121058361 is a SPIR learning brief with 24 figures and no tables; its results are in sentences ("poultry ownership rose by 4 percentage points"). `prose_estimates.py` reads the text once for documents with no tables and keeps only estimates whose quoted sentence appears in the text, so a fabricated sentence cannot survive. Rows are marked with an `extraction_method` ending in "prose", and their unit (percent, percentage points, count) is kept in `literal_text`, because there is no unit column.
+
+On that brief it produced 6 to 7 rows across two runs. The confirmation step now also matches a longer extracted label containing the confirmed outcome ("Poultry ownership" inside "Poultry ownership among cash transfer recipients"), which reduced its flags from 5 to 3. Confirmation now runs for any risky document (one that used vision or prose), with its own client, instead of only inside the vision path.
+
+Caveats: prose numbers usually have no standard error, and a percent change, a percentage-point change and a count are not comparable. Downstream use should treat prose rows as lower confidence than table rows, and no standardised effect should be computed from them until the unit is read.
+
 ## Derivation and consistency rules
 
 - `t = estimate / se`; `se` from a CI as `(high - low) / (2 * z)` at the stated level; `p` from `t` and df when df is known; stars to a p-bound otherwise.

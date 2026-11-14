@@ -26,3 +26,10 @@ def test_nothing_confirmed_means_nothing_flagged():
 def test_an_unrelated_extraction_flags_every_confirmed_outcome():
     misses = missing_outcomes(CONFIRMATION, ["Height", "Weight"])
     assert len(misses) == 3
+
+
+def test_a_longer_extracted_label_contains_the_confirmed_outcome():
+    misses = missing_outcomes(
+        {"primary": [{"name": "Poultry ownership"}]},
+        ["Poultry ownership among cash transfer recipients"])
+    assert misses == []
