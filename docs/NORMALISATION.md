@@ -205,6 +205,12 @@ The bottleneck is extraction coverage and alignment. On the 41 studies that join
 
 So P1 (deterministic parsers) is low value now. The next move is to diagnose the 61% value-recall gap: rounding and units (0.15 against 0.1503), sign conventions, or estimates that sit in tables we did not read. Improving row alignment on study, outcome and arm is the other half, because without it per-field accuracy cannot be measured.
 
+## Standardised effect sizes (14 November 2026)
+
+`effect_sizes.py` computes the pooling fields: `d = estimate / control_sd`, `var(d) = (se / control_sd)^2`, `g = J * d` with `J = 1 - 3 / (4 df - 1)` and `df = n_treatment + n_control - 2`, `var(g) = J^2 * var(d)`, `se(g) = sqrt(var(g))`, and `yi`/`vi` are `g`/`var(g)` for a single study. It returns nothing when `control_sd` or the two sample sizes are missing, rather than guessing.
+
+Two limits. The 8WR sheet stores a `Formula Used` code (5 and 6) whose definitions are not in the repository, so the module writes a descriptive formula name instead; reproducing those codes needs the definitions. More importantly, the inputs are the current gap: extraction stores `sample_size` but not `control_sd` or the per-arm counts, so most stored rows cannot be standardised yet. The human key has those columns, so reading the control mean and standard deviation and the per-arm counts is the prerequisite. Four tests cover the arithmetic and the missing-input cases.
+
 ## Status (14 November 2026)
 
 The extraction pipeline now has, in order: text parsing and grounding; table structure interpretation (columns, rows, notes, abbreviations, arithmetic); table typing (results, descriptive, reviews); non-outcome and descriptive-column filters; multi-page stitching; vision for image pages, garbled text and values printed on figures; prose extraction for documents with no tables; outcome confirmation against the paper text; and provenance checks for a wrong version or a review.
@@ -220,11 +226,11 @@ Known limits:
 - The arm year is lost on the multi-year table in 121475285 ("TUP" instead of "TUP*2014").
 - Prose rows keep their unit in `literal_text`, not in a column, and usually have no standard error.
 - The parser repair is called from `pdf_processor` before the markdown and content list are saved, best effort, and never fails a parse run. It only takes effect on the next parse, so the existing collection still needs a re-index for its garbled pages.
-- Standardised effect sizes (`d`, `yi`, `var_i`, `se_g`) are not implemented.
+- Standardised effect sizes (`d`, `yi`, `var_i`, `se_g`) are implemented, but most rows lack `control_sd` and per-arm N, which extraction does not read yet.
 
 Next, in order:
 
 1. Re-index once so the parse repair reaches the retrieved chunks, then re-run the vision scan to confirm no document is still garbled.
-2. Preserve the arm year in the layout hint so standardisation can use it.
-3. Implement the standardised effect sizes with `formula_used`, reproducing the 8WR key.
+2. Extract the control mean and standard deviation and the per-arm counts, so the standardised effects can run.
+3. Reproduce the 8WR `Formula Used` codes once their definitions are known.
 4. Resolve the three remaining real misses against their papers.
