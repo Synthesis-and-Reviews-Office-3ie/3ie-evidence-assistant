@@ -3,8 +3,8 @@
 import pytest
 
 from src.extraction.page_vision import (
-    auto_vision_pages, build_rows, garbled_table_pages, render_page_png, table_image_pages,
-    transcribe_garbled_pages, vision_pages,
+    apply_transcriptions, auto_vision_pages, build_rows, garbled_table_pages, render_page_png,
+    table_image_pages, transcribe_garbled_pages, vision_pages,
 )
 
 DOC = {"id": "doc-1", "filename": "paper.pdf"}
@@ -71,6 +71,18 @@ async def test_a_garbled_page_is_replaced_by_one_transcription():
 async def test_clean_content_is_returned_unchanged():
     content = [{"type": "text", "page_idx": 1, "text": "A normal paragraph."}]
     assert await transcribe_garbled_pages(content, b"pdf", "m", "k") == content
+
+
+def test_transcriptions_replace_the_page_items_and_join_the_markdown():
+    content = [
+        {"type": "table", "page_idx": 5, "text": "| ?????? a114 |"},
+        {"type": "text", "page_idx": 9, "text": "Kept paragraph."},
+    ]
+    content, markdown = apply_transcriptions(content, "# Title", {6: "| Outcome | Coef |"})
+    assert [item["type"] for item in content] == ["text", "text"]
+    assert content[0]["page_idx"] == 5 and "Outcome" in content[0]["text"]
+    assert content[1]["text"] == "Kept paragraph."
+    assert "page 6" in markdown and "| Outcome | Coef |" in markdown
 
 
 def _tiny_pdf() -> bytes:

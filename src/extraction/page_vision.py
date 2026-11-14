@@ -209,6 +209,70 @@ async def transcribe_garbled_pages(content_list: Sequence[Dict[str, Any]], pdf_b
     return out
 
 
+def _page_of(item: Dict[str, Any]) -> Optional[int]:
+    try:
+        return int(item.get("page_idx")) + 1 if item.get("page_idx") not in (None, "") else None
+    except (TypeError, ValueError):
+        return None
+
+
+def apply_transcriptions(content_list: Sequence[Dict[str, Any]], markdown: str,
+                         transcripts: Dict[int, str]) -> tuple:
+    """Replace each garbled page's items with one transcription and append the text to the markdown.
+
+    This is the shape the parse step needs: the content list drives extraction, the markdown drives
+    chunking and retrieval, so both must carry the clean text.
+    """
+    if not transcripts:
+        return list(content_list), markdown
+    pages = set(transcripts)
+    out: List[Dict[str, Any]] = []
+    done: set = set()
+    for item in content_list:
+        page = _page_of(item)
+        if page in pages and item.get("type") in ("table", "text"):
+            if page in done:
+                continue
+            done.add(page)
+            text = str(transcripts.get(page) or "").strip()
+            if text:
+                out.append({"type": "text", "text": text, "page_idx": page - 1})
+            continue
+        out.append(item)
+    appended = []
+    for page in sorted(pages - done):
+        text = str(transcripts.get(page) or "").strip()
+        if not text:
+            continue
+        out.append({"type": "text", "text": text, "page_idx": page - 1})
+        done.add(page)
+    for page in sorted(pages):
+        text = str(transcripts.get(page) or "").strip()
+        if text:
+            appended.append(f"\n\n<!-- page {page} -->\n\n{text}")
+    return out, str(markdown) + "".join(appended)
+
+
+async def repair_garbled_document(content_list: Sequence[Dict[str, Any]], markdown: str, pdf_bytes: bytes,
+                                  model: str, api_key: str, max_pages: int = 12) -> tuple:
+    """Transcribe each garbled page once and return the repaired content list and markdown."""
+    import httpx
+
+    pages = garbled_table_pages(content_list, max_pages)
+    if not pages:
+        return list(content_list), markdown
+    transcripts: Dict[int, str] = {}
+    async with httpx.AsyncClient(
+            base_url="https://openrouter.ai/api/v1",
+            headers={"Authorization": f"Bearer {api_key}"}, timeout=300) as client:
+        for page in pages:
+            try:
+                transcripts[page] = await transcribe_page(pdf_bytes, page, model, api_key, client=client)
+            except Exception:
+                transcripts[page] = ""
+    return apply_transcriptions(content_list, markdown, {p: t for p, t in transcripts.items() if t.strip()})
+
+
 def _row(project_id: str, doc: Dict[str, Any], page: int, label: str, model: str,
          raw: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     cell = str(raw.get("estimate_cell") or raw.get("coefficient") or "").strip()

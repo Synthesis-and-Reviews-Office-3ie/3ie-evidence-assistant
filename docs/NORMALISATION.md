@@ -219,12 +219,12 @@ Known limits:
 
 - The arm year is lost on the multi-year table in 121475285 ("TUP" instead of "TUP*2014").
 - Prose rows keep their unit in `literal_text`, not in a column, and usually have no standard error.
-- The parser transcription is written and tested but not yet wired into the Modal parse step, so garbled pages are fixed at extraction, not in the chunks the answerer retrieves.
+- The parser repair is called from `pdf_processor` before the markdown and content list are saved, best effort, and never fails a parse run. It only takes effect on the next parse, so the existing collection still needs a re-index for its garbled pages.
 - Standardised effect sizes (`d`, `yi`, `var_i`, `se_g`) are not implemented.
 
 Next, in order:
 
-1. Wire `transcribe_garbled_pages` into `src/ingestion/pdf_processor.py` before the markdown and content list are saved, then re-index once.
+1. Re-index once so the parse repair reaches the retrieved chunks, then re-run the vision scan to confirm no document is still garbled.
 2. Preserve the arm year in the layout hint so standardisation can use it.
 3. Implement the standardised effect sizes with `formula_used`, reproducing the 8WR key.
 4. Resolve the three remaining real misses against their papers.

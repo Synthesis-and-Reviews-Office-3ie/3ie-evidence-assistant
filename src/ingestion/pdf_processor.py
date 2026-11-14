@@ -14,6 +14,7 @@ MinerU is AGPL-3.0 licensed - fine for internal processing
 Updated: Dec 2025 - mineru 2.6.8 API
 """
 
+import asyncio
 import copy
 import json
 import os
@@ -30,6 +31,28 @@ from src.config.settings import settings
 from src.utils.logging import get_logger
 
 logger = get_logger(__name__)
+
+
+def _repair_garbled_pages(pdf_path: str, content_list: List[Dict[str, Any]],
+                          markdown: str) -> Tuple[List[Dict[str, Any]], str]:
+    """Best effort: transcribe pages whose parsed text is a broken font mapping.
+
+    Runs one vision transcription per garbled page so the saved content list and markdown carry clean
+    text. Returns the inputs unchanged when there is nothing garbled or no model key; any failure is
+    caught by the caller, so a parser run never fails because of this step.
+    """
+    from src.extraction.page_vision import garbled_table_pages, repair_garbled_document
+
+    if not garbled_table_pages(content_list):
+        return content_list, markdown
+    api_key = os.environ.get("OPENROUTER_API_KEY", "")
+    if not api_key:
+        logger.warning("Garbled table text found but OPENROUTER_API_KEY is unset; keeping parsed text")
+        return content_list, markdown
+    from src.extraction.store_estimates import DEFAULT_MODEL
+
+    pdf_bytes = Path(pdf_path).read_bytes()
+    return asyncio.run(repair_garbled_document(content_list, markdown, pdf_bytes, DEFAULT_MODEL, api_key))
 
 
 class PDFMetadata(BaseModel):
@@ -211,6 +234,12 @@ class MinerUProcessor:
         
         # Generate content list for tables/formulas extraction
         content_list = pipeline_union_make(pdf_info, MakeMode.CONTENT_LIST, image_dir)
+        
+        # Repair pages whose text came through with a broken font mapping, before saving.
+        try:
+            content_list, markdown_content = _repair_garbled_pages(str(pdf_path), content_list, markdown_content)
+        except Exception as exc:
+            logger.warning(f"Garbled-page repair skipped: {type(exc).__name__}: {exc}")
         
         # Save markdown
         md_output_path = Path(local_md_dir) / f"{pdf_name}.md"
