@@ -129,6 +129,68 @@ def render_page_png(pdf_bytes: bytes, page_number: int, dpi: int = 200) -> bytes
         document.close()
 
 
+TRANSCRIBE_PROMPT = """Transcribe this page of an academic paper exactly, as text.
+
+Keep every table as a GitHub Markdown pipe table: its caption, column headers, row labels, numbers,
+significance stars, parentheses and notes, all in their original order. Do not summarise, explain or
+add anything. If the page has no text table, return an empty string."""
+
+
+async def transcribe_page(pdf_bytes: bytes, page: int, model: str, api_key: str, client=None,
+                          dpi: int = 200) -> str:
+    """Markdown transcription of one page, for replacing parser text that came through garbled."""
+    import httpx
+
+    own = client is None
+    client = client or httpx.AsyncClient(timeout=300, headers={"Authorization": f"Bearer {api_key}"})
+    try:
+        png = render_page_png(pdf_bytes, page, dpi=dpi)
+        data_url = "data:image/png;base64," + base64.b64encode(png).decode("ascii")
+        response = await client.post("/chat/completions", json={
+            "model": model,
+            "messages": [{"role": "user", "content": [
+                {"type": "text", "text": TRANSCRIBE_PROMPT},
+                {"type": "image_url", "image_url": {"url": data_url}},
+            ]}],
+        })
+        return str(response.json()["choices"][0]["message"]["content"]).strip()
+    finally:
+        if own:
+            await client.aclose()
+
+
+async def transcribe_garbled_pages(content_list: Sequence[Dict[str, Any]], pdf_bytes: bytes,
+                                   model: str, api_key: str, client=None, max_pages: int = 12,
+                                   transcriber=None) -> List[Dict[str, Any]]:
+    """A content list with garbled table pages replaced by a clean Markdown transcription.
+
+    The parser sometimes returns broken glyphs for a page ("????? ?? ???????a114"). Those items are
+    useless to retrieval and to the reader. One transcription per affected page replaces the garbled
+    items, so the page can be chunked and read like any other. Good pages are left untouched.
+    """
+    pages = garbled_table_pages(content_list, max_pages)
+    if not pages:
+        return list(content_list)
+    do_transcribe = transcriber or transcribe_page
+    out: List[Dict[str, Any]] = []
+    done: set = set()
+    for item in content_list:
+        try:
+            page = int(item.get("page_idx")) + 1 if item.get("page_idx") not in (None, "") else None
+        except (TypeError, ValueError):
+            page = None
+        if page in pages and item.get("type") in ("table", "text"):
+            if page in done:
+                continue
+            transcript = await do_transcribe(pdf_bytes, page, model, api_key)
+            done.add(page)
+            if str(transcript).strip():
+                out.append({"type": "text", "text": str(transcript).strip(), "page_idx": item.get("page_idx")})
+            continue
+        out.append(item)
+    return out
+
+
 def _row(project_id: str, doc: Dict[str, Any], page: int, label: str, model: str,
          raw: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     cell = str(raw.get("estimate_cell") or raw.get("coefficient") or "").strip()

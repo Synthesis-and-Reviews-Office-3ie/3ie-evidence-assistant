@@ -3,7 +3,8 @@
 import pytest
 
 from src.extraction.page_vision import (
-    build_rows, garbled_table_pages, render_page_png, table_image_pages, vision_pages,
+    build_rows, garbled_table_pages, render_page_png, table_image_pages, transcribe_garbled_pages,
+    vision_pages,
 )
 
 DOC = {"id": "doc-1", "filename": "paper.pdf"}
@@ -40,6 +41,27 @@ def test_garbled_table_pages_are_read_from_images():
     ]
     assert garbled_table_pages(content) == [6]
     assert vision_pages(content) == [3, 6]
+
+
+async def test_a_garbled_page_is_replaced_by_one_transcription():
+    content = [
+        {"type": "table", "page_idx": 5, "text": "| ?????? a114 a116 a115 a80 a91 a92 a93 a94 a95 |"},
+        {"type": "text", "page_idx": 5, "text": "????? a114 a116"},
+        {"type": "text", "page_idx": 9, "text": "A normal paragraph."},
+    ]
+
+    async def fake(pdf, page, model, key):
+        return "| Outcome | Coef |\n| --- | --- |\n| Food | 0.5 |"
+
+    out = await transcribe_garbled_pages(content, b"pdf", "m", "k", transcriber=fake)
+    assert len(out) == 2
+    assert out[0]["type"] == "text" and "Outcome" in out[0]["text"] and out[0]["page_idx"] == 5
+    assert out[1]["text"] == "A normal paragraph."
+
+
+async def test_clean_content_is_returned_unchanged():
+    content = [{"type": "text", "page_idx": 1, "text": "A normal paragraph."}]
+    assert await transcribe_garbled_pages(content, b"pdf", "m", "k") == content
 
 
 def _tiny_pdf() -> bytes:

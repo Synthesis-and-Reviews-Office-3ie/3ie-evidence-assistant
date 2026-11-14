@@ -143,6 +143,22 @@ The vision path works technically: the model returned valid JSON for every page.
 
 Stored recall after this is 291 of 325 estimates (90%) and 276 of 305 standard errors (90%). Excluding the 18 values whose paper is absent, the attainable recall is 291 of 307 (95%).
 
+## Parser failure and garbled pages (14 November 2026)
+
+Some PDFs come through the parser with a broken font mapping: letters become `?` and codes such as `a114`. Paper 121328483 is the case, and its tables were unusable as text. Three pieces now handle it:
+
+- `looks_garbled` in `table_rules.py` detects it, and the text path skips garbled tables, so garbage is never sent to the model.
+- The extraction-time vision reader renders those pages and reads the table image; it recovered 13 of 13 hand-typed values on that paper.
+- `transcribe_garbled_pages` in `page_vision.py` replaces a garbled page with one clean Markdown transcription, for the retrieval side. It is tested with a fake transcriber; its live call is the same vision path already proven on the page images.
+
+For production, in order:
+
+1. Wire `transcribe_garbled_pages` into the parse step before the markdown or content list is written, so new uploads get clean text, and pass the cleaned content to extraction as well. Then a garbled page never reaches the chunk index.
+2. Re-index the collection once to rebuild chunks for the affected pages.
+3. The durable fix is a parser upgrade, MinerU 3.x or the Docling union (roadmap S4 and TVET T4), which should remove the broken mapping at the source. The transcription is the mitigation until then.
+
+One more provenance check is needed. StudyID 121766336 maps to a policy brief, not the impact paper, so the recall audit counts 18 values as misses although the paper is absent. A document with no table, no "regression" and a short text is probably the wrong version of a study, and the audit should say so rather than score it as an extraction failure.
+
 ## Derivation and consistency rules
 
 - `t = estimate / se`; `se` from a CI as `(high - low) / (2 * z)` at the stated level; `p` from `t` and df when df is known; stars to a p-bound otherwise.
