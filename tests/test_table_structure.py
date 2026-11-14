@@ -45,6 +45,15 @@ def test_treatment_row_with_a_parenthesised_se_row():
     assert result.row_roles.get(SE) == 1
 
 
+def test_method_blocks_are_detected():
+    table = """| | No adjustment - coef. | No adjustment - s.e. | Matching - coef. | Matching - s.e. |
+| --- | --- | --- | --- | --- |
+| Africare | -0.67 | 0.33 | -0.59 | 0.53 |
+| Age | -0.06 | 0.01 | -0.05 | 0.01 |"""
+    result = interpret_table(table)
+    assert result.stat_blocks == ["No adjustment", "Matching"]
+
+
 def test_outcome_columns_with_arms_and_se_rows():
     table = """| | Tot | Food |
 | --- | --- | --- |

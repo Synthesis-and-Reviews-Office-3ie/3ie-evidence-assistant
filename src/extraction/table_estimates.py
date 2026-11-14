@@ -44,6 +44,10 @@ treatment arms (for example TUP*2014), return one estimate for each arm and colu
 standard error from the row printed directly beneath that arm in parentheses. Use the arm exactly as
 printed, including a year or interaction (TUP*2014 and TUP*2015 are different arms).
 
+If the columns repeat a coefficient, standard error and p-value block per method ("No adjustment -
+coef.", "No adjustment - s.e.", "Matching & regression - coef.", ...), return one estimate for each
+row and method, with the method as the arm and the standard error from the same block.
+
 First decide: does this table report estimated effects of a programme or treatment, such as
 regression coefficients, differences between treatment and control (or before and after),
 impact estimates or marginal effects? Descriptive statistics, sample descriptions, balance
@@ -269,6 +273,10 @@ def _structure_hint(result) -> str:
     from src.extraction.table_structure import LAYOUT_ROWS
 
     parts: List[str] = []
+    if result.stat_blocks:
+        parts.append("the columns repeat in method blocks (" + ", ".join(result.stat_blocks[:5])
+                     + "); for each row and method, return the coefficient and read its standard "
+                       "error from the adjacent column in the same block; use the method name as the arm")
     if result.outcome_columns:
         parts.append("the column headers are outcomes (" + ", ".join(result.outcome_columns[:6])
                      + "); each row is a treatment arm and the row printed beneath it holds that "

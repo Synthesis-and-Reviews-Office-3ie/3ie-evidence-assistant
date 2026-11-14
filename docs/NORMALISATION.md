@@ -213,24 +213,24 @@ Two limits. The 8WR sheet stores a `Formula Used` code (5 and 6) whose definitio
 
 ## Status (14 November 2026)
 
-The extraction pipeline now has, in order: text parsing and grounding; table structure interpretation (columns, rows, notes, abbreviations, arithmetic); table typing (results, descriptive, reviews); non-outcome and descriptive-column filters; multi-page stitching; vision for image pages, garbled text and values printed on figures; prose extraction for documents with no tables; outcome confirmation against the paper text; and provenance checks for a wrong version or a review.
+The extraction pipeline now has, in order: text parsing and grounding; table structure interpretation (columns, rows, notes, abbreviations, arithmetic); table typing (results, descriptive, reviews); non-outcome and descriptive-column filters; multi-page stitching; vision for image pages, garbled text and values printed on figures; prose extraction for documents with no tables; outcome confirmation against the paper text; provenance checks for a wrong version or a review; and layout hints for statistics in rows, outcomes in columns, and repeated method blocks.
 
 Measured against the hand-typed key on 36 studies:
 
-- 299 of 325 estimates (92%) and 283 of 305 standard errors (93%).
+- 300 of 325 estimates (92%) and 284 of 305 standard errors (93%).
 - 97% of the attainable 307, because 18 values belong to a paper that is not in the collection.
-- Remaining: 18 absent paper, 5 formatting (rounding or sign), and 3 real (121295229, 121305126, 122182716).
+- Remaining: 18 absent paper, 5 formatting (rounding or sign), and 2 real (121295229, 122182716), where the key's value is not in the paper's text (likely another column or survey wave).
 
 Known limits:
 
 - The arm year is lost on the multi-year table in 121475285 ("TUP" instead of "TUP*2014").
 - Prose rows keep their unit in `literal_text`, not in a column, and usually have no standard error.
 - The parser repair is called from `pdf_processor` before the markdown and content list are saved, best effort, and never fails a parse run. It only takes effect on the next parse, so the existing collection still needs a re-index for its garbled pages.
-- Standardised effect sizes (`d`, `yi`, `var_i`, `se_g`) are implemented, but most rows lack `control_sd` and per-arm N, which extraction does not read yet.
+- Standardised effect sizes (`d`, `yi`, `var_i`, `se_g`) are implemented, but most rows lack `control_sd` and per-arm N, which extraction does not read yet; the migration `20261114000000_effect_estimates_control_stats.sql` adds the columns and still has to be applied.
 
 Next, in order:
 
-1. Re-index once so the parse repair reaches the retrieved chunks, then re-run the vision scan to confirm no document is still garbled.
-2. Extract the control mean and standard deviation and the per-arm counts, so the standardised effects can run.
+1. Re-index once so the parse repair reaches the retrieved chunks, then re-run the vision scan to confirm no document is still garbled. This needs the parse to run again (Modal), not only the extraction step.
+2. Apply the control-stats migration, then read `control_sd` and the per-arm counts in extraction, so the standardised effects can run.
 3. Reproduce the 8WR `Formula Used` codes once their definitions are known.
-4. Resolve the three remaining real misses against their papers.
+4. Resolve the two remaining real misses: they are key values that do not appear in the paper text, so check them against the paper rather than the extractor.

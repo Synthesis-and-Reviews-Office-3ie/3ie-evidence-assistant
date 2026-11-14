@@ -165,6 +165,9 @@ class Interpretation:
     # Non-role column headers, when the columns name outcomes and the rows are treatment arms with
     # a standard-error row beneath each ("Tot | logTot | Food", arms TUP*2014 down the first column).
     outcome_columns: List[str] = field(default_factory=list)
+    # Method prefixes when the columns repeat a coefficient, standard error and p-value block, as in
+    # "No adjustment - coef. | No adjustment - s.e. | Matching & regression - coef. | ...".
+    stat_blocks: List[str] = field(default_factory=list)
 
 
 def _split_row(line: str) -> List[str]:
@@ -351,6 +354,14 @@ def interpret_table(text: str, notes: str = "") -> Interpretation:
     unnamed_headers = [_flat(c) for c in (grid.headers[-1] if grid.headers else [])
                        if _flat(c) and _role_from_header(_flat(c))[0] is None]
     outcome_columns = unnamed_headers if len(unnamed_headers) >= 2 and se_rows >= 2 else []
+    estimate_headers = [_flat(c) for c in (grid.headers[-1] if grid.headers else [])
+                        if _flat(c) and _role_from_header(_flat(c))[0] == ESTIMATE]
+    prefixes: List[str] = []
+    for header in estimate_headers:
+        prefix = re.split(r"\s*[-–—]\s*", header)[0].strip()
+        if prefix and prefix.lower() not in (p.lower() for p in prefixes):
+            prefixes.append(prefix)
+    stat_blocks = prefixes if len(prefixes) >= 2 else []
 
     def index_of(role: str) -> Optional[int]:
         return next((c.index for c in columns if c.role == role), None)
@@ -388,6 +399,7 @@ def interpret_table(text: str, notes: str = "") -> Interpretation:
         layout=layout,
         row_roles=row_roles,
         outcome_columns=outcome_columns,
+        stat_blocks=stat_blocks,
     )
 
 

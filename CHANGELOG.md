@@ -13,7 +13,7 @@ All notable changes to DevChat v2.0 are documented in this file.
 - **Provenance checks** for a policy brief that is not the study's paper, and for reviews, reflections and syntheses.
 
 ### Measured
-Against the hand-typed key (36 studies, 325 estimates, 305 standard errors): 299 estimates (92%) and 283 standard errors (93%) matched, which is 97% of the 307 values whose papers are present in the collection, with 3 real misses left.
+Against the hand-typed key (36 studies, 325 estimates, 305 standard errors): 300 estimates (92%) and 284 standard errors (93%) matched, which is 97% of the 307 values whose papers are present in the collection, with 2 real misses left.
 
 ---
 

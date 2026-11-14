@@ -101,7 +101,7 @@ The reader, the index and the citations changed over 12 and 13 November. The pla
 
 The extraction side changed on 14 November; the role filter, quote work and the reader sit on the retrieval and reading side.
 
-- **Image and garbled pages, prose and outcomes (14 November).** The reader now handles image tables, garbled text, values printed on figures, prose results in table-free briefs, reviews, and an outcomes-in-columns layout, and it confirms the paper's stated outcomes against the extracted rows. Against the hand-typed key it finds 299 of 325 estimates (92%) and 283 of 305 standard errors (93%), 97% of the attainable 307; 3 real misses remain. Details in [NORMALISATION.md](NORMALISATION.md).
+- **Image and garbled pages, prose and outcomes (14 November).** The reader now handles image tables, garbled text, values printed on figures, prose results in table-free briefs, reviews, and three column layouts (statistics in rows, outcomes in columns, repeated method blocks), and it confirms the paper's stated outcomes against the extracted rows. Against the hand-typed key it finds 300 of 325 estimates (92%) and 284 of 305 standard errors (93%), 97% of the attainable 307; 2 real misses remain. Details in [NORMALISATION.md](NORMALISATION.md).
 
 ### ▶ Next up (after the model review, 10 November 2026)
 
