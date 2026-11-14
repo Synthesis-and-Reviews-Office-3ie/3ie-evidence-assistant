@@ -109,6 +109,19 @@ def vision_pages(content_list: Sequence[Dict[str, Any]], pdf_pages: Optional[int
     return sorted(pages)[:max_pages]
 
 
+def auto_vision_pages(content_list: Sequence[Dict[str, Any]], pdf_pages: Optional[int] = None,
+                      max_pages: int = 12, full_scan_cap: int = 40) -> List[int]:
+    """Automatic decision for new uploads: read from images only when the text cannot be trusted.
+
+    That is when some table text is garbled, or the parser found no table at all. A document with
+    readable tables gets no vision calls, which keeps the default cost down.
+    """
+    has_table = any(item.get("type") == "table" for item in content_list)
+    if garbled_table_pages(content_list, max_pages) or not has_table:
+        return vision_pages(content_list, pdf_pages, max_pages, full_scan_cap)
+    return []
+
+
 def page_count(pdf_bytes: bytes) -> int:
     document = _open_pdf(pdf_bytes)
     try:

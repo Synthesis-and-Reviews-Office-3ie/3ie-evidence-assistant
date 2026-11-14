@@ -33,8 +33,11 @@ def main():
     ap.add_argument("--model", default=DEFAULT_MODEL)
     ap.add_argument("--only", help="one document key")
     ap.add_argument("--skip-done", action="store_true", help="skip documents that already have rows of this source")
-    ap.add_argument("--vision", action="store_true",
-                    help="also read tables the parser left as page images (one vision call per image page)")
+    ap.add_argument("--vision", dest="vision", action="store_true",
+                    help="always also read pages with image items or garbled text")
+    ap.add_argument("--no-vision", dest="vision", action="store_false",
+                    help="never read page images")
+    ap.set_defaults(vision=None)
     args = ap.parse_args()
     totals = asyncio.run(extract_and_store(
         args.project_id, doc_keys=[args.only] if args.only else None, model=args.model,

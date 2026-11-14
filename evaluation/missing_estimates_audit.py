@@ -35,7 +35,11 @@ from dotenv import load_dotenv  # noqa: E402
 load_dotenv(ROOT / ".env")
 from supabase import create_client  # noqa: E402
 
+from evaluation.usage_study import load_content  # noqa: E402
+from src.extraction.provenance import looks_like_wrong_version  # noqa: E402
+
 PROJ = "7efdc60e-e863-480c-929e-616574725e5f"
+STUDY = ROOT / "evaluation" / "results" / "usage_study" / PROJ
 REPORT = ROOT / "evaluation" / "results" / f"missing_estimates_audit_{date.today().isoformat()}.md"
 
 
@@ -90,6 +94,19 @@ def main():
         ests = [r["effect_size"] for r in rows if r.get("effect_size") is not None]
         ses = [r["standard_error"] for r in rows if r.get("standard_error") is not None]
         by_outcome = {norm(r.get("outcome_name")) for r in rows if norm(r.get("outcome_name"))}
+        try:
+            content = load_content(PROJ, mapping[sid], STUDY / "content")
+        except Exception:
+            content = []
+        blob = " ".join(str(item.get("text") or "") for item in content)
+        table_count = sum(1 for item in content if item.get("type") == "table")
+        if looks_like_wrong_version(blob, table_count):
+            # The mapped document is a brief or summary; the study's paper is not in the collection.
+            for _, row in group.iterrows():
+                for column, label in (("Coeff reg", "estimate"), ("SE reg", "se")):
+                    if num(row.get(column)) is not None:
+                        counts[(label, "document is not the paper")] += 1
+            continue
         for _, row in group.iterrows():
             outcome = row.get("Outcome name")
             for column, values, label in (("Coeff reg", ests, "estimate"), ("SE reg", ses, "se")):
@@ -111,7 +128,8 @@ def main():
                   f"Exact match {exact} of {total} ({100 * exact / max(1, total):.0f}%). Breakdown:", "",
                   "| Why | Count |", "| --- | --- |"]
         for kind in ("rounding 2dp", "rounding 1%", "sign", "scale x100", "scale x0.01",
-                     "scale x1000", "scale x0.001", "outcome present, value differs", "missing"):
+                     "scale x1000", "scale x0.001", "outcome present, value differs",
+                     "document is not the paper", "missing"):
             if counts[(label, kind)]:
                 lines.append(f"| {kind} | {counts[(label, kind)]} |")
         lines.append("")

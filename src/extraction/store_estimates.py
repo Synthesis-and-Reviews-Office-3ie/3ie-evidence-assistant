@@ -114,7 +114,7 @@ async def extract_and_store(
     doc_keys: Optional[Iterable[str]] = None,
     model: str = DEFAULT_MODEL,
     skip_done: bool = False,
-    vision: bool = False,
+    vision: Optional[bool] = None,
     log: Callable[[str], None] = print,
 ) -> Dict[str, int]:
     """
@@ -155,13 +155,16 @@ async def extract_and_store(
                     content = json.loads(obj["Body"].read()).get("content_list") or []
                     out = await extract_document(content, model, os.environ["OPENROUTER_API_KEY"])
                     rows = rows_for(project_id, doc, out, model)
-                    if vision:
-                        # Pages whose tables the parser left as images or as garbled text. The text
-                        # path runs first and stays authoritative; this only adds rows it could not see.
-                        from src.extraction.page_vision import extract_pages, page_count, vision_pages
+                    if vision is not False:
+                        # vision None is the automatic decision: image pages when some table text is
+                        # garbled or the parser found no table at all. True forces it, False disables.
+                        from src.extraction.page_vision import (
+                            auto_vision_pages, extract_pages, page_count, vision_pages,
+                        )
 
                         pdf = await asyncio.to_thread(_pdf_bytes, s3, bucket, project_id, doc)
-                        pages = vision_pages(content, page_count(pdf) if pdf else None)
+                        pdf_pages = page_count(pdf) if pdf else None
+                        pages = vision_pages(content, pdf_pages) if vision else auto_vision_pages(content, pdf_pages)
                         if pdf and pages:
                             vclient = httpx.AsyncClient(
                                 base_url="https://openrouter.ai/api/v1",

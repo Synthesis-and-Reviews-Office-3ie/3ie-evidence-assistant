@@ -3,8 +3,8 @@
 import pytest
 
 from src.extraction.page_vision import (
-    build_rows, garbled_table_pages, render_page_png, table_image_pages, transcribe_garbled_pages,
-    vision_pages,
+    auto_vision_pages, build_rows, garbled_table_pages, render_page_png, table_image_pages,
+    transcribe_garbled_pages, vision_pages,
 )
 
 DOC = {"id": "doc-1", "filename": "paper.pdf"}
@@ -30,6 +30,15 @@ def test_a_document_with_no_parsed_tables_scans_every_page():
     content = [{"type": "text", "page_idx": 0}, {"type": "image", "page_idx": 3}]
     pages = vision_pages(content, pdf_pages=9, full_scan_cap=40)
     assert pages == list(range(1, 10))
+
+
+def test_auto_vision_runs_only_when_the_text_is_untrustworthy():
+    good = [{"type": "table", "page_idx": 2, "text": "| Outcome | Coef |\n| --- | --- |\n| Food | 0.5 |"},
+            {"type": "image", "page_idx": 5}]
+    assert auto_vision_pages(good, pdf_pages=20) == []
+    garbled = [{"type": "table", "page_idx": 5,
+                "text": "| ?????? a114 a116 a115 a80 a91 a92 a93 a94 a95 |"}]
+    assert auto_vision_pages(garbled, pdf_pages=20) == [6]
 
 
 def test_garbled_table_pages_are_read_from_images():

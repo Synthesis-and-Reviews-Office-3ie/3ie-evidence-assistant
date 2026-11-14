@@ -143,6 +143,8 @@ The vision path works technically: the model returned valid JSON for every page.
 
 Stored recall after this is 291 of 325 estimates (90%) and 276 of 305 standard errors (90%). Excluding the 18 values whose paper is absent, the attainable recall is 291 of 307 (95%).
 
+With the provenance check (`looks_like_wrong_version`), the missing-estimate audit now assigns 18 misses to "document is not the paper" and leaves 11 real misses, plus 5 rounding or sign cases. Automatic vision is now the default: `extract_and_store` reads image or garbled pages when the parsed content has no tables or some table text is garbled, and `scripts/extract_estimates.py` exposes `--vision` to force it and `--no-vision` to disable it.
+
 ## Parser failure and garbled pages (14 November 2026)
 
 Some PDFs come through the parser with a broken font mapping: letters become `?` and codes such as `a114`. Paper 121328483 is the case, and its tables were unusable as text. Three pieces now handle it:
