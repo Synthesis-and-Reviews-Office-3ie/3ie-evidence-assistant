@@ -768,6 +768,21 @@ def run_docling(pdf_path: Path, do_ocr: bool = True) -> dict:
             content_list.append(entry)
 
         md_content = doc.export_to_markdown(image_placeholder="")
+        
+        # Repair pages whose parsed text is a broken font mapping, before the outputs are saved.
+        try:
+            from src.extraction.page_vision import garbled_table_pages, repair_garbled_document
+
+            pages = garbled_table_pages(content_list) if isinstance(content_list, list) else []
+            api_key = os.environ.get("OPENROUTER_API_KEY", "")
+            if pages and api_key:
+                from src.extraction.store_estimates import DEFAULT_MODEL
+
+                content_list, md_content = asyncio.run(repair_garbled_document(
+                    content_list, md_content, Path(pdf_path).read_bytes(), DEFAULT_MODEL, api_key))
+                print(f"  Repaired {len(pages)} garbled page(s)")
+        except Exception as exc:
+            print(f"  Garbled-page repair skipped: {type(exc).__name__}: {exc}")
         page_count = doc.num_pages() if hasattr(doc, "num_pages") else len(getattr(doc, "pages", {}) or {})
         seconds = (datetime.now() - started).total_seconds()
         print(f"    Docling: {page_count} pages, {len(tables)} tables, {len(content_list)} items, {seconds:.0f}s")

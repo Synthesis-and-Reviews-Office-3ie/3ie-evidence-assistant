@@ -55,6 +55,7 @@ docling_image = (
     .apt_install("libgl1", "libglib2.0-0")
     .pip_install(
         "docling==2.141.0",
+        "pymupdf",
         "boto3",
         "cohere>=5.0.0",
         "httpx",
