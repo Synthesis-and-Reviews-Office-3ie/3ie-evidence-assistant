@@ -21,7 +21,7 @@ sys.path.insert(0, str(ROOT))
 
 from evaluation.usage_study import load_content  # noqa: E402
 from src.extraction.page_vision import garbled_table_pages, table_image_pages  # noqa: E402
-from src.extraction.provenance import looks_like_wrong_version  # noqa: E402
+from src.extraction.provenance import looks_like_review, looks_like_wrong_version  # noqa: E402
 from src.extraction.table_rules import looks_garbled  # noqa: E402
 
 PROJ = "7efdc60e-e863-480c-929e-616574725e5f"
@@ -44,11 +44,21 @@ def main() -> None:
         garbled_pages = garbled_table_pages(content)
         image_pages = table_image_pages(content)
         text = " ".join(str(i.get("text") or "") for i in content)
+        title = next((str(i.get("text") or "") for i in content if i.get("type") == "title"), "")
+        review = looks_like_review(text, title)
         wrong = looks_like_wrong_version(text, len(tables))
-        needs = bool(garbled_pages) or not tables
-        reason = "garbled tables" if garbled_pages else ("no tables" if not tables else "")
-        if needs:
-            reasons[reason] += 1
+        needs = (bool(garbled_pages) or not tables) and not review
+        if review:
+            reason = "review, skip"
+            reasons["review, skip"] += 1
+        elif garbled_pages:
+            reason = "garbled tables"
+            reasons["garbled tables"] += 1
+        elif not tables:
+            reason = "no tables"
+            reasons["no tables"] += 1
+        else:
+            reason = ""
         rows.append((needs, doc_key, len(tables), len(images), garbled, len(garbled_pages),
                      len(image_pages), len(text), wrong, reason))
 
@@ -58,7 +68,8 @@ def main() -> None:
         "# Documents that need the vision pass",
         "",
         f"Documents scanned: {len(rows)}. Need vision (garbled tables or no tables): {len(affected)}. "
-        f"Garbled tables: {reasons['garbled tables']}; no tables: {reasons['no tables']}.",
+        f"Garbled tables: {reasons['garbled tables']}; no tables: {reasons['no tables']}; "
+        f"reviews skipped: {reasons['review, skip']}.",
         "",
         "| Document | Tables | Images | Garbled tables | Garbled pages | Image pages | Chars | Wrong version? | Reason |",
         "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",

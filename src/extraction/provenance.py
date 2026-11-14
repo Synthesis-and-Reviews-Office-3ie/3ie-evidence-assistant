@@ -13,6 +13,23 @@ short document with fewer than three of those mentions is treated as the wrong v
 from __future__ import annotations
 
 _STRONG_WORDS = ("table", "regression", "coefficient", "standard error")
+_REVIEW_PHRASES = (
+    "systematic review", "scoping review", "rapid review", "literature review", "evidence review",
+    "meta-analysis", "meta analysis", "reflections", "reflection on", "this review", "we review",
+    "review of the literature", "review synthesises", "review synthesizes",
+)
+
+
+def looks_like_review(text: object, title: object = "", head_chars: int = 1500) -> bool:
+    """True when the document is a review, reflection or synthesis rather than a primary study.
+
+    A review has no results of its own to extract, so a paper with no tables is not an extraction
+    miss when it is a review. Only the title and the opening are checked, because a primary study can
+    mention a literature review in its body without being one. Paper 3e43fc8ca5a7 is the example: a
+    2024 reflection on international and regional experiences.
+    """
+    opening = f"{title} {str(text or '')[:head_chars]}".lower()
+    return any(phrase in opening for phrase in _REVIEW_PHRASES)
 
 
 def looks_like_wrong_version(text: object, table_count: int, max_chars: int = 25000,

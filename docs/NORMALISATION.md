@@ -147,11 +147,11 @@ With the provenance check (`looks_like_wrong_version`), the missing-estimate aud
 
 ### Collection vision scan (14 November 2026)
 
-`evaluation/vision_scan.py` reads the 97 cached content lists and flags documents whose text path cannot be trusted. Seven need vision: three with garbled tables (121327988, 121328483 and the Emran 2012 paper) and four with no parsed tables (the Egypt policy brief, the Malawi overview, a 2024 review, and 121058361).
+`evaluation/vision_scan.py` reads the 97 cached content lists and flags documents whose text path cannot be trusted. Six need vision: three with garbled tables (121327988, 121328483 and the Emran 2012 paper) and three with no parsed tables (the Egypt policy brief, the Malawi overview, and 121058361). A 2024 reflection, "Can Poverty Graduation Programs Truly Free the Poor? Reflections on International and Regional Experiences", is skipped as a review by `looks_like_review`, because a review has no results of its own.
 
-Five were re-extracted with vision, skipping the two documents already identified as the wrong version of a study (the Egypt policy brief and the Malawi overview). Results: 121327988 gives 62 rows, Emran 2012 gives 625, and 121328483 gave 217 earlier. The 2024 review and 121058361 returned no rows. For those two, the outcome confirmation flagged outcomes the paper reports but the reader did not extract (income, consumption, poultry, savings, credit), which is the review queue working as intended; the 2024 review probably synthesises other studies, and 121058361 needs inspection.
+The two no-table documents already identified as the wrong version of a study (the Egypt policy brief and the Malawi overview) were not re-extracted. The third, 121058361, is a SPIR learning brief whose results are in 24 figures and in the prose, with no tables at all. That is a figure and prose extraction job, not a table-reading one, and its confirmation flags (poultry, savings, credit, outside labour) are the queue for it. So table extraction is now close to its ceiling for this collection.
 
-Recall is now 292 of 325 (90%), which is 95% of the attainable 307.
+Recall is 292 of 325 (90%), which is 95% of the attainable 307. Of the 33 misses, 18 belong to the absent paper, 5 are rounding or sign, and 10 are real.
 
 ## Parser failure and garbled pages (14 November 2026)
 

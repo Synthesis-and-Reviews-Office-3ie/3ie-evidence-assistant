@@ -36,7 +36,7 @@ load_dotenv(ROOT / ".env")
 from supabase import create_client  # noqa: E402
 
 from evaluation.usage_study import load_content  # noqa: E402
-from src.extraction.provenance import looks_like_wrong_version  # noqa: E402
+from src.extraction.provenance import looks_like_review, looks_like_wrong_version  # noqa: E402
 
 PROJ = "7efdc60e-e863-480c-929e-616574725e5f"
 STUDY = ROOT / "evaluation" / "results" / "usage_study" / PROJ
@@ -99,7 +99,15 @@ def main():
         except Exception:
             content = []
         blob = " ".join(str(item.get("text") or "") for item in content)
+        title = next((str(item.get("text") or "") for item in content if item.get("type") == "title"), "")
         table_count = sum(1 for item in content if item.get("type") == "table")
+        if looks_like_review(blob, title):
+            # A review has no results of its own; its absence from the rows is not an extraction gap.
+            for _, row in group.iterrows():
+                for column, label in (("Coeff reg", "estimate"), ("SE reg", "se")):
+                    if num(row.get(column)) is not None:
+                        counts[(label, "document is a review")] += 1
+            continue
         if looks_like_wrong_version(blob, table_count):
             # The mapped document is a brief or summary; the study's paper is not in the collection.
             for _, row in group.iterrows():
@@ -129,7 +137,7 @@ def main():
                   "| Why | Count |", "| --- | --- |"]
         for kind in ("rounding 2dp", "rounding 1%", "sign", "scale x100", "scale x0.01",
                      "scale x1000", "scale x0.001", "outcome present, value differs",
-                     "document is not the paper", "missing"):
+                     "document is not the paper", "document is a review", "missing"):
             if counts[(label, kind)]:
                 lines.append(f"| {kind} | {counts[(label, kind)]} |")
         lines.append("")
