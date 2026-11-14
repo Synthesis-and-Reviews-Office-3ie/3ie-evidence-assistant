@@ -35,6 +35,11 @@ _DESCRIPTIVE_CUES = (
     "pre-treatment", "pretreatment", "randomization check", "randomisation check", "first stage",
     "falsification", "placebo", "take-up only", "compliance rates", "summary of sample",
 )
+# Cues strong enough to decide the table type from the caption alone.
+_STRONG_DESCRIPTIVE = (
+    "balance", "attrition", "summary statistics", "baseline characteristics", "sample characteristics",
+    "descriptive statistics", "demographics", "pre-treatment", "pretreatment", "baseline table",
+)
 _RESULTS_CUES = (
     "impact", "effect", "treatment effect", "effects of", "regression", "coefficient", "estimates",
     "estimation results", "main results", "itt", "att", "ate", "difference-in-difference",
@@ -73,16 +78,32 @@ def _norm(text: object) -> str:
     return re.sub(r"[^a-z0-9]+", " ", _fold(text).lower()).strip()
 
 
+def _cue(text: str, cue: str) -> bool:
+    return bool(re.search(rf"\b{re.escape(cue)}(?:s|es)?\b", text))
+
+
 def classify_table(caption: str = "", notes: str = "", header: str = "") -> tuple[str, str]:
-    """`results`, `descriptive` or `unknown`, with the cue that decided it."""
-    text = _norm(f"{caption} {notes} {header}")
-    if not text:
-        return UNKNOWN, "no caption, notes or header"
+    """`results`, `descriptive` or `unknown`, from the caption and the table notes.
+
+    The header is deliberately not used. A results table often carries a "Baseline" column, and
+    reading that as a balance table skipped paper 121330141's difference-in-difference results. The
+    caption decides first; the notes decide only when the caption is silent.
+    """
+    cap = _norm(caption)
+    note = _norm(notes)
+    if not cap and not note:
+        return UNKNOWN, "no caption or notes"
+    for cue in _STRONG_DESCRIPTIVE:
+        if _cue(cap, cue):
+            return DESCRIPTIVE, f"descriptive cue '{cue}' in the caption"
+    for cue in _RESULTS_CUES:
+        if _cue(cap, cue):
+            return RESULTS, f"results cue '{cue}' in the caption"
     for cue in _DESCRIPTIVE_CUES:
-        if re.search(rf"\b{re.escape(cue)}(?:s|es)?\b", text):
+        if _cue(cap, cue) or _cue(note, cue):
             return DESCRIPTIVE, f"descriptive cue '{cue}'"
     for cue in _RESULTS_CUES:
-        if re.search(rf"\b{re.escape(cue)}(?:s|es)?\b", text):
+        if _cue(cap, cue) or _cue(note, cue):
             return RESULTS, f"results cue '{cue}'"
     return UNKNOWN, "no cue"
 

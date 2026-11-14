@@ -151,7 +151,9 @@ With the provenance check (`looks_like_wrong_version`), the missing-estimate aud
 
 The two no-table documents already identified as the wrong version of a study (the Egypt policy brief and the Malawi overview) were not re-extracted. The third, 121058361, is a SPIR learning brief whose results are in 24 figures and in the prose, with no tables at all. That is a figure and prose extraction job, not a table-reading one, and its confirmation flags (poultry, savings, credit, outside labour) are the queue for it. So table extraction is now close to its ceiling for this collection.
 
-Recall is 292 of 325 (90%), which is 95% of the attainable 307. Of the 33 misses, 18 belong to the absent paper, 5 are rounding or sign, and 10 are real.
+Recall is 294 of 325 (90%) and 278 of 305 (91%), which is 95% of the attainable 307. One more bug surfaced in this pass: paper 121330141's difference-in-difference table was skipped as descriptive because the table had a "Baseline" column heading, and the classifier was reading the header. Classification now reads the caption and notes only; re-extracting that paper recovered 2 estimates and 2 standard errors.
+
+Of the 31 remaining misses: 18 belong to the absent paper, 5 are rounding or sign, and 8 are real. Seven of the 8 sit in two papers: 121475285, where a multi-column expenditure table was read with the wrong column (5 estimates and 5 standard errors), and 122182716, where two values differ from the key, likely another survey wave or arm. The last is a near value in 121295229. `evaluation/error_report.py` writes every remaining error with its nearest stored value.
 
 ## Parser failure and garbled pages (14 November 2026)
 

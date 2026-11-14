@@ -17,6 +17,14 @@ def test_a_matching_results_table_is_results_not_balance():
     assert classify_table("Table 1. Double-difference propensity score matching results")[0] == RESULTS
 
 
+def test_a_baseline_column_does_not_make_a_results_table_descriptive():
+    kind, reason = classify_table(
+        "Table 1. Difference-in-difference estimate of programme impact",
+        "", "Outcome | Baseline mean | Follow-up | Difference")
+    assert kind == RESULTS
+    assert "impact" in reason
+
+
 def test_impact_and_regression_tables_are_results():
     assert classify_table("Table 4: Impacts of the programme on consumption")[0] == RESULTS
     assert classify_table("Table 2. Regression results, treatment effect")[0] == RESULTS
