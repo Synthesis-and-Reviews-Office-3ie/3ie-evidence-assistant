@@ -2,6 +2,21 @@
 
 All notable changes to DevChat v2.0 are documented in this file.
 
+## [2.0.12] - 2026-11-14
+
+### Added
+- **Table interpretation before extraction**: a deterministic reader for the table's structure (columns, rows, notes, abbreviations, and arithmetic checks) and a table type (results, descriptive, review), with the results passed to the model as a hint.
+- **Filters**: descriptive tables are skipped without a model call, non-outcome rows (Observations, R², Constant, Controls, means) are dropped, and columns of means and standard deviations are not treated as estimates.
+- **Vision fallback**: pages whose tables are images, whose text is garbled, or which print values on a figure are read from the page image, capped per document. Garbled pages can also be transcribed to clean Markdown for retrieval.
+- **Prose extraction** for documents with no tables, grounded by requiring the quoted sentence to appear in the paper.
+- **Outcome confirmation**: the paper's stated primary and secondary outcomes are compared with the extracted rows and any missing one is logged for review.
+- **Provenance checks** for a policy brief that is not the study's paper, and for reviews, reflections and syntheses.
+
+### Measured
+Against the hand-typed key (36 studies, 325 estimates, 305 standard errors): 299 estimates (92%) and 283 standard errors (93%) matched, which is 97% of the 307 values whose papers are present in the collection, with 3 real misses left.
+
+---
+
 ## [2.0.11] - 2026-11-13
 
 ### Added

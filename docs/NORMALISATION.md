@@ -205,12 +205,26 @@ The bottleneck is extraction coverage and alignment. On the 41 studies that join
 
 So P1 (deterministic parsers) is low value now. The next move is to diagnose the 61% value-recall gap: rounding and units (0.15 against 0.1503), sign conventions, or estimates that sit in tables we did not read. Improving row alignment on study, outcome and arm is the other half, because without it per-field accuracy cannot be measured.
 
-## Staged plan
+## Status (14 November 2026)
 
-1. **P0, audit.** Done (`evaluation/normalisation_audit.py`, report in `evaluation/results/`). Parsing is not the gap; value recall is 39% of the human-key rows, and outcome-label alignment is weak.
-2. **P1, diagnose value recall.** For a sample of the unmatched human rows, decide whether the value is missed (a table we did not read), rounded or in different units, or the sign differs. Improve alignment on outcome and arm with token overlap. This replaces the parser work.
-3. **P2, use the interpreter and derive.** Coverage is measured (28% of tables read as results, 60% of those with an SE). Next, run the interpreter inside `table_estimates.py` before the model call and treat low confidence as a review flag, then implement the derivations `d`, `yi`, `var_d`, `vi`, `se_g` with `formula_used`, and reproduce the 8WR key on its 443 rows.
-4. **P3, layouts.** Add the layout detectors (multi-arm, multi-panel, SE-below-row, transposed) and the dedupe and sign rules. Re-run the audit.
-5. **P4, validation and gate.** Wire the per-field report into `evaluation/`, publish coverage and accuracy, and gate prompt or parser changes on it.
+The extraction pipeline now has, in order: text parsing and grounding; table structure interpretation (columns, rows, notes, abbreviations, arithmetic); table typing (results, descriptive, reviews); non-outcome and descriptive-column filters; multi-page stitching; vision for image pages, garbled text and values printed on figures; prose extraction for documents with no tables; outcome confirmation against the paper text; and provenance checks for a wrong version or a review.
 
-P0 is the next step and it is cheap: it uses data already on disk. It also tells us whether the gap is parsing (the numbers are present but unread) or extraction (the model did not read the cells), which decides whether P1 or a prompt change comes first.
+Measured against the hand-typed key on 36 studies:
+
+- 299 of 325 estimates (92%) and 283 of 305 standard errors (93%).
+- 97% of the attainable 307, because 18 values belong to a paper that is not in the collection.
+- Remaining: 18 absent paper, 5 formatting (rounding or sign), and 3 real (121295229, 121305126, 122182716).
+
+Known limits:
+
+- The arm year is lost on the multi-year table in 121475285 ("TUP" instead of "TUP*2014").
+- Prose rows keep their unit in `literal_text`, not in a column, and usually have no standard error.
+- The parser transcription is written and tested but not yet wired into the Modal parse step, so garbled pages are fixed at extraction, not in the chunks the answerer retrieves.
+- Standardised effect sizes (`d`, `yi`, `var_i`, `se_g`) are not implemented.
+
+Next, in order:
+
+1. Wire `transcribe_garbled_pages` into `src/ingestion/pdf_processor.py` before the markdown and content list are saved, then re-index once.
+2. Preserve the arm year in the layout hint so standardisation can use it.
+3. Implement the standardised effect sizes with `formula_used`, reproducing the 8WR key.
+4. Resolve the three remaining real misses against their papers.
