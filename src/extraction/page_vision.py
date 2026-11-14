@@ -23,11 +23,16 @@ from typing import Any, Dict, List, Optional, Sequence
 from src.extraction.table_estimates import parse_number
 from src.extraction.table_rules import looks_garbled
 
-VISION_PROMPT = """You are given one page of an academic paper as an image. Find any table that
-reports estimated effects of a programme or treatment: a regression table, a difference-in-differences
-table, an experiment's results table, or an appendix table of estimates.
+VISION_PROMPT = """You are given one page of an academic paper as an image. Find any table, or any
+figure or plot that prints its results as text, that reports estimated effects of a programme or
+treatment: a regression table, a difference-in-differences table, an experiment's results table, an
+appendix table of estimates, or a figure with printed data labels.
 
-If the page has no such table, return {"results_table": false, "estimates": []}.
+If the page has neither, return {"results_table": false, "estimates": []}.
+
+Figures: when a plot prints values as text (data labels, callouts such as "0.12***" or
+"[0.05, 0.19]"), extract those values the same way, using the printed label as the arm. Only report
+numbers printed on the page. Never estimate a value from an axis position, a bar height or a line.
 
 Otherwise return JSON only:
 {"results_table": true,

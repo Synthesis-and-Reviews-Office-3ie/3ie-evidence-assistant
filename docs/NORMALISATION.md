@@ -161,6 +161,13 @@ For production, in order:
 
 One more provenance check is needed. StudyID 121766336 maps to a policy brief, not the impact paper, so the recall audit counts 18 values as misses although the paper is absent. A document with no table, no "regression" and a short text is probably the wrong version of a study, and the audit should say so rather than score it as an extraction failure.
 
+## Outcome confirmation and figures (14 November 2026)
+
+A few papers report their headline result in a figure rather than a table, and a table reading can miss the outcome a paper itself leads with. Two additions:
+
+- The vision prompt now also reads values printed on a figure (data labels, callouts such as `0.12***` or `[0.05, 0.19]`), and never estimates from axis positions, bar heights or line positions. A plot with printed values is treated like a table; a bare plot returns "no table".
+- `outcome_confirmation.py` asks the paper's text which outcomes it reports as primary and secondary, with a quote for each, and compares that list with the extracted outcome names. A confirmed outcome with no matching extracted name is logged as a review flag. It runs for documents that go through vision, so the extra call stays bounded to the risky documents.
+
 ## Derivation and consistency rules
 
 - `t = estimate / se`; `se` from a CI as `(high - low) / (2 * z)` at the stated level; `p` from `t` and df when df is known; stars to a p-bound otherwise.

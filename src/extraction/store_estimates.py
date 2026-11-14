@@ -129,7 +129,7 @@ async def extract_and_store(
     bucket, s3 = os.environ.get("R2_BUCKET_NAME", "devchat-pdfs"), _r2()
     wanted = set(doc_keys) if doc_keys is not None else None
     totals = {"docs": 0, "estimates": 0, "kept": 0, "results_tables": 0, "tables": 0, "errors": 0,
-              "vision_pages": 0, "vision_rows": 0}
+              "vision_pages": 0, "vision_rows": 0, "outcome_misses": 0}
 
     async with httpx.AsyncClient(base_url=url, headers=headers, timeout=120) as db:
         docs = (await db.get("/documents", params={
@@ -174,11 +174,30 @@ async def extract_and_store(
                                 vout = await extract_pages(
                                     pdf, pages, model, os.environ["OPENROUTER_API_KEY"],
                                     project_id, doc, client=vclient)
+                                rows.extend(vout["rows"])
+                                totals["vision_pages"] += len(vout["pages"])
+                                totals["vision_rows"] += len(vout["rows"])
+                                # Confirm the outcomes the paper says it reports are in the rows.
+                                # Cheap, and it catches a headline result in a figure or a skipped table.
+                                try:
+                                    from src.extraction.outcome_confirmation import (
+                                        confirm_outcomes, missing_outcomes,
+                                    )
+
+                                    text = " ".join(str(item.get("text") or "") for item in content
+                                                    if item.get("type") in ("text", "title"))
+                                    confirmation = await confirm_outcomes(
+                                        text, model, os.environ["OPENROUTER_API_KEY"], client=vclient)
+                                    misses = missing_outcomes(
+                                        confirmation, [str(r.get("outcome_name") or "") for r in rows])
+                                    totals["outcome_misses"] += len(misses)
+                                    if misses:
+                                        log(f"  ! {name[:60]}: not extracted: "
+                                            + ", ".join(m["name"] for m in misses[:4]))
+                                except Exception as e:
+                                    log(f"  ! {name[:60]}: outcome confirmation failed: {type(e).__name__}")
                             finally:
                                 await vclient.aclose()
-                            rows.extend(vout["rows"])
-                            totals["vision_pages"] += len(vout["pages"])
-                            totals["vision_rows"] += len(vout["rows"])
                     if rows:
                         vectors = await asyncio.to_thread(embed_documents, [estimate_text(r) for r in rows])
                         for r, v in zip(rows, vectors):
