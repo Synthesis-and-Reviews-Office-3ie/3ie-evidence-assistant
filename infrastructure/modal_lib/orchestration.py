@@ -11,7 +11,7 @@ Contains:
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional
 
 from .config import (
     DEFAULT_PDF_PARSER,
@@ -210,6 +210,7 @@ def orchestrate_rag(
     force_reprocess: bool = False,
     max_documents: int = 0,
     parser: Optional[str] = None,
+    doc_names: Optional[List[str]] = None,
 ) -> dict:
     """
     Process all documents for a specific RAG project.
@@ -263,6 +264,12 @@ def orchestrate_rag(
         return {"message": "No PDFs found", "queued": 0, "project_id": project_id}
     
     print(f"Found {len(pdf_keys)} PDFs")
+    if doc_names:
+        wanted = {str(name).strip() for name in doc_names if str(name).strip()}
+        pdf_keys = [key for key in pdf_keys if Path(key).stem in wanted]
+        print(f"Restricted to {len(pdf_keys)} named documents")
+        if not pdf_keys:
+            return {"project_id": project_id, "processed": 0, "skipped": 0, "total": 0, "results": []}
     
     # Check existing outputs
     existing_outputs = set()

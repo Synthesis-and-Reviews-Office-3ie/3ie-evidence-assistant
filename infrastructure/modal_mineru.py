@@ -173,6 +173,7 @@ def main(
     parser: str = None,
     reclassify: str = "weak",
     only_doc: str = None,
+    doc_names: str = None,
 ):
     """
     CLI for MinerU / MonkeyOCR processing.
@@ -233,6 +234,7 @@ def main(
             force_reprocess=force,
             max_documents=max_documents,
             parser=parser,
+            doc_names=[d for d in (doc_names or "").split(",") if d.strip()] or None,
         )
         print(f"   Processed: {result.get('processed', 0)}")
         print(f"   Failed: {result.get('failed', 0)}")

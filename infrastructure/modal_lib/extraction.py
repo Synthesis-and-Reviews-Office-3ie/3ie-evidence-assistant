@@ -10,6 +10,7 @@ MinerU Configuration Notes (as of 2.7.x):
 - Category IDs in model.json: 3=Figure, 5=Table, 6=Table caption
 """
 
+import asyncio
 import copy
 import json
 import os
@@ -191,6 +192,22 @@ def run_mineru(pdf_path: Path, save_debug_output: bool = False) -> dict:
         
         # Generate content list for structured extraction
         content_list = pipeline_union_make(pdf_info, MakeMode.CONTENT_LIST, image_dir)
+        
+        # Repair pages whose parsed text is a broken font mapping, before the table filters and
+        # before the outputs are saved and indexed. One vision transcription per garbled page.
+        try:
+            from src.extraction.page_vision import garbled_table_pages, repair_garbled_document
+
+            pages = garbled_table_pages(content_list) if isinstance(content_list, list) else []
+            api_key = os.environ.get("OPENROUTER_API_KEY", "")
+            if pages and api_key:
+                from src.extraction.store_estimates import DEFAULT_MODEL
+
+                content_list, md_content = asyncio.run(repair_garbled_document(
+                    content_list, md_content, Path(pdf_path).read_bytes(), DEFAULT_MODEL, api_key))
+                print(f"  Repaired {len(pages)} garbled page(s)")
+        except Exception as exc:
+            print(f"  Garbled-page repair skipped: {type(exc).__name__}: {exc}")
         
         # ================================================================
         # LEVEL 1 TABLE FILTERING (During Extraction)
