@@ -276,14 +276,18 @@ act. The same workflow lists tables whose cells have no stored row, for informat
 to how the earlier reclassification could halve a paper's stored rows without anyone noticing: it could
 not, once this ran.
 
-The repository is public and the hand-typed key is 3ie's own coding, so `data/` is not in it and the gate
-reports a skip in CI rather than failing on a file it must not have. It compares wherever the key exists,
-which is the local checkout where it was measured. A CI run that compares needs the key in a private
-source, such as a private storage bucket read with its own credentials; that decision belongs to whoever
-owns the data, and until it is made the weekly run reports a skip rather than a score. The coverage step
-has the same limitation for a different reason: the parsed content lives in object storage, so without
-those credentials every document fails to load, and the step now says so instead of reporting "0 of 0
-cells", which read like a clean bill of health.
+The repository is public and the hand-typed key is 3ie's own coding, so `data/` is not in it. The key is
+kept in the private bucket the app already uses, at `reference/8WR QEX Combined.xlsx`, and the workflow
+reads it with repository storage credentials; the gate therefore compares in CI, and the first run there
+reproduced the local figures exactly (304 of 325 estimates, 284 of 305 standard errors, 588 of 630). If
+those credentials are absent the gate reports a skip with a notice rather than failing on a file it must
+not have.
+
+The coverage step reads all 97 documents in CI and reports 16,934 estimate-shaped cells, of which 5,609
+have no stored row on the same page. That number is not a defect count: control means, appendix
+replications and cells of tables the reader was never meant to store all qualify as estimate-shaped. It
+is a review queue, and it needs calibration against a sample before it drives work. What it did establish
+is that the check runs on the real collection, not only on the machine where it was written.
 
 ### Collection vision scan (14 November 2026)
 

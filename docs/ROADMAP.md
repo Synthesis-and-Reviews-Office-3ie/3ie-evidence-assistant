@@ -116,8 +116,10 @@ The extraction side was repaired and then measured properly, in four steps. Deta
 Recall is 304 of 325 estimates (94%) and 284 of 305 standard errors (93%). Setting aside the 36 values
 for paper 121766336, whose document is a policy brief without the cited table, attainable recall is 588 of
 594 (99%). Six values remain outside the retrieval queue and all are differences between the key and what
-the papers print; no extraction change reaches them. The weekly gate has not yet run in CI, which needs
-the commit, the push and the repository secrets.
+the papers print; no extraction change reaches them. The weekly gate now runs in CI, reading the key from
+private storage, and reproduced the local figures on its first run. The coverage check reads all 97
+documents and finds 5,609 estimate-shaped cells with no stored row, a review queue that needs calibration
+before it drives work.
 
 ### ▶ Next up (after the model review, 10 November 2026)
 
