@@ -64,6 +64,7 @@ data/
 !tsconfig.json
 !tsconfig*.json
 !evaluation/benchmark/baseline.json
+!evaluation/results/recall_baseline.json
 !components.json
 !next.config.js
 !next.config.ts

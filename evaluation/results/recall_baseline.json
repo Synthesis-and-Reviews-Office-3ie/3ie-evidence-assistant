@@ -1,0 +1,20 @@
+{
+  "studies": 36,
+  "mapped_of": 43,
+  "estimate": {
+    "exact": 303,
+    "rounded": 1,
+    "absent": 21,
+    "matched": 304,
+    "total": 325
+  },
+  "se": {
+    "exact": 284,
+    "rounded": 0,
+    "absent": 21,
+    "matched": 284,
+    "total": 305
+  },
+  "matched": 588,
+  "total": 630
+}

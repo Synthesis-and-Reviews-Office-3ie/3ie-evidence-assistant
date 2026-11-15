@@ -26,6 +26,7 @@ from dotenv import load_dotenv  # noqa: E402
 load_dotenv(ROOT / ".env")
 from supabase import create_client  # noqa: E402
 
+from evaluation.stored_rows import fetch_all  # noqa: E402
 from evaluation.usage_study import load_content  # noqa: E402
 from src.extraction.provenance import looks_like_review, looks_like_wrong_version  # noqa: E402
 
@@ -79,9 +80,8 @@ def main():
         if sid not in mapping:
             continue
         doc = mapping[sid]
-        rows = (sb.table("effect_estimates").select("effect_size,standard_error,outcome_name")
-                .eq("rag_project_id", PROJ).eq("doc_key", doc).eq("source", "tables_v1")
-                .limit(5000).execute().data)
+        rows = fetch_all(sb.table("effect_estimates").select("effect_size,standard_error,outcome_name")
+                         .eq("rag_project_id", PROJ).eq("doc_key", doc).eq("source", "tables_v1"))
         ests = [r["effect_size"] for r in rows if r.get("effect_size") is not None]
         ses = [r["standard_error"] for r in rows if r.get("standard_error") is not None]
         present = {norm(r.get("outcome_name")) for r in rows if norm(r.get("outcome_name"))}

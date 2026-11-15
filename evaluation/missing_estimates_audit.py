@@ -35,6 +35,7 @@ from dotenv import load_dotenv  # noqa: E402
 load_dotenv(ROOT / ".env")
 from supabase import create_client  # noqa: E402
 
+from evaluation.stored_rows import fetch_all, matches  # noqa: E402
 from evaluation.usage_study import load_content  # noqa: E402
 from src.extraction.provenance import looks_like_review, looks_like_wrong_version  # noqa: E402
 
@@ -61,6 +62,9 @@ def classify(h, values, outcome, rows_by_outcome):
         return "rounding 2dp"
     if any(abs(v - h) / max(abs(h), abs(v), 1e-9) < 0.01 for v in values):
         return "rounding 1%"
+    if matches(h, values):
+        # Within half of the last decimal the paper prints: a match at printed precision, not a gap.
+        return "printed precision"
     if any(abs(v + h) < 1e-6 for v in values):
         return "sign"
     for factor in (100, 0.01, 1000, 0.001):
@@ -88,9 +92,9 @@ def main():
     for sid, group in key.groupby("sid"):
         if sid not in mapping:
             continue
-        rows = (sb.table("effect_estimates").select("effect_size,standard_error,outcome_name")
-                .eq("rag_project_id", PROJ).eq("doc_key", mapping[sid]).eq("source", "tables_v1")
-                .limit(5000).execute().data)
+        rows = fetch_all(sb.table("effect_estimates").select("effect_size,standard_error,outcome_name")
+                         .eq("rag_project_id", PROJ).eq("doc_key", mapping[sid])
+                         .eq("source", "tables_v1"))
         ests = [r["effect_size"] for r in rows if r.get("effect_size") is not None]
         ses = [r["standard_error"] for r in rows if r.get("standard_error") is not None]
         by_outcome = {norm(r.get("outcome_name")) for r in rows if norm(r.get("outcome_name"))}
