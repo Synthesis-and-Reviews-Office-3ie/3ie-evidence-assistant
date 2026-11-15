@@ -280,7 +280,10 @@ The repository is public and the hand-typed key is 3ie's own coding, so `data/` 
 reports a skip in CI rather than failing on a file it must not have. It compares wherever the key exists,
 which is the local checkout where it was measured. A CI run that compares needs the key in a private
 source, such as a private storage bucket read with its own credentials; that decision belongs to whoever
-owns the data, and until it is made the weekly run reports a skip rather than a score.
+owns the data, and until it is made the weekly run reports a skip rather than a score. The coverage step
+has the same limitation for a different reason: the parsed content lives in object storage, so without
+those credentials every document fails to load, and the step now says so instead of reporting "0 of 0
+cells", which read like a clean bill of health.
 
 ### Collection vision scan (14 November 2026)
 

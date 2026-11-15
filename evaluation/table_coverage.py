@@ -89,11 +89,13 @@ def main() -> None:
              ""]
     total_cells = total_gaps = 0
     by_document = {}
+    loaded = 0
     for name in names:
         try:
             content = load_content(PROJ, name, ROOT / "evaluation" / "results" / "usage_study" / PROJ / "content")
         except Exception:
             continue
+        loaded += 1
         rows = fetch_all(sb.table("effect_estimates")
                          .select("page,effect_size,standard_error")
                          .eq("rag_project_id", PROJ).eq("doc_key", name).eq("source", "tables_v1"))
@@ -119,8 +121,16 @@ def main() -> None:
             by_document[name] = sum(g[2] for g in gaps)
     lines.insert(4, f"{total_gaps} of {total_cells} estimate-shaped cells have no stored row.")
     lines.insert(5, "")
+    if not loaded:
+        # Without object-storage credentials every document fails to load, and "0 of 0 cells" reads
+        # like a clean bill of health. Say what happened instead.
+        lines.insert(4, f"No document could be read ({len(names)} requested), so nothing was checked. "
+                        "The parsed content lives in object storage; this check needs its credentials.")
+        print("::notice::Table coverage skipped: no parsed document could be read. "
+              "The check needs object-storage credentials for the parsed content.")
     REPORT.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    print(f"cells {total_cells} | unstored {total_gaps} | report {REPORT.relative_to(ROOT)}")
+    print(f"documents read {loaded} of {len(names)} | cells {total_cells} | unstored {total_gaps} | "
+          f"report {REPORT.relative_to(ROOT)}")
     for name, count in Counter(by_document).most_common(5):
         print(f"  {count:5} {name[:60]}")
 
