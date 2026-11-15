@@ -17,6 +17,7 @@ import json
 import os
 import re
 import sys
+import tempfile
 from datetime import date
 from pathlib import Path
 
@@ -36,6 +37,28 @@ PROJECT = os.environ.get("RAG_PROJECT_ID") or "7efdc60e-e863-480c-929e-616574725
 KEY_FILE = ROOT / "data" / "8WR QEX Combined.xlsx"
 BASELINE = ROOT / "evaluation" / "results" / "recall_baseline.json"
 REPORT = ROOT / "evaluation" / "results" / f"quality_gate_{date.today().isoformat()}.md"
+KEY_OBJECT = os.environ.get("RECALL_KEY_OBJECT") or "reference/8WR QEX Combined.xlsx"
+
+
+def key_path() -> Path:
+    """The key on disk, fetched from private object storage when the checkout does not have it.
+
+    `data/` is not in the public repository, so CI reads the same file from the private bucket the app
+    already uses and keeps it out of the checkout. Without those credentials the path stays missing and
+    the gate reports a skip.
+    """
+    if KEY_FILE.exists():
+        return KEY_FILE
+    bucket = os.environ.get("R2_BUCKET_NAME") or "devchat-pdfs"
+    if not os.environ.get("R2_ACCESS_KEY_ID"):
+        return KEY_FILE
+    from evaluation.usage_study import _r2
+
+    body = _r2().get_object(Bucket=bucket, Key=KEY_OBJECT)["Body"].read()
+    path = Path(tempfile.gettempdir()) / "recall_key.xlsx"
+    path.write_bytes(body)
+    print(f"key read from private storage: s3://{bucket}/{KEY_OBJECT}")
+    return path
 
 
 def num(value):
@@ -45,9 +68,9 @@ def num(value):
     return float(match.group()) if match else None
 
 
-def key_values() -> dict:
+def key_values(path: Path = KEY_FILE) -> dict:
     """The hand-typed estimate and standard error of every study, by 8WR study id."""
-    key = pd.ExcelFile(KEY_FILE).parse("Sheet1")
+    key = pd.ExcelFile(path).parse("Sheet1")
     key.columns = [str(c).replace("\xa0", " ").strip() for c in key.columns]
     key = key[key["StudyID"].notna()].copy()
     key["sid"] = key["StudyID"].astype(float).astype(int).astype(str)
@@ -61,10 +84,10 @@ def key_values() -> dict:
     return out
 
 
-def measure() -> dict:
+def measure(path: Path = KEY_FILE) -> dict:
     """Matched, rounded, absent and total for estimates and standard errors."""
     sb = create_client(os.environ["SUPABASE_URL"].rstrip("/"), os.environ["SUPABASE_SERVICE_ROLE_KEY"])
-    key = key_values()
+    key = key_values(path)
     names = [d["filename"] for d in
              sb.table("documents").select("filename").eq("rag_project_id", PROJECT).execute().data]
     mapping = {sid: hits[0] for sid in key for hits in [[n for n in names if sid in n]] if len(hits) == 1}
@@ -89,14 +112,15 @@ def measure() -> dict:
 
 
 def main() -> int:
-    if not KEY_FILE.exists():
+    path = key_path()
+    if not path.exists():
         # The repository is public and the hand-typed key is 3ie's own coding, so `data/` is not in it.
-        # In CI the gate therefore reports a skip instead of failing on a file it must not have; it
-        # compares as soon as the key is present, which is how it runs locally and in any private copy.
-        print(f"::notice::Recall gate skipped: {KEY_FILE.relative_to(ROOT)} is not present. "
-              "The key stays out of the public repository; run the gate where the file exists.")
+        # The gate compares wherever the key is present, locally or from private storage, and says so
+        # plainly when it has neither rather than failing on a file it must not have.
+        print(f"::notice::Recall gate skipped: {KEY_FILE.relative_to(ROOT)} is not present and the "
+              "private storage credentials are not set. The key stays out of the public repository.")
         return 0
-    current = measure()
+    current = measure(path)
     baseline = json.loads(BASELINE.read_text(encoding="utf-8")) if BASELINE.exists() else None
     if "--update-baseline" in sys.argv or baseline is None:
         BASELINE.parent.mkdir(parents=True, exist_ok=True)
