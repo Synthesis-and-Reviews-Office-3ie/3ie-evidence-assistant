@@ -103,6 +103,22 @@ The extraction side changed on 14 November; the role filter, quote work and the 
 
 - **Image and garbled pages, prose and outcomes (14 November).** The reader now handles image tables, garbled text, values printed on figures, prose results in table-free briefs, reviews, and three column layouts (statistics in rows, outcomes in columns, repeated method blocks), and it confirms the paper's stated outcomes against the extracted rows. Against the hand-typed key it finds 300 of 325 estimates (92%) and 284 of 305 standard errors (93%), 97% of the attainable 307; 2 real misses remain. Details in [NORMALISATION.md](NORMALISATION.md).
 
+### Status on 15 November 2026
+
+The extraction side was repaired and then measured properly, in four steps. Detail and evidence are in
+[NORMALISATION.md](NORMALISATION.md); the summary:
+
+- **Garbled pages are repaired, and the repair is honest.** The Docling path reported pages detected, not pages replaced, and dropped a refused transcription silently; the prompt invited the refusal. The repair now requires a table, retries once, keeps the original when it fails, reports replaced of detected, and the page cap rose from 12 to 40 after a paper with 26 garbled pages kept 2. Three papers were re-parsed and re-extracted; no garbled tables remain.
+- **Wide and panel tables are read one column at a time.** A wide results table yielded one value per row, so the estimates beside it were never read. Each estimate column is now its own view, named by its header, and the whole table is still read and merged, so the change adds coverage rather than replacing it. Paper 122182716 stores 94 rows against 36 and both of its hand-typed values are found. Cost measured: 341 tables become 963 views (2.82x) over twelve documents.
+- **The audit was wrong, and precision is now a labelled bucket.** Every read was capped at 1000 rows by PostgREST, so large documents were compared against a quarter of their rows, and a value printed at coarser precision than the key counted as a gap. One module now pages the reads and compares only at the precision the paper printed.
+- **A bounded second pass and a weekly gate.** The outcomes a paper claims and no row carries drive a re-read of only the units that mention them. `evaluation/quality_gate.py`, run weekly by `.github/workflows/quality-gate.yml`, fails when recall falls below the stored baseline; `evaluation/table_coverage.py` lists tables whose cells have no stored row, and `evaluation/retrieval_queue.py` separates a document that is not the study from a key that uses another page numbering.
+
+Recall is 304 of 325 estimates (94%) and 284 of 305 standard errors (93%). Setting aside the 36 values
+for paper 121766336, whose document is a policy brief without the cited table, attainable recall is 588 of
+594 (99%). Six values remain outside the retrieval queue and all are differences between the key and what
+the papers print; no extraction change reaches them. The weekly gate has not yet run in CI, which needs
+the commit, the push and the repository secrets.
+
 ### ▶ Next up (after the model review, 10 November 2026)
 
 > Since 9 November 2026 answers come from the "read every relevant study, then synthesise" pipeline with

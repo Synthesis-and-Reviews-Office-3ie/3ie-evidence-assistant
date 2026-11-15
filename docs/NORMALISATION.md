@@ -145,6 +145,137 @@ Stored recall after this is 291 of 325 estimates (90%) and 276 of 305 standard e
 
 With the provenance check (`looks_like_wrong_version`), the missing-estimate audit now assigns 18 misses to "document is not the paper" and leaves 11 real misses, plus 5 rounding or sign cases. Automatic vision is now the default: `extract_and_store` reads image or garbled pages when the parsed content has no tables or some table text is garbled, and `scripts/extract_estimates.py` exposes `--vision` to force it and `--no-vision` to disable it.
 
+### Correction: paper 121766336 is identified, and the values are in neither document (15 November 2026)
+
+The bullet above, that "the impact paper behind the hand-typed numbers is not in the collection at all", is half right. The study paper is *How Big Does a "Big Push" Need to Be? Evidence from Randomizing Asset Transfer Size*, by Ragui Assaad, Adam Osman, William Parienté and Christine Valente. It covers the Bab Amal half-cost arm, it is 52 pages, and its tables are text rather than images.
+
+It does not carry the hand-typed values. At published precision the paper reports half-transfer monthly income 107 (148) at 40 months (Table 1) and 384 (112) at 20 months (Table A5), monthly consumption 276 (109), livestock value 5549 (669), with observed counts near 3,247 per column. The key holds 155.4295 (121.73) at endline, 126.991 (62.267) at midline, 141.173 (66.809) and 6143.406 (798.5), on per-arm counts of 716 and 948, so it is not the paper's Table 1, Table A3, Table A5 or Table A6. A whitespace-tolerant search of the whole paper finds none of the 18 values, not even their digit tails.
+
+Nor does the brief carry them. The corpus document is the 12-page MNAGIL policy brief, and the World Bank copy of the same PDF is the same document: same title, authors, date and page count. Its results are figures. It has no table named "Policy Brief Estimates for Primary Outcomes", which is the table the key's own `Source` column cites, and its figures print arm means (1,525, 1,799, 1,693, 1,662, 2,595, 2,880, 2,871) rather than coefficients with standard errors. A vision pass over all 12 pages returned 27 rows, all figure labels such as livestock value 6857.9 to 12580, female employment 32 and 21, and food insecurity -0.119 and -0.123. None of the 18 values came back.
+
+So those 18 estimates and 18 standard errors stay unrecovered, and the reason is narrower than an absent paper: the coder's source table is in neither document, and its precision, six and seven significant figures, is finer than any published table. Treat them as outside the collection for the recall denominator rather than as an extraction failure. `src/extraction/page_vision.py` grew a `VISION_PROMPT` figure reader for this shape of document, and 121058361 is its queue, so the brief is no longer the only open case.
+
+### Where the remaining misses come from, and what runs in production (15 November 2026)
+
+Two measurement faults made the audit read worse than the extractor is, and both are fixed. The
+PostgREST endpoint returns at most 1000 rows per request whatever `limit` asks for, so
+`error_report.py` and `missing_estimates_audit.py` compared large documents against their first 1000
+rows: paper 121058367's `-0.049` is stored on page 130 and was reported missing. And a value printed
+at coarser precision than the key, such as `2.40` against `2.404`, counted as a gap. `evaluation/stored_rows.py`
+now holds both rules, `fetch_all` pages every read and `classify_miss` splits `exact`, `rounded` and
+`absent`, and it compares only within half of the last decimal the stored value was printed to, so
+`691.149` does not stand in for `691.179`, which is a different number.
+Recall under those rules, after the wide-table and second-pass work described below, is 304 of 325
+estimates (94%) and 284 of 305 standard errors (93%). The 42 missed values fall into four causes:
+
+| Cause | Values | Evidence |
+| --- | --- | --- |
+| Source table not in the collection | 18 est, 18 se | 121766336, the Bab Amal brief, queued for retrieval |
+| Key differs from what the paper prints | 0 est, 3 se | 122182715's 16.96 against printed 16.698, 121327988's 691.179 against 691.149, 121295641's 4.24 against 4.224 |
+| Value not in the parsed text at all | 1 est | 121294795's 92.8 |
+| Estimate stored for another arm, panel or specification | 2 est | 122182715's 57.645 and 192.975, where the paper prints 57.02 and 192.974 |
+
+Two causes that this table held before are closed. Paper 122182716's 936 and 1664 were cells the wide
+table read only in part, and the column views below recover both. Paper 121295229's 2.40 was in a
+sentence and is now read by the second pass. Both rows are kept here because they are what the work was
+measured against.
+
+`evaluation/table_coverage.py` is the check that works without a key. It reads every results table,
+lists the cells that carry an estimate, and reports those with no stored row on the same page. On the
+two papers it was tried against it reports 32 of 43 cells unstored on 122182716 page 13 and 24 of 28
+on page 14, which is the wide panel table the extractor reads one value from. It reads only, calls no
+model, and belongs in the run after an ingestion batch.
+
+The work that follows, in the order the evidence supports it:
+
+1. Wide and panel tables: store one row per arm column, with the column header as the arm, so a
+   seven-column table yields seven rows instead of one. This is the 122182716 gap and the likely
+   cause of the several-hundred unstored cells across the collection.
+2. A second pass bounded by the confirmed outcomes: re-read only the tables or pages that
+   `table_coverage` flags, with the layout hint, instead of the whole document.
+3. A provenance verdict for an absent source: a document with no results table and no estimate-like
+   numbers is flagged, excluded from the recall denominator, and queued for retrieval with its
+   level-1 id. This is 121766336 and should also cover the 16-page article whose table sits on
+   journal page 479.
+4. A printed-precision bucket in the report, so values the paper rounds are never counted as
+   extractor gaps again.
+
+### Wide tables are read one column at a time (15 November 2026)
+
+A results table whose columns are separate estimates used to yield one value per row. Paper 122182716's
+Table 3 has six estimate columns and one model call returned the first, so `Cash savings` came back as
+278 and the `1664` beside it was never read. `split_estimate_columns` in `table_structure.py` now gives
+each estimate column its own view, holding the label column, that column and its header, and the header
+is passed to the model as the arm. Three shapes needed care: a grouped header such as
+`(2) | Panel regression results (equation 1)` repeats across columns, so the group number is kept in the
+name; a continuation table whose first row is data is named by position and that row stays in the body;
+and a column whose header names a statistic, or that is nothing but parenthesised numbers, is not a view.
+
+A wide table is still read whole as well, and `merge_reads` keeps one row per outcome and estimate value,
+filling a standard error seen in either read. That makes the change additive rather than a swap: on paper
+122182715 the column views alone lost a standard error that the wide read held. Between the two reads,
+paper 122182716 stores 94 rows against 36 before, and both of its hand-typed values are found.
+
+The cost is measured, not assumed. Across twelve documents, 341 tables produce 963 views, a multiplier
+of 2.82, and with the wide read kept as well the multiplier is about 3.8 for the documents that contain
+wide tables. Raising the threshold to three or four estimate columns changes the multiplier by little
+(2.75 and 2.56), so the cost is genuinely the wide tables and not a threshold artefact.
+
+One silent loss was found on the way. `is_non_outcome_label` matched its cues anywhere in the row label,
+so `Per capita income (BDT constant price)` was dropped for containing "constant", which is the cue for a
+constant term. Cues are now matched against the label with parenthetical units removed, in the same
+normalised form as the cue, which also restored `F-statistic` after hyphens were normalised.
+
+### The retrieval queue and the attainable denominator (15 November 2026)
+
+One of the 36 mapped studies is scored against a document that is not the study. Paper 121766336 is
+the 12-page Bab Amal policy brief, its results are figures, and the table the key cites is not in it.
+`evaluation/retrieval_queue.py` gives every mapped document a verdict and writes the queue, keeping the
+two cases apart:
+
+- A document that is a review or a summary is not the study. Its missing values are set aside from the
+  denominator and the study is queued for retrieval. That is 121766336, with 18 estimates and 18
+  standard errors, and it is the only one.
+- A key that cites a page the document does not have means the key used the source's own pagination.
+  Papers 121294795 and 121295229 cite pages 153 and 482 of documents 19 and 16 pages long, because they
+  are journal articles whose page numbers start in the journal. Their 2 missing values stay in the
+  denominator, because the text may hold them, and they are checked before anything is retrieved.
+
+Measured recall is 588 of 630 values (93%). Setting aside the summary's 36 values, attainable recall is
+588 of 594 (99%), which is the figure that describes the extractor. What remains in the denominator after
+the second pass is 121294795's `92.8`, which is not in the parsed text, 122182715's `57.645` and
+`192.975`, where the paper prints `57.02` and `192.974`, and three standard errors that differ from the
+printed values (`16.96`, `4.24`, `691.179`). The queue is written to
+`evaluation/results/retrieval_queue_<date>.md`, alongside `table_coverage_<date>.md` from the coverage
+check and `quality_gate_<date>.md` from the scheduled run.
+
+### The second pass, and the check that runs on a schedule (15 November 2026)
+
+The first pass reads every table once and can still miss a value: a column not followed, a number
+printed in a sentence rather than in a cell, a table the classifier skipped. `src/extraction/second_pass.py`
+re-reads only the units that mention an outcome the paper claims and no stored row carries, using the
+outcome confirmation that already runs, with a cap of eight tables and eight text spans per document.
+The cap is per kind on purpose: the first version shared one budget, so a paper whose missing outcome
+appeared in eight tables spent all of it on tables and read a single sentence, which is where the value
+happened to be. A sentence is selected on the outcome's distinctive word, because the confirmation calls
+it "Consumption (per capita) treatment effect at years seven and ten" and the sentence says
+"consumption". Rows from the second pass merge with the first by outcome, arm and estimate, and a repeat
+fills a gap rather than adding a row.
+
+On the four papers that had misses, the second pass read 32 units and added 71 rows. It recovered one
+hand-typed value, 121295229's 2.404, which the document prints as 2.40 in a sentence. The rest of the
+remaining misses are not coverage: 122182715 prints 57.02 against a key of 57.645 and 192.974 against
+192.975, 121294795's 92.8 is not in the text, and 121327988's 691.179 and 121295641's 4.24 differ from
+the printed 691.149 and 4.224. Recall is 304 of 325 estimates (94%) and 284 of 305 standard errors (93%).
+
+`evaluation/quality_gate.py` is the check that now runs weekly and on changes to the extraction or
+evaluation path, from `.github/workflows/quality-gate.yml`. It reads the database and the key, takes
+about a minute, calls no model, and fails the run when the matched count falls below
+`evaluation/results/recall_baseline.json`; `--update-baseline` rewrites that file and is a deliberate
+act. The same workflow lists tables whose cells have no stored row, for information. That is the answer
+to how the earlier reclassification could halve a paper's stored rows without anyone noticing: it could
+not, once this ran.
+
 ### Collection vision scan (14 November 2026)
 
 `evaluation/vision_scan.py` reads the 97 cached content lists and flags documents whose text path cannot be trusted. Six need vision: three with garbled tables (121327988, 121328483 and the Emran 2012 paper) and three with no parsed tables (the Egypt policy brief, the Malawi overview, and 121058361). A 2024 reflection, "Can Poverty Graduation Programs Truly Free the Poor? Reflections on International and Regional Experiences", is skipped as a review by `looks_like_review`, because a review has no results of its own.
