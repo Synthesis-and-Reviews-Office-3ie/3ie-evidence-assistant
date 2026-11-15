@@ -98,6 +98,9 @@ def documents(db: httpx.Client, project_id: str) -> List[Dict[str, Any]]:
 def load_content(project_id: str, doc_key: str, cache: Path) -> List[Dict[str, Any]]:
     path = cache / f"{doc_key[:80]}.json"
     if not path.exists():
+        # A fresh checkout has no cache directory, and the write below failed there for every document,
+        # so a run outside this machine read nothing and reported no gaps.
+        cache.mkdir(parents=True, exist_ok=True)
         obj = _r2().get_object(Bucket=os.environ.get("R2_BUCKET_NAME", "devchat-pdfs"),
                                Key=f"rags/{project_id}/outputs/json/{doc_key}.json")
         path.write_bytes(obj["Body"].read())
