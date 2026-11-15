@@ -1,9 +1,38 @@
 """Table-type and non-outcome rules, ported from TVET (src/extraction/table_rules.py)."""
 
 from src.extraction.table_rules import (
-    DESCRIPTIVE, RESULTS, UNKNOWN,
-    classify_table, is_descriptive_column, is_non_outcome_label, looks_garbled,
+    DESCRIPTIVE,
+    RESULTS,
+    UNKNOWN,
+    classify_table,
+    is_descriptive_column,
+    is_non_outcome_label,
+    is_pipe_table,
+    looks_garbled,
+    reclassify_pipe_tables,
 )
+
+
+def test_pipe_table_text_is_told_from_prose():
+    assert is_pipe_table("# Table 1: Effects\n| Group | Coef |\n| --- | --- |\n| GUP | 0.05 |")
+    assert not is_pipe_table("The programme raised consumption by 0.05 standard deviations.")
+    assert not is_pipe_table("| only one row |")
+
+
+def test_a_pipe_table_typed_as_text_is_reclassified():
+    content = [{"type": "text", "page_idx": 17, "text": "Table 2\n| a | b |\n| --- | --- |\n| 1 | 2 |"},
+               {"type": "text", "page_idx": 18, "text": "Ordinary paragraph."},
+               {"type": "table", "page_idx": 9, "text": "| a | b |\n| --- | --- |\n| 1 | 2 |"}]
+    out = reclassify_pipe_tables(content)
+    assert [item["type"] for item in out] == ["table", "text", "table"]
+    assert out[0]["page_idx"] == 17 and content[0]["type"] == "text"
+    assert out[0]["reclassified"] is True and "reclassified" not in out[2]
+
+
+def test_a_repaired_transcription_is_left_as_text():
+    content = [{"type": "text", "page_idx": 5, "text": "Table 1\n| a | b |\n| --- | --- |\n| 1 | 2 |",
+                "repaired": True}]
+    assert reclassify_pipe_tables(content)[0]["type"] == "text"
 
 
 def test_balance_and_summary_tables_are_descriptive():
@@ -61,3 +90,11 @@ def test_descriptive_columns():
 def test_garbled_table_text_is_detected():
     assert looks_garbled("| ????? ?? ???????a114 ????a116a115 ?? ??a80? ???a |", min_chars=10)
     assert not looks_garbled("| Outcome | Coefficient | Standard error |\n| --- | --- | --- |")
+
+
+def test_a_units_note_in_parentheses_does_not_make_a_row_a_non_outcome():
+    assert is_non_outcome_label("Per capita income (BDT constant price)") is False
+    assert is_non_outcome_label("Consumption (mean per adult equivalent)") is False
+    assert is_non_outcome_label("Constant") is True
+    assert is_non_outcome_label("Mean in pure control") is True
+    assert is_non_outcome_label("Prob > F") is True

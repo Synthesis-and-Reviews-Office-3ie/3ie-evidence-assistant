@@ -203,9 +203,12 @@ def run_mineru(pdf_path: Path, save_debug_output: bool = False) -> dict:
             if pages and api_key:
                 from src.extraction.store_estimates import DEFAULT_MODEL
 
+                stats: dict = {}
                 content_list, md_content = asyncio.run(repair_garbled_document(
-                    content_list, md_content, Path(pdf_path).read_bytes(), DEFAULT_MODEL, api_key))
-                print(f"  Repaired {len(pages)} garbled page(s)")
+                    content_list, md_content, Path(pdf_path).read_bytes(), DEFAULT_MODEL, api_key, stats=stats))
+                print(f"  Repaired {stats.get('replaced', 0)} of {stats.get('detected', 0)} garbled page(s)")
+                if stats.get("failed"):
+                    print(f"    Left garbled: {stats['failed']} {stats.get('errors', {})}")
         except Exception as exc:
             print(f"  Garbled-page repair skipped: {type(exc).__name__}: {exc}")
         
@@ -778,9 +781,12 @@ def run_docling(pdf_path: Path, do_ocr: bool = True) -> dict:
             if pages and api_key:
                 from src.extraction.store_estimates import DEFAULT_MODEL
 
+                stats: dict = {}
                 content_list, md_content = asyncio.run(repair_garbled_document(
-                    content_list, md_content, Path(pdf_path).read_bytes(), DEFAULT_MODEL, api_key))
-                print(f"  Repaired {len(pages)} garbled page(s)")
+                    content_list, md_content, Path(pdf_path).read_bytes(), DEFAULT_MODEL, api_key, stats=stats))
+                print(f"  Repaired {stats.get('replaced', 0)} of {stats.get('detected', 0)} garbled page(s)")
+                if stats.get("failed"):
+                    print(f"    Left garbled: {stats['failed']} {stats.get('errors', {})}")
         except Exception as exc:
             print(f"  Garbled-page repair skipped: {type(exc).__name__}: {exc}")
         page_count = doc.num_pages() if hasattr(doc, "num_pages") else len(getattr(doc, "pages", {}) or {})

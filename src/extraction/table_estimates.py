@@ -39,6 +39,8 @@ TABLE (Markdown, page {page}):
 INFERRED STRUCTURE (from the headers, notes and arithmetic; may be empty or wrong, and the table itself wins):
 {structure}
 
+VIEW: {view}
+
 If the column headers name outcomes (Tot, logTot, Food, Savings) and the first column names
 treatment arms (for example TUP*2014), return one estimate for each arm and column, and read the
 standard error from the row printed directly beneath that arm in parentheses. Use the arm exactly as
@@ -162,7 +164,8 @@ def _norm(s: str) -> str:
     return re.sub(r"\s+", "", str(s or "")).replace("−", "-").replace("–", "-")
 
 
-def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], table_text: str) -> Estimate:
+def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], table_text: str,
+                arm_hint: str = "") -> Estimate:
     est_cell = str(raw.get("estimate_cell") or "")
     se_cell = str(raw.get("se_cell") or "")
     kind = str(raw.get("se_kind") or "").lower()
@@ -183,8 +186,8 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
     notes = [] if grounded else ["cell not found verbatim in the table"]
     return Estimate(
         table_label=table_label, page=page, outcome=str(raw.get("outcome") or ""),
-        arm=str(raw.get("arm") or ""), subgroup=str(raw.get("subgroup") or ""),
-        row_label=str(raw.get("row_label") or ""), column_label=str(raw.get("column_label") or ""),
+        arm=str(raw.get("arm") or "") or arm_hint, subgroup=str(raw.get("subgroup") or ""),
+        row_label=str(raw.get("row_label") or ""), column_label=str(raw.get("column_label") or "") or arm_hint,
         estimate_cell=est_cell, se_cell=se_cell, se_kind=kind, p_cell=str(raw.get("p_cell") or ""),
         effect_size=parse_number(est_cell), standard_error=se, t_stat=t, ci_low=lo, ci_high=hi,
         p_value=parse_number(raw.get("p_cell")) if raw.get("p_cell") else None,
@@ -196,6 +199,7 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
 def table_units(content_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """Each table with its page, caption and the text items just before and after it."""
     from src.extraction.table_rules import looks_garbled
+    from src.extraction.table_structure import split_estimate_columns
 
     units = []
     for i, item in enumerate(content_list):
@@ -223,9 +227,45 @@ def table_units(content_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
             page = int(item.get("page_idx")) + 1 if item.get("page_idx") not in (None, "") else None
         except (TypeError, ValueError):
             page = None
-        units.append({"index": i, "page": page, "caption": caption or "", "text": text[:MAX_TABLE_CHARS],
-                      "context": "\n".join(x for x in around if x.strip())})
+        base = {"index": i, "page": page, "caption": caption or "", "text": text[:MAX_TABLE_CHARS],
+                "context": "\n".join(x for x in around if x.strip()), "arm_hint": ""}
+        # A wide table comes back as one narrow table per estimate column: the model reads the first
+        # column across a seven-column row and stops, and the column header is the arm it belongs to.
+        columns = split_estimate_columns(text[:MAX_TABLE_CHARS])
+        if columns:
+            for column in columns:
+                units.append({**base, "text": column["text"][:MAX_TABLE_CHARS], "arm_hint": column["header"],
+                              "caption": f"{base['caption']} (column: {column['header']})".strip()})
+            # The whole-table read runs too and its rows merge with the column views. A narrow view
+            # can lose a standard error the wide read saw, and the wide read is what the pipeline did
+            # before, so keeping both makes the change additive.
+            units.append({**base, "whole_of_views": True})
+            continue
+        units.append(base)
     return units
+
+
+def merge_reads(rows: List["Estimate"]) -> List["Estimate"]:
+    """One row per (outcome, estimate) across the reads of one table.
+
+    A wide table is read whole and column by column. The reads overlap, so this keeps one row per
+    outcome and estimate value, fills a standard error seen in either read, and keeps the arm from
+    whichever read named it.
+    """
+    best: Dict[tuple, "Estimate"] = {}
+    order: List[tuple] = []
+    for row in rows:
+        key = (re.sub(r"\s+", " ", str(row.outcome or "").lower()).strip(), row.effect_size)
+        current = best.get(key)
+        if current is None:
+            best[key] = row
+            order.append(key)
+            continue
+        if current.standard_error is None and row.standard_error is not None:
+            current.standard_error, current.se_cell = row.standard_error, row.se_cell
+        if not current.arm and row.arm:
+            current.arm = row.arm
+    return [best[key] for key in order]
 
 
 async def _chat(client: httpx.AsyncClient, model: str, prompt: str) -> str:
@@ -339,9 +379,13 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
             if _should_skip(kind, has_estimate):
                 return u, {"skipped": "descriptive table", "estimates": []}, None, kind
             structure = _structure_hint(result)
+            view = ("one estimate column, whose header is the arm it belongs to: "
+                    f"'{u['arm_hint']}'. Return one entry for every outcome row in this view, with "
+                    "that header as the arm, including a row whose cell carries no stars.") if u.get("arm_hint") \
+                else "the whole table"
             prompt = PROMPT.format(context=(u["caption"] + "\n" + u["context"]).strip()[:4000] or "(none)",
                                    table=u["text"], page=u["page"] if u["page"] is not None else "?",
-                                   structure=structure or "(none)")
+                                   structure=structure or "(none)", view=view)
             async with sem:
                 for attempt in range(2):
                     try:
@@ -353,18 +397,26 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
         results = await asyncio.gather(*(one(u) for u in units))
 
     estimates, tables = [], []
+    per_item: Dict[int, List[Estimate]] = {}
+    views_of: Dict[int, int] = {}
     for u, data, err, kind in results:
         label = str(data.get("table_label") or u["caption"][:40] or f"table at item {u['index']}")
+        if u.get("arm_hint"):
+            views_of[u["index"]] = views_of.get(u["index"], 0) + 1
         is_results = bool(data.get("results_table"))
         raw = (data.get("estimates") or []) if is_results else []
         raw, non_outcome = _drop_non_outcome_rows(raw)
-        rows = [to_estimate(r, label, u["page"], u["text"]) for r in raw if isinstance(r, dict)]
-        estimates += rows
+        rows = [to_estimate(r, label, u["page"], u["text"], u.get("arm_hint") or "")
+                for r in raw if isinstance(r, dict)]
+        per_item.setdefault(u["index"], []).extend(rows)
         tables.append({"table": label, "page": u["page"], "results_table": is_results, "estimates": len(rows),
                        "grounded": sum(r.grounded for r in rows), "error": err,
                        "skipped": data.get("skipped"),
                        "non_outcome_rows": non_outcome,
                        "review": kind == DESCRIPTIVE and is_results})
+    # A wide table read both ways is merged, so the column views add coverage without repeating rows.
+    for index, rows in per_item.items():
+        estimates.extend(merge_reads(rows) if views_of.get(index) else rows)
     estimate_dicts = [asdict(e) for e in estimates]
     duplicates = 0
     if drop_duplicates:

@@ -1,10 +1,22 @@
 """Image-table fallback: page selection, rendering and row building (src/extraction/page_vision.py)."""
 
+import asyncio
+import json
+
 import pytest
 
+import src.extraction.page_vision as page_vision
 from src.extraction.page_vision import (
-    apply_transcriptions, auto_vision_pages, build_rows, garbled_table_pages, render_page_png,
-    table_image_pages, transcribe_garbled_pages, vision_pages,
+    _has_pipe_table,
+    apply_transcriptions,
+    auto_vision_pages,
+    build_rows,
+    garbled_table_pages,
+    render_page_png,
+    repaired_pages,
+    table_image_pages,
+    transcribe_garbled_pages,
+    vision_pages,
 )
 
 DOC = {"id": "doc-1", "filename": "paper.pdf"}
@@ -129,3 +141,97 @@ def test_a_cell_with_estimate_and_se_is_split():
 def test_no_table_or_no_number_yields_no_rows():
     assert build_rows("proj", DOC, 3, {"results_table": False}, "m") == []
     assert build_rows("proj", DOC, 3, {"results_table": True, "estimates": [{"outcome": "x"}]}, "m") == []
+
+
+def test_a_transcription_counts_as_a_table_only_with_two_pipe_rows():
+    assert _has_pipe_table("| a | b |\n| --- | --- |\n| 1 | 2 |")
+    assert not _has_pipe_table("Table 1.B.3 shows the categories in the programme.")
+    assert not _has_pipe_table("I can't reproduce the full page verbatim, but here is a summary.")
+    assert not _has_pipe_table("| only one row |")
+
+
+GARBLED = [{"type": "table", "page_idx": 5,
+            "text": "????? ?? ??????? a114 a116 a117 a118 a119 a120 a121 a122"},
+           {"type": "text", "page_idx": 0, "text": "Kept paragraph."}]
+TABLE_MD = "Table 1.B.3: Coaching sessions\n\n| Session | Phase |\n| --- | --- |\n| 5 | 2 |"
+
+
+async def _run_repair(monkeypatch, replies):
+    calls = []
+
+    async def fake(pdf_bytes, page, model, api_key, client=None, dpi=200, prompt=None, image=None):
+        calls.append(prompt)
+        reply = replies[min(len(calls) - 1, len(replies) - 1)]
+        if isinstance(reply, Exception):
+            raise reply
+        return reply
+
+    monkeypatch.setattr(page_vision, "transcribe_page", fake)
+    monkeypatch.setattr(page_vision, "page_data_url", lambda *a, **k: "data:x")
+    stats = {}
+    content, markdown = await page_vision.repair_garbled_document(
+        GARBLED, "# Title", b"%PDF", "m", "k", stats=stats)
+    return content, markdown, stats, calls
+
+
+def test_a_page_flagged_garbled_is_replaced_by_a_table_transcription(monkeypatch):
+    content, markdown, stats, _ = asyncio.run(_run_repair(monkeypatch, [TABLE_MD]))
+    assert [item["type"] for item in content] == ["text", "text"]
+    assert "Session" in content[0]["text"] and stats["replaced"] == 1 and stats["failed"] == []
+    assert "page 6" in markdown
+    assert content[0]["repaired"] is True
+
+
+def test_a_repaired_page_is_still_read_from_the_image():
+    good = {"type": "table", "page_idx": 9, "text": "| Outcome | Coef |\n| --- | --- |\n| Food | 0.5 |"}
+    content = [{"type": "text", "page_idx": 5, "text": "Table 1 | a | b |", "repaired": True}, good]
+    assert repaired_pages(content) == [6]
+    assert auto_vision_pages(content) == [6]
+
+
+def test_a_document_with_only_readable_tables_gets_no_vision_calls():
+    good = {"type": "table", "page_idx": 3, "text": "| a | b |\n| --- | --- |\n| 1 | 2 |"}
+    assert auto_vision_pages([good]) == []
+
+
+def test_a_retyped_pipe_table_page_is_not_re_read_by_the_full_scan():
+    content = [{"type": "table", "page_idx": 2, "reclassified": True,
+                "text": "Table 1\n| a | b |\n| --- | --- |\n| 1 | 2 |"}]
+    assert vision_pages(content, pdf_pages=6, full_scan_cap=6) == [1, 2, 4, 5, 6]
+    assert auto_vision_pages(content, pdf_pages=6, full_scan_cap=6) == [1, 2, 4, 5, 6]
+
+
+def test_a_page_is_rendered_once_across_prompt_attempts(monkeypatch):
+    prompts = []
+
+    async def fake(pdf_bytes, page, model, api_key, client=None, dpi=200, prompt=None, image=None):
+        prompts.append(prompt)
+        return "No tables on this page."
+
+    renders = []
+    monkeypatch.setattr(page_vision, "transcribe_page", fake)
+    monkeypatch.setattr(page_vision, "page_data_url", lambda *a, **k: renders.append(1) or "data:x")
+    stats = {}
+    asyncio.run(page_vision.repair_garbled_document(GARBLED, "# T", b"%PDF", "m", "k", stats=stats))
+    assert len(prompts) == 2 and len(renders) == 1
+    assert stats["attempts"] == 2 and stats["failed"] == [6]
+
+
+def test_a_refusal_is_retried_with_the_table_prompt_then_kept_when_it_fails(monkeypatch):
+    content, _, stats, calls = asyncio.run(_run_repair(
+        monkeypatch, ["I can't reproduce the full page verbatim, but here is a summary.", "No tables here."]))
+    assert len(calls) == 2 and calls[0] != calls[1]
+    assert stats["replaced"] == 0 and stats["failed"] == [6]
+    assert "a114" in json.dumps(content)
+
+
+def test_a_page_whose_transcription_carries_no_table_keeps_the_original(monkeypatch):
+    content, _, stats, _ = asyncio.run(_run_repair(monkeypatch, ["Prose only, no table at all."]))
+    assert stats["replaced"] == 0 and stats["failed"] == [6]
+    assert any("a114" in (item.get("text") or "") for item in content)
+
+
+def test_a_failed_vision_call_is_recorded_and_keeps_the_original(monkeypatch):
+    content, _, stats, _ = asyncio.run(_run_repair(monkeypatch, [RuntimeError("429 rate limited")]))
+    assert stats["replaced"] == 0 and stats["failed"] == [6]
+    assert "429" in stats["errors"][6]

@@ -70,6 +70,32 @@ def looks_garbled(text: object, min_chars: int = 40) -> bool:
     return value.count("?") / len(value) > 0.03 or len(_GARBLE_ARTIFACT.findall(value)) >= 8
 
 
+def is_pipe_table(text: object, min_rows: int = 2) -> bool:
+    """True when the text is a Markdown pipe table rather than a sentence.
+
+    Docling returns some of the largest layout tables as ordinary text, so the table reader never
+    sees them: paper 121328483 has its two-year and three-year results tables on pages 18 to 20 typed
+    as `text`. Two rows of pipes (a header row and a separator row) are enough to tell a table from
+    prose.
+    """
+    return sum(1 for line in str(text or "").splitlines() if line.count("|") >= 2) >= min_rows
+
+
+def reclassify_pipe_tables(content_list: list) -> list:
+    """A copy of the content list with text items that are Markdown pipe tables typed as tables.
+
+    A repaired page (a transcription written over a garbled table) is left as text on purpose: the
+    numbers on that page are read from the page image, and reading its transcription as well would
+    store every estimate on the page twice.
+    """
+    out = []
+    for item in content_list:
+        if item.get("type") == "text" and not item.get("repaired") and is_pipe_table(item.get("text")):
+            item = {**item, "type": "table", "reclassified": True}
+        out.append(item)
+    return out
+
+
 def _fold(text: object) -> str:
     return "".join(c for c in unicodedata.normalize("NFKD", str(text or "")) if not unicodedata.combining(c))
 
@@ -80,6 +106,11 @@ def _norm(text: object) -> str:
 
 def _cue(text: str, cue: str) -> bool:
     return bool(re.search(rf"\b{re.escape(cue)}(?:s|es)?\b", text))
+
+
+# Cues and labels are matched in the same normalised form, so "f-statistic" is matched as
+# "f statistic" and a hyphen in the printed label does not hide it.
+_NON_OUTCOME_CUES = tuple(_norm(c) for c in _NON_OUTCOME)
 
 
 def classify_table(caption: str = "", notes: str = "", header: str = "") -> tuple[str, str]:
@@ -110,7 +141,12 @@ def classify_table(caption: str = "", notes: str = "", header: str = "") -> tupl
 
 def is_non_outcome_label(label: str) -> bool:
     """True for a row label that sits in a results table but is not an outcome."""
-    key = _norm(label)
+    text = str(label or "")
+    # A units or vintage note in parentheses is not the label: "Per capita income (BDT constant
+    # price)" reports an outcome even though "constant" signals a constant term. A label that is
+    # nothing but a parenthetical is kept as printed.
+    core = re.sub(r"\([^)]*\)", " ", text).strip() or text
+    key = _norm(core)
     if not key:
         return False
     if key in _NON_OUTCOME_EXACT:
@@ -121,7 +157,7 @@ def is_non_outcome_label(label: str) -> bool:
     # "Prob > F" is a p-value; "probability of employment" is an outcome, so prob is matched exactly.
     if key == "prob" or key.startswith("prob ") or "prob >" in key:
         return True
-    return any(cue in key for cue in _NON_OUTCOME)
+    return any(_cue(key, cue) for cue in _NON_OUTCOME_CUES)
 
 
 def is_descriptive_column(header: str) -> bool:

@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
+from collections import Counter
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Sequence, Tuple
 
@@ -323,6 +324,100 @@ _PAREN_ONLY = re.compile(r"^\s*[(\[]\s*[-−–]?\d[\d.,]*\s*[)\]]\s*$")
 def _all_parenthesised(cells: Sequence[str]) -> bool:
     present = [c for c in cells if str(c).strip()]
     return bool(present) and all(_PAREN_ONLY.match(str(c)) for c in present)
+
+
+MAX_SPLIT_COLUMNS = 8
+
+
+def _starred(value: object) -> bool:
+    return bool(re.search(r"[-−–]?\d[\d.,]*\s*[*†‡]", str(value)))
+
+
+# A whole cell that is a number: optional stars, optional parenthesised statistic beside it.
+_DATA_CELL = re.compile(r"^\s*[-−–]?\d[\d.,]*\s*[*†‡]*\s*(?:\([^)]*\))?\s*$")
+
+
+def estimate_columns(grid: TableGrid, limit: int = MAX_SPLIT_COLUMNS) -> List[int]:
+    """Body columns that carry estimates rather than a statistic about them.
+
+    Column 0 is the label column and is skipped. A column qualifies when at least one cell is a
+    starred number, or when two of its numbers have a parenthesised cell directly beneath them, which
+    is the coefficient row with its standard error below. A column whose header names a statistic
+    (standard error, t, p, confidence interval, count, mean) is left out, and so is one that is
+    nothing but parenthesised numbers, the standard-error column.
+    """
+    headers = grid.headers[-1] if grid.headers else []
+    skip_roles = {SE, T, P, CI_LOW, CI_HIGH, N, MEAN, SD}
+    out: List[int] = []
+    for index in range(1, grid.ncols):
+        header = headers[index] if index < len(headers) else ""
+        if _role_from_header(header)[0] in skip_roles:
+            continue
+        values = [str(v) for v in grid.column(index)]
+        if not any(v.strip() for v in values) or _all_parenthesised(values):
+            continue
+        starred = sum(1 for v in values if _starred(v))
+        beneath = sum(1 for k, v in enumerate(values[:-1])
+                      if parse_number(v) is not None and _PAREN_ONLY.match(values[k + 1] or ""))
+        if starred or beneath >= 2:
+            out.append(index)
+        if len(out) >= limit:
+            break
+    return out
+
+
+def split_estimate_columns(text: str, limit: int = MAX_SPLIT_COLUMNS, min_columns: int = 2) -> List[Dict[str, str]]:
+    """One narrow table per estimate column, so a wide table is read one column at a time.
+
+    A row such as `Cash savings (BDT) | 278*** (3.40) | -10 | -153 | 1664*** (10.57) | 196*** | ...` is
+    the shape a reader reads across, but one model call over the whole width returns the first column
+    and stops. Each entry here is the label column with a single estimate column and that column's
+    header, which the caller passes to the model as the arm. An empty list means the table has fewer
+    than two estimate columns and is read whole as before.
+
+    Two shapes need care. A grouped header such as `(2) | Panel regression results (equation 1)`
+    repeats the same words across columns, so the group number is kept in the name, and a continuation
+    table whose first row is data rather than a header is named by position and that row is kept in the
+    body where it belongs.
+    """
+    grid = parse_markdown_table(text)
+    if grid.ncols < 3 or not grid.body:
+        return []
+    columns = estimate_columns(grid, limit)
+    if len(columns) < min_columns:
+        return []
+    header_rows = grid.headers or []
+
+    def header_label(index: int) -> Tuple[str, bool]:
+        cells = [str(row[index]) for row in header_rows if index < len(row) and str(row[index]).strip()]
+        joined = " ".join(cells).strip()
+        # A cell is a header unless the whole cell is a number, with stars or a parenthesised
+        # statistic: "Year8*Treatment" is a label even though it contains a digit, "278*** (3.40)"
+        # is data that arrived in the header row of a continuation table.
+        if joined and not _DATA_CELL.match(joined):
+            return joined, False
+        return "", bool(cells)
+
+    names: List[Tuple[int, str, bool]] = []
+    for ordinal, index in enumerate(columns, start=1):
+        label, data_in_header = header_label(index)
+        names.append((index, label or f"column {ordinal}", data_in_header))
+    repeats = Counter(name for _, name, _ in names)
+    label_head = header_rows[0][0] if header_rows and header_rows[0] else "Outcome"
+    units: List[Dict[str, str]] = []
+    for ordinal, (index, name, data_in_header) in enumerate(names, start=1):
+        if repeats[name] > 1:
+            name = f"{name} ({ordinal})"
+        body = list(grid.body) + ([header_rows[-1]] if data_in_header else [])
+        lines = [f"| {label_head or 'Outcome'} | {name} |", "| --- | --- |"]
+        for row in body:
+            label_cell = row[0] if row else ""
+            value = row[index] if index < len(row) else ""
+            if not str(label_cell).strip() and not str(value).strip():
+                continue
+            lines.append(f"| {label_cell} | {value} |")
+        units.append({"header": name, "text": "\n".join(lines)})
+    return units
 
 
 def _row_roles(grid: TableGrid) -> Dict[str, int]:

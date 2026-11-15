@@ -17,11 +17,19 @@ from __future__ import annotations
 
 import base64
 import json
+import os
 import re
 from typing import Any, Dict, List, Optional, Sequence
 
 from src.extraction.table_estimates import parse_number
-from src.extraction.table_rules import looks_garbled
+from src.extraction.table_rules import is_pipe_table, looks_garbled
+
+# Repair budget. Each garbled page costs one vision call, or two when the first prompt comes back
+# without a table. A paper in the collection had 26 garbled pages, so the cap is well above the
+# old 12, but it stays a number a run can lower (REPAIR_MAX_PAGES) and the retry can be turned off
+# (REPAIR_RETRY=0).
+REPAIR_MAX_PAGES = int(os.environ.get("REPAIR_MAX_PAGES") or 40)
+REPAIR_RETRY = (os.environ.get("REPAIR_RETRY") or "1").strip().lower() not in ("0", "false", "no")
 
 VISION_PROMPT = """You are given one page of an academic paper as an image. Find any table, or any
 figure or plot that prints its results as text, that reports estimated effects of a programme or
@@ -84,7 +92,7 @@ def _open_pdf(pdf_bytes: bytes):
         return fitz.open(stream=pdf_bytes, filetype="pdf")
 
 
-def garbled_table_pages(content_list: Sequence[Dict[str, Any]], max_pages: int = 12) -> List[int]:
+def garbled_table_pages(content_list: Sequence[Dict[str, Any]], max_pages: int = REPAIR_MAX_PAGES) -> List[int]:
     """Pages whose tables the parser returned as broken text, so the text reader cannot use them."""
     pages = set()
     for item in content_list:
@@ -103,14 +111,39 @@ def vision_pages(content_list: Sequence[Dict[str, Any]], pdf_pages: Optional[int
     """Pages to read from images.
 
     Usually the pages with image items plus the pages whose table text is garbled. When the parser
-    found no table at all, the tables are somewhere else in the document, so every page up to
+    found no table of its own, the tables are somewhere else in the document, so every page up to
     `full_scan_cap` is scanned instead (paper 121766336 has 51 items, no tables, and 18 needed
-    estimates).
+    estimates). A table the pipeline retyped from pipe text counts as a table of its own, and its
+    page is left out of that scan because the text path already reads it.
     """
-    if pdf_pages and not any(item.get("type") == "table" for item in content_list):
-        return list(range(1, min(int(pdf_pages), full_scan_cap) + 1))
+    if pdf_pages and not any(_is_parser_table(item) for item in content_list):
+        covered = {_page_of(item) for item in content_list if item.get("reclassified")}
+        return [page for page in range(1, min(int(pdf_pages), full_scan_cap) + 1) if page not in covered]
     pages = set(table_image_pages(content_list, max_pages))
     pages.update(garbled_table_pages(content_list, max_pages))
+    pages.update(repaired_pages(content_list, max_pages))
+    return sorted(pages)[:max_pages]
+
+
+def _is_parser_table(item: Dict[str, Any]) -> bool:
+    """A table the parser typed itself, not one the pipeline retyped from pipe text."""
+    return item.get("type") == "table" and not item.get("reclassified")
+
+
+def repaired_pages(content_list: Sequence[Dict[str, Any]], max_pages: int = 24) -> List[int]:
+    """Pages whose garbled table text a vision transcription replaced.
+
+    The replacement is clean Markdown, but it is a transcription rather than the parser's own cells,
+    so the numbers on those pages are still read from the page image. Without this the pages would
+    look like ordinary prose once repaired, and the estimate reader would lose them.
+    """
+    pages = set()
+    for item in content_list:
+        if not item.get("repaired"):
+            continue
+        page = _page_of(item)
+        if page:
+            pages.add(page)
     return sorted(pages)[:max_pages]
 
 
@@ -118,11 +151,12 @@ def auto_vision_pages(content_list: Sequence[Dict[str, Any]], pdf_pages: Optiona
                       max_pages: int = 12, full_scan_cap: int = 40) -> List[int]:
     """Automatic decision for new uploads: read from images only when the text cannot be trusted.
 
-    That is when some table text is garbled, or the parser found no table at all. A document with
-    readable tables gets no vision calls, which keeps the default cost down.
+    That is when some table text is garbled, when a garbled page has been replaced by a transcription,
+    or when the parser found no table of its own. A document with readable tables gets no vision calls,
+    which keeps the default cost down.
     """
-    has_table = any(item.get("type") == "table" for item in content_list)
-    if garbled_table_pages(content_list, max_pages) or not has_table:
+    has_table = any(_is_parser_table(item) for item in content_list)
+    if garbled_table_pages(content_list, max_pages) or repaired_pages(content_list, max_pages) or not has_table:
         return vision_pages(content_list, pdf_pages, max_pages, full_scan_cap)
     return []
 
@@ -147,27 +181,40 @@ def render_page_png(pdf_bytes: bytes, page_number: int, dpi: int = 200) -> bytes
         document.close()
 
 
-TRANSCRIBE_PROMPT = """Transcribe this page of an academic paper exactly, as text.
+TRANSCRIBE_PROMPT = """Transcribe this page of an academic manuscript for a text corpus.
 
-Keep every table as a GitHub Markdown pipe table: its caption, column headers, row labels, numbers,
-significance stars, parentheses and notes, all in their original order. Do not summarise, explain or
-add anything. If the page has no text table, return an empty string."""
+Reproduce all printed text on the page in reading order, verbatim, including headings, notes and
+footnotes. Render every table as a GitHub Markdown pipe table with all headers, row labels, numbers,
+significance stars, parentheses and notes. Do not summarise, omit or comment. Output only the
+transcription."""
+
+FALLBACK_TRANSCRIBE_PROMPT = """This page contains at least one printed table that a parser returned as
+garbled text. Transcribe every table on the page as a GitHub Markdown pipe table with all headers, row
+labels, numbers, stars, parentheses and notes, exactly as printed, including the table caption. Output
+only the tables."""
+
+
+def _has_pipe_table(text: str) -> bool:
+    """A Markdown pipe table has a header row and a separator row, so at least two rows of pipes."""
+    return is_pipe_table(text)
 
 
 async def transcribe_page(pdf_bytes: bytes, page: int, model: str, api_key: str, client=None,
-                          dpi: int = 200) -> str:
-    """Markdown transcription of one page, for replacing parser text that came through garbled."""
+                          dpi: int = 200, prompt: Optional[str] = None, image: Optional[str] = None) -> str:
+    """Markdown transcription of one page, for replacing parser text that came through garbled.
+
+    `image` is a pre-rendered data URL, so a page retried with a second prompt is rendered once.
+    """
     import httpx
 
     own = client is None
     client = client or httpx.AsyncClient(timeout=300, headers={"Authorization": f"Bearer {api_key}"})
     try:
-        png = render_page_png(pdf_bytes, page, dpi=dpi)
-        data_url = "data:image/png;base64," + base64.b64encode(png).decode("ascii")
+        data_url = image or page_data_url(pdf_bytes, page, dpi)
         response = await client.post("/chat/completions", json={
             "model": model,
             "messages": [{"role": "user", "content": [
-                {"type": "text", "text": TRANSCRIBE_PROMPT},
+                {"type": "text", "text": prompt or TRANSCRIBE_PROMPT},
                 {"type": "image_url", "image_url": {"url": data_url}},
             ]}],
         })
@@ -175,6 +222,12 @@ async def transcribe_page(pdf_bytes: bytes, page: int, model: str, api_key: str,
     finally:
         if own:
             await client.aclose()
+
+
+def page_data_url(pdf_bytes: bytes, page: int, dpi: int = 200) -> str:
+    """One page as a base64 PNG data URL, the form the vision model takes."""
+    png = render_page_png(pdf_bytes, page, dpi=dpi)
+    return "data:image/png;base64," + base64.b64encode(png).decode("ascii")
 
 
 async def transcribe_garbled_pages(content_list: Sequence[Dict[str, Any]], pdf_bytes: bytes,
@@ -236,7 +289,7 @@ def apply_transcriptions(content_list: Sequence[Dict[str, Any]], markdown: str,
             done.add(page)
             text = str(transcripts.get(page) or "").strip()
             if text:
-                out.append({"type": "text", "text": text, "page_idx": page - 1})
+                out.append({"type": "text", "text": text, "page_idx": page - 1, "repaired": True})
             continue
         out.append(item)
     appended = []
@@ -244,7 +297,7 @@ def apply_transcriptions(content_list: Sequence[Dict[str, Any]], markdown: str,
         text = str(transcripts.get(page) or "").strip()
         if not text:
             continue
-        out.append({"type": "text", "text": text, "page_idx": page - 1})
+        out.append({"type": "text", "text": text, "page_idx": page - 1, "repaired": True})
         done.add(page)
     for page in sorted(pages):
         text = str(transcripts.get(page) or "").strip()
@@ -254,23 +307,50 @@ def apply_transcriptions(content_list: Sequence[Dict[str, Any]], markdown: str,
 
 
 async def repair_garbled_document(content_list: Sequence[Dict[str, Any]], markdown: str, pdf_bytes: bytes,
-                                  model: str, api_key: str, max_pages: int = 12) -> tuple:
-    """Transcribe each garbled page once and return the repaired content list and markdown."""
+                                  model: str, api_key: str, max_pages: Optional[int] = None,
+                                  stats: Optional[Dict[str, Any]] = None) -> tuple:
+    """Transcribe each garbled page once and return the repaired content list and markdown.
+
+    A page is only replaced when the transcription actually carries a table, because every page this
+    is called for was flagged for a garbled table. Pages the model refuses, or returns as prose only,
+    keep their original text (fail open) and are reported in `stats` so the run can say what happened.
+
+    `REPAIR_MAX_PAGES` (default 40) caps the pages read per document and `REPAIR_RETRY=0` disables the
+    second prompt, one vision call per page. The page image is rendered once and reused by both.
+    """
     import httpx
 
-    pages = garbled_table_pages(content_list, max_pages)
+    pages = garbled_table_pages(content_list, max_pages or REPAIR_MAX_PAGES)
+    if stats is not None:
+        stats.update({"detected": len(pages), "replaced": 0, "failed": [], "errors": {}, "attempts": 0})
     if not pages:
         return list(content_list), markdown
+    prompts = (TRANSCRIBE_PROMPT, FALLBACK_TRANSCRIBE_PROMPT) if REPAIR_RETRY else (TRANSCRIBE_PROMPT,)
     transcripts: Dict[int, str] = {}
     async with httpx.AsyncClient(
             base_url="https://openrouter.ai/api/v1",
             headers={"Authorization": f"Bearer {api_key}"}, timeout=300) as client:
         for page in pages:
-            try:
-                transcripts[page] = await transcribe_page(pdf_bytes, page, model, api_key, client=client)
-            except Exception:
-                transcripts[page] = ""
-    return apply_transcriptions(content_list, markdown, {p: t for p, t in transcripts.items() if t.strip()})
+            image = page_data_url(pdf_bytes, page)
+            for prompt in prompts:
+                if stats is not None:
+                    stats["attempts"] += 1
+                try:
+                    text = await transcribe_page(pdf_bytes, page, model, api_key, client=client,
+                                                prompt=prompt, image=image)
+                except Exception as exc:
+                    if stats is not None:
+                        stats["errors"][page] = f"{type(exc).__name__}: {exc}"
+                    continue
+                if _has_pipe_table(text):
+                    transcripts[page] = text
+                    break
+                if text and stats is not None:
+                    stats["errors"][page] = "transcription carried no table"
+    if stats is not None:
+        stats["replaced"] = len(transcripts)
+        stats["failed"] = [page for page in pages if page not in transcripts]
+    return apply_transcriptions(content_list, markdown, transcripts)
 
 
 def _row(project_id: str, doc: Dict[str, Any], page: int, label: str, model: str,

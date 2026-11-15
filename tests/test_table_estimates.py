@@ -2,7 +2,8 @@
 
 import pytest
 
-from src.extraction.table_estimates import count_stars, parse_interval, parse_number, table_units, to_estimate
+from src.extraction.table_estimates import (count_stars, merge_reads, parse_interval, parse_number,
+                                           table_units, to_estimate)
 
 
 @pytest.mark.parametrize("text, value", [
@@ -67,3 +68,21 @@ def test_rows_for_keeps_grounded_numbers_and_cleans_values():
     assert r["outcome_name"] == "Income" and r["treatment_arm"] is None
     assert r["literal_text"] == "0.20** (0.08)"
     assert estimate_text(r) == "Income | subgroup: Women"
+
+
+def _row(outcome, estimate, se=None, arm=""):
+    return to_estimate({"outcome": outcome, "estimate_cell": str(estimate), "se_cell": f"({se})" if se else ""},
+                       "t", 1, f"| {outcome} | {estimate} |", arm)
+
+
+def test_a_wide_table_read_two_ways_merges_into_one_row_per_estimate():
+    rows = [_row("Income", 107, arm="Half transfer"), _row("Income", 107, se=148), _row("Income", 206)]
+    merged = merge_reads(rows)
+    assert len(merged) == 2
+    assert merged[0].standard_error == 148 and merged[0].arm == "Half transfer"
+    assert [r.effect_size for r in merged] == [107.0, 206.0]
+
+
+def test_distinct_outcomes_are_not_merged():
+    merged = merge_reads([_row("Income", 107), _row("Consumption", 107)])
+    assert len(merged) == 2

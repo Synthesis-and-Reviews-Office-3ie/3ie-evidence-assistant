@@ -36,6 +36,7 @@ base_image = (
         "boto3",
         "cohere>=5.0.0",
         "httpx",
+        "pymupdf",
         "pydantic>=2.0.0",
         "pydantic-settings>=2.0.0",
         "supabase>=2.0.0",

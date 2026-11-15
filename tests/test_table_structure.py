@@ -2,8 +2,14 @@
 
 from src.extraction.table_structure import (
     ESTIMATE, LAYOUT_ROWS, SE,
-    interpret_table, parse_conventions, parse_markdown_table, stitch_units,
+    estimate_columns, interpret_table, parse_conventions, parse_markdown_table,
+    split_estimate_columns, stitch_units,
 )
+
+WIDE_TABLE = """| Outcome | Year8*Treatment | Year8*Control | Pooled |
+| --- | --- | --- | --- |
+| Cash savings (BDT) | 278*** (3.40) | -10 (-0.00) | 1664*** (10.57) |
+| Outstanding loan (BDT) | -153** (-2.23) | 196*** (5.67) | 1532*** (10.45) |"""
 
 TABLE_SE = """| Coefficient | SE | p-value |
 | --- | --- | --- |
@@ -170,3 +176,57 @@ def test_a_new_table_on_the_next_page_is_not_stitched():
         {"page": 4, "caption": "Table 5", "text": "| X | Y |\n| --- | --- |\n| 3 | 4 |"},
     ]
     assert len(stitch_units(units)) == 2
+
+
+def test_a_wide_table_becomes_one_view_per_estimate_column():
+    split = split_estimate_columns(WIDE_TABLE)
+    assert [entry["header"] for entry in split] == ["Year8*Treatment", "Year8*Control", "Pooled"]
+    first = split[0]["text"].splitlines()
+    assert first[0] == "| Outcome | Year8*Treatment |"
+    assert "| Cash savings (BDT) | 278*** (3.40) |" in first
+    assert "1664" not in split[0]["text"]
+
+
+def test_the_standard_error_column_is_not_a_view():
+    table = """| Outcome | Coef | SE |
+| --- | --- | --- |
+| Income | 0.52*** | (0.12) |
+| Assets | 0.31*** | (0.10) |"""
+    assert estimate_columns(parse_markdown_table(table)) == [1]
+    assert split_estimate_columns(table) == []
+
+
+def test_a_table_with_one_estimate_column_is_read_whole():
+    assert split_estimate_columns(TABLE_SE) == []
+
+
+CONTINUATION_TABLE = """| Cash savings (BDT) | 278*** (3.40) | -10 (-0.00) | 1664*** (10.57) |
+| --- | --- | --- | --- |
+| Outstanding loan (BDT) | -153** (-2.23) | 196*** (5.67) | 1532*** (10.45) |"""
+
+GROUPED_TABLE = """| | (1) | (2) | (3) |
+| --- | --- | --- | --- |
+| | Panel regression results (equation 1) | Panel regression results (equation 1) | Cross-sectional results |
+| Cash savings (BDT) | 278*** (3.40) | 1664*** (10.57) | -10 (-0.00) |"""
+
+
+def test_a_continuation_table_names_its_columns_by_position():
+    split = split_estimate_columns(CONTINUATION_TABLE)
+    assert [entry["header"] for entry in split] == ["column 1", "column 2", "column 3"]
+    assert "278*** (3.40)" in split[0]["text"]
+    assert "1664" not in split[0]["text"]
+
+
+def test_a_grouped_header_keeps_the_group_number():
+    split = split_estimate_columns(GROUPED_TABLE)
+    assert split[0]["header"] != split[1]["header"]
+    assert split[0]["header"].startswith("(1)") and split[1]["header"].startswith("(2)")
+    assert "1664" in split[1]["text"] and "1664" not in split[0]["text"]
+
+
+def test_a_column_labelled_as_a_statistic_is_not_a_view():
+    table = """| Outcome | Coef | t-stat | p |
+| --- | --- | --- | --- |
+| Income | 0.52*** | 4.31 | 0.001 |
+| Assets | 0.31*** | 3.02 | 0.010 |"""
+    assert estimate_columns(parse_markdown_table(table)) == [1]

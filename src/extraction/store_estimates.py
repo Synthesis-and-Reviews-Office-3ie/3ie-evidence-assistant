@@ -19,6 +19,7 @@ from typing import Any, Callable, Dict, Iterable, List, Optional
 import httpx
 
 from src.extraction.table_estimates import extract_document
+from src.extraction.table_rules import reclassify_pipe_tables
 
 SOURCE = "tables_v1"
 DEFAULT_MODEL = "anthropic/claude-haiku-5.5"
@@ -128,7 +129,7 @@ async def extract_and_store(
     headers = {"apikey": key, "Authorization": f"Bearer {key}", "Content-Type": "application/json"}
     bucket, s3 = os.environ.get("R2_BUCKET_NAME", "devchat-pdfs"), _r2()
     wanted = set(doc_keys) if doc_keys is not None else None
-    totals = {"docs": 0, "estimates": 0, "kept": 0, "results_tables": 0, "tables": 0, "errors": 0,
+    totals = {"docs": 0, "estimates": 0, "kept": 0, "results_tables": 0, "tables": 0, "errors": 0, "second_pass_units": 0, "second_pass_rows": 0,
               "vision_pages": 0, "vision_rows": 0, "outcome_misses": 0, "prose_rows": 0}
 
     async with httpx.AsyncClient(base_url=url, headers=headers, timeout=120) as db:
@@ -153,6 +154,7 @@ async def extract_and_store(
                     obj = await asyncio.to_thread(
                         s3.get_object, Bucket=bucket, Key=f"rags/{project_id}/outputs/json/{name}.json")
                     content = json.loads(obj["Body"].read()).get("content_list") or []
+                    content = reclassify_pipe_tables(content)
                     out = await extract_document(content, model, os.environ["OPENROUTER_API_KEY"])
                     rows = rows_for(project_id, doc, out, model)
                     risky = False
@@ -160,7 +162,10 @@ async def extract_and_store(
                         # vision None is the automatic decision: image pages when some table text is
                         # garbled or the parser found no table at all. True forces it, False disables.
                         from src.extraction.page_vision import (
-                            auto_vision_pages, extract_pages, page_count, vision_pages,
+                            auto_vision_pages,
+                            extract_pages,
+                            page_count,
+                            vision_pages,
                         )
 
                         pdf = await asyncio.to_thread(_pdf_bytes, s3, bucket, project_id, doc)
@@ -181,8 +186,12 @@ async def extract_and_store(
                                 risky = True
                             finally:
                                 await vclient.aclose()
-                    if not any(item.get("type") == "table" for item in content):
+                    has_tables = any(item.get("type") == "table" for item in content)
+                    repaired = any(item.get("repaired") for item in content)
+                    if not has_tables and not repaired:
                         # No table text at all: results, if any, are in sentences. Read the prose once.
+                        # A document whose only tables were repaired is left to the vision pass, which
+                        # reads those pages, so the prose reader is not run over the transcriptions too.
                         try:
                             from src.extraction.prose_estimates import build_rows as prose_rows
                             from src.extraction.prose_estimates import extract_prose
@@ -205,11 +214,15 @@ async def extract_and_store(
                                 risky = True
                         except Exception as e:
                             log(f"  ! {name[:60]}: prose extraction failed: {type(e).__name__}")
-                    if risky:
+                    if risky or any(item.get("type") == "table" for item in content):
                         # Confirm the outcomes the paper says it reports are in the rows. Cheap, and it
                         # catches a headline result that sat in a figure, a sentence or a skipped table.
+                        # A missing outcome then drives the bounded second pass below.
                         try:
-                            from src.extraction.outcome_confirmation import confirm_outcomes, missing_outcomes
+                            from src.extraction.outcome_confirmation import (
+                                confirm_outcomes,
+                                missing_outcomes,
+                            )
 
                             text = " ".join(str(item.get("text") or "") for item in content
                                             if item.get("type") in ("text", "title"))
@@ -225,6 +238,24 @@ async def extract_and_store(
                             if misses:
                                 log(f"  ! {name[:60]}: not extracted: "
                                     + ", ".join(m["name"] for m in misses[:4]))
+                                # Second pass, bounded to the units that mention a missing outcome.
+                                try:
+                                    from src.extraction.second_pass import merge_rows, run_second_pass
+
+                                    second = await run_second_pass(
+                                        content, [m["name"] for m in misses], model,
+                                        os.environ["OPENROUTER_API_KEY"], project_id=project_id, doc=doc)
+                                    extra = rows_for(project_id, doc, {"estimates": second["estimates"],
+                                                                       "tables": []}, model)
+                                    rows, added = merge_rows(rows, extra)
+                                    if second.get("rows"):
+                                        rows, more = merge_rows(rows, second["rows"])
+                                        added += more
+                                    totals["second_pass_units"] += second.get("units", 0)
+                                    totals["second_pass_rows"] += added
+                                    log(f"    second pass: {second.get('units', 0)} unit(s), +{added} row(s)")
+                                except Exception as e:
+                                    log(f"  ! {name[:60]}: second pass failed: {type(e).__name__}")
                         except Exception as e:
                             log(f"  ! {name[:60]}: outcome confirmation failed: {type(e).__name__}")
                     if rows:
