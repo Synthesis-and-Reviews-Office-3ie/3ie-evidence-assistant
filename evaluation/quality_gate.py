@@ -89,6 +89,13 @@ def measure() -> dict:
 
 
 def main() -> int:
+    if not KEY_FILE.exists():
+        # The repository is public and the hand-typed key is 3ie's own coding, so `data/` is not in it.
+        # In CI the gate therefore reports a skip instead of failing on a file it must not have; it
+        # compares as soon as the key is present, which is how it runs locally and in any private copy.
+        print(f"::notice::Recall gate skipped: {KEY_FILE.relative_to(ROOT)} is not present. "
+              "The key stays out of the public repository; run the gate where the file exists.")
+        return 0
     current = measure()
     baseline = json.loads(BASELINE.read_text(encoding="utf-8")) if BASELINE.exists() else None
     if "--update-baseline" in sys.argv or baseline is None:

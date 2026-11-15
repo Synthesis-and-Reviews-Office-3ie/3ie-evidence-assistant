@@ -276,6 +276,12 @@ act. The same workflow lists tables whose cells have no stored row, for informat
 to how the earlier reclassification could halve a paper's stored rows without anyone noticing: it could
 not, once this ran.
 
+The repository is public and the hand-typed key is 3ie's own coding, so `data/` is not in it and the gate
+reports a skip in CI rather than failing on a file it must not have. It compares wherever the key exists,
+which is the local checkout where it was measured. A CI run that compares needs the key in a private
+source, such as a private storage bucket read with its own credentials; that decision belongs to whoever
+owns the data, and until it is made the weekly run reports a skip rather than a score.
+
 ### Collection vision scan (14 November 2026)
 
 `evaluation/vision_scan.py` reads the 97 cached content lists and flags documents whose text path cannot be trusted. Six need vision: three with garbled tables (121327988, 121328483 and the Emran 2012 paper) and three with no parsed tables (the Egypt policy brief, the Malawi overview, and 121058361). A 2024 reflection, "Can Poverty Graduation Programs Truly Free the Poor? Reflections on International and Regional Experiences", is skipped as a review by `looks_like_review`, because a review has no results of its own.
