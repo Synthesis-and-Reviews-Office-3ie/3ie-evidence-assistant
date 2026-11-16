@@ -249,6 +249,23 @@ printed values (`16.96`, `4.24`, `691.179`). The queue is written to
 `evaluation/results/retrieval_queue_<date>.md`, alongside `table_coverage_<date>.md` from the coverage
 check and `quality_gate_<date>.md` from the scheduled run.
 
+### Standardised effect sizes (16 November 2026)
+
+The control-statistics migration is applied. The note that it needed the Supabase SQL editor was wrong:
+`scripts/db_migrate.py` holds a direct connection and reports what is pending, and it applied this
+migration and a second one that adds `effect_size_d`, `var_d`, `hedges_g`, `var_g` and `se_g`.
+
+The reader now captures the control mean and the control standard deviation. Each is accepted only when
+its cell appears in the table as printed, compared as a run of tokens rather than a substring, because a
+one-character count such as `1` appears inside almost any table. Paper 122182715 carries a control SD on
+220 of its 315 rows, so the reading works.
+
+The standardised columns are written with each row and stay null when an input is missing, and so far
+they are null everywhere: `hedges_g` needs the treatment and control counts, and these tables print one
+pooled "Observations" per column rather than a count per arm. Populating them needs either tables that
+print per-arm counts or a document-level count read from a balance table, which is a separate piece of
+work rather than a change to this arithmetic.
+
 ### The second pass, and the check that runs on a schedule (15 November 2026)
 
 The first pass reads every table once and can still miss a value: a column not followed, a number
@@ -283,11 +300,19 @@ reproduced the local figures exactly (304 of 325 estimates, 284 of 305 standard 
 those credentials are absent the gate reports a skip with a notice rather than failing on a file it must
 not have.
 
-The coverage step reads all 97 documents in CI and reports 16,934 estimate-shaped cells, of which 5,609
-have no stored row on the same page. That number is not a defect count: control means, appendix
-replications and cells of tables the reader was never meant to store all qualify as estimate-shaped. It
-is a review queue, and it needs calibration against a sample before it drives work. What it did establish
-is that the check runs on the real collection, not only on the machine where it was written.
+The coverage check reads all 97 documents in CI and, with the cell test anchored to whole cells, counts
+12,889 estimate-shaped cells, of which 4,250 have no stored row on the same page. `evaluation/coverage_triage.py`
+classifies them: observation counts, control means, statistic cells and appendix pages account for some,
+and the rest are unexplained. On the six papers re-extracted with the current reader the triage leaves
+419 of 491 cells unexplained, and a sample of those is genuine: cells such as `-398 (-0.82)` and
+`0.03 (0.20)` in paper 122182716 that no row carries. Coverage is therefore a real deficit and not only a
+measurement artefact, and it is the next thing worth work; the hand-typed key cannot see it, because it
+contains 325 values and the collection has thousands.
+
+Two later faults were found by making these checks run for real. A batch insert mixed rows from the table,
+vision and prose readers with different shapes and failed with `PGRST102 All object keys must match`, so
+rows are now normalised to one key set before writing; the same message had been blocking study cards,
+whose writer dropped null fields per row, and grouping rows of equal shape fixed it (98 cards now build).
 
 ### Collection vision scan (14 November 2026)
 

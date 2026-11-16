@@ -37,21 +37,38 @@ REPORT = ROOT / "evaluation" / "results" / f"table_coverage_{date.today().isofor
 
 # A number, optional stars, and an optional number in parentheses on the same line. The stars or the
 # parenthesised neighbour are what mark a cell as an estimate rather than a mean, a count or a note.
-CELL = re.compile(r"(?<![\d.])(-?\d[\d,]*(?:\.\d+)?)\s*(\*{1,3})?(?:\s*\(\s*(-?\d[\d,]*(?:\.\d+)?)\s*\))?")
+# A whole cell that is an estimate: a number, then significance stars, or a bracketed statistic, or
+# both. Anchoring at the start of the cell matters: a label such as "Panel A. Endline 1 (18 months)"
+# contains a number and a parenthesis and was counted as a cell until this was anchored.
+CELL = re.compile(
+    r"^\s*([-−–]?\d[\d,]*(?:\.\d+)?)\s*"
+    r"(?:[*†‡]+(?:\s*[(\[]\s*[-−–]?\d[\d,]*(?:\.\d+)?\s*[)\]])?"
+    r"|[(\[]\s*[-−–]?\d[\d,]*(?:\.\d+)?\s*[)\]])"
+    r"\s*$")
+
+
+def cell_value(cell: str):
+    """The estimate of a table cell when the whole cell is an estimate, else None."""
+    found = CELL.match(str(cell or ""))
+    if not found:
+        return None
+    try:
+        return float(found.group(1).replace(",", ""))
+    except ValueError:
+        return None
 
 
 def estimate_cells(text: str) -> list:
     """The estimate-shaped values in one table's text, as floats."""
-    cells = []
+    out = []
     for line in str(text or "").splitlines():
-        for value, stars, paren in CELL.findall(line):
-            if not stars and not paren:
-                continue
-            try:
-                cells.append(float(value.replace(",", "")))
-            except ValueError:
-                continue
-    return cells
+        if "|" not in line:
+            continue
+        for cell in line.strip().strip("|").split("|"):
+            value = cell_value(cell)
+            if value is not None:
+                out.append(value)
+    return out
 
 
 def uncovered(cells: list, stored: list) -> list:
