@@ -266,6 +266,26 @@ pooled "Observations" per column rather than a count per arm. Populating them ne
 print per-arm counts or a document-level count read from a balance table, which is a separate piece of
 work rather than a change to this arithmetic.
 
+### Coverage: the mechanism, found and fixed (16 November 2026)
+
+The triage sent us to paper 122182716 page 13, where 5 of 42 estimate-shaped cells had no row. Probes of
+each column view showed why: the third panel column prints estimates with a t statistic in parentheses and
+no significance stars (`-398 (-0.82)`, `0.03 (0.20)`), and `estimate_columns` selected a column only when
+it found a starred value or a standard-error row beneath. That column was therefore never given a view,
+and the wide-table read returned only the starred columns. The test now also accepts a column whose cells
+are an estimate with a parenthesised statistic, and after re-extracting the paper pages 13 and 14 have no
+missing cells (42 of 42, 18 of 18, 7 of 7) and the document stores 117 rows against 94.
+
+Two false positives inflated the queue and are now classified: a table with no stars at all whose cells
+are `value (se)` is a table of means (paper 121058367 page 64, 63 cells), and a row labelled `Test: T2 = T3`
+carries the p-value of an equality test, not an estimate.
+
+On the six papers re-extracted with the current reader the queue falls from 419 unexplained cells to 21,
+of 484 estimate-shaped cells. Collection-wide the check counts 12,889 cells and 4,231 unstored, of which
+2,121 remain unexplained; that remainder is dominated by the 91 documents still carrying the older
+extraction, which is what the full re-extraction is for. The hand-typed key stays at 304 estimates and 284
+standard errors throughout, so the coverage work is additive rather than a trade against accuracy.
+
 ### A re-run cannot lose a value (16 November 2026)
 
 Extraction replaced a document's rows, so recall depended on a stochastic read: a run that failed to

@@ -40,6 +40,9 @@ SAMPLE = 30
 
 def reason(row_label: str, column_label: str, caption: str, page: int, pages: int) -> str:
     label = f"{row_label} {column_label}".lower()
+    if re.match(r"\s*test\b", str(row_label or "").lower()) or "p-value of" in label:
+        # "Test: T2 = T3 | 0.072*" is the p-value of an equality test between arms, not an estimate.
+        return "hypothesis test"
     if re.search(r"control\s+(mean|group mean)|mean (in|of) (the )?control|control\b.*\bmean", label):
         return "control mean"
     if re.search(r"\bobs\b|observation|sample size|\bn\b\s*=", label):
@@ -88,13 +91,22 @@ def main() -> None:
             headers = grid.headers[-1] if grid.headers else []
             caption = str(item.get("table_caption") or "")
             page = (item.get("page_idx") or 0) + 1
+            # A table with no significance stars at all and cells of the form "value (se)" is a table of
+            # means, not of effects: paper 121058367 page 64 has 63 such cells and storing them would be
+            # wrong. Stars are the signal the reader uses to tell an estimate from a mean.
+            table_has_stars = any("*" in cell or "†" in cell or "‡" in cell
+                                  for row in grid.body for cell in row[1:])
             for body in grid.body:
                 row_label = body[0] if body else ""
                 for index, cell in enumerate(body[1:], start=1):
                     value = cell_value(cell)
                     if value is None or matches(value, stored.get(page, [])):
                         continue
-                    why = reason(row_label, headers[index] if index < len(headers) else "", caption, page, pages)
+                    if not table_has_stars:
+                        why = "table of means"
+                    else:
+                        why = reason(row_label, headers[index] if index < len(headers) else "",
+                                     caption, page, pages)
                     counts[why] += 1
                     if why == "unexplained" and len(examples[name]) < 3:
                         examples[name].append((page, row_label[:50], (headers[index] if index < len(headers) else "")[:28], cell[:20]))

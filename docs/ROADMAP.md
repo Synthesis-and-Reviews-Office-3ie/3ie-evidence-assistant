@@ -118,9 +118,10 @@ for paper 121766336, whose document is a policy brief without the cited table, a
 594 (99%). Six values remain outside the retrieval queue and all are differences between the key and what
 the papers print; no extraction change reaches them. The weekly gate now runs in CI, reading the key from
 private storage, and reproduced the local figures on its first run. The coverage check reads all 97
-documents and counts 12,889 estimate-shaped cells, 4,250 with no stored row; the triage leaves 419 of 491
-cells unexplained on the six re-extracted papers, with genuine samples, so closing that coverage deficit
-is the next piece of work.
+documents and counts 12,889 estimate-shaped cells, 4,231 with no stored row. The first mechanism is fixed:
+an estimate column with no stars was never given a view, so paper 122182716 stored 94 rows instead of 117
+and the triage took the six re-extracted papers from 419 unexplained cells to 21 of 484. The full
+re-extraction is what carries that fix to the other 91 documents.
 
 ### ▶ Next up (after the model review, 10 November 2026)
 

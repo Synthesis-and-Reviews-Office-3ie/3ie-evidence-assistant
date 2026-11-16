@@ -359,7 +359,11 @@ def estimate_columns(grid: TableGrid, limit: int = MAX_SPLIT_COLUMNS) -> List[in
         starred = sum(1 for v in values if _starred(v))
         beneath = sum(1 for k, v in enumerate(values[:-1])
                       if parse_number(v) is not None and _PAREN_ONLY.match(values[k + 1] or ""))
-        if starred or beneath >= 2:
+        # A cell such as "-398 (-0.82)" is an estimate with its t statistic and no stars at all. Paper
+        # 122182716's third panel column is entirely like this, and requiring stars or an SE row beneath
+        # left the whole column unread.
+        shaped = _looks_like_estimate_column(values)
+        if starred or shaped or beneath >= 2:
             out.append(index)
         if len(out) >= limit:
             break

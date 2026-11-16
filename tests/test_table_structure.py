@@ -230,3 +230,13 @@ def test_a_column_labelled_as_a_statistic_is_not_a_view():
 | Income | 0.52*** | 4.31 | 0.001 |
 | Assets | 0.31*** | 3.02 | 0.010 |"""
     assert estimate_columns(parse_markdown_table(table)) == [1]
+
+
+def test_a_column_of_unstarred_estimates_with_t_statistics_is_a_view():
+    table = """| Outcome | (1) | (2) |
+| --- | --- | --- |
+| Income | 936* (1.67) | -398 (-0.82) |
+| Consumption | 0.66*** (5.11) | 0.03 (0.20) |"""
+    assert estimate_columns(parse_markdown_table(table)) == [1, 2]
+    split = split_estimate_columns(table)
+    assert len(split) == 2 and "-398" in split[1]["text"]

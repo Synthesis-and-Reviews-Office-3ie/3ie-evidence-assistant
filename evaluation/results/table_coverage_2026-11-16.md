@@ -2,7 +2,7 @@
 
 Results-table cells with no stored row on the same page, within the printed precision.
 
-4250 of 12889 estimate-shaped cells have no stored row.
+4242 of 12889 estimate-shaped cells have no stored row.
 
 ## 0cb609fbf433_PDFs_of_included_programs_122182713
 
@@ -269,8 +269,6 @@ Results-table cells with no stored row on the same page, within the printed prec
 
 ## 8e7ad75de1f2_PDFs_of_included_programs_122182716
 
-- page 13 (results): 5 of 42 cells unstored, e.g. [-398.0, 0.03, 0.01, -0.38, -3.25]
-- page 14 (unknown): 3 of 25 cells unstored, e.g. [-153.0, 0.03, -232.0]
 - page 11 (results): 1 of 8 cells unstored, e.g. [0.594]
 
 ## 99bdbef0f7b7_PDFs_of_included_programs_121378216
