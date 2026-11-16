@@ -14,7 +14,7 @@ Each row gives the sheet's value, the printed value, and where the sheet says it
 | 122182715 | 16.96 | 16.698 | standard error | Same table, Panel C Bangladesh, row group coaching. The coefficient 61.221 matches the print exactly; the paper contains no value beginning 16.9. |
 | 121327988 | 691.179 | 691.149 | standard error | Page 27, Table 1.4, non-parametric RD, row RD_Estimate, column Income, ML. The estimate 2501.179 matches the print exactly, so the standard error is one digit out in the last place. |
 | 121295641 | 4.24 | 4.224 | standard error | Page 38, Table 3, row consumption per capita, column treatment. The estimate 24.027 matches the print exactly. Table 3 was checked by eye on 16 November and prints 4.224. |
-| 122182715 | 192.975 | 192.974 | estimate | Page 44, Table A.12, Panel A Uganda, row group coaching, column any saving. One digit out in the last place. |
+| 122182715 | 192.975 | 192.974 | estimate | Page 44, Table A.12, Panel A Uganda, row group coaching. The sheet names the column any saving, but that column prints 0.090; the value belongs to savings value (2024 PPP), which is the outcome the store records. Checked by eye on 16 November: the printed value is 192.974, so the sheet is one digit out. |
 
 What this means: none of these are extraction failures. Three are one-digit slips in a hand-typed cell
 (57.645 for 67.645, 691.179 for 691.149, 192.975 for 192.974), one is a standard error rounded differently
