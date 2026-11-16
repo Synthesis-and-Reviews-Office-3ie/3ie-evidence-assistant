@@ -63,3 +63,13 @@ def test_a_cell_without_a_stored_row_is_reported_and_one_with_a_row_is_not():
     stored = [107.0, 148.0]
     assert uncovered([107.0, 1664.0], stored) == [1664.0]
     assert uncovered([107.0], [107.0]) == []
+
+
+def test_the_triage_names_the_shapes_that_are_not_gaps():
+    from evaluation.coverage_triage import reason
+
+    assert reason("Child age in months", "(1) Height-for-age z-score", "", 152, 160) == "covariate row"
+    assert reason("Male child", "(2) Proportion stunted", "", 152, 160) == "covariate row"
+    assert reason("Test: T2 = T3", "(4) Male credit", "", 96, 160) == "hypothesis test"
+    assert reason("Control mean", "", "", 3, 160) == "control mean"
+    assert reason("Income and revenues (4)", "", "", 13, 160) == "unexplained"

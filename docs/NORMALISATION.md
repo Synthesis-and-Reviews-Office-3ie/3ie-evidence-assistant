@@ -280,11 +280,22 @@ Two false positives inflated the queue and are now classified: a table with no s
 are `value (se)` is a table of means (paper 121058367 page 64, 63 cells), and a row labelled `Test: T2 = T3`
 carries the p-value of an equality test, not an estimate.
 
-On the six papers re-extracted with the current reader the queue falls from 419 unexplained cells to 21,
-of 484 estimate-shaped cells. Collection-wide the check counts 12,889 cells and 4,231 unstored, of which
-2,121 remain unexplained; that remainder is dominated by the 91 documents still carrying the older
-extraction, which is what the full re-extraction is for. The hand-typed key stays at 304 estimates and 284
-standard errors throughout, so the coverage work is additive rather than a trade against accuracy.
+On the six papers re-extracted with the current reader, 484 estimate-shaped cells have no row and the
+triage accounts for 481 of them: 391 belong to tables of means (no stars, `value (se)` cells), 59 are
+control means, 15 are covariate coefficients, 11 sit on late appendix pages and 5 are equality-test
+p-values. Three remain unexplained: one is a merged cell on page 104 of paper 121058367 whose row label
+the parser did not carry, and two are attendance results in an appendix table of paper 122182715, which
+are compliance measures rather than effects on a welfare outcome.
+
+Almost all of the remainder were therefore not mistakes by the reader. The covariate rows are the shape
+most easily misread as gaps: a regression table with the outcomes in the columns and covariates such as
+"Child age in months", "Male child" and "Endline" down the rows produces coefficients that look exactly
+like estimates and are not treatment effects. Storing them would be wrong, and the triage now names them.
+
+Collection-wide the check counts 12,889 estimate-shaped cells and 4,231 with no stored row, of which 1,905
+remain unexplained. That remainder is dominated by the 91 documents still carrying the older extraction,
+which is what the full re-extraction is for. The hand-typed key stays at 304 estimates and 284 standard
+errors throughout, so the coverage work is additive rather than a trade against accuracy.
 
 ### A re-run cannot lose a value (16 November 2026)
 

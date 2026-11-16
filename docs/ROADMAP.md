@@ -120,7 +120,7 @@ the papers print; no extraction change reaches them. The weekly gate now runs in
 private storage, and reproduced the local figures on its first run. The coverage check reads all 97
 documents and counts 12,889 estimate-shaped cells, 4,231 with no stored row. The first mechanism is fixed:
 an estimate column with no stars was never given a view, so paper 122182716 stored 94 rows instead of 117
-and the triage took the six re-extracted papers from 419 unexplained cells to 21 of 484. The full
+and the triage took the six re-extracted papers from 419 unexplained cells to 3 of 484, the rest being tables of means, covariate rows and appendix pages rather than reading errors. The full
 re-extraction is what carries that fix to the other 91 documents.
 
 ### ▶ Next up (after the model review, 10 November 2026)

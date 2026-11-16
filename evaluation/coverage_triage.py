@@ -45,6 +45,14 @@ def reason(row_label: str, column_label: str, caption: str, page: int, pages: in
         return "hypothesis test"
     if re.search(r"control\s+(mean|group mean)|mean (in|of) (the )?control|control\b.*\bmean", label):
         return "control mean"
+    # Regression tables with outcomes in the columns list the covariates down the rows. Paper 121058367
+    # pages 152 and 153 are all of this shape: "Child age in months", "Male child" and "Endline" are
+    # controls, and their coefficients are not treatment effects. Checked after a control mean, because
+    # "control" is also a covariate cue.
+    if re.match(r"\s*(child age|male child|female child|endline|baseline|constant|controls?\b|age\b|"
+                r"male\b|female\b|household size|age squared|year dummies|district\b|region\b)",
+                str(row_label or "").lower()):
+        return "covariate row"
     if re.search(r"\bobs\b|observation|sample size|\bn\b\s*=", label):
         return "observation count"
     if re.search(r"standard error|\bs\.?e\.?\b|\bt-?stat|\bp-?value|\bsd\b|standard deviation", label):
