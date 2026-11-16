@@ -120,8 +120,8 @@ sheet, recorded in `evaluation/key_errata.json` with the printed value as eviden
 have no document whose filename carries their id, which is a retrieval question. The weekly gate runs in CI,
 reading the key from private storage. The coverage check reads all 97 documents and counts 12,889
 estimate-shaped cells, 4,231 with no stored row. Two mechanisms are fixed: an estimate column with no stars
-had no view, and a header mentioning "0.25 SD" was read as a standard-deviation column. The full
-re-extraction is what carries those fixes to the documents that have not been re-read.
+had no view, and a header mentioning "0.25 SD" was read as a standard-deviation column. All 98 documents were re-read in paced batches, which took the estimate-shaped cells with no stored row
+from 4,231 to 2,510 and the unexplained ones from 1,905 to 941, with accuracy unchanged at 854 of 854.
 
 ### ▶ Next up (after the model review, 10 November 2026)
 

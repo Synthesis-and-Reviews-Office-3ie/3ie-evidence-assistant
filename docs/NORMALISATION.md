@@ -308,6 +308,21 @@ remain unexplained. That remainder is dominated by the 91 documents still carryi
 which is what the full re-extraction is for. The hand-typed key stays at 305 estimates and 284 standard
 errors throughout, so the coverage work is additive rather than a trade against accuracy.
 
+### The collection re-read (16 November 2026)
+
+All 98 documents were re-read with the current reader, in thirteen paced batches at one document at a time
+and a pause between them, which is what the instance's disk IO budget allows. Every batch completed with no
+errors, and accuracy against the key stayed at 854 of 854 throughout, so the extra reading added rows without
+disturbing the checked values.
+
+Coverage improved materially. The estimate-shaped cells with no stored row fell from 4,231 to 2,510, and the
+cells the triage cannot explain fell from 1,905 to 941. The rest are accounted for: 772 belong to tables of
+means, 330 are covariate coefficients, 152 sit on late appendix pages, 128 are control means, 106 are
+statistic cells, 75 are observation counts and 6 are equality-test p-values.
+
+The 941 that remain are the next thing to read. They are a small enough list to work through by mechanism
+rather than by document, and the triage report names each one with its page, row label and column.
+
 ### Disk IO, and a throttled re-extraction (16 November 2026)
 
 The Supabase instance is small and its disk IO is budgeted, so the audits were written to stop re-reading
