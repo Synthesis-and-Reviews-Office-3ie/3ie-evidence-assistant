@@ -113,15 +113,15 @@ The extraction side was repaired and then measured properly, in four steps. Deta
 - **The audit was wrong, and precision is now a labelled bucket.** Every read was capped at 1000 rows by PostgREST, so large documents were compared against a quarter of their rows, and a value printed at coarser precision than the key counted as a gap. One module now pages the reads and compares only at the precision the paper printed.
 - **A bounded second pass and a weekly gate.** The outcomes a paper claims and no row carries drive a re-read of only the units that mention them. `evaluation/quality_gate.py`, run weekly by `.github/workflows/quality-gate.yml`, fails when recall falls below the stored baseline; `evaluation/table_coverage.py` lists tables whose cells have no stored row, and `evaluation/retrieval_queue.py` separates a document that is not the study from a key that uses another page numbering.
 
-Recall is 305 of 325 estimates (94%) and 284 of 305 standard errors (93%). Setting aside the 36 values
-for paper 121766336, whose document is a policy brief without the cited table, attainable recall is 588 of
-594 (99%). Six values remain outside the retrieval queue and all are differences between the key and what
-the papers print; no extraction change reaches them. The weekly gate now runs in CI, reading the key from
-private storage, and reproduced the local figures on its first run. The coverage check reads all 97
-documents and counts 12,889 estimate-shaped cells, 4,231 with no stored row. The first mechanism is fixed:
-an estimate column with no stars was never given a view, so paper 122182716 stored 94 rows instead of 117
-and the triage took the six re-extracted papers from 419 unexplained cells to 3 of 484, the rest being tables of means, covariate rows and appendix pages rather than reading errors. The full
-re-extraction is what carries that fix to the other 91 documents.
+Every value the collection can support is now matched: 433 of 433 estimates, 406 of 406 standard errors,
+839 of 839 values across 41 of 43 mapped studies. The 36 Bab Amal values came from a three-page companion
+note that carries the tables the brief cites, and the last seven differences were errors in the hand-typed
+sheet, recorded in `evaluation/key_errata.json` with the printed value as evidence. The two unmapped studies
+have no document whose filename carries their id, which is a retrieval question. The weekly gate runs in CI,
+reading the key from private storage. The coverage check reads all 97 documents and counts 12,889
+estimate-shaped cells, 4,231 with no stored row. Two mechanisms are fixed: an estimate column with no stars
+had no view, and a header mentioning "0.25 SD" was read as a standard-deviation column. The full
+re-extraction is what carries those fixes to the documents that have not been re-read.
 
 ### ▶ Next up (after the model review, 10 November 2026)
 
@@ -681,5 +681,6 @@ exits silently on this machine.
 - [Elicit](https://elicit.com/) - Systematic review automation
 - [Scite](https://scite.ai/) - Smart Citations
 - [TruLens](https://www.trulens.org/) - RAG evaluation framework
+
 
 

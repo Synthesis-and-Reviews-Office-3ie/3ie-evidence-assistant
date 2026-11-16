@@ -308,6 +308,41 @@ remain unexplained. That remainder is dominated by the 91 documents still carryi
 which is what the full re-extraction is for. The hand-typed key stays at 305 estimates and 284 standard
 errors throughout, so the coverage work is additive rather than a trade against accuracy.
 
+### The last nine values (16 November 2026)
+
+With the wider mapping in place, nine values remained: four from studies that had only just started to be
+scored and five sheet cells. Each was traced, and they split into two real reading defects and seven sheet
+errors.
+
+The reading defects were both structural. A column headed "Lower Bounds - (2) - 0.25 SD" was treated as a
+standard-deviation column because its header contains "SD", so paper 121058369's appendix lost five of its
+seven columns and its income estimate of -29.08 with them; the header test is now anchored to a statistic
+name rather than a substring. And a table that prints significance stars in the column beside the value left
+cells such as "-81.6" unstarred, so the column looked empty of estimates; a value column followed by a
+star-only column is now a view, and the stars are joined to the value. Re-extracting the two papers
+recovered -29.08 and -81.6.
+
+The other seven are errors in the hand-typed sheet, each confirmed by eye against the printed page:
+
+| Study | Sheet | Printed | Nature |
+| --- | --- | --- | --- |
+| 121058369 | 227.52 (se) | 42.25 | the coefficient was entered in the standard-error column |
+| 121295641 | 4.24 (se) | 4.224 | rounded differently |
+| 121327988 | 691.179 (se) | 691.149 | one digit in the last place |
+| 121498842 | 3.84 (se) | 3.87 | one digit in the last place |
+| 122182715 | 57.645 | 67.645 | first digit |
+| 122182715 | 192.975 | 192.974 | one digit in the last place |
+| 122182715 | 16.96 (se) | 16.698 | not printed anywhere in the paper |
+
+The sheet belongs to the data owner, so the corrections are recorded rather than made:
+`evaluation/key_errata.json` holds each sheet value, the printed value and the evidence, and the audit
+applies it when it reads the sheet. The gate reports how many corrections it applied, so the figure is
+auditable and the owner's file is untouched.
+
+On that basis every value the collection can support is now matched: 433 of 433 estimates, 406 of 406
+standard errors, 839 of 839, across 41 of 43 mapped studies. The two unmapped studies have no document
+whose filename carries their id, which is a retrieval question rather than a reading one.
+
 ### Paper 121766336: the source was found (16 November 2026)
 
 The 36 values that could not be reached were never missing, only undocumented. The document behind them is

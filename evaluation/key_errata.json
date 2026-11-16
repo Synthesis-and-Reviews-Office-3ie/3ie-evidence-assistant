@@ -1,0 +1,51 @@
+[
+  {
+    "study": "121058369",
+    "field": "se",
+    "sheet": 227.52,
+    "corrected": 42.25,
+    "evidence": "Appendix Table 4 prints 227.52*** (42.25): the coefficient was entered in the standard error column."
+  },
+  {
+    "study": "121295641",
+    "field": "se",
+    "sheet": 4.24,
+    "corrected": 4.224,
+    "evidence": "Table 3 prints 4.224; checked by eye on 16 November 2026."
+  },
+  {
+    "study": "121327988",
+    "field": "se",
+    "sheet": 691.179,
+    "corrected": 691.149,
+    "evidence": "Table 1.4 prints 691.149 beside the estimate 2501.179; checked by eye on 16 November 2026."
+  },
+  {
+    "study": "121498842",
+    "field": "se",
+    "sheet": 3.84,
+    "corrected": 3.87,
+    "evidence": "Cuadro 14 prints 1,56 (3,87) for formal savings in USD ppa."
+  },
+  {
+    "study": "122182715",
+    "field": "estimate",
+    "sheet": 57.645,
+    "corrected": 67.645,
+    "evidence": "Table 1 Panel A Uganda prints 67.645 (9.574) for individual coaching, monthly household income; checked by eye on 16 November 2026."
+  },
+  {
+    "study": "122182715",
+    "field": "estimate",
+    "sheet": 192.975,
+    "corrected": 192.974,
+    "evidence": "Table A.12 Panel A Uganda prints 192.974 under savings value; checked by eye on 16 November 2026."
+  },
+  {
+    "study": "122182715",
+    "field": "se",
+    "sheet": 16.96,
+    "corrected": 16.698,
+    "evidence": "Table 1 Panel C Bangladesh prints 16.698 beside the coefficient 61.221, which matches the sheet exactly; checked by eye on 16 November 2026."
+  }
+]

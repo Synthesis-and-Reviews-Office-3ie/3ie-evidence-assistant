@@ -212,6 +212,26 @@ def parse_conventions(notes: str) -> Tuple[Dict[str, bool], Dict[int, float]]:
     return conventions, stars
 
 
+def _statistic_header(header: str) -> bool:
+    """True when the header names a statistic rather than a column of estimates.
+
+    Anchored on purpose: "Lower Bounds - (2) - 0.25 SD" describes a sensitivity bound and is a column of
+    estimates, but a substring test sees "SD" and drops it, which is how paper 121058369's appendix lost
+    five of its seven columns.
+    """
+    text = _flat(header).lower().strip(" :-")
+    if not text or len(text) > 24:
+        return False
+    return bool(re.match(r"^(se|s\.e\.?|std\.?\s*(err|error|dev)\.?|standard (error|deviation)|"
+                         r"t|t[- ]?stat(istic)?|p|p[- ]?value|sd|s\.d\.?|prob|observations?|n|mean|average)\b",
+                         text))
+
+
+def _star_only(values: Sequence[str]) -> bool:
+    present = [str(v).strip() for v in values if str(v).strip()]
+    return bool(present) and all(re.fullmatch(r"[*†‡]{1,3}", v) for v in present)
+
+
 def _role_from_header(header: str) -> Tuple[Optional[str], str]:
     key = expand_abbreviations(header)
     if not key:
@@ -347,11 +367,10 @@ def estimate_columns(grid: TableGrid, limit: int = MAX_SPLIT_COLUMNS) -> List[in
     nothing but parenthesised numbers, the standard-error column.
     """
     headers = grid.headers[-1] if grid.headers else []
-    skip_roles = {SE, T, P, CI_LOW, CI_HIGH, N, MEAN, SD}
     out: List[int] = []
     for index in range(1, grid.ncols):
         header = headers[index] if index < len(headers) else ""
-        if _role_from_header(header)[0] in skip_roles:
+        if _statistic_header(header):
             continue
         values = [str(v) for v in grid.column(index)]
         if not any(v.strip() for v in values) or _all_parenthesised(values):
@@ -363,7 +382,11 @@ def estimate_columns(grid: TableGrid, limit: int = MAX_SPLIT_COLUMNS) -> List[in
         # 122182716's third panel column is entirely like this, and requiring stars or an SE row beneath
         # left the whole column unread.
         shaped = _looks_like_estimate_column(values)
-        if starred or shaped or beneath >= 2:
+        # Some tables print the significance stars in the column beside the value, so "-81.6" arrives
+        # without its stars and the column looks empty of estimates.
+        stars_beside = (index + 1 < grid.ncols and _star_only(grid.column(index + 1))
+                        and any(parse_number(v) is not None for v in values))
+        if starred or shaped or beneath >= 2 or stars_beside:
             out.append(index)
         if len(out) >= limit:
             break
@@ -413,10 +436,15 @@ def split_estimate_columns(text: str, limit: int = MAX_SPLIT_COLUMNS, min_column
         if repeats[name] > 1:
             name = f"{name} ({ordinal})"
         body = list(grid.body) + ([header_rows[-1]] if data_in_header else [])
+        beside = index + 1 < grid.ncols and _star_only(grid.column(index + 1))
         lines = [f"| {label_head or 'Outcome'} | {name} |", "| --- | --- |"]
         for row in body:
             label_cell = row[0] if row else ""
             value = row[index] if index < len(row) else ""
+            if beside and index + 1 < len(row) and parse_number(value) is not None:
+                stars = str(row[index + 1]).strip()
+                if stars:
+                    value = f"{str(value).strip()} {stars}"
             if not str(label_cell).strip() and not str(value).strip():
                 continue
             lines.append(f"| {label_cell} | {value} |")

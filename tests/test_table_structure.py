@@ -240,3 +240,22 @@ def test_a_column_of_unstarred_estimates_with_t_statistics_is_a_view():
     assert estimate_columns(parse_markdown_table(table)) == [1, 2]
     split = split_estimate_columns(table)
     assert len(split) == 2 and "-398" in split[1]["text"]
+
+
+def test_a_bound_header_that_mentions_sd_is_still_a_view():
+    table = """| Outcome | Lower Bounds - (2) - 0.25 SD | (3) - 0.1 SD |
+| --- | --- | --- |
+| Income | 220.27*** (58.19) | -29.08 (342.90) |"""
+    assert estimate_columns(parse_markdown_table(table)) == [1, 2]
+
+
+def test_stars_in_the_next_column_still_make_a_view():
+    table = """| Outcome | Estimate | | Estimate | |
+| --- | --- | --- | --- | --- |
+| Cereals | 71.6 | ** | 83.2 | * |
+| Tubers | 2.7 | | 3.2 | |"""
+    columns = estimate_columns(parse_markdown_table(table))
+    assert columns == [1, 3]
+    split = split_estimate_columns(table)
+    assert len(split) == 2
+    assert "71.6 **" in split[0]["text"] or "71.6**" in split[0]["text"]

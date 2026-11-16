@@ -27,7 +27,7 @@ load_dotenv(ROOT / ".env")
 
 import pandas as pd  # noqa: E402
 
-from evaluation.stored_rows import classify_miss, fetch_all  # noqa: E402
+from evaluation.stored_rows import classify_miss, corrected, fetch_all, load_errata  # noqa: E402
 from evaluation.usage_study import load_content  # noqa: E402
 from src.extraction.provenance import looks_like_review, looks_like_wrong_version  # noqa: E402
 from supabase import create_client  # noqa: E402
@@ -94,6 +94,7 @@ def main() -> None:
     mapping = {sid: [n for n in names if sid in n] for sid in key}
     mapping = {sid: docs for sid, docs in mapping.items() if docs}
 
+    errata = load_errata()
     matched = total = 0
     flagged_values = 0
     queue = []
@@ -112,8 +113,10 @@ def main() -> None:
                               .eq("rag_project_id", PROJECT).eq("doc_key", doc).eq("source", "tables_v1"))
         estimates = [r["effect_size"] for r in rows if r.get("effect_size") is not None]
         errors = [r["standard_error"] for r in rows if r.get("standard_error") is not None]
-        miss_e = [v for v in key[sid]["estimate"] if classify_miss(v, estimates) == "absent"]
-        miss_s = [v for v in key[sid]["se"] if classify_miss(v, errors) == "absent"]
+        miss_e = [v for v in key[sid]["estimate"]
+                  if classify_miss(corrected(sid, "estimate", v, errata), estimates) == "absent"]
+        miss_s = [v for v in key[sid]["se"]
+                  if classify_miss(corrected(sid, "se", v, errata), errors) == "absent"]
         pages_note = ""
         if not why and (miss_e or miss_s) and key[sid]["pages"] and document_pages:
             highest = max(key[sid]["pages"])

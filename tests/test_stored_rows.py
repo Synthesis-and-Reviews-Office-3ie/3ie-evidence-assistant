@@ -81,3 +81,20 @@ def test_a_typographic_minus_in_the_sheet_is_read_as_negative():
     assert num("\u221292.8") == -92.8
     assert num("\u201392.8") == -92.8
     assert num("92.8") == 92.8
+
+
+def test_a_confirmed_correction_replaces_the_sheet_value():
+    from evaluation.stored_rows import corrected
+
+    errata = [{"study": "1", "field": "se", "sheet": 4.24, "corrected": 4.224}]
+    assert corrected("1", "se", 4.24, errata) == 4.224
+    assert corrected("1", "estimate", 4.24, errata) == 4.24
+    assert corrected("2", "se", 4.24, errata) == 4.24
+    assert corrected("1", "se", 9.99, errata) == 9.99
+
+
+def test_the_errata_file_parses_and_names_the_evidence():
+    from evaluation.stored_rows import load_errata
+
+    entries = load_errata()
+    assert entries and all(e.get("evidence") for e in entries)

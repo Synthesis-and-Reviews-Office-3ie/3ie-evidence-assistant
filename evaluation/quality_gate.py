@@ -30,7 +30,7 @@ load_dotenv(ROOT / ".env")
 
 import pandas as pd  # noqa: E402
 
-from evaluation.stored_rows import classify_miss, fetch_all  # noqa: E402
+from evaluation.stored_rows import classify_miss, corrected, fetch_all, load_errata  # noqa: E402
 from supabase import create_client  # noqa: E402
 
 PROJECT = os.environ.get("RAG_PROJECT_ID") or "7efdc60e-e863-480c-929e-616574725e5f"
@@ -95,7 +95,8 @@ def measure(path: Path = KEY_FILE) -> dict:
     # every document whose filename carries the study id is read and a value counts when any of them has it.
     mapping = {sid: [n for n in names if sid in n] for sid in key}
     mapping = {sid: docs for sid, docs in mapping.items() if docs}
-    out = {"studies": len(mapping), "mapped_of": len(key)}
+    out = {"studies": len(mapping), "mapped_of": len(key), "errata": 0}
+    errata = load_errata()
     for label, field in (("estimate", "estimate"), ("se", "se")):
         counts = {"exact": 0, "rounded": 0, "absent": 0}
         for sid, docs in mapping.items():
@@ -107,7 +108,10 @@ def measure(path: Path = KEY_FILE) -> dict:
                 column = "effect_size" if field == "estimate" else "standard_error"
                 stored += [r[column] for r in rows if r.get(column) is not None]
             for value in key[sid][field]:
-                verdict = classify_miss(value, stored)
+                expected = corrected(sid, field, value, errata)
+                if expected != value:
+                    out["errata"] += 1
+                verdict = classify_miss(expected, stored)
                 counts[verdict] += 1
         counts["matched"] = counts["exact"] + counts["rounded"]
         counts["total"] = counts["exact"] + counts["rounded"] + counts["absent"]
@@ -135,7 +139,9 @@ def main() -> int:
         print(f"baseline {reason} from the current numbers: {BASELINE.relative_to(ROOT)}")
 
     lines = [f"# Quality gate {date.today().isoformat()}", "",
-             f"Studies mapped: {current['studies']} of {current['mapped_of']}.", ""]
+             f"Studies mapped: {current['studies']} of {current['mapped_of']}.",
+             f"Confirmed sheet corrections applied: {current.get('errata', 0)} "
+             "(see `evaluation/key_errata.json`).", ""]
     for label in ("estimate", "se"):
         counts = current[label]
         lines.append(f"- {label}: matched {counts['matched']} of {counts['total']} "

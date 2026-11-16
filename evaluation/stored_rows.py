@@ -17,10 +17,35 @@ This module is the one place both rules live, for the audit scripts and for anyt
 
 from __future__ import annotations
 
+import json
 from collections.abc import Iterable, Sequence
+from pathlib import Path
 from typing import Any
 
 PAGE = 1000  # PostgREST returns at most this many rows per request.
+ERRATA = Path(__file__).resolve().parent / "key_errata.json"
+
+
+def load_errata(path: Path | None = None) -> list[dict]:
+    """Confirmed corrections to the hand-typed sheet, each with the printed value as evidence.
+
+    The sheet belongs to the data owner, so a correction is recorded rather than made. The audit applies
+    these when it reads the sheet, which keeps the measured figure honest without editing someone else's
+    record, and the file is versioned with the evidence for each entry.
+    """
+    source = path or ERRATA
+    if not source.exists():
+        return []
+    return json.loads(source.read_text(encoding="utf-8"))
+
+
+def corrected(study: str, field: str, value: float, errata: list[dict] | None = None) -> float:
+    """The value to compare, with a confirmed correction applied when one exists for it."""
+    for entry in errata if errata is not None else load_errata():
+        if (entry.get("study") == study and entry.get("field") == field
+                and abs(float(entry.get("sheet", 0)) - float(value)) <= max(5e-4, abs(float(value)) * 1e-6)):
+            return float(entry["corrected"])
+    return value
 
 
 def fetch_all(query: Any, page: int = PAGE) -> list[dict[str, Any]]:
