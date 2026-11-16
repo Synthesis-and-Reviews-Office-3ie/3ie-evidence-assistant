@@ -37,11 +37,14 @@ def main():
                     help="always also read pages with image items or garbled text")
     ap.add_argument("--no-vision", dest="vision", action="store_false",
                     help="never read page images")
+    ap.add_argument("--prune", action="store_true",
+                    help="also delete stored rows this run did not reproduce (default: keep them)")
     ap.set_defaults(vision=None)
     args = ap.parse_args()
     totals = asyncio.run(extract_and_store(
         args.project_id, doc_keys=[args.only] if args.only else None, model=args.model,
-        skip_done=args.skip_done, vision=args.vision, log=lambda m: print(m, flush=True)))
+        skip_done=args.skip_done, vision=args.vision, prune=args.prune,
+        log=lambda m: print(m, flush=True)))
     print(json.dumps(totals))
 
 

@@ -38,5 +38,44 @@ def test_standardised_columns_stay_null_when_the_inputs_are_missing():
 def test_rows_from_different_readers_are_given_the_same_keys():
     from src.extraction.store_estimates import unify_keys
 
-    rows = unify_keys([{"a": 1, "b": 2}, {"a": 3}])
-    assert rows == [{"a": 1, "b": 2}, {"a": 3, "b": None}]
+    rows = unify_keys([{"outcome_name": "Income", "effect_size": 1.0},
+                       {"outcome_name": "Income", "effect_size": 1.0, "treatment_arm": "Half"}])
+    assert set(rows[0]) == set(rows[1])
+    assert rows[0]["row_key"] and rows[0]["row_key"] != rows[1]["row_key"]
+
+
+def test_the_same_estimate_gets_the_same_key_whatever_the_reader():
+    from src.extraction.store_estimates import unify_keys
+
+    first = unify_keys([{"outcome_name": " Income ", "effect_size": 155.43, "page": 3}])[0]
+    second = unify_keys([{"outcome_name": "income", "effect_size": 155.4300000001, "page": 3}])[0]
+    assert first["row_key"] == second["row_key"]
+
+
+def test_a_value_the_new_run_missed_is_carried_forward():
+    from src.extraction.store_estimates import carried_forward
+
+    new = [{"page": 3, "effect_size": 155.43, "outcome_name": "Income"},
+           {"page": 3, "effect_size": 107.0, "outcome_name": "Income per capita"}]
+    stored = [{"page": 3, "effect_size": 155.43, "outcome_name": "Total income"},
+              {"page": 3, "effect_size": 107.0, "outcome_name": "Income per capita"},
+              {"page": 3, "effect_size": 76.5, "outcome_name": "Consumption"},
+              {"page": 9, "effect_size": 107.0, "outcome_name": "Income per capita"}]
+    kept = carried_forward(new, stored)
+    assert [row["effect_size"] for row in kept] == [76.5, 107.0]
+    assert [row["page"] for row in kept] == [3, 9]
+
+
+def test_a_label_change_alone_does_not_carry_a_row():
+    from src.extraction.store_estimates import carried_forward
+
+    assert carried_forward([{"page": 3, "effect_size": 155.43}],
+                           [{"page": 3, "effect_size": 155.43, "outcome_name": "something else"}]) == []
+
+
+def test_a_duplicate_identity_in_one_run_is_written_once():
+    from src.extraction.store_estimates import unify_keys
+
+    rows = unify_keys([{"outcome_name": "Income", "effect_size": 1.0, "page": 3},
+                       {"outcome_name": "Income ", "effect_size": 1.0, "page": 3}])
+    assert len(rows) == 1

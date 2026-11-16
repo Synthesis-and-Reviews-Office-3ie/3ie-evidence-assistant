@@ -19,6 +19,7 @@ from typing import Any, Callable, Dict, Iterable, List, Optional
 import httpx
 
 from src.extraction.effect_sizes import standardise
+from src.extraction.identity import row_key
 from src.extraction.table_estimates import extract_document
 from src.extraction.table_rules import reclassify_pipe_tables
 
@@ -102,15 +103,27 @@ def _pdf_bytes(s3, bucket: str, project_id: str, doc: Dict[str, Any]) -> bytes:
 
 
 def unify_keys(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    """Give every row the same key set, filling absent fields with None.
+    """Give every row the stable identity and the same key set, filling absent fields with None.
 
     PostgREST rejects a batch whose objects differ in shape ("All object keys must match"), and the rows
     for one document come from three builders: the table reader, the vision reader and the prose reader.
-    Only the first writes the control and standardised columns, so a document with any vision or prose
-    rows failed to insert at all.
+    The identity is set here, for all three, so the database has one key per estimate whichever reader
+    found it.
     """
-    keys = set().union(*(row.keys() for row in rows)) if rows else set()
-    return [{key: row.get(key) for key in keys} for row in rows]
+    for row in rows:
+        if not row.get("row_key"):
+            row["row_key"] = row_key(row.get("source") or SOURCE, row.get("page"), row.get("outcome_name"),
+                                     row.get("treatment_arm"), row.get("subgroup"), row.get("effect_size"))
+    # The identity is unique in the table, so a run that returns the same estimate twice keeps one: a
+    # repeated key would otherwise make the whole document's insert fail.
+    unique, seen = [], set()
+    for row in rows:
+        if row["row_key"] in seen:
+            continue
+        seen.add(row["row_key"])
+        unique.append(row)
+    keys = set().union(*(row.keys() for row in unique)) if unique else set()
+    return [{key: row.get(key) for key in keys} for row in unique]
 
 
 async def _post(db: httpx.AsyncClient, rows: List[Dict[str, Any]]) -> Optional[str]:
@@ -134,17 +147,62 @@ async def _post(db: httpx.AsyncClient, rows: List[Dict[str, Any]]) -> Optional[s
     return last
 
 
+def carried_forward(new_rows: List[Dict[str, Any]], stored: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Stored rows whose value the new run did not produce, so replacing the document cannot lose them.
+
+    The identity of an estimate for this purpose is the page and the value, not the label: a run may word
+    an outcome differently and still have read the same estimate. Anything stored that is absent by that
+    test is kept, which makes a replacement run unable to shrink what was found before.
+    """
+    by_page: Dict[Any, List[float]] = {}
+    for row in new_rows:
+        value = row.get("effect_size")
+        if value is not None:
+            by_page.setdefault(row.get("page"), []).append(float(value))
+    keep = []
+    for row in stored:
+        value = row.get("effect_size")
+        if value is None:
+            continue
+        same = any(abs(float(value) - other) <= max(1e-9, abs(float(value)) * 1e-9)
+                   for other in by_page.get(row.get("page"), []))
+        if not same:
+            keep.append(row)
+    return keep
+
+
+async def _stored_rows(db: httpx.AsyncClient, project_id: str, name: str) -> List[Dict[str, Any]]:
+    """The document's stored rows, paged, so a replacement can keep the values it did not reproduce."""
+    rows, offset = [], 0
+    while True:
+        r = await db.get("/effect_estimates", params={
+            "select": "*", "rag_project_id": f"eq.{project_id}", "doc_key": f"eq.{name}",
+            "source": f"eq.{SOURCE}", "limit": "1000", "offset": str(offset)})
+        if r.status_code >= 400:
+            return rows
+        batch = r.json() or []
+        rows.extend(batch)
+        if len(batch) < 1000:
+            return rows
+        offset += 1000
+
+
 async def extract_and_store(
     project_id: str,
     doc_keys: Optional[Iterable[str]] = None,
     model: str = DEFAULT_MODEL,
     skip_done: bool = False,
     vision: Optional[bool] = None,
+    prune: bool = False,
     log: Callable[[str], None] = print,
 ) -> Dict[str, int]:
     """
     Extract, embed and store estimates for a project's completed documents (all of them,
-    or only `doc_keys`). A document's earlier rows of this source are replaced.
+    or only `doc_keys`).
+
+    Each run replaces the document's rows, but a stored row whose page and value the new run did not
+    produce is carried forward, so a replacement cannot lose a value the previous run found. `prune=True`
+    replaces without carrying forward, for a deliberate clean-up after a change.
     """
     from src.retrieval.study_cards import embed_documents
 
@@ -153,7 +211,7 @@ async def extract_and_store(
     headers = {"apikey": key, "Authorization": f"Bearer {key}", "Content-Type": "application/json"}
     bucket, s3 = os.environ.get("R2_BUCKET_NAME", "devchat-pdfs"), _r2()
     wanted = set(doc_keys) if doc_keys is not None else None
-    totals = {"docs": 0, "estimates": 0, "kept": 0, "results_tables": 0, "tables": 0, "errors": 0, "second_pass_units": 0, "second_pass_rows": 0,
+    totals = {"docs": 0, "estimates": 0, "kept": 0, "results_tables": 0, "tables": 0, "errors": 0, "second_pass_units": 0, "second_pass_rows": 0, "carried": 0,
               "vision_pages": 0, "vision_rows": 0, "outcome_misses": 0, "prose_rows": 0}
 
     async with httpx.AsyncClient(base_url=url, headers=headers, timeout=120) as db:
@@ -291,13 +349,24 @@ async def extract_and_store(
                     log(f"  ✗ {name[:60]}: {type(e).__name__}: {str(e)[:120]}")
                     return
                 try:
+                    carried = 0
+                    if not prune:
+                        stored = await _stored_rows(db, project_id, name)
+                        keep = carried_forward(rows, stored)
+                        # Server-managed columns are not part of an insert payload.
+                        rows.extend({k: v for k, v in row.items() if k not in ("id", "created_at")}
+                                    for row in keep)
+                        carried = len(keep)
+                    rows = unify_keys(rows)
                     await db.delete("/effect_estimates", params={
                         "rag_project_id": f"eq.{project_id}", "doc_key": f"eq.{name}", "source": f"eq.{SOURCE}"})
-                    rows = unify_keys(rows)
                     for i in range(0, len(rows), INSERT_BATCH):
                         err = await _post(db, rows[i:i + INSERT_BATCH])
                         if err:
                             raise RuntimeError(err)
+                    totals["carried"] += carried
+                    if carried:
+                        log(f"    kept {carried} stored row(s) this run did not reproduce")
                 except Exception as e:
                     totals["errors"] += 1
                     log(f"  ✗ {name[:60]}: {type(e).__name__}: {str(e)[:120]}")

@@ -266,6 +266,27 @@ pooled "Observations" per column rather than a count per arm. Populating them ne
 print per-arm counts or a document-level count read from a balance table, which is a separate piece of
 work rather than a change to this arithmetic.
 
+### A re-run cannot lose a value (16 November 2026)
+
+Extraction replaced a document's rows, so recall depended on a stochastic read: a run that failed to
+reproduce a row lost it, and the weekly gate caught exactly that, at 304 values matched one day and 303
+the next.
+
+The first attempt was to stop replacing: `row_key`, an md5 of source, page, outcome, arm, subgroup and the
+value, with a unique index and an upsert by that key. It cannot lose a row, but it grows without bound,
+because the model words an outcome differently between runs. The key now normalises a leading table or
+panel marker and a trailing column number, and even so paper 121295229 went from 260 to 379 rows in a
+single run, nine copies of one value. That was measured and the approach abandoned for storage.
+
+What ships is replacement plus a value guard. The identity for the guard is the page and the value, not
+the label: after a run, any stored row whose page and value the new run did not produce is carried
+forward, so a replacement cannot reduce the set of values a document has. `prune=True`, or
+`--prune` on the script, replaces without carrying forward, which is the deliberate clean-up after a
+change. The stable `row_key` stays for the unique index, and an identity repeated within one run is
+written once so the index cannot reject a batch. Measured on the paper that lost a value: a prune left
+169 rows, a normal run produced 180 with 1 carried forward, and the gate holds at 304 estimates and 284
+standard errors.
+
 ### The second pass, and the check that runs on a schedule (15 November 2026)
 
 The first pass reads every table once and can still miss a value: a column not followed, a number
