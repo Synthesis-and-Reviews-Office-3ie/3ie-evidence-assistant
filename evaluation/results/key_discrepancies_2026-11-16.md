@@ -12,15 +12,15 @@ Each row gives the sheet's value, the printed value, and where the sheet says it
 | --- | --- | --- | --- | --- |
 | 122182715 | 57.645 | 67.645 | estimate | Page 19, Table 1, Panel A Uganda, row individual coaching, column monthly household income. The store holds 67.645 (9.574) from page 21 and the printed table shows 67.645, so the sheet's first digit is wrong. Table 1 was checked by eye on 16 November. |
 | 122182715 | 16.96 | 16.698 | standard error | Same table, Panel C Bangladesh, row group coaching. The coefficient 61.221 matches the print exactly; the paper contains no value beginning 16.9. |
-| 121327988 | 691.179 | 691.149 | standard error | Page 27, Table 1.4, non-parametric RD, row RD_Estimate, column Income, ML. The estimate 2501.179 matches the print exactly, so the standard error is one digit out in the last place. |
+| 121327988 | 691.179 | 691.149 | standard error | Page 27, Table 1.4, non-parametric RD, row RD_Estimate, column Income, ML. Checked by eye on 16 November: the estimate is 2501.179 and the standard error 691.149, so the sheet is one digit out in the last place. |
 | 121295641 | 4.24 | 4.224 | standard error | Page 38, Table 3, row consumption per capita, column treatment. The estimate 24.027 matches the print exactly. Table 3 was checked by eye on 16 November and prints 4.224. |
 | 122182715 | 192.975 | 192.974 | estimate | Page 44, Table A.12, Panel A Uganda, row group coaching. The sheet names the column any saving, but that column prints 0.090; the value belongs to savings value (2024 PPP), which is the outcome the store records. Checked by eye on 16 November: the printed value is 192.974, so the sheet is one digit out. |
 
 What this means: none of these are extraction failures. Three are one-digit slips in a hand-typed cell
 (57.645 for 67.645, 691.179 for 691.149, 192.975 for 192.974), one is a standard error rounded differently
 (4.24 for 4.224), and one is a standard error that does not appear in the paper at all. The paper's printed
-value is what the store holds in every case. Two of the printed values, Table 1 of 122182715 and Table 3 of
-121295641, were checked by eye on 16 November.
+value is what the store holds in every case. Four of the printed values were checked by eye on 16 November: Table 1 and Table A.12 of
+122182715, Table 3 of 121295641 and Table 1.4 of 121327988.
 
 The sheet is the data owner's record, so the correction belongs there rather than in the extraction code.
 Once it is made, `evaluation/quality_gate.py --update-baseline` records the new figures.
