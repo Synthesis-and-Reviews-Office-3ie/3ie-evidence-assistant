@@ -103,6 +103,11 @@ def main() -> None:
     mapping = {sid: docs for sid, docs in mapping.items() if docs}
 
     errata = load_errata()
+    # One pass over the project's rows, grouped by document: the small Supabase instance budgets disk IO.
+    stored: dict[str, list] = {}
+    for row in fetch_all(sb.table("effect_estimates").select("doc_key,effect_size,standard_error")
+                         .eq("rag_project_id", PROJECT).eq("source", "tables_v1")):
+        stored.setdefault(row.get("doc_key"), []).append(row)
     matched = total = 0
     flagged_values = 0
     queue = []
@@ -117,8 +122,7 @@ def main() -> None:
         why = verdict(content)
         rows = []
         for doc in docs:
-            rows += fetch_all(sb.table("effect_estimates").select("effect_size,standard_error")
-                              .eq("rag_project_id", PROJECT).eq("doc_key", doc).eq("source", "tables_v1"))
+            rows += stored.get(doc, [])
         estimates = [r["effect_size"] for r in rows if r.get("effect_size") is not None]
         errors = [r["standard_error"] for r in rows if r.get("standard_error") is not None]
         miss_e = [v for v in key[sid]["estimate"]

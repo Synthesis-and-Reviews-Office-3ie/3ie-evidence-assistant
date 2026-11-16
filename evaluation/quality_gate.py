@@ -105,21 +105,27 @@ def measure(path: Path = KEY_FILE) -> dict:
     mapping = {sid: docs for sid, docs in mapping.items() if docs}
     out = {"studies": len(mapping), "mapped_of": len(key), "errata": 0}
     errata = load_errata()
+    # One pass over the project's rows, grouped by document, instead of a query per study per field. The
+    # small Supabase instance budgets disk IO, and the earlier shape read the whole table about eighty times.
+    stored: dict[str, dict[str, list]] = {}
+    for row in fetch_all(sb.table("effect_estimates").select("doc_key,effect_size,standard_error")
+                         .eq("rag_project_id", PROJECT).eq("source", "tables_v1")):
+        entry = stored.setdefault(row.get("doc_key"), {"estimate": [], "se": []})
+        if row.get("effect_size") is not None:
+            entry["estimate"].append(row["effect_size"])
+        if row.get("standard_error") is not None:
+            entry["se"].append(row["standard_error"])
     for label, field in (("estimate", "estimate"), ("se", "se")):
         counts = {"exact": 0, "rounded": 0, "absent": 0}
         for sid, docs in mapping.items():
-            stored = []
+            values = []
             for name in docs:
-                rows = fetch_all(sb.table("effect_estimates")
-                                 .select("effect_size,standard_error")
-                                 .eq("rag_project_id", PROJECT).eq("doc_key", name).eq("source", "tables_v1"))
-                column = "effect_size" if field == "estimate" else "standard_error"
-                stored += [r[column] for r in rows if r.get(column) is not None]
+                values += stored.get(name, {}).get(field, [])
             for value in key[sid][field]:
                 expected = corrected(sid, field, value, errata)
                 if expected != value:
                     out["errata"] += 1
-                verdict = classify_miss(expected, stored)
+                verdict = classify_miss(expected, values)
                 counts[verdict] += 1
         counts["matched"] = counts["exact"] + counts["rounded"]
         counts["total"] = counts["exact"] + counts["rounded"] + counts["absent"]

@@ -25,7 +25,7 @@ from src.extraction.table_rules import reclassify_pipe_tables
 
 SOURCE = "tables_v1"
 DEFAULT_MODEL = "anthropic/claude-haiku-5.5"
-DOC_CONCURRENCY = 2
+DOC_CONCURRENCY = int(os.environ.get("DOC_CONCURRENCY") or 2)
 INSERT_BATCH = 50  # rows carry 1536-d vectors, and the small Supabase instance drops large writes
 
 
@@ -351,19 +351,30 @@ async def extract_and_store(
                 try:
                     carried = 0
                     if not prune:
-                        stored = await _stored_rows(db, project_id, name)
-                        keep = carried_forward(rows, stored)
+                        previous = await _stored_rows(db, project_id, name)
+                        keep = carried_forward(rows, previous)
                         # Server-managed columns are not part of an insert payload.
                         rows.extend({k: v for k, v in row.items() if k not in ("id", "created_at")}
                                     for row in keep)
                         carried = len(keep)
                     rows = unify_keys(rows)
-                    await db.delete("/effect_estimates", params={
-                        "rag_project_id": f"eq.{project_id}", "doc_key": f"eq.{name}", "source": f"eq.{SOURCE}"})
-                    for i in range(0, len(rows), INSERT_BATCH):
-                        err = await _post(db, rows[i:i + INSERT_BATCH])
-                        if err:
-                            raise RuntimeError(err)
+                    # A gateway timeout on one document used to lose the whole document's write and need a
+                    # manual re-run. Retry the write as a unit, with a pause, before giving up on it.
+                    for attempt in range(2):
+                        try:
+                            await db.delete("/effect_estimates", params={
+                                "rag_project_id": f"eq.{project_id}", "doc_key": f"eq.{name}",
+                                "source": f"eq.{SOURCE}"})
+                            for i in range(0, len(rows), INSERT_BATCH):
+                                err = await _post(db, rows[i:i + INSERT_BATCH])
+                                if err:
+                                    raise RuntimeError(err)
+                            break
+                        except Exception:
+                            if attempt == 1:
+                                raise
+                            log(f"    retrying the write for {name[:50]} after a pause")
+                            await asyncio.sleep(30)
                     totals["carried"] += carried
                     if carried:
                         log(f"    kept {carried} stored row(s) this run did not reproduce")

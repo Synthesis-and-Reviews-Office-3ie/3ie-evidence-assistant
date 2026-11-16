@@ -308,6 +308,24 @@ remain unexplained. That remainder is dominated by the 91 documents still carryi
 which is what the full re-extraction is for. The hand-typed key stays at 305 estimates and 284 standard
 errors throughout, so the coverage work is additive rather than a trade against accuracy.
 
+### Disk IO, and a throttled re-extraction (16 November 2026)
+
+The Supabase instance is small and its disk IO is budgeted, so the audits were written to stop re-reading
+the same table. `quality_gate.py` and `retrieval_queue.py` used to query the estimates table once per study
+per field, about eighty passes over the whole table on every run; they now read it once, group by document
+in memory, and answer from that. The gate takes about sixteen seconds. Re-extraction is likewise paced:
+`DOC_CONCURRENCY` is read from the environment, so a batch can be run one document at a time.
+
+A gateway timeout on the insert used to lose a document's write and need a manual re-run. The write is now
+retried as a unit after a thirty-second pause, and the document-level failure is logged only if the retry
+also fails.
+
+With that in place the five documents with the largest coverage gaps were re-extracted at concurrency 1:
+Mallick 2013, 121498842's Spanish version, Ara 2021, 121326829 and Das 2010. Their unstored cells fell from
+944 to 358, and 167 of the remaining are shapes the triage explains (statistic cells, covariate rows,
+appendix pages, tables of means). Recall was unchanged at 854 of 854. The rest of the collection is the same
+work in paced batches, which is what protects the IO budget.
+
 ### The last nine values (16 November 2026)
 
 With the wider mapping in place, nine values remained: four from studies that had only just started to be
