@@ -235,3 +235,13 @@ def test_a_failed_vision_call_is_recorded_and_keeps_the_original(monkeypatch):
     content, _, stats, _ = asyncio.run(_run_repair(monkeypatch, [RuntimeError("429 rate limited")]))
     assert stats["replaced"] == 0 and stats["failed"] == [6]
     assert "429" in stats["errors"][6]
+
+
+def test_a_figure_reading_keeps_its_series_and_wave():
+    data = {"results_table": True, "table_label": "FIGURE 5 Food insecurity",
+            "estimates": [{"outcome": "Food insecurity index", "arm": "Full cost", "subgroup": "Endline",
+                           "estimate_cell": "-0.123", "coefficient": -0.123, "standard_error": None}]}
+    rows = build_rows("p", DOC, 9, data, "m")
+    assert len(rows) == 1
+    assert rows[0]["treatment_arm"] == "Full cost" and rows[0]["subgroup"] == "Endline"
+    assert rows[0]["effect_size"] == -0.123

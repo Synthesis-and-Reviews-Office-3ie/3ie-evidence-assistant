@@ -157,10 +157,12 @@ values came back.
 
 Those readings were checked by eye on 16 November and the values are right. Figures 1, 2 and 6 match, and Figure 5
 holds -0.12, -0.08 and -0.119 at midline and -0.123, -0.074 and -0.119 at endline, which is the six values in the
-store. What the store does not carry is their attribution: the arm and wave names are inside the chart image, so the
-six food-insecurity values sit under one outcome with no arm and two of them are identical. A figure-derived value
-can be quoted but not attributed to an arm, which is a limit of reading a chart as numbers rather than a fault of
-this document.
+store. The labels were missing at first: the arm and wave names sit inside the chart image, so the values arrived
+under one outcome with no arm and two of them were identical. The figure reader now reads the legend and the panel
+headings and returns a series in `treatment_arm` and a wave in `subgroup`, and after re-extracting the brief the six
+food-insecurity values read Full cost -0.12, Half cost -0.08 and Restricted -0.119 at Midline, then -0.123, -0.074
+and -0.119 at Endline, with the same labels on Figures 1 and 2. A figure-derived value can now be quoted with the
+arm and wave it belongs to.
 
 So those 18 estimates and 18 standard errors stay unrecovered, and the reason is narrower than an absent paper: the coder's source table is in neither document, and its precision, six and seven significant figures, is finer than any published table. Treat them as outside the collection for the recall denominator rather than as an extraction failure. `src/extraction/page_vision.py` grew a `VISION_PROMPT` figure reader for this shape of document, and 121058361 is its queue, so the brief is no longer the only open case.
 

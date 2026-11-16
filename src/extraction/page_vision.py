@@ -39,8 +39,12 @@ appendix table of estimates, or a figure with printed data labels.
 If the page has neither, return {"results_table": false, "estimates": []}.
 
 Figures: when a plot prints values as text (data labels, callouts such as "0.12***" or
-"[0.05, 0.19]"), extract those values the same way, using the printed label as the arm. Only report
-numbers printed on the page. Never estimate a value from an axis position, a bar height or a line.
+"[0.05, 0.19]"), extract those values the same way. A chart labels each value with a series, usually
+through a legend (an arm, a group, a colour), and often with a panel or time point above it (for example
+"Midline" and "Endline"). Put the series name in arm and that panel or time point in subgroup, reading the
+legend and the panel headings. Those labels are the only way to tell two identical values apart, and a
+figure with the right numbers but no arm cannot be quoted. Only report numbers printed on the page. Never
+estimate a value from an axis position, a bar height or a line.
 
 Otherwise return JSON only:
 {"results_table": true,
@@ -48,7 +52,7 @@ Otherwise return JSON only:
  "estimates": [{
    "outcome": "<what is measured, as printed>",
    "arm": "<treatment group or model column, as printed>",
-   "subgroup": "<subgroup if any>",
+   "subgroup": "<panel, time point or wave if any, e.g. Midline or Endline>",
    "estimate_cell": "<the printed cell with the estimate, e.g. 0.15*** (0.05)>",
    "se_cell": "<the printed standard error cell if separate>",
    "coefficient": <number from the cell>,
