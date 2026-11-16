@@ -151,7 +151,16 @@ The bullet above, that "the impact paper behind the hand-typed numbers is not in
 
 It does not carry the hand-typed values. At published precision the paper reports half-transfer monthly income 107 (148) at 40 months (Table 1) and 384 (112) at 20 months (Table A5), monthly consumption 276 (109), livestock value 5549 (669), with observed counts near 3,247 per column. The key holds 155.4295 (121.73) at endline, 126.991 (62.267) at midline, 141.173 (66.809) and 6143.406 (798.5), on per-arm counts of 716 and 948, so it is not the paper's Table 1, Table A3, Table A5 or Table A6. A whitespace-tolerant search of the whole paper finds none of the 18 values, not even their digit tails.
 
-Nor does the brief carry them. The corpus document is the 12-page MNAGIL policy brief, and the World Bank copy of the same PDF is the same document: same title, authors, date and page count. Its results are figures. It has no table named "Policy Brief Estimates for Primary Outcomes", which is the table the key's own `Source` column cites, and its figures print arm means (1,525, 1,799, 1,693, 1,662, 2,595, 2,880, 2,871) rather than coefficients with standard errors. A vision pass over all 12 pages returned 27 rows, all figure labels such as livestock value 6857.9 to 12580, female employment 32 and 21, and food insecurity -0.119 and -0.123. None of the 18 values came back.
+Nor does the brief carry them. The corpus document is the 12-page MNAGIL policy brief, and the World Bank copy of the same PDF is the same document: same title, authors, date and page count. Its results are figures. It has no table named "Policy Brief Estimates for Primary Outcomes", which is the table the key's own `Source` column cites, and its figures print arm means (1,525, 1,799, 1,693, 1,662, 2,595, 2,880, 2,871) rather than coefficients with standard errors. A vision pass over all 12 pages returned 29 rows, all figure labels such as
+livestock value 6857.9 to 12580, female employment 32 and 21, and food insecurity -0.119 and -0.123. None of the 18
+values came back.
+
+Those readings were checked by eye on 16 November and the values are right. Figures 1, 2 and 6 match, and Figure 5
+holds -0.12, -0.08 and -0.119 at midline and -0.123, -0.074 and -0.119 at endline, which is the six values in the
+store. What the store does not carry is their attribution: the arm and wave names are inside the chart image, so the
+six food-insecurity values sit under one outcome with no arm and two of them are identical. A figure-derived value
+can be quoted but not attributed to an arm, which is a limit of reading a chart as numbers rather than a fault of
+this document.
 
 So those 18 estimates and 18 standard errors stay unrecovered, and the reason is narrower than an absent paper: the coder's source table is in neither document, and its precision, six and seven significant figures, is finer than any published table. Treat them as outside the collection for the recall denominator rather than as an extraction failure. `src/extraction/page_vision.py` grew a `VISION_PROMPT` figure reader for this shape of document, and 121058361 is its queue, so the brief is no longer the only open case.
 
