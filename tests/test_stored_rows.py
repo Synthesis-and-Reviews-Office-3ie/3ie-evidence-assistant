@@ -97,7 +97,8 @@ def test_the_errata_file_parses_and_names_the_evidence():
     from evaluation.stored_rows import load_errata
 
     entries = load_errata()
-    assert entries and all(e.get("evidence") for e in entries)
+    # The file is empty while the sheet is correct; any entry that is there must carry its evidence.
+    assert isinstance(entries, list) and all(e.get("evidence") for e in entries)
 
 
 def test_an_explicit_assignment_finds_a_document_named_by_author():

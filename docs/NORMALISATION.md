@@ -352,10 +352,11 @@ The other seven are errors in the hand-typed sheet, each confirmed by eye agains
 | 122182715 | 192.975 | 192.974 | one digit in the last place |
 | 122182715 | 16.96 (se) | 16.698 | not printed anywhere in the paper |
 
-The sheet belongs to the data owner, so the corrections are recorded rather than made:
-`evaluation/key_errata.json` holds each sheet value, the printed value and the evidence, and the audit
-applies it when it reads the sheet. The gate reports how many corrections it applied, so the figure is
-auditable and the owner's file is untouched.
+The corrections were first recorded rather than made: `evaluation/key_errata.json` held each sheet value,
+the printed value and the evidence, and the audit applied them when it read the sheet. The data owner was
+then asked, and with that agreement the seven cells were corrected in the workbook itself on 16 November,
+with a dated backup beside it, so the errata file is now empty and the mechanism remains for future
+corrections. The gate reports how many corrections it applies, which is zero while the file is empty.
 
 On that basis every value the collection can support is now matched: 433 of 433 estimates, 406 of 406
 standard errors, 854 of 854, across 43 of 43 mapped studies. Two studies were not scored at all, 121058359 (Misha et al. 2019) and 121058372 (Bandiera et al. 2017),
