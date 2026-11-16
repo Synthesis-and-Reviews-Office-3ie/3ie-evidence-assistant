@@ -165,7 +165,7 @@ at coarser precision than the key, such as `2.40` against `2.404`, counted as a 
 now holds both rules, `fetch_all` pages every read and `classify_miss` splits `exact`, `rounded` and
 `absent`, and it compares only within half of the last decimal the stored value was printed to, so
 `691.149` does not stand in for `691.179`, which is a different number.
-Recall under those rules, after the wide-table and second-pass work described below, is 304 of 325
+Recall under those rules, after the wide-table and second-pass work described below, is 305 of 325
 estimates (94%) and 284 of 305 standard errors (93%). The 42 missed values fall into four causes:
 
 | Cause | Values | Evidence |
@@ -241,8 +241,8 @@ two cases apart:
   are journal articles whose page numbers start in the journal. Their 2 missing values stay in the
   denominator, because the text may hold them, and they are checked before anything is retrieved.
 
-Measured recall is 588 of 630 values (93%). Setting aside the summary's 36 values, attainable recall is
-588 of 594 (99%), which is the figure that describes the extractor. What remains in the denominator after
+Measured recall is 589 of 630 values (93%). Setting aside the summary's 36 values, attainable recall is
+589 of 594 (99%), which is the figure that describes the extractor. What remains in the denominator after
 the second pass is 121294795's `92.8`, which is not in the parsed text, 122182715's `57.645` and
 `192.975`, where the paper prints `57.02` and `192.974`, and three standard errors that differ from the
 printed values (`16.96`, `4.24`, `691.179`). The queue is written to
@@ -294,8 +294,26 @@ like estimates and are not treatment effects. Storing them would be wrong, and t
 
 Collection-wide the check counts 12,889 estimate-shaped cells and 4,231 with no stored row, of which 1,905
 remain unexplained. That remainder is dominated by the 91 documents still carrying the older extraction,
-which is what the full re-extraction is for. The hand-typed key stays at 304 estimates and 284 standard
+which is what the full re-extraction is for. The hand-typed key stays at 305 estimates and 284 standard
 errors throughout, so the coverage work is additive rather than a trade against accuracy.
+
+### Every reachable value is now found (16 November 2026)
+
+Two faults kept five values out of the match, and both were ours rather than the papers'.
+
+The hand-typed sheet writes one coefficient as `−92.8` with a typographic minus. Every parser read
+that as `+92.8`, searched for the wrong sign and reported the value missing, which it was not: the paper
+prints it and the store holds it. The four number parsers now normalise the typographic dashes first, and
+paper 121294795's value matches. That is one value, but it is the kind of thing that would have kept
+recurring.
+
+The other four are genuine differences in the sheet. `evaluation/results/key_discrepancies_2026-11-16.md`
+lists them with the printed value beside each: two are one digit out in the last decimal place, one is a
+rounded standard error, one is a standard error that does not appear in the paper, and one is a
+coefficient that belongs to a different cell. In every case the printed value is what the store holds, so
+these are corrections for the data owner, not an extraction problem. With them corrected, recall would be
+307 of 325 estimates and 287 of 305 standard errors, which leaves only the 36 values for 121766336 whose
+source table is not in any public copy of the work.
 
 ### A re-run cannot lose a value (16 November 2026)
 
@@ -315,7 +333,7 @@ forward, so a replacement cannot reduce the set of values a document has. `prune
 `--prune` on the script, replaces without carrying forward, which is the deliberate clean-up after a
 change. The stable `row_key` stays for the unique index, and an identity repeated within one run is
 written once so the index cannot reject a batch. Measured on the paper that lost a value: a prune left
-169 rows, a normal run produced 180 with 1 carried forward, and the gate holds at 304 estimates and 284
+169 rows, a normal run produced 180 with 1 carried forward, and the gate holds at 305 estimates and 284
 standard errors.
 
 ### The second pass, and the check that runs on a schedule (15 November 2026)
@@ -335,7 +353,7 @@ On the four papers that had misses, the second pass read 32 units and added 71 r
 hand-typed value, 121295229's 2.404, which the document prints as 2.40 in a sentence. The rest of the
 remaining misses are not coverage: 122182715 prints 57.02 against a key of 57.645 and 192.974 against
 192.975, 121294795's 92.8 is not in the text, and 121327988's 691.179 and 121295641's 4.24 differ from
-the printed 691.149 and 4.224. Recall is 304 of 325 estimates (94%) and 284 of 305 standard errors (93%).
+the printed 691.149 and 4.224. Recall is 305 of 325 estimates (94%) and 284 of 305 standard errors (93%).
 
 `evaluation/quality_gate.py` is the check that now runs weekly and on changes to the extraction or
 evaluation path, from `.github/workflows/quality-gate.yml`. It reads the database and the key, takes
@@ -348,7 +366,7 @@ not, once this ran.
 The repository is public and the hand-typed key is 3ie's own coding, so `data/` is not in it. The key is
 kept in the private bucket the app already uses, at `reference/8WR QEX Combined.xlsx`, and the workflow
 reads it with repository storage credentials; the gate therefore compares in CI, and the first run there
-reproduced the local figures exactly (304 of 325 estimates, 284 of 305 standard errors, 588 of 630). If
+reproduced the local figures exactly (305 of 325 estimates, 284 of 305 standard errors, 589 of 630). If
 those credentials are absent the gate reports a skip with a notice rather than failing on a file it must
 not have.
 

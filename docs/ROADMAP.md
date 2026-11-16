@@ -113,7 +113,7 @@ The extraction side was repaired and then measured properly, in four steps. Deta
 - **The audit was wrong, and precision is now a labelled bucket.** Every read was capped at 1000 rows by PostgREST, so large documents were compared against a quarter of their rows, and a value printed at coarser precision than the key counted as a gap. One module now pages the reads and compares only at the precision the paper printed.
 - **A bounded second pass and a weekly gate.** The outcomes a paper claims and no row carries drive a re-read of only the units that mention them. `evaluation/quality_gate.py`, run weekly by `.github/workflows/quality-gate.yml`, fails when recall falls below the stored baseline; `evaluation/table_coverage.py` lists tables whose cells have no stored row, and `evaluation/retrieval_queue.py` separates a document that is not the study from a key that uses another page numbering.
 
-Recall is 304 of 325 estimates (94%) and 284 of 305 standard errors (93%). Setting aside the 36 values
+Recall is 305 of 325 estimates (94%) and 284 of 305 standard errors (93%). Setting aside the 36 values
 for paper 121766336, whose document is a policy brief without the cited table, attainable recall is 588 of
 594 (99%). Six values remain outside the retrieval queue and all are differences between the key and what
 the papers print; no extraction change reaches them. The weekly gate now runs in CI, reading the key from

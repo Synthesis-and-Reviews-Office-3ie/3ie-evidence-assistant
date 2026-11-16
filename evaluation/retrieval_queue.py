@@ -41,7 +41,8 @@ MAX_PAGE_GAP = 50      # a key page number far beyond the document means another
 def num(value):
     if value is None:
         return None
-    match = re.search(r"-?\d+(?:\.\d+)?", str(value).replace(",", "").replace("\xa0", " "))
+    text = str(value).replace(",", "").replace("\xa0", " ").replace("\u2212", "-").replace("\u2013", "-").replace("\u2014", "-")
+    match = re.search(r"-?\d+(?:\.\d+)?", text)
     return float(match.group()) if match else None
 
 
@@ -152,3 +153,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

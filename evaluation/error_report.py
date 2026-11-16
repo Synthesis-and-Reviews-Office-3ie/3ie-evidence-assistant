@@ -38,7 +38,8 @@ REPORT = ROOT / "evaluation" / "results" / f"error_report_{date.today().isoforma
 def num(value):
     if value is None or (isinstance(value, float) and pd.isna(value)):
         return None
-    m = re.search(r"-?\d+(?:\.\d+)?", str(value).replace(",", "").replace("\xa0", " "))
+    text = str(value).replace(",", "").replace("\xa0", " ").replace("\u2212", "-").replace("\u2013", "-").replace("\u2014", "-")
+    m = re.search(r"-?\d+(?:\.\d+)?", text)
     return float(m.group()) if m else None
 
 
@@ -134,3 +135,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

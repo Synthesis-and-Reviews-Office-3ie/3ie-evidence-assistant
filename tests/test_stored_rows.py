@@ -73,3 +73,11 @@ def test_the_triage_names_the_shapes_that_are_not_gaps():
     assert reason("Test: T2 = T3", "(4) Male credit", "", 96, 160) == "hypothesis test"
     assert reason("Control mean", "", "", 3, 160) == "control mean"
     assert reason("Income and revenues (4)", "", "", 13, 160) == "unexplained"
+
+
+def test_a_typographic_minus_in_the_sheet_is_read_as_negative():
+    from evaluation.quality_gate import num
+
+    assert num("\u221292.8") == -92.8
+    assert num("\u201392.8") == -92.8
+    assert num("92.8") == 92.8
