@@ -91,16 +91,21 @@ def measure(path: Path = KEY_FILE) -> dict:
     key = key_values(path)
     names = [d["filename"] for d in
              sb.table("documents").select("filename").eq("rag_project_id", PROJECT).execute().data]
-    mapping = {sid: hits[0] for sid in key for hits in [[n for n in names if sid in n]] if len(hits) == 1}
+    # A study may have more than one document, for example a brief and the analytic note behind it, so
+    # every document whose filename carries the study id is read and a value counts when any of them has it.
+    mapping = {sid: [n for n in names if sid in n] for sid in key}
+    mapping = {sid: docs for sid, docs in mapping.items() if docs}
     out = {"studies": len(mapping), "mapped_of": len(key)}
     for label, field in (("estimate", "estimate"), ("se", "se")):
         counts = {"exact": 0, "rounded": 0, "absent": 0}
-        for sid, name in mapping.items():
-            rows = fetch_all(sb.table("effect_estimates")
-                             .select("effect_size,standard_error")
-                             .eq("rag_project_id", PROJECT).eq("doc_key", name).eq("source", "tables_v1"))
-            stored = [r["effect_size"] for r in rows if r.get("effect_size") is not None] if field == "estimate" \
-                else [r["standard_error"] for r in rows if r.get("standard_error") is not None]
+        for sid, docs in mapping.items():
+            stored = []
+            for name in docs:
+                rows = fetch_all(sb.table("effect_estimates")
+                                 .select("effect_size,standard_error")
+                                 .eq("rag_project_id", PROJECT).eq("doc_key", name).eq("source", "tables_v1"))
+                column = "effect_size" if field == "estimate" else "standard_error"
+                stored += [r[column] for r in rows if r.get(column) is not None]
             for value in key[sid][field]:
                 verdict = classify_miss(value, stored)
                 counts[verdict] += 1

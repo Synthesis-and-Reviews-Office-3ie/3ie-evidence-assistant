@@ -90,21 +90,26 @@ def main() -> None:
     key = key_values()
     names = [d["filename"] for d in
              sb.table("documents").select("filename").eq("rag_project_id", PROJECT).execute().data]
-    mapping = {sid: hits[0] for sid in key for hits in [[n for n in names if sid in n]] if len(hits) == 1}
+    # A study may have more than one document, such as a brief and the analytic note behind it.
+    mapping = {sid: [n for n in names if sid in n] for sid in key}
+    mapping = {sid: docs for sid, docs in mapping.items() if docs}
 
     matched = total = 0
     flagged_values = 0
     queue = []
     mapping_notes = []
-    for sid, name in sorted(mapping.items()):
+    for sid, docs in sorted(mapping.items()):
+        name = docs[0]
         try:
             content = load_content(PROJECT, name, ROOT / "evaluation" / "results" / "usage_study" / PROJECT / "content")
         except Exception:
             content = []
         document_pages = max(((item.get("page_idx") or 0) + 1 for item in content), default=0)
         why = verdict(content)
-        rows = fetch_all(sb.table("effect_estimates").select("effect_size,standard_error")
-                         .eq("rag_project_id", PROJECT).eq("doc_key", name).eq("source", "tables_v1"))
+        rows = []
+        for doc in docs:
+            rows += fetch_all(sb.table("effect_estimates").select("effect_size,standard_error")
+                              .eq("rag_project_id", PROJECT).eq("doc_key", doc).eq("source", "tables_v1"))
         estimates = [r["effect_size"] for r in rows if r.get("effect_size") is not None]
         errors = [r["standard_error"] for r in rows if r.get("standard_error") is not None]
         miss_e = [v for v in key[sid]["estimate"] if classify_miss(v, estimates) == "absent"]
@@ -117,9 +122,10 @@ def main() -> None:
                               "numbering is not the document's; check the text before retrieving")
         matched += (len(key[sid]["estimate"]) - len(miss_e)) + (len(key[sid]["se"]) - len(miss_s))
         total += len(key[sid]["estimate"]) + len(key[sid]["se"])
-        if why:
-            # A document that is not the study at all: its values cannot be reached here, so they are
-            # set aside from the denominator and the study goes to the retrieval queue.
+        if why and (miss_e or miss_s):
+            # A document that is not the study at all, and values that no document of the study supplies:
+            # those cannot be reached here, so they are set aside and the study goes to the retrieval queue.
+            # A study whose second document supplies everything is not queued, even if its first is a summary.
             flagged_values += len(miss_e) + len(miss_s)
             queue.append((sid, name, why, len(miss_e), len(miss_s)))
         elif pages_note:

@@ -1,7 +1,7 @@
 # Quality gate 2026-11-16
 
-Studies mapped: 36 of 43.
+Studies mapped: 41 of 43.
 
-- estimate: matched 305 of 325 (304 exact, 1 at printed precision, 20 absent)
-- se: matched 284 of 305 (284 exact, 0 at printed precision, 21 absent)
-- combined: 589 of 630
+- estimate: matched 429 of 433 (428 exact, 1 at printed precision, 4 absent)
+- se: matched 401 of 406 (401 exact, 0 at printed precision, 5 absent)
+- combined: 830 of 839

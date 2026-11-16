@@ -308,6 +308,33 @@ remain unexplained. That remainder is dominated by the 91 documents still carryi
 which is what the full re-extraction is for. The hand-typed key stays at 305 estimates and 284 standard
 errors throughout, so the coverage work is additive rather than a trade against accuracy.
 
+### Paper 121766336: the source was found (16 November 2026)
+
+The 36 values that could not be reached were never missing, only undocumented. The document behind them is
+a three-page companion note, "Bab Amal Policy Brief Details", which holds Table 1: Policy Brief Estimates
+for Primary Outcomes (Endline) and Table 2: ... (Midline), with all 18 coefficients and all 18 standard
+errors verbatim, the arms as Full-Cost Unrestricted, Full cost Restricted and Half cost, and the p-values
+and sample sizes. It contains every value the sheet records and nothing in the brief or the working paper
+did.
+
+The note was added to the collection as `details121766336_Bab_Amal_Policy_Brief_Details`, parsed and
+extracted like any other document (39 rows), and all 36 values now match. The earlier conclusion in this
+record, that the values sat outside the collection and should be set aside, is superseded: they were in a
+document we did not hold, and asking for it was the right fix.
+
+That exposed a second problem. The evaluation mapped a study only when exactly one filename contained its
+id, which worked while every study had one document and breaks the moment a study has two. A study now maps
+to every document whose filename carries its id, and a value counts when any of those documents stores it.
+Mapped studies rose from 36 to 41 of 43, and the denominator from 630 to 839 values, because studies that
+had been silently excluded are now scored. That is a definition change as well as a recovery, and the
+figures before and after it are not comparable.
+
+On that wider set, recall is 429 of 433 estimates (99%) and 401 of 406 standard errors (99%), 830 of 839 in
+total. Nine values remain. Five are the sheet cells listed in `evaluation/results/key_discrepancies_2026-11-16.md`.
+Four belong to two studies that the wider mapping has just started to score, 121058369 (-29.08 and 227.52)
+and 122182711 (-81.6), plus 121498842's standard error 3.84. Those four are a coverage question of the
+ordinary kind and are the next thing to look at.
+
 ### Every reachable value is now found (16 November 2026)
 
 Two faults kept five values out of the match, and both were ours rather than the papers'.
