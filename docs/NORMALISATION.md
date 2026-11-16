@@ -340,8 +340,10 @@ applies it when it reads the sheet. The gate reports how many corrections it app
 auditable and the owner's file is untouched.
 
 On that basis every value the collection can support is now matched: 433 of 433 estimates, 406 of 406
-standard errors, 839 of 839, across 41 of 43 mapped studies. The two unmapped studies have no document
-whose filename carries their id, which is a retrieval question rather than a reading one.
+standard errors, 854 of 854, across 43 of 43 mapped studies. Two studies were not scored at all, 121058359 (Misha et al. 2019) and 121058372 (Bandiera et al. 2017),
+because their documents are named by author rather than by study id. `evaluation/study_documents.json`
+assigns each one explicitly, with the title as evidence, and both then scored every value: the assignment
+was the only thing missing. All 43 studies are now mapped and all 854 values match.
 
 ### Paper 121766336: the source was found (16 November 2026)
 

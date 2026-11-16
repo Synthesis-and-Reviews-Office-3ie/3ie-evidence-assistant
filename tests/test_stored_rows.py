@@ -98,3 +98,15 @@ def test_the_errata_file_parses_and_names_the_evidence():
 
     entries = load_errata()
     assert entries and all(e.get("evidence") for e in entries)
+
+
+def test_an_explicit_assignment_finds_a_document_named_by_author():
+    from evaluation.stored_rows import documents_for
+
+    names = ["abc_PDFs_of_included_programs_Misha_(2019)", "def_another_paper"]
+    overrides = {"121058359": {"documents": ["abc_PDFs_of_included_programs_Misha_(2019)"]}}
+    assert documents_for("121058359", names, overrides) == ["abc_PDFs_of_included_programs_Misha_(2019)"]
+    assert documents_for("999", names, overrides) == []
+    # A document already found by id is not listed twice.
+    assert documents_for("121058359", names + ["121058359_x"], overrides) == [
+        "121058359_x", "abc_PDFs_of_included_programs_Misha_(2019)"]

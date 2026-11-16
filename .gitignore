@@ -126,3 +126,5 @@ evaluation/results/usage_study/*/*
 # and the Agent Manager state file are local.
 .kilo/worktrees/
 .kilo/agent-manager.json
+!evaluation/key_errata.json
+!evaluation/study_documents.json

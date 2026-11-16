@@ -114,7 +114,7 @@ The extraction side was repaired and then measured properly, in four steps. Deta
 - **A bounded second pass and a weekly gate.** The outcomes a paper claims and no row carries drive a re-read of only the units that mention them. `evaluation/quality_gate.py`, run weekly by `.github/workflows/quality-gate.yml`, fails when recall falls below the stored baseline; `evaluation/table_coverage.py` lists tables whose cells have no stored row, and `evaluation/retrieval_queue.py` separates a document that is not the study from a key that uses another page numbering.
 
 Every value the collection can support is now matched: 433 of 433 estimates, 406 of 406 standard errors,
-839 of 839 values across 41 of 43 mapped studies. The 36 Bab Amal values came from a three-page companion
+854 of 854 values across 43 of 43 mapped studies. The 36 Bab Amal values came from a three-page companion
 note that carries the tables the brief cites, and the last seven differences were errors in the hand-typed
 sheet, recorded in `evaluation/key_errata.json` with the printed value as evidence. The two unmapped studies
 have no document whose filename carries their id, which is a retrieval question. The weekly gate runs in CI,

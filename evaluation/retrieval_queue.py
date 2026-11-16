@@ -27,7 +27,14 @@ load_dotenv(ROOT / ".env")
 
 import pandas as pd  # noqa: E402
 
-from evaluation.stored_rows import classify_miss, corrected, fetch_all, load_errata  # noqa: E402
+from evaluation.stored_rows import (  # noqa: E402
+    classify_miss,
+    corrected,
+    documents_for,
+    fetch_all,
+    load_errata,  # noqa: E402
+    load_overrides,
+)
 from evaluation.usage_study import load_content  # noqa: E402
 from src.extraction.provenance import looks_like_review, looks_like_wrong_version  # noqa: E402
 from supabase import create_client  # noqa: E402
@@ -91,7 +98,8 @@ def main() -> None:
     names = [d["filename"] for d in
              sb.table("documents").select("filename").eq("rag_project_id", PROJECT).execute().data]
     # A study may have more than one document, such as a brief and the analytic note behind it.
-    mapping = {sid: [n for n in names if sid in n] for sid in key}
+    overrides = load_overrides()
+    mapping = {sid: documents_for(sid, names, overrides) for sid in key}
     mapping = {sid: docs for sid, docs in mapping.items() if docs}
 
     errata = load_errata()

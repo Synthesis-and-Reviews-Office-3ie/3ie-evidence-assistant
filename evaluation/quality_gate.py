@@ -30,7 +30,14 @@ load_dotenv(ROOT / ".env")
 
 import pandas as pd  # noqa: E402
 
-from evaluation.stored_rows import classify_miss, corrected, fetch_all, load_errata  # noqa: E402
+from evaluation.stored_rows import (  # noqa: E402
+    classify_miss,
+    corrected,
+    documents_for,
+    fetch_all,
+    load_errata,
+    load_overrides,  # noqa: E402
+)
 from supabase import create_client  # noqa: E402
 
 PROJECT = os.environ.get("RAG_PROJECT_ID") or "7efdc60e-e863-480c-929e-616574725e5f"
@@ -93,7 +100,8 @@ def measure(path: Path = KEY_FILE) -> dict:
              sb.table("documents").select("filename").eq("rag_project_id", PROJECT).execute().data]
     # A study may have more than one document, for example a brief and the analytic note behind it, so
     # every document whose filename carries the study id is read and a value counts when any of them has it.
-    mapping = {sid: [n for n in names if sid in n] for sid in key}
+    overrides = load_overrides()
+    mapping = {sid: documents_for(sid, names, overrides) for sid in key}
     mapping = {sid: docs for sid, docs in mapping.items() if docs}
     out = {"studies": len(mapping), "mapped_of": len(key), "errata": 0}
     errata = load_errata()

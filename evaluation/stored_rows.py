@@ -24,6 +24,28 @@ from typing import Any
 
 PAGE = 1000  # PostgREST returns at most this many rows per request.
 ERRATA = Path(__file__).resolve().parent / "key_errata.json"
+STUDY_DOCUMENTS = Path(__file__).resolve().parent / "study_documents.json"
+
+
+def load_overrides(path: Path | None = None) -> dict:
+    """Explicit study-to-document assignments for documents not named by their study id.
+
+    Most documents carry the study id in the filename. A few are named by author and year, and matching them
+    by name would be a guess, so the assignment is written down once with the evidence.
+    """
+    source = path or STUDY_DOCUMENTS
+    if not source.exists():
+        return {}
+    return json.loads(source.read_text(encoding="utf-8"))
+
+
+def documents_for(study: str, names: Sequence[str], overrides: dict | None = None) -> list[str]:
+    """Every document that carries this study's values: named by id, or assigned explicitly."""
+    found = [name for name in names if study in name]
+    for name in (overrides if overrides is not None else load_overrides()).get(study, {}).get("documents", []):
+        if name not in found:
+            found.append(name)
+    return found
 
 
 def load_errata(path: Path | None = None) -> list[dict]:
