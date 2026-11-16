@@ -326,13 +326,20 @@ class ChunkStore:
             if r.get("embedding") is not None:
                 row["embedding"] = [float(x) for x in r["embedding"]]
             prepared.append({k: v for k, v in row.items() if v is not None})
-        for i in range(0, len(prepared), UPSERT_BATCH):
-            self._check(self._client.post(
-                "/study_cards",
-                params={"on_conflict": "rag_project_id,doc_key"},
-                headers={"Prefer": "return=minimal,resolution=merge-duplicates"},
-                json=prepared[i:i + UPSERT_BATCH],
-            ))
+        # PostgREST rejects a batch whose objects differ in shape ("All object keys must match"), and
+        # dropping null fields leaves a card without an embedding shaped differently from the rest.
+        # Post the shapes separately so a key that is absent stays absent rather than becoming null.
+        shapes: Dict[tuple, List[Dict[str, Any]]] = {}
+        for row in prepared:
+            shapes.setdefault(tuple(sorted(row)), []).append(row)
+        for same_shape in shapes.values():
+            for i in range(0, len(same_shape), UPSERT_BATCH):
+                self._check(self._client.post(
+                    "/study_cards",
+                    params={"on_conflict": "rag_project_id,doc_key"},
+                    headers={"Prefer": "return=minimal,resolution=merge-duplicates"},
+                    json=same_shape[i:i + UPSERT_BATCH],
+                ))
         return len(prepared)
 
     def search_study_cards(self, project_id: str, query_text: str, query_embedding: Sequence[float],

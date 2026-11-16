@@ -18,6 +18,7 @@ from typing import Any, Callable, Dict, Iterable, List, Optional
 
 import httpx
 
+from src.extraction.effect_sizes import standardise
 from src.extraction.table_estimates import extract_document
 from src.extraction.table_rules import reclassify_pipe_tables
 
@@ -54,7 +55,7 @@ def rows_for(project_id: str, doc: Dict[str, Any], out: Dict[str, Any], model: s
         ci = f"[{e['ci_low']}, {e['ci_high']}]" if e["ci_low"] is not None else None
         p = _finite(e["p_value"])
         n = _finite(e["sample_size"])
-        rows.append({
+        row = {
             "rag_project_id": project_id, "document_id": doc["id"], "doc_key": doc["filename"], "source": SOURCE,
             "table_number": e["table_label"][:120], "outcome_name": (e["outcome"] or e["row_label"] or "?")[:500],
             "treatment_arm": e["arm"] or None, "subgroup": e["subgroup"] or None,
@@ -62,10 +63,21 @@ def rows_for(project_id: str, doc: Dict[str, Any], out: Dict[str, Any], model: s
             "p_value": p if p is not None and 0 <= p <= 1 else None,
             "p_text": ("*" * e["stars"]) if e["stars"] else None, "ci_text": ci,
             "sample_size": int(n) if n is not None and abs(n) < 2**31 and n == int(n) else None,
+            "control_mean": e.get("control_mean"), "control_sd": e.get("control_sd"),
+            "n_treatment": e.get("n_treatment"), "n_control": e.get("n_control"),
             "literal_text": (e["estimate_cell"] + (" " + e["se_cell"] if e["se_cell"] else ""))[:500],
             "text_position": f"{e['table_label']}, row '{e['row_label']}', column '{e['column_label']}'"[:500],
             "page": e["page"], "extraction_method": model,
-        })
+        }
+        # Standardised fields are written with the row, from the inputs it actually carries, and stay
+        # null when control_sd or a per-arm count is missing rather than being guessed.
+        standard = standardise(row)
+        row.update({"effect_size_d": standard["d"] if standard else None,
+                    "var_d": standard["var_d"] if standard else None,
+                    "hedges_g": standard["yi"] if standard else None,
+                    "var_g": standard["vi"] if standard else None,
+                    "se_g": standard["se_g"] if standard else None})
+        rows.append(row)
     return [{k: _clean(v) for k, v in r.items()} for r in rows]
 
 
@@ -87,6 +99,18 @@ def _pdf_bytes(s3, bucket: str, project_id: str, doc: Dict[str, Any]) -> bytes:
         except Exception:
             continue
     return b""
+
+
+def unify_keys(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Give every row the same key set, filling absent fields with None.
+
+    PostgREST rejects a batch whose objects differ in shape ("All object keys must match"), and the rows
+    for one document come from three builders: the table reader, the vision reader and the prose reader.
+    Only the first writes the control and standardised columns, so a document with any vision or prose
+    rows failed to insert at all.
+    """
+    keys = set().union(*(row.keys() for row in rows)) if rows else set()
+    return [{key: row.get(key) for key in keys} for row in rows]
 
 
 async def _post(db: httpx.AsyncClient, rows: List[Dict[str, Any]]) -> Optional[str]:
@@ -269,6 +293,7 @@ async def extract_and_store(
                 try:
                     await db.delete("/effect_estimates", params={
                         "rag_project_id": f"eq.{project_id}", "doc_key": f"eq.{name}", "source": f"eq.{SOURCE}"})
+                    rows = unify_keys(rows)
                     for i in range(0, len(rows), INSERT_BATCH):
                         err = await _post(db, rows[i:i + INSERT_BATCH])
                         if err:

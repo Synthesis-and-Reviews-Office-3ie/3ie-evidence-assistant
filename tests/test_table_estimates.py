@@ -86,3 +86,27 @@ def test_a_wide_table_read_two_ways_merges_into_one_row_per_estimate():
 def test_distinct_outcomes_are_not_merged():
     merged = merge_reads([_row("Income", 107), _row("Consumption", 107)])
     assert len(merged) == 2
+
+
+TABLE_WITH_CONTROL = """| Outcome | Treatment | Control mean (SD) |
+| --- | --- | --- |
+| Income | 155.43*** (121.73) | 2,540.00 (612.5) |
+| Consumption | 141.17*** (66.81) | 5,379.00 (733.1) |"""
+
+
+def test_control_statistics_are_read_only_when_their_cells_are_in_the_table():
+    raw = {"outcome": "Income", "estimate_cell": "155.43*** (121.73)", "se_cell": "(121.73)",
+           "control_mean_cell": "2,540.00 (612.5)", "control_sd_cell": "2,540.00 (612.5)",
+           "n_treatment_cell": "716", "n_control_cell": "948"}
+    e = to_estimate(raw, "Table 1", 3, TABLE_WITH_CONTROL + "\n| Obs | 716 | 948 |")
+    assert e.control_mean == 2540.0 and e.control_sd == 612.5
+    assert e.n_treatment == 716 and e.n_control == 948
+
+
+def test_a_control_statistic_that_is_not_in_the_table_is_not_taken():
+    raw = {"outcome": "Income", "estimate_cell": "155.43*** (121.73)", "se_cell": "(121.73)",
+           "control_mean_cell": "9,999.00", "control_sd_cell": "123.4", "n_treatment_cell": "1",
+           "n_control_cell": "2"}
+    e = to_estimate(raw, "Table 1", 3, TABLE_WITH_CONTROL)
+    assert e.control_mean is None and e.control_sd is None
+    assert e.n_treatment is None and e.n_control is None

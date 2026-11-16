@@ -68,6 +68,13 @@ If it is a results table, list every estimate of a treatment effect on an outcom
 - se_kind: "se", "t", "ci" or "" (from the notes; parentheses are usually SEs)
 - p_cell: an exact p-value cell if the table has one, else ""
 - n: the number of observations for the estimate if the table gives it, else ""
+- control_mean_cell: the control-group mean for this outcome, copied exactly from a row or column
+  headed "Control mean" ("" when the table does not print one)
+- control_sd_cell: the control-group standard deviation for this outcome, copied exactly ("" when it
+  is not printed). A cell such as "12.4 (3.1)" beside a control mean holds the mean and its SD.
+- n_treatment_cell and n_control_cell: the observations for the treatment group and for the control
+  group, copied exactly, only when the table prints them separately ("" when it prints one count for
+  both). A pooled observation count is not a per-arm count: leave both empty rather than splitting it.
 
 Do not include estimates the table reproduces from OTHER studies (for example a comparison with
 earlier evaluations): only this study's own estimates.
@@ -156,12 +163,25 @@ class Estimate:
     p_value: Optional[float]
     stars: int
     sample_size: Optional[int]
+    control_mean: Optional[float]
+    control_sd: Optional[float]
+    n_treatment: Optional[int]
+    n_control: Optional[int]
     grounded: bool
     notes: List[str] = field(default_factory=list)
 
 
 def _norm(s: str) -> str:
     return re.sub(r"\s+", "", str(s or "")).replace("−", "-").replace("–", "-")
+
+
+def _number_in_parens(cell: str) -> Optional[float]:
+    match = re.search(r"[(\[]\s*(-?[\d.,]+)\s*[)\]]", str(cell or ""))
+    return parse_number(match.group(1)) if match else None
+
+
+def _count(value: Optional[float]) -> Optional[int]:
+    return int(value) if value is not None and value > 0 and value == int(value) else None
 
 
 def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], table_text: str,
@@ -182,6 +202,36 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
         se = abs(se) if se is not None else None
     n = parse_number(raw.get("n"))
     table_norm = _norm(table_text)
+
+    def _tokens(text: object) -> List[str]:
+        # Whitespace-delimited tokens that keep decimal points, so numbers compare as printed:
+        # "2,540.00" becomes ["2", "540.00"] on both sides.
+        return re.sub(r"[^a-z0-9.]+", " ", str(text or "").lower()).split()
+
+    table_tokens = _tokens(table_text)
+
+    def found(cell: str) -> bool:
+        """A control statistic counts only when its cell is in the table, as the estimate does.
+
+        Substring matching is unsafe here: a one-character count such as "1" appears inside almost any
+        table. The cell has to appear as the same run of tokens, and be at least two characters long.
+        """
+        needle = _tokens(cell)
+        if not needle or len(_norm(cell)) < 2:
+            return False
+        return any(table_tokens[i:i + len(needle)] == needle
+                   for i in range(len(table_tokens) - len(needle) + 1))
+
+    cm_cell = str(raw.get("control_mean_cell") or "")
+    sd_cell = str(raw.get("control_sd_cell") or "")
+    nt_cell = str(raw.get("n_treatment_cell") or "")
+    nc_cell = str(raw.get("n_control_cell") or "")
+    # The mean is the leading number of "mean (sd)"; the SD is the parenthesised one.
+    control_mean = parse_number(cm_cell) if found(cm_cell) else None
+    control_sd = (_number_in_parens(sd_cell) or parse_number(sd_cell)) if found(sd_cell) else None
+    n_treatment = _count(parse_number(nt_cell)) if found(nt_cell) else None
+    n_control = _count(parse_number(nc_cell)) if found(nc_cell) else None
+
     grounded = bool(est_cell) and _norm(est_cell) in table_norm and (not se_cell or _norm(se_cell) in table_norm)
     notes = [] if grounded else ["cell not found verbatim in the table"]
     return Estimate(
@@ -192,6 +242,7 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
         effect_size=parse_number(est_cell), standard_error=se, t_stat=t, ci_low=lo, ci_high=hi,
         p_value=parse_number(raw.get("p_cell")) if raw.get("p_cell") else None,
         stars=count_stars(est_cell), sample_size=int(n) if n is not None and n.is_integer() and n > 0 else None,
+        control_mean=control_mean, control_sd=control_sd, n_treatment=n_treatment, n_control=n_control,
         grounded=grounded, notes=notes,
     )
 
