@@ -1,101 +1,5 @@
 [
  {
-  "doc": "0cb609fbf433_PDFs_of_included_programs_122182713",
-  "page": 38,
-  "row": "T1: Grp LH / Grp C",
-  "column": "(3) Average Cantril's ladder life (out of 10)",
-  "cell": "0.06 (0.08)",
-  "caption": "['Table 19: Subjective well-being']"
- },
- {
-  "doc": "0cb609fbf433_PDFs_of_included_programs_122182713",
-  "page": 38,
-  "row": "T3: Ind LH / Ind C",
-  "column": "(3) Average Cantril's ladder life (out of 10)",
-  "cell": "0.14* (0.07)",
-  "caption": "['Table 19: Subjective well-being']"
- },
- {
-  "doc": "1a257ff09a92_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Das_(2010)_Addressing_Extreme_Poverty",
-  "page": 20,
-  "row": "Assets Natural Assets",
-  "column": "Incidence of severe food shortage - 2005",
-  "cell": "-0.039*",
-  "caption": "['Table 11. Correlation between food insecurity and asset indices']"
- },
- {
-  "doc": "1a257ff09a92_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Das_(2010)_Addressing_Extreme_Poverty",
-  "page": 20,
-  "row": "Physical Assets",
-  "column": "Incidence of severe food shortage - 2005",
-  "cell": "-0.219***",
-  "caption": "['Table 11. Correlation between food insecurity and asset indices']"
- },
- {
-  "doc": "1a257ff09a92_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Das_(2010)_Addressing_Extreme_Poverty",
-  "page": 20,
-  "row": "Physical Assets",
-  "column": "Incidence of severe food shortage - 2008",
-  "cell": "-0.206***",
-  "caption": "['Table 11. Correlation between food insecurity and asset indices']"
- },
- {
-  "doc": "1a257ff09a92_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Das_(2010)_Addressing_Extreme_Poverty",
-  "page": 20,
-  "row": "Financial Assets",
-  "column": "Incidence of severe food shortage - 2005",
-  "cell": "-0.182***",
-  "caption": "['Table 11. Correlation between food insecurity and asset indices']"
- },
- {
-  "doc": "1a257ff09a92_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Das_(2010)_Addressing_Extreme_Poverty",
-  "page": 20,
-  "row": "Financial Assets",
-  "column": "Incidence of severe food shortage - 2008",
-  "cell": "-0.184***",
-  "caption": "['Table 11. Correlation between food insecurity and asset indices']"
- },
- {
-  "doc": "1a257ff09a92_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Das_(2010)_Addressing_Extreme_Poverty",
-  "page": 20,
-  "row": "Physical Assets",
-  "column": "Incidence of severe food shortage - 2005",
-  "cell": "-0.293***",
-  "caption": "['Table 11. Correlation between food insecurity and asset indices']"
- },
- {
-  "doc": "1a257ff09a92_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Das_(2010)_Addressing_Extreme_Poverty",
-  "page": 20,
-  "row": "Physical Assets",
-  "column": "Incidence of severe food shortage - 2008",
-  "cell": "-0.247***",
-  "caption": "['Table 11. Correlation between food insecurity and asset indices']"
- },
- {
-  "doc": "1f44cd8c70b8_PDFs_of_included_programs_121058367",
-  "page": 104,
-  "row": "",
-  "column": "(eggs, milk, dairy, honey) in past 12 months",
-  "cell": "0.222*",
-  "caption": ""
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 14,
-  "row": "Average household size",
-  "column": "2002 - Difference (3=1-2)",
-  "cell": "-0.24**",
-  "caption": "['Table 7. Demography and education']"
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 14,
-  "row": "Average household size",
-  "column": "2005 - Difference (6=4-5)",
-  "cell": "-0.19**",
-  "caption": "['Table 7. Demography and education']"
- },
- {
   "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
   "page": 15,
   "row": "Average cost of doctor's fees + medicine",
@@ -118,118 +22,6 @@
   "column": "Difference in Difference - (7=6-3)",
   "cell": "31.68*",
   "caption": "['Table 8. Prevalence, impact of illness and costs of healthcare']"
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 29,
-  "row": "Financial assets",
-  "column": "Status in food security (1=chronic deficit, … 4=surplus) - 2002",
-  "cell": "0.25*",
-  "caption": "['Table 22. Correlation between asset indices and food security']"
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 29,
-  "row": "Financial assets",
-  "column": "Incidence of severe food shortage (1=yes, 0=no) - 2002",
-  "cell": "-0.09*",
-  "caption": "['Table 22. Correlation between asset indices and food security']"
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 29,
-  "row": "Financial assets",
-  "column": "Incidence of severe food shortage (1=yes, 0=no) - 2005",
-  "cell": "-0.12*",
-  "caption": "['Table 22. Correlation between asset indices and food security']"
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 29,
-  "row": "Human assets",
-  "column": "Incidence of severe food shortage (1=yes, 0=no) - 2002",
-  "cell": "-0.07*",
-  "caption": "['Table 22. Correlation between asset indices and food security']"
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 29,
-  "row": "Human assets",
-  "column": "Incidence of severe food shortage (1=yes, 0=no) - 2005",
-  "cell": "-0.11*",
-  "caption": "['Table 22. Correlation between asset indices and food security']"
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 29,
-  "row": "Natural assets",
-  "column": "Incidence of severe food shortage (1=yes, 0=no) - 2005",
-  "cell": "-0.18*",
-  "caption": "['Table 22. Correlation between asset indices and food security']"
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 29,
-  "row": "Physical assets",
-  "column": "Status in food security (1=chronic deficit, … 4=surplus) - 2002",
-  "cell": "0.35*",
-  "caption": "['Table 22. Correlation between asset indices and food security']"
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 29,
-  "row": "Physical assets",
-  "column": "Incidence of severe food shortage (1=yes, 0=no) - 2002",
-  "cell": "-0.11*",
-  "caption": "['Table 22. Correlation between asset indices and food security']"
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 29,
-  "row": "Physical assets",
-  "column": "Incidence of severe food shortage (1=yes, 0=no) - 2005",
-  "cell": "-0.21*",
-  "caption": "['Table 22. Correlation between asset indices and food security']"
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 29,
-  "row": "Social assets",
-  "column": "Status in food security (1=chronic deficit, … 4=surplus) - 2002",
-  "cell": "0.16*",
-  "caption": "['Table 22. Correlation between asset indices and food security']"
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 29,
-  "row": "Social assets",
-  "column": "Incidence of severe food shortage (1=yes, 0=no) - 2005",
-  "cell": "-0.09*",
-  "caption": "['Table 22. Correlation between asset indices and food security']"
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 29,
-  "row": "Overall asset index",
-  "column": "Status in food security (1=chronic deficit, … 4=surplus) - 2002",
-  "cell": "0.38*",
-  "caption": "['Table 22. Correlation between asset indices and food security']"
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 29,
-  "row": "Overall asset index",
-  "column": "Incidence of severe food shortage (1=yes, 0=no) - 2002",
-  "cell": "-0.10*",
-  "caption": "['Table 22. Correlation between asset indices and food security']"
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 29,
-  "row": "Overall asset index",
-  "column": "Incidence of severe food shortage (1=yes, 0=no) - 2005",
-  "cell": "-0.22*",
-  "caption": "['Table 22. Correlation between asset indices and food security']"
  },
  {
   "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
@@ -257,14 +49,6 @@
  },
  {
   "doc": "27cf2157fc9d_PDFs_of_included_programs_122182711_Spanish",
-  "page": 57,
-  "row": "Superficie total (hectáreas)",
-  "column": "Diferencia",
-  "cell": "0,7 **",
-  "caption": "['Tabla 3.6 Diferencia de medias de variables estructurales, medidas en la línea"
- },
- {
-  "doc": "27cf2157fc9d_PDFs_of_included_programs_122182711_Spanish",
   "page": 60,
   "row": "Consumen menestras/legumbres y semillas (número de veces al año)",
   "column": "Diferencia",
@@ -278,22 +62,6 @@
   "column": "Diferencia",
   "cell": "-3,3 *",
   "caption": "['Tabla 3.8 Diferencia de medias en variables de impacto medidas en la línea de "
- },
- {
-  "doc": "27cf2157fc9d_PDFs_of_included_programs_122182711_Spanish",
-  "page": 61,
-  "row": "Índice de Herfindahl: diversidad de la dieta anual (9 rubros)",
-  "column": "Valor de la prueba estadística",
-  "cell": "2,61 **",
-  "caption": "['Tabla 3.9 Prueba de BGLW: diferencias entre los determinantes de quienes fuero"
- },
- {
-  "doc": "27cf2157fc9d_PDFs_of_included_programs_122182711_Spanish",
-  "page": 65,
-  "row": "de mayor pesos",
-  "column": "10,9",
-  "cell": "10,9 ***",
-  "caption": ""
  },
  {
   "doc": "2b6c38462f7c_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Bandiera_(2009)",
@@ -310,182 +78,6 @@
   "column": "(9) Income II",
   "cell": "2320.3* (1306.4)",
   "caption": "['Table 4: Direct Effects of the Programme I']"
- },
- {
-  "doc": "2b6c38462f7c_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Bandiera_(2009)",
-  "page": 28,
-  "row": "repeat",
-  "column": "(4) Entrepreneurship II -0.086 (0.075)",
-  "cell": "-0.321*** (0.100)",
-  "caption": "['Table 10: Indirect Effects on the Family Network of STUPs III']"
- },
- {
-  "doc": "2ba121015278_PDFs_of_included_programs_122182712_Sulaiman_(2013)",
-  "page": 12,
-  "row": "Household head can read [1=Yes, 0=No]",
-  "column": "Compared to comparison village - (6)",
-  "cell": "0.09 (0.055)",
-  "caption": "['Table 6. Impact on enrolment of primary school aged children']"
- },
- {
-  "doc": "2ba121015278_PDFs_of_included_programs_122182712_Sulaiman_(2013)",
-  "page": 12,
-  "row": "Was enrolled in baseline [1=Yes, 0=No]",
-  "column": "Compared to comparison village - (6)",
-  "cell": "0.04 (0.056)",
-  "caption": "['Table 6. Impact on enrolment of primary school aged children']"
- },
- {
-  "doc": "2ba121015278_PDFs_of_included_programs_122182712_Sulaiman_(2013)",
-  "page": 12,
-  "row": "Household head can read [1=Yes, 0=No]",
-  "column": "Compared to not-selected ultra-poor - (2)",
-  "cell": "-0.01 (0.048)",
-  "caption": "['Table 6. Impact on enrolment of primary school aged children']"
- },
- {
-  "doc": "2ba121015278_PDFs_of_included_programs_122182712_Sulaiman_(2013)",
-  "page": 12,
-  "row": "Household head can read [1=Yes, 0=No]",
-  "column": "Compared to not-selected ultra-poor - (3)",
-  "cell": "-0.05 (0.059)",
-  "caption": "['Table 6. Impact on enrolment of primary school aged children']"
- },
- {
-  "doc": "2ba121015278_PDFs_of_included_programs_122182712_Sulaiman_(2013)",
-  "page": 12,
-  "row": "Household head can read [1=Yes, 0=No]",
-  "column": "Compared to comparison village - (5)",
-  "cell": "-0.03 (0.050)",
-  "caption": "['Table 6. Impact on enrolment of primary school aged children']"
- },
- {
-  "doc": "2ba121015278_PDFs_of_included_programs_122182712_Sulaiman_(2013)",
-  "page": 12,
-  "row": "Household head can read [1=Yes, 0=No]",
-  "column": "Compared to comparison village - (6)",
-  "cell": "-0.10 (0.065)",
-  "caption": "['Table 6. Impact on enrolment of primary school aged children']"
- },
- {
-  "doc": "37d33f3a4b08_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Mallick_(2013)",
-  "page": 10,
-  "row": "MRST (unmarried)",
-  "column": "Eqn. (3) - (2)",
-  "cell": "0.158 (1.08)",
-  "caption": "['Table 6. Marginal effects of probit regression-dependent variable: whether any"
- },
- {
-  "doc": "37d33f3a4b08_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Mallick_(2013)",
-  "page": 10,
-  "row": "SELF",
-  "column": "Eqn. (3) - (2)",
-  "cell": "0.034 (1.39)",
-  "caption": "['Table 6. Marginal effects of probit regression-dependent variable: whether any"
- },
- {
-  "doc": "37d33f3a4b08_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Mallick_(2013)",
-  "page": 10,
-  "row": "EDUAV",
-  "column": "Eqn. (3) - (2)",
-  "cell": "0.025 ** (2.22)",
-  "caption": "['Table 6. Marginal effects of probit regression-dependent variable: whether any"
- },
- {
-  "doc": "37d33f3a4b08_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Mallick_(2013)",
-  "page": 10,
-  "row": "LAND",
-  "column": "Eqn. (3) - (2)",
-  "cell": "0.000 (0.24)",
-  "caption": "['Table 6. Marginal effects of probit regression-dependent variable: whether any"
- },
- {
-  "doc": "37d33f3a4b08_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Mallick_(2013)",
-  "page": 10,
-  "row": "LAND",
-  "column": "Eqn. (4) - (3)",
-  "cell": "0.000 (0.21)",
-  "caption": "['Table 6. Marginal effects of probit regression-dependent variable: whether any"
- },
- {
-  "doc": "37d33f3a4b08_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Mallick_(2013)",
-  "page": 10,
-  "row": "LAND",
-  "column": "Eqn. (4) - (4)",
-  "cell": "0.000 (0.24)",
-  "caption": "['Table 6. Marginal effects of probit regression-dependent variable: whether any"
- },
- {
-  "doc": "37d33f3a4b08_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Mallick_(2013)",
-  "page": 10,
-  "row": "LAND",
-  "column": "Eqn. (4) - (5)",
-  "cell": "0.000 (0.20)",
-  "caption": "['Table 6. Marginal effects of probit regression-dependent variable: whether any"
- },
- {
-  "doc": "37d33f3a4b08_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Mallick_(2013)",
-  "page": 10,
-  "row": "KNLEG",
-  "column": "Eqn. (4) - (5)",
-  "cell": "0.127 ** (2.10)",
-  "caption": "['Table 6. Marginal effects of probit regression-dependent variable: whether any"
- },
- {
-  "doc": "37d33f3a4b08_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Mallick_(2013)",
-  "page": 10,
-  "row": "SOCAP",
-  "column": "Eqn. (4) - (5)",
-  "cell": "0.045 (0.90)",
-  "caption": "['Table 6. Marginal effects of probit regression-dependent variable: whether any"
- },
- {
-  "doc": "37d33f3a4b08_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Mallick_(2013)",
-  "page": 10,
-  "row": "TUP \u0003 SOCAP",
-  "column": "Eqn. (4) - (5)",
-  "cell": "0.193 (1.24)",
-  "caption": "['Table 6. Marginal effects of probit regression-dependent variable: whether any"
- },
- {
-  "doc": "37d33f3a4b08_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Mallick_(2013)",
-  "page": 10,
-  "row": "ASSETPER",
-  "column": "Eqn. (3) - (2)",
-  "cell": "0.163 (1.63)",
-  "caption": "['Table 6. Marginal effects of probit regression-dependent variable: whether any"
- },
- {
-  "doc": "3d1065d6b553_PDFs_of_included_programs_121498842_translated_into_English",
-  "page": 36,
-  "row": "Average daily working hours of",
-  "column": "EI1 - Effect",
-  "cell": "0.84**",
-  "caption": "['Table 11. Effects on the daily working hours of SOF participants']"
- },
- {
-  "doc": "3d1065d6b553_PDFs_of_included_programs_121498842_translated_into_English",
-  "page": 36,
-  "row": "Average daily working hours of",
-  "column": "ER - Change",
-  "cell": "1.45***",
-  "caption": "['Table 11. Effects on the daily working hours of SOF participants']"
- },
- {
-  "doc": "3d1065d6b553_PDFs_of_included_programs_121498842_translated_into_English",
-  "page": 36,
-  "row": "Average daily working hours of the JH",
-  "column": "ER - Change",
-  "cell": "1.22***",
-  "caption": "['Table 11. Effects on the daily working hours of SOF participants']"
- },
- {
-  "doc": "3d1065d6b553_PDFs_of_included_programs_121498842_translated_into_English",
-  "page": 36,
-  "row": "Average daily working hours for home",
-  "column": "EI1 - Effect",
-  "cell": "0.58*",
-  "caption": "['Table 11. Effects on the daily working hours of SOF participants']"
  },
  {
   "doc": "3d1065d6b553_PDFs_of_included_programs_121498842_translated_into_English",
@@ -608,398 +200,6 @@
   "caption": ""
  },
  {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Cash savings ðdummyÞ",
-  "column": "SNB1-SNB0 ð3Þ",
-  "cell": "2.15***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Cash savings ðdummyÞ",
-  "column": "SB1-SNB0 ð4Þ",
-  "cell": "2.19***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Food availability",
-  "column": "SB1-SB0 ð1Þ",
-  "cell": "2.12***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Food availability",
-  "column": "SNB1-SNB0 ð3Þ",
-  "cell": "2.31***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Food availability",
-  "column": "SB1-SNB0 ð4Þ",
-  "cell": "2.42***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Meals twice a day ðdummyÞ",
-  "column": "SB1-SB0 ð1Þ",
-  "cell": "2.15***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Meals twice a day ðdummyÞ",
-  "column": "SNB1-SNB0 ð3Þ",
-  "cell": "2.18***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Meals twice a day ðdummyÞ",
-  "column": "SB1-SNB0 ð4Þ",
-  "cell": "2.22***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Total land owned",
-  "column": "SB1-SB0 ð1Þ",
-  "cell": "2.59**",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Total land owned",
-  "column": "SNB1-SNB0 ð3Þ",
-  "cell": "24.69***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Total land owned",
-  "column": "SB1-SNB0 ð4Þ",
-  "cell": "25.73***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Own homestead land ðdummyÞ",
-  "column": "SB1-SB0 ð1Þ",
-  "cell": "2.08***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Own homestead land ðdummyÞ",
-  "column": "SNB1-SNB0 ð3Þ",
-  "cell": "2.12***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Own homestead land ðdummyÞ",
-  "column": "SB1-SNB0 ð4Þ",
-  "cell": "2.25***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Roof made of tin ðdummyÞ",
-  "column": "SB1-SB0 ð1Þ",
-  "cell": "2.09***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Roof made of tin ðdummyÞ",
-  "column": "SNB1-SNB0 ð3Þ",
-  "cell": "2.13***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Roof made of tin ðdummyÞ",
-  "column": "SB1-SNB0 ð4Þ",
-  "cell": "2.10***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of saris",
-  "column": "SNB1-SNB0 ð3Þ",
-  "cell": "2.16***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of saris",
-  "column": "SB1-SNB0 ð4Þ",
-  "cell": "2.23***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of lungis",
-  "column": "SB1-SB0 ð1Þ",
-  "cell": "2.10*",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of lungis",
-  "column": "SNB1-SNB0 ð3Þ",
-  "cell": "2.13***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of lungis",
-  "column": "SB1-SNB0 ð4Þ",
-  "cell": "2.16***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Shoes ðdummyÞ",
-  "column": "SB1-SB0 ð1Þ",
-  "cell": "2.06*",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Shoes ðdummyÞ",
-  "column": "SNB1-SNB0 ð3Þ",
-  "cell": "2.12***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Shoes ðdummyÞ",
-  "column": "SB1-SNB0 ð4Þ",
-  "cell": "2.12***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of cows/bulls",
-  "column": "SB1-SB0 ð1Þ",
-  "cell": "2.03***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of cows/bulls",
-  "column": "SNB1-SNB0 ð3Þ",
-  "cell": "2.17***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of cows/bulls",
-  "column": "SB1-SNB0 ð4Þ",
-  "cell": "2.22***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of goats/sheep",
-  "column": "SB1-SNB0 ð4Þ",
-  "cell": "2.09***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of ducks/hens",
-  "column": "SNB1-SNB0 ð3Þ",
-  "cell": "2.65***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of ducks/hens",
-  "column": "SB1-SNB0 ð4Þ",
-  "cell": "2.96***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of big trees",
-  "column": "SNB1-SNB0 ð3Þ",
-  "cell": "2.85***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of big trees",
-  "column": "SB1-SNB0 ð4Þ",
-  "cell": "21.04***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of rickshaw vans",
-  "column": "SNB1-SNB0 ð3Þ",
-  "cell": "2.04***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of rickshaw vans",
-  "column": "SB1-SNB0 ð4Þ",
-  "cell": "2.04***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of bicycles",
-  "column": "SNB1-SNB0 ð3Þ",
-  "cell": "2.01**",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of bicycles",
-  "column": "SB1-SNB0 ð4Þ",
-  "cell": "2.01**",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of chairs/tables",
-  "column": "SB1-SB0 ð1Þ",
-  "cell": "2.12***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of chairs/tables",
-  "column": "SNB1-SNB0 ð3Þ",
-  "cell": "2.33***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of chairs/tables",
-  "column": "SB1-SNB0 ð4Þ",
-  "cell": "2.45***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of beds",
-  "column": "SB1-SB0 ð1Þ",
-  "cell": "2.07*",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of beds",
-  "column": "SNB1-SNB0 ð3Þ",
-  "cell": "2.30***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of beds",
-  "column": "SB1-SNB0 ð4Þ",
-  "cell": "2.38***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of radios/TVs",
-  "column": "SNB1-SNB0 ð3Þ",
-  "cell": "2.01**",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of radios/TVs",
-  "column": "SB1-SNB0 ð4Þ",
-  "cell": "2.02***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of quilts/blankets",
-  "column": "SNB1-SNB0 ð3Þ",
-  "cell": "2.04***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of quilts/blankets",
-  "column": "SB1-SNB0 ð4Þ",
-  "cell": "2.05***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of tube-wells",
-  "column": "SNB1-SNB0 ð3Þ",
-  "cell": "2.03***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of tube-wells",
-  "column": "SB1-SNB0 ð4Þ",
-  "cell": "2.02***",
-  "caption": ""
- },
- {
   "doc": "61ddcec5e910_PDFs_of_included_programs_121294984",
   "page": 12,
   "row": "Number of months needed for drought recovery",
@@ -1051,14 +251,6 @@
   "doc": "61ddcec5e910_PDFs_of_included_programs_121294984",
   "page": 52,
   "row": "Labour- constrained",
-  "column": "(12)",
-  "cell": "0.115 (0.204)",
-  "caption": ""
- },
- {
-  "doc": "61ddcec5e910_PDFs_of_included_programs_121294984",
-  "page": 52,
-  "row": "Labour- constrained",
   "column": "(13)",
   "cell": "141.8 (720.7)",
   "caption": ""
@@ -1080,92 +272,12 @@
   "caption": ""
  },
  {
-  "doc": "61ddcec5e910_PDFs_of_included_programs_121294984",
-  "page": 52,
-  "row": "Labour- constrained",
-  "column": "(16)",
-  "cell": "-0.0144 (0.073)",
-  "caption": ""
- },
- {
-  "doc": "61ddcec5e910_PDFs_of_included_programs_121294984",
-  "page": 52,
-  "row": "Labour- constrained",
-  "column": "(17)",
-  "cell": "0.233 (0.458)",
-  "caption": ""
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 20,
-  "row": "POmean",
-  "column": "(2) Multidimensionally poor",
-  "cell": "0.482***",
-  "caption": "['Table 6 Effect of human support on multidimensional poverty']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 21,
-  "row": "POmean",
-  "column": "(1) MPI",
-  "cell": "0.353 *** (0.012)",
-  "caption": "['Table 7 Effect of living support on multidimensional poverty']"
- },
- {
   "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
   "page": 21,
   "row": "POmean",
   "column": "(2) Multidimensionally poor",
   "cell": "0.562 *** (0.045)",
   "caption": "['Table 7 Effect of living support on multidimensional poverty']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 21,
-  "row": "POmean",
-  "column": "(1) Job",
-  "cell": "0.132 ***",
-  "caption": "['Table 8 Effect of human support on MPI components']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 21,
-  "row": "POmean",
-  "column": "(3) Living standard",
-  "cell": "0.454 ***",
-  "caption": "['Table 8 Effect of human support on MPI components']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 21,
-  "row": "POmean",
-  "column": "(4) Health",
-  "cell": "0.267 *** (0.020)",
-  "caption": "['Table 8 Effect of human support on MPI components']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 21,
-  "row": "POmean",
-  "column": "(1) Job",
-  "cell": "0.154***",
-  "caption": "['Table 9 Effect of living support on MPI components']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 21,
-  "row": "POmean",
-  "column": "(3) Living standard",
-  "cell": "0.431***",
-  "caption": "['Table 9 Effect of living support on MPI components']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 21,
-  "row": "POmean",
-  "column": "(4) Health",
-  "cell": "0.334***",
-  "caption": "['Table 9 Effect of living support on MPI components']"
  },
  {
   "doc": "6ee1e2e3e24e_PDFs_of_included_programs_122182711_English",
@@ -1186,98 +298,10 @@
  {
   "doc": "701165f57f97_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Das_(2013)",
   "page": 36,
-  "row": "Whether household's residence is dilapidated",
-  "column": "Estimated coefficient",
-  "cell": "-0.101* (0.054)",
-  "caption": "['Table A.1 Probit estimation of probability of staying in sample between 2007 a"
- },
- {
-  "doc": "701165f57f97_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Das_(2013)",
-  "page": 36,
-  "row": "Household's wealth rank",
-  "column": "Estimated coefficient",
-  "cell": "-0.033 (0.051)",
-  "caption": "['Table A.1 Probit estimation of probability of staying in sample between 2007 a"
- },
- {
-  "doc": "701165f57f97_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Das_(2013)",
-  "page": 36,
   "row": "Whether household owns land",
   "column": "Estimated coefficient",
   "cell": "-0.766** (0.375)",
   "caption": "['Table A.1 Probit estimation of probability of staying in sample between 2007 a"
- },
- {
-  "doc": "701165f57f97_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Das_(2013)",
-  "page": 36,
-  "row": "Household's area of cultivated land",
-  "column": "Estimated coefficient",
-  "cell": "-0.009 (0.006)",
-  "caption": "['Table A.1 Probit estimation of probability of staying in sample between 2007 a"
- },
- {
-  "doc": "701165f57f97_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Das_(2013)",
-  "page": 36,
-  "row": "Household's value of cultivated land",
-  "column": "Estimated coefficient",
-  "cell": "0.000 (0.000)",
-  "caption": "['Table A.1 Probit estimation of probability of staying in sample between 2007 a"
- },
- {
-  "doc": "701165f57f97_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Das_(2013)",
-  "page": 36,
-  "row": "Household's total loans",
-  "column": "Estimated coefficient",
-  "cell": "-0.047 (0.059)",
-  "caption": "['Table A.1 Probit estimation of probability of staying in sample between 2007 a"
- },
- {
-  "doc": "701165f57f97_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Das_(2013)",
-  "page": 36,
-  "row": "Whether household owns home",
-  "column": "Estimated coefficient",
-  "cell": "0.162***",
-  "caption": "['Table A.1 Probit estimation of probability of staying in sample between 2007 a"
- },
- {
-  "doc": "701165f57f97_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Das_(2013)",
-  "page": 36,
-  "row": "Household's food deficit",
-  "column": "Estimated coefficient",
-  "cell": "-0.030 (0.055)",
-  "caption": "['Table A.1 Probit estimation of probability of staying in sample between 2007 a"
- },
- {
-  "doc": "701165f57f97_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Das_(2013)",
-  "page": 36,
-  "row": "",
-  "column": "Estimated coefficient",
-  "cell": "-0.143 (0.121)",
-  "caption": "['Table A.1 Probit estimation of probability of staying in sample between 2007 a"
- },
- {
-  "doc": "701165f57f97_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Das_(2013)",
-  "page": 36,
-  "row": "Household's number of radios / cassette players",
-  "column": "Estimated coefficient",
-  "cell": "-0.257 (0.684)",
-  "caption": "['Table A.1 Probit estimation of probability of staying in sample between 2007 a"
- },
- {
-  "doc": "792bc37d6275_PDFs_of_included_programs_122182715",
-  "page": 38,
-  "row": "Any attendance",
-  "column": "Uganda - Difference - Last three months",
-  "cell": "0.04***",
-  "caption": "['Table A.4: Coaching attendance by modality, Uganda and Philippines']"
- },
- {
-  "doc": "792bc37d6275_PDFs_of_included_programs_122182715",
-  "page": 38,
-  "row": "Avg. attendance",
-  "column": "Uganda - Difference - Last three months",
-  "cell": "0.45***",
-  "caption": "['Table A.4: Coaching attendance by modality, Uganda and Philippines']"
  },
  {
   "doc": "79628963eddc_PDFs_of_included_programs_Nicaragua_-_Atencion_a_Crisis_Nicaragua_-_Atencion_a_Crisis_121315117",
@@ -1312,35 +336,11 @@
   "caption": "['Table 3. Full Tobit regression on child labor hours']"
  },
  {
-  "doc": "79628963eddc_PDFs_of_included_programs_Nicaragua_-_Atencion_a_Crisis_Nicaragua_-_Atencion_a_Crisis_121315117",
-  "page": 8,
-  "row": "Dist. in time to health center in 2005",
-  "column": "Chores",
-  "cell": "0.325 **",
-  "caption": "['Table 3. Full Tobit regression on child labor hours']"
- },
- {
-  "doc": "a72b17099de1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2012)",
-  "page": 41,
-  "row": "Grain stocks (kg)",
-  "column": "radius caliper (1)",
-  "cell": "3.23***",
-  "caption": "['Table 4a: Estimated treatment effects from DIDM estimator']"
- },
- {
   "doc": "a72b17099de1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2012)",
   "page": 41,
   "row": "Grain stocks (kg)",
   "column": "sb1 nearest 2 neighbors (2)",
   "cell": "3.28***",
-  "caption": "['Table 4a: Estimated treatment effects from DIDM estimator']"
- },
- {
-  "doc": "a72b17099de1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2012)",
-  "page": 41,
-  "row": "Grain stocks (kg)",
-  "column": "kernel (3)",
-  "cell": "3.23***",
   "caption": "['Table 4a: Estimated treatment effects from DIDM estimator']"
  },
  {
@@ -1424,190 +424,6 @@
   "caption": "['Table 4: Heterogeneous effects']"
  },
  {
-  "doc": "b5a18f177248_PDFs_of_included_programs_121297660",
-  "page": 33,
-  "row": "Dependency ratio under 2.5",
-  "column": "(2) - Per capita consumption",
-  "cell": "0.491*** (0.104)",
-  "caption": "['Table 4: Heterogeneous effects']"
- },
- {
-  "doc": "b5a18f177248_PDFs_of_included_programs_121297660",
-  "page": 33,
-  "row": "Dependency ratio under 2.5",
-  "column": "(4) - Per capita consumption",
-  "cell": "0.168*",
-  "caption": "['Table 4: Heterogeneous effects']"
- },
- {
-  "doc": "b5a18f177248_PDFs_of_included_programs_121297660",
-  "page": 33,
-  "row": "Low baseline assets",
-  "column": "(4) - Per capita consumption",
-  "cell": "-0.143 (0.093)",
-  "caption": "['Table 4: Heterogeneous effects']"
- },
- {
-  "doc": "ba83facff3d1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Ara_(2021)",
-  "page": 95,
-  "row": "Year18",
-  "column": "Higher risk vs lower risk (4 & 3 vs 1 & 2) - (2)",
-  "cell": "0.719*** (0.061)",
-  "caption": "['Table 3.4 Impact on attitude towards risk']"
- },
- {
-  "doc": "ba83facff3d1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Ara_(2021)",
-  "page": 95,
-  "row": "Year18",
-  "column": "Higher risk vs no risk (4,3,2 vs 1) - (7)",
-  "cell": "0.999 (0.080)",
-  "caption": "['Table 3.4 Impact on attitude towards risk']"
- },
- {
-  "doc": "ba83facff3d1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Ara_(2021)",
-  "page": 95,
-  "row": "Year18",
-  "column": "Highest risk vs lower risk (4 vs 1,2,3) - (9)",
-  "cell": "0.527*** (0.053)",
-  "caption": "['Table 3.4 Impact on attitude towards risk']"
- },
- {
-  "doc": "ba83facff3d1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Ara_(2021)",
-  "page": 95,
-  "row": "Wealth",
-  "column": "Highest risk vs lower risk (4 vs 1,2,3) - (9)",
-  "cell": "1.080*** (0.031)",
-  "caption": "['Table 3.4 Impact on attitude towards risk']"
- },
- {
-  "doc": "ba83facff3d1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Ara_(2021)",
-  "page": 122,
-  "row": "Treat",
-  "column": "Where to save/how to spend the money - Sole vs others (3 vs 1) - (3)",
-  "cell": "0.614*** (0.096)",
-  "caption": "['Table 4.3 Impact on influence in decision-making related to credit and savings"
- },
- {
-  "doc": "ba83facff3d1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Ara_(2021)",
-  "page": 122,
-  "row": "Year18",
-  "column": "Where to save/how to spend the money - Sole vs others (3 vs 1) - (3)",
-  "cell": "0.269*** (0.061)",
-  "caption": "['Table 4.3 Impact on influence in decision-making related to credit and savings"
- },
- {
-  "doc": "ba83facff3d1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Ara_(2021)",
-  "page": 124,
-  "row": "Treat",
-  "column": "Son/daughter's wedding - Sole vs others (3 vs 1) - (3)",
-  "cell": "0.864 (0.251)",
-  "caption": "['Table 4.4 Impact on influence in decision-making related to children']"
- },
- {
-  "doc": "ba83facff3d1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Ara_(2021)",
-  "page": 124,
-  "row": "Year18",
-  "column": "Son/daughter's wedding - Sole vs others (3 vs 1) - (3)",
-  "cell": "0.455** (0.154)",
-  "caption": "['Table 4.4 Impact on influence in decision-making related to children']"
- },
- {
-  "doc": "ba83facff3d1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Ara_(2021)",
-  "page": 126,
-  "row": "Treat",
-  "column": "Expenditure on food - Sole vs others (3 vs 1) - (1)",
-  "cell": "1.772*** (0.230)",
-  "caption": "['Table 4.5 Impact on influence in decision-making related to healthcare expendi"
- },
- {
-  "doc": "ba83facff3d1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Ara_(2021)",
-  "page": 126,
-  "row": "Treat",
-  "column": "Expenditure on healthcare - Sole vs others (3 vs 1) - (3)",
-  "cell": "2.181*** (0.337)",
-  "caption": "['Table 4.5 Impact on influence in decision-making related to healthcare expendi"
- },
- {
-  "doc": "ba83facff3d1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Ara_(2021)",
-  "page": 126,
-  "row": "Treat",
-  "column": "Expenditure on clothing - Sole vs others (3 vs 1) - (5)",
-  "cell": "2.132*** (0.346)",
-  "caption": "['Table 4.5 Impact on influence in decision-making related to healthcare expendi"
- },
- {
-  "doc": "ba83facff3d1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Ara_(2021)",
-  "page": 126,
-  "row": "Year18",
-  "column": "Expenditure on healthcare - Sole vs others (3 vs 1) - (3)",
-  "cell": "0.157*** (0.036)",
-  "caption": "['Table 4.5 Impact on influence in decision-making related to healthcare expendi"
- },
- {
-  "doc": "ba83facff3d1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Ara_(2021)",
-  "page": 126,
-  "row": "Year18",
-  "column": "Expenditure on healthcare - Joint vs others (2 vs 1) - (4)",
-  "cell": "0.650*** (0.069)",
-  "caption": "['Table 4.5 Impact on influence in decision-making related to healthcare expendi"
- },
- {
-  "doc": "ba83facff3d1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Ara_(2021)",
-  "page": 126,
-  "row": "Year18",
-  "column": "Expenditure on clothing - Sole vs others (3 vs 1) - (5)",
-  "cell": "0.226*** (0.052)",
-  "caption": "['Table 4.5 Impact on influence in decision-making related to healthcare expendi"
- },
- {
-  "doc": "ba83facff3d1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Ara_(2021)",
-  "page": 128,
-  "row": "Treat",
-  "column": "Impact",
-  "cell": "-0.002 (0.008)",
-  "caption": "[\"Table 4.6 Impact on women's overall empowerment\"]"
- },
- {
-  "doc": "ba83facff3d1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Ara_(2021)",
-  "page": 128,
-  "row": "Year18",
-  "column": "Impact",
-  "cell": "-0.050*** (0.009)",
-  "caption": "[\"Table 4.6 Impact on women's overall empowerment\"]"
- },
- {
-  "doc": "ba83facff3d1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Ara_(2021)",
-  "page": 130,
-  "row": "Year18",
-  "column": "Got help from neighbours in last one year if required - (2)",
-  "cell": "0.487***",
-  "caption": "['Table 4.7 Impact on social inclusion']"
- },
- {
-  "doc": "ba83facff3d1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Ara_(2021)",
-  "page": 131,
-  "row": "Year18",
-  "column": "Know about the legal age of marriage for girls (2)",
-  "cell": "0.865* (0.075)",
-  "caption": "['Table 4.8 Impact on awareness about social and legal issues']"
- },
- {
-  "doc": "ba83facff3d1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Ara_(2021)",
-  "page": 132,
-  "row": "Treat",
-  "column": "Impact",
-  "cell": "-0.002 (0.007)",
-  "caption": "[\"Table 4.9 Impact on women's overall awareness\"]"
- },
- {
-  "doc": "ba83facff3d1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Ara_(2021)",
-  "page": 132,
-  "row": "Year18",
-  "column": "Impact",
-  "cell": "-0.031*** (0.008)",
-  "caption": "[\"Table 4.9 Impact on women's overall awareness\"]"
- },
- {
   "doc": "c39fc5321b88_PDFs_of_included_programs_padr12468-sup-0001-suppmat",
   "page": 3,
   "row": "Business/Salary",
@@ -1618,25 +434,9 @@
  {
   "doc": "c39fc5321b88_PDFs_of_included_programs_padr12468-sup-0001-suppmat",
   "page": 3,
-  "row": "Other",
-  "column": "0.26***",
-  "cell": "0.18***",
-  "caption": ""
- },
- {
-  "doc": "c39fc5321b88_PDFs_of_included_programs_padr12468-sup-0001-suppmat",
-  "page": 3,
   "row": "No ability to save money per month",
   "column": "0.26***",
   "cell": "-0.05*",
-  "caption": ""
- },
- {
-  "doc": "c39fc5321b88_PDFs_of_included_programs_padr12468-sup-0001-suppmat",
-  "page": 3,
-  "row": "Access to water",
-  "column": "0.26***",
-  "cell": "0.07***",
   "caption": ""
  },
  {
@@ -1689,170 +489,10 @@
  },
  {
   "doc": "c5f7f6a26ce7_PDFs_of_included_programs_121354848",
-  "page": 4,
-  "row": "Animals",
-  "column": "C",
-  "cell": "0.001 [0.033]",
-  "caption": "[\"Table 1 Participation in program's interventions over two years.\"]"
- },
- {
-  "doc": "c5f7f6a26ce7_PDFs_of_included_programs_121354848",
-  "page": 4,
-  "row": "... #",
-  "column": "C",
-  "cell": "0.003 [0.097]",
-  "caption": "[\"Table 1 Participation in program's interventions over two years.\"]"
- },
- {
-  "doc": "c5f7f6a26ce7_PDFs_of_included_programs_121354848",
-  "page": 4,
-  "row": "Flour",
-  "column": "C",
-  "cell": "0.003 [0.057]",
-  "caption": "[\"Table 1 Participation in program's interventions over two years.\"]"
- },
- {
-  "doc": "c5f7f6a26ce7_PDFs_of_included_programs_121354848",
-  "page": 4,
-  "row": "Cereals",
-  "column": "C",
-  "cell": "0.032 [0.176]",
-  "caption": "[\"Table 1 Participation in program's interventions over two years.\"]"
- },
- {
-  "doc": "c5f7f6a26ce7_PDFs_of_included_programs_121354848",
-  "page": 4,
-  "row": "Inputs",
-  "column": "C",
-  "cell": "0.000 [0.000]",
-  "caption": "[\"Table 1 Participation in program's interventions over two years.\"]"
- },
- {
-  "doc": "c5f7f6a26ce7_PDFs_of_included_programs_121354848",
-  "page": 4,
-  "row": "Training",
-  "column": "C",
-  "cell": "0.005 [0.074]",
-  "caption": "[\"Table 1 Participation in program's interventions over two years.\"]"
- },
- {
-  "doc": "c5f7f6a26ce7_PDFs_of_included_programs_121354848",
-  "page": 4,
-  "row": "Other",
-  "column": "C",
-  "cell": "0.039 [0.193]",
-  "caption": "[\"Table 1 Participation in program's interventions over two years.\"]"
- },
- {
-  "doc": "c5f7f6a26ce7_PDFs_of_included_programs_121354848",
-  "page": 5,
-  "row": "Agriculture",
-  "column": "1-year results - C",
-  "cell": "0.000 [1.000]",
-  "caption": "['Table 2 Wealth indexes and poverty impacts.']"
- },
- {
-  "doc": "c5f7f6a26ce7_PDFs_of_included_programs_121354848",
-  "page": 5,
-  "row": "Agriculture",
-  "column": "2-year results - C",
-  "cell": "0.000 [1.000]",
-  "caption": "['Table 2 Wealth indexes and poverty impacts.']"
- },
- {
-  "doc": "c5f7f6a26ce7_PDFs_of_included_programs_121354848",
-  "page": 5,
-  "row": "Agriculture",
-  "column": "3-year results - C",
-  "cell": "0.000 [1.000]",
-  "caption": "['Table 2 Wealth indexes and poverty impacts.']"
- },
- {
-  "doc": "c5f7f6a26ce7_PDFs_of_included_programs_121354848",
-  "page": 5,
-  "row": "Livestock",
-  "column": "1-year results - C",
-  "cell": "0.000 [1.000]",
-  "caption": "['Table 2 Wealth indexes and poverty impacts.']"
- },
- {
-  "doc": "c5f7f6a26ce7_PDFs_of_included_programs_121354848",
-  "page": 5,
-  "row": "Livestock",
-  "column": "2-year results - C",
-  "cell": "0.000 [1.000]",
-  "caption": "['Table 2 Wealth indexes and poverty impacts.']"
- },
- {
-  "doc": "c5f7f6a26ce7_PDFs_of_included_programs_121354848",
-  "page": 5,
-  "row": "Livestock",
-  "column": "3-year results - C",
-  "cell": "0.000 [1.000]",
-  "caption": "['Table 2 Wealth indexes and poverty impacts.']"
- },
- {
-  "doc": "c5f7f6a26ce7_PDFs_of_included_programs_121354848",
-  "page": 5,
-  "row": "Farming",
-  "column": "3-year results - C",
-  "cell": "0.000 [1.000]",
-  "caption": "['Table 2 Wealth indexes and poverty impacts.']"
- },
- {
-  "doc": "c5f7f6a26ce7_PDFs_of_included_programs_121354848",
-  "page": 5,
-  "row": "Saving",
-  "column": "1-year results - C",
-  "cell": "0.000 [1.000]",
-  "caption": "['Table 2 Wealth indexes and poverty impacts.']"
- },
- {
-  "doc": "c5f7f6a26ce7_PDFs_of_included_programs_121354848",
-  "page": 5,
-  "row": "Saving",
-  "column": "2-year results - C",
-  "cell": "0.000 [1.000]",
-  "caption": "['Table 2 Wealth indexes and poverty impacts.']"
- },
- {
-  "doc": "c5f7f6a26ce7_PDFs_of_included_programs_121354848",
-  "page": 5,
-  "row": "Wealth",
-  "column": "1-year results - C",
-  "cell": "-0.001 [0.684]",
-  "caption": "['Table 2 Wealth indexes and poverty impacts.']"
- },
- {
-  "doc": "c5f7f6a26ce7_PDFs_of_included_programs_121354848",
-  "page": 5,
-  "row": "Wealth",
-  "column": "2-year results - C",
-  "cell": "0.001 [0.698]",
-  "caption": "['Table 2 Wealth indexes and poverty impacts.']"
- },
- {
-  "doc": "c5f7f6a26ce7_PDFs_of_included_programs_121354848",
-  "page": 5,
-  "row": "Wealth",
-  "column": "3-year results - C",
-  "cell": "0.000 [0.667]",
-  "caption": "['Table 2 Wealth indexes and poverty impacts.']"
- },
- {
-  "doc": "c5f7f6a26ce7_PDFs_of_included_programs_121354848",
   "page": 5,
   "row": "Own",
   "column": "",
   "cell": "2.688 [2.514]",
-  "caption": ""
- },
- {
-  "doc": "c5f7f6a26ce7_PDFs_of_included_programs_121354848",
-  "page": 5,
-  "row": "Aspired",
-  "column": "",
-  "cell": "4.882 [3.468]",
   "caption": ""
  },
  {
@@ -1872,27 +512,11 @@
   "caption": ""
  },
  {
-  "doc": "c5f7f6a26ce7_PDFs_of_included_programs_121354848",
-  "page": 5,
-  "row": "Aspiration index",
-  "column": "",
-  "cell": "0.002 [1.000]",
-  "caption": ""
- },
- {
   "doc": "c6f56d86e783_PDFs_of_included_programs_121058369",
   "page": 7,
   "row": "(9)",
   "column": "1.00",
   "cell": "0.81 †",
-  "caption": "['Treatment effects on key welfare outcomes.']"
- },
- {
-  "doc": "c6f56d86e783_PDFs_of_included_programs_121058369",
-  "page": 7,
-  "row": "(9)",
-  "column": "<0.01",
-  "cell": "0.17 †",
   "caption": "['Treatment effects on key welfare outcomes.']"
  },
  {
@@ -1970,25 +594,9 @@
  {
   "doc": "df1588ddee86_PDFs_of_included_programs_121498842_Spanish",
   "page": 55,
-  "row": "Horas de trabajo diarias promedio del Participante",
-  "column": "Diferencia",
-  "cell": "3,87***",
-  "caption": "['Cuadro 17. Medias y diferencia de medias en las variables evaluadas por el gén"
- },
- {
-  "doc": "df1588ddee86_PDFs_of_included_programs_121498842_Spanish",
-  "page": 55,
   "row": "Horas de trabajo diarias promedio del JH",
   "column": "Diferencia",
   "cell": "2,07***",
-  "caption": "['Cuadro 17. Medias y diferencia de medias en las variables evaluadas por el gén"
- },
- {
-  "doc": "df1588ddee86_PDFs_of_included_programs_121498842_Spanish",
-  "page": 55,
-  "row": "Horas de trabajo diario promedio para el hogar",
-  "column": "Diferencia",
-  "cell": "0,96***",
   "caption": "['Cuadro 17. Medias y diferencia de medias en las variables evaluadas por el gén"
  },
  {
@@ -2105,22 +713,6 @@
  },
  {
   "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
-  "page": 9,
-  "row": "Farming",
-  "column": "T2-C",
-  "cell": "0.158*",
-  "caption": "['Table OB2: Index Balancing']"
- },
- {
-  "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
-  "page": 9,
-  "row": "Aggreagated",
-  "column": "T2-C",
-  "cell": "0.100*",
-  "caption": "['Table OB2: Index Balancing']"
- },
- {
-  "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
   "page": 14,
   "row": "",
   "column": "1-year results - T2-C",
@@ -2141,14 +733,6 @@
   "row": "",
   "column": "2-year results - T3-C",
   "cell": "-1.111 (2.049)",
-  "caption": "['Table OB5: Livestock']"
- },
- {
-  "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
-  "page": 14,
-  "row": "",
-  "column": "3-year results - T1-C",
-  "cell": "0.092 (2.534)",
   "caption": "['Table OB5: Livestock']"
  },
  {
@@ -2194,74 +778,10 @@
  {
   "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
   "page": 15,
-  "row": "... cultivated",
-  "column": "3-year results - T3-C",
-  "cell": "0.087 (0.105)",
-  "caption": "['Table OB6: Farm size and revenue']"
- },
- {
-  "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
-  "page": 15,
-  "row": "... owned",
-  "column": "3-year results - T3-C",
-  "cell": "0.087 (0.113)",
-  "caption": "['Table OB6: Farm size and revenue']"
- },
- {
-  "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
-  "page": 15,
-  "row": "... fertilized",
-  "column": "3-year results - T3-C",
-  "cell": "0.088 (0.097)",
-  "caption": "['Table OB6: Farm size and revenue']"
- },
- {
-  "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
-  "page": 15,
-  "row": "... irrigated",
-  "column": "3-year results - T3-C",
-  "cell": "-0.002 (0.006)",
-  "caption": "['Table OB6: Farm size and revenue']"
- },
- {
-  "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
-  "page": 15,
-  "row": "# of cultivated crops",
-  "column": "3-year results - T3-C",
-  "cell": "-0.013 (0.162)",
-  "caption": "['Table OB6: Farm size and revenue']"
- },
- {
-  "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
-  "page": 15,
-  "row": "Plot size (in ha)",
-  "column": "3-year results - T3-C",
-  "cell": "0.202 (0.180)",
-  "caption": "['Table OB6: Farm size and revenue']"
- },
- {
-  "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
-  "page": 15,
   "row": "Agricultural revenue",
   "column": "3-year results - T3-C",
   "cell": "-1.802 (11.61)",
   "caption": "['Table OB6: Farm size and revenue']"
- },
- {
-  "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
-  "page": 16,
-  "row": "Tontine, amount",
-  "column": "1-year - C",
-  "cell": "0.167 [1.027]",
-  "caption": "['Table OB7: Loans and Saving']"
- },
- {
-  "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
-  "page": 16,
-  "row": "saving, (yes=1)",
-  "column": "1-year - C",
-  "cell": "0.281 [0.450]",
-  "caption": "['Table OB7: Loans and Saving']"
  },
  {
   "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
@@ -2274,42 +794,10 @@
  {
   "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
   "page": 16,
-  "row": "has loan, (yes=1)",
-  "column": "1-year - C",
-  "cell": "0.445 [0.497]",
-  "caption": "['Table OB7: Loans and Saving']"
- },
- {
-  "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
-  "page": 16,
   "row": "loan, amount",
   "column": "1-year - C",
   "cell": "27.69 [77.48]",
   "caption": "['Table OB7: Loans and Saving']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Proportion of male HH",
-  "column": "IV (B, C, D, E vs. F) - Difference",
-  "cell": "-0.107*** [0.036]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Proportion of male participants",
-  "column": "IV (B, C, D, E vs. F) - Difference",
-  "cell": "-0.117*** [0.025]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Total women in the household",
-  "column": "IV (B, C, D, E vs. F) - Difference",
-  "cell": "0.189* [0.103]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
  },
  {
   "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",

@@ -128,6 +128,7 @@ def main() -> None:
                 key = (other.get("page_idx") or 0) + 1
                 page_text[key] = (page_text.get(key, "") + " " + str(other.get("text") or ""))[:2000]
         stored = by_document.get(name, {})
+        document_values = [value for rows in stored.values() for value in rows]
         for item in content:
             text = str(item.get("text") or "")
             if item.get("type") != "table" or "|" not in text or looks_garbled(text):
@@ -148,6 +149,12 @@ def main() -> None:
                 for index, cell in enumerate(body[1:], start=1):
                     candidates = cell_values(cell)
                     if not candidates or any(matches(value, stored.get(page, [])) for value in candidates):
+                        continue
+                    # A table that spans pages stores its rows under the page it starts on, so a value on
+                    # the continuation page is in the store already. Counting those as gaps overstated the
+                    # queue by 192 cells of 296; they are attribution, not coverage.
+                    if any(matches(value, document_values) for value in candidates):
+                        counts["stored on another page"] += 1
                         continue
                     if not table_has_stars:
                         why = "table of means"

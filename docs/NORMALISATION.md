@@ -308,6 +308,28 @@ remain unexplained. That remainder is dominated by the 91 documents still carryi
 which is what the full re-extraction is for. The hand-typed key stays at 305 estimates and 284 standard
 errors throughout, so the coverage work is additive rather than a trade against accuracy.
 
+### A deep pass over the remainder (17 November 2026)
+
+The 296 figure was a page-level count and it overstated the gap. Comparing each remaining cell with every row
+stored for the study, rather than only with the rows on its own page, changes the answer:
+
+| Reason | Cells |
+| --- | --- |
+| stored elsewhere in the same document | 189 |
+| stored in another document of the study | 3 |
+| table read but this cell omitted | 75 |
+| page has no stored rows | 29 |
+
+So 192 of the 296 were already in the store, and 104 were a real gap. The cause of the overcount is ordinary:
+a table that spans pages stores its rows under the page it starts on, so a cell on the continuation page looks
+missing when only its own page is checked. The triage now keeps that as a separate bucket, `stored on another
+page`, and the real figure is 107 cells, 0.8 percent of the 12,889 estimate-shaped cells, spread across 22
+documents with 14 in the largest.
+
+Those 107 are the cell-level omissions the completeness retry targets, and they are listed in
+`evaluation/results/coverage_unexplained_<date>.json` with document, page, row and column. A pass over the five
+largest documents would close most of them; the rest are single cells in unusual layouts.
+
 ### Deployed, and the tail measured (17 November 2026)
 
 The reader is now deployed: `python -m modal deploy infrastructure/modal_mineru.py` created the functions and
