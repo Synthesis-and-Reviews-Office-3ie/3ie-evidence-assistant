@@ -50,7 +50,7 @@ _NON_OUTCOME = (
     "observations", "number of observations", "n obs", "nobs", "r-squared", "r squared", "r2",
     "adjusted r", "constant", "intercept", "controls", "control variables", "covariates",
     "fixed effects", "f-statistic", "f stat", "p-value", "p value", "standard deviation",
-    "mean", "average", "clusters", "number of clusters",
+    "clusters", "number of clusters",
 )
 _NON_OUTCOME_EXACT = {"n", "obs", "sd", "se", "r2", "r²"}
 # Font-mapping failures leave runs like "?????? a114 a116" where letters should be.
@@ -154,6 +154,17 @@ def is_non_outcome_label(label: str) -> bool:
     # "Average effect of T1" is an effect, not a control mean; "Mean in pure control" is a mean.
     if re.search(r"\b(mean|average|avg)\b.*\b(effect|impact)\b", key):
         return False
+    # A bare mean or average, or one qualified as the control or baseline group, is a summary statistic.
+    # An outcome can begin with the word, though: paper 121354848's livestock table reports "Average price"
+    # and "Average price (animals sold)", which are outcomes and were being dropped for the cue "average".
+    if re.fullmatch(r"(mean|average|avg)(\s*\([^)]*\))?", key):
+        return True
+    if re.search(r"\b(control|baseline|comparison|treatment)\s+(mean|average)\b", key):
+        return True
+    if re.search(r"\b(mean|average|avg)\b\s+(in|of|for)\s+(the\s+)?(pure\s+)?(control|comparison)", key):
+        return True
+    if re.fullmatch(r"(mean|average|avg)\s+(of\s+)?(the\s+)?controls?\b.*", key):
+        return True
     # "Prob > F" is a p-value; "probability of employment" is an outcome, so prob is matched exactly.
     if key == "prob" or key.startswith("prob ") or "prob >" in key:
         return True

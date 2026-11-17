@@ -212,7 +212,7 @@ async def transcribe_page(pdf_bytes: bytes, page: int, model: str, api_key: str,
     import httpx
 
     own = client is None
-    client = client or httpx.AsyncClient(timeout=300, headers={"Authorization": f"Bearer {api_key}"})
+    client = client or httpx.AsyncClient(base_url="https://openrouter.ai/api/v1", timeout=300, headers={"Authorization": f"Bearer {api_key}"})
     try:
         data_url = image or page_data_url(pdf_bytes, page, dpi)
         response = await client.post("/chat/completions", json={
@@ -417,7 +417,7 @@ async def extract_pages(pdf_bytes: bytes, pages: Sequence[int], model: str, api_
     import httpx
 
     own_client = client is None
-    client = client or httpx.AsyncClient(timeout=300, headers={"Authorization": f"Bearer {api_key}"})
+    client = client or httpx.AsyncClient(base_url="https://openrouter.ai/api/v1", timeout=300, headers={"Authorization": f"Bearer {api_key}"})
     rows: List[Dict[str, Any]] = []
     records = []
     try:

@@ -142,3 +142,10 @@ def test_balance_columns_and_descriptive_cells_are_recognised_without_a_caption(
     assert reason("Average age of the household members", "IV (B, C, D, E vs. F) -", "", 18, 60,
                   "22.31 [7.450]") == "table of means"
     assert reason("Average income", "Effect", "", 3, 60, "22.31*** [7.45]") == "unexplained"
+
+
+def test_means_and_difference_of_means_is_not_an_effect():
+    from evaluation.coverage_triage import reason
+
+    assert reason("Ingreso mensual", "Diferencia", "Cuadro 17. Medias y diferencia de medias por genero",
+                  55, 60, "47,11***") == "table of means"

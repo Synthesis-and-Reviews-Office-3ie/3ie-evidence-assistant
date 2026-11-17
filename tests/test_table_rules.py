@@ -98,3 +98,11 @@ def test_a_units_note_in_parentheses_does_not_make_a_row_a_non_outcome():
     assert is_non_outcome_label("Constant") is True
     assert is_non_outcome_label("Mean in pure control") is True
     assert is_non_outcome_label("Prob > F") is True
+
+
+def test_an_outcome_that_begins_with_average_is_not_a_summary_row():
+    assert is_non_outcome_label("Average price") is False
+    assert is_non_outcome_label("Average price (animals sold)") is False
+    assert is_non_outcome_label("Average") is True
+    assert is_non_outcome_label("Mean in pure control") is True
+    assert is_non_outcome_label("Average treatment effect") is False

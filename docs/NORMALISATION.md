@@ -308,6 +308,29 @@ remain unexplained. That remainder is dominated by the 91 documents still carryi
 which is what the full re-extraction is for. The hand-typed key stays at 305 estimates and 284 standard
 errors throughout, so the coverage work is additive rather than a trade against accuracy.
 
+### The unusual layouts, case by case (17 November 2026)
+
+Re-reading the five largest gaps did not close them, so each was traced to its cause. Three came out of it,
+and two were our own faults.
+
+- **Our filter dropped real outcomes.** `is_non_outcome_label` carried "average" as a summary cue, so paper
+  121354848's livestock table lost its "Average price" and "Average price (animals sold)" rows, nine cells in
+  one table. A cue list cannot assume that a word which names a statistic never begins an outcome. The rule now
+  drops only a bare mean or average, or one qualified as the control or baseline group, and keeps everything
+  else; tests cover both directions.
+- **The vision reader failed unless it was handed a client.** Its default client had no base URL, so a call
+  without one raised `UnsupportedProtocol`. Production always passed a client, which is why nobody saw it; it
+  is fixed.
+- **A table that both readers refuse may be right to refuse.** Paper 121498842's page 55 is "Cuadro 17. Medias
+  y diferencia de medias ... por el género del participante": means and difference of means by participant
+  gender. That is a subgroup difference, not the programme's effect, and both readers declined it. The triage
+  now recognises that caption, in Spanish and English, and no longer counts it as a gap.
+
+After those, the real gap is 70 cells in 20 documents, 66 omitted from tables that were read and 4 on pages
+with no stored rows, down from 296 and then 107. The others in the old count were already stored, or were
+tables of means and balance sheets. The lesson for production is that an unusual layout is more often a table
+that should not be stored than a reader failure, and the triage is where that judgement belongs.
+
 ### A deep pass over the remainder (17 November 2026)
 
 The 296 figure was a page-level count and it overstated the gap. Comparing each remaining cell with every row

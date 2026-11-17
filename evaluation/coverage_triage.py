@@ -61,6 +61,11 @@ def reason(row_label: str, column_label: str, caption: str, page: int, pages: in
     if (re.search(r"\b(age|men|women|male|female|members?|participants?|household size|children)\b",
                   str(row_label or ""), re.I) and not re.search(r"[*†‡]", str(cell or ""))):
         return "covariate row"
+    # "Medias y diferencia de medias ... por el género" and its English form report subgroup differences,
+    # not the programme's effect; paper 121498842 page 55 is the example, and both readers refuse it.
+    if re.search(r"medias?\s+y\s+diferencia|means?\s+(and|y)\s+differen|diferencia\s+de\s+medias|"
+                 r"difference\s+in\s+means", str(caption or "").lower()):
+        return "table of means"
     # A balance or attrition table reports pre-programme differences or who answered the survey, not an
     # effect of the programme. Paper a72b's "Table 2a: Test of difference in mean characteristics ... in
     # 2002" and 121058373's "Pooled Attrition" are the examples; storing their starred cells would be wrong.

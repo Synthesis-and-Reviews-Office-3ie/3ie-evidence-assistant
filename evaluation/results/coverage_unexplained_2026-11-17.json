@@ -48,22 +48,6 @@
   "caption": "['Table 23. Shelter information']"
  },
  {
-  "doc": "27cf2157fc9d_PDFs_of_included_programs_122182711_Spanish",
-  "page": 60,
-  "row": "Consumen menestras/legumbres y semillas (número de veces al año)",
-  "column": "Diferencia",
-  "cell": "-42,0 *",
-  "caption": "['Tabla 3.8 Diferencia de medias en variables de impacto medidas en la línea de "
- },
- {
-  "doc": "27cf2157fc9d_PDFs_of_included_programs_122182711_Spanish",
-  "page": 60,
-  "row": "Número de cuyes",
-  "column": "Diferencia",
-  "cell": "-3,3 *",
-  "caption": "['Tabla 3.8 Diferencia de medias en variables de impacto medidas en la línea de "
- },
- {
   "doc": "2b6c38462f7c_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Bandiera_(2009)",
   "page": 25,
   "row": "repeat",
@@ -280,14 +264,6 @@
   "caption": "['Table 7 Effect of living support on multidimensional poverty']"
  },
  {
-  "doc": "6ee1e2e3e24e_PDFs_of_included_programs_122182711_English",
-  "page": 60,
-  "row": "times a year)",
-  "column": "Difference",
-  "cell": "-42.0*",
-  "caption": ""
- },
- {
   "doc": "701165f57f97_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Das_(2013)",
   "page": 36,
   "row": "Treatment indicator",
@@ -424,70 +400,6 @@
   "caption": "['Table 4: Heterogeneous effects']"
  },
  {
-  "doc": "c39fc5321b88_PDFs_of_included_programs_padr12468-sup-0001-suppmat",
-  "page": 3,
-  "row": "Business/Salary",
-  "column": "0.26***",
-  "cell": "-0.14***",
-  "caption": ""
- },
- {
-  "doc": "c39fc5321b88_PDFs_of_included_programs_padr12468-sup-0001-suppmat",
-  "page": 3,
-  "row": "No ability to save money per month",
-  "column": "0.26***",
-  "cell": "-0.05*",
-  "caption": ""
- },
- {
-  "doc": "c39fc5321b88_PDFs_of_included_programs_padr12468-sup-0001-suppmat",
-  "page": 3,
-  "row": "Access to hospital",
-  "column": "0.26***",
-  "cell": "-0.06***",
-  "caption": ""
- },
- {
-  "doc": "c39fc5321b88_PDFs_of_included_programs_padr12468-sup-0001-suppmat",
-  "page": 3,
-  "row": "Access to fuel",
-  "column": "0.26***",
-  "cell": "-0.27***",
-  "caption": ""
- },
- {
-  "doc": "c39fc5321b88_PDFs_of_included_programs_padr12468-sup-0001-suppmat",
-  "page": 3,
-  "row": "Having direct contact abroad",
-  "column": "0.26***",
-  "cell": "-0.15***",
-  "caption": ""
- },
- {
-  "doc": "c39fc5321b88_PDFs_of_included_programs_padr12468-sup-0001-suppmat",
-  "page": 3,
-  "row": "Family pressure to migrate",
-  "column": "0.26***",
-  "cell": "-0.06***",
-  "caption": ""
- },
- {
-  "doc": "c39fc5321b88_PDFs_of_included_programs_padr12468-sup-0001-suppmat",
-  "page": 3,
-  "row": "Living in Village with more than 1000 inhabitants\"",
-  "column": "0.26***",
-  "cell": "-0.51***",
-  "caption": ""
- },
- {
-  "doc": "c39fc5321b88_PDFs_of_included_programs_padr12468-sup-0001-suppmat",
-  "page": 3,
-  "row": "Days between endline and intervention",
-  "column": "0.26***",
-  "cell": "-4.24***",
-  "caption": ""
- },
- {
   "doc": "c5f7f6a26ce7_PDFs_of_included_programs_121354848",
   "page": 5,
   "row": "Own",
@@ -592,196 +504,12 @@
   "caption": "['Table 6: Change in real per capita income between 2002 and 2005 (per capita in"
  },
  {
-  "doc": "df1588ddee86_PDFs_of_included_programs_121498842_Spanish",
-  "page": 55,
-  "row": "Horas de trabajo diarias promedio del JH",
-  "column": "Diferencia",
-  "cell": "2,07***",
-  "caption": "['Cuadro 17. Medias y diferencia de medias en las variables evaluadas por el gén"
- },
- {
-  "doc": "df1588ddee86_PDFs_of_included_programs_121498842_Spanish",
-  "page": 55,
-  "row": "(USD ppa) Ingreso mensual del participante de la actividad laboral",
-  "column": "Diferencia",
-  "cell": "72,58***",
-  "caption": "['Cuadro 17. Medias y diferencia de medias en las variables evaluadas por el gén"
- },
- {
-  "doc": "df1588ddee86_PDFs_of_included_programs_121498842_Spanish",
-  "page": 55,
-  "row": "Ingreso mensual del participante de la actividad laboral dependiente (USD ppa)",
-  "column": "Diferencia",
-  "cell": "25,47**",
-  "caption": "['Cuadro 17. Medias y diferencia de medias en las variables evaluadas por el gén"
- },
- {
-  "doc": "df1588ddee86_PDFs_of_included_programs_121498842_Spanish",
-  "page": 55,
-  "row": "Ingreso mensual del participante de la actividad laboral independiente (USD ppa)",
-  "column": "Diferencia",
-  "cell": "47,11***",
-  "caption": "['Cuadro 17. Medias y diferencia de medias en las variables evaluadas por el gén"
- },
- {
-  "doc": "df1588ddee86_PDFs_of_included_programs_121498842_Spanish",
-  "page": 55,
-  "row": "Valor total de la infraestructura del hogar",
-  "column": "Diferencia",
-  "cell": "-141,40***",
-  "caption": "['Cuadro 17. Medias y diferencia de medias en las variables evaluadas por el gén"
- },
- {
-  "doc": "df1588ddee86_PDFs_of_included_programs_121498842_Spanish",
-  "page": 55,
-  "row": "Inseguridad Severa",
-  "column": "Diferencia",
-  "cell": "12,3***",
-  "caption": "['Cuadro 17. Medias y diferencia de medias en las variables evaluadas por el gén"
- },
- {
-  "doc": "df1588ddee86_PDFs_of_included_programs_121498842_Spanish",
-  "page": 55,
-  "row": "Ahorros líquidos (%)",
-  "column": "Diferencia",
-  "cell": "-12,3**",
-  "caption": "['Cuadro 17. Medias y diferencia de medias en las variables evaluadas por el gén"
- },
- {
-  "doc": "df1588ddee86_PDFs_of_included_programs_121498842_Spanish",
-  "page": 55,
-  "row": "Ahorros medios no formales (%)",
-  "column": "Diferencia",
-  "cell": "-11,1**",
-  "caption": "['Cuadro 17. Medias y diferencia de medias en las variables evaluadas por el gén"
- },
- {
-  "doc": "df1588ddee86_PDFs_of_included_programs_121498842_Spanish",
-  "page": 55,
-  "row": "Ahorros en especie (%)",
-  "column": "Diferencia",
-  "cell": "2,5***",
-  "caption": "['Cuadro 17. Medias y diferencia de medias en las variables evaluadas por el gén"
- },
- {
-  "doc": "df1588ddee86_PDFs_of_included_programs_121498842_Spanish",
-  "page": 55,
-  "row": "Ahorros líquidos y no líquidos (%)",
-  "column": "Diferencia",
-  "cell": "-11,3**",
-  "caption": "['Cuadro 17. Medias y diferencia de medias en las variables evaluadas por el gén"
- },
- {
-  "doc": "df1588ddee86_PDFs_of_included_programs_121498842_Spanish",
-  "page": 55,
-  "row": "Gasto pc mensualizado en alimentos",
-  "column": "Diferencia",
-  "cell": "5,86*",
-  "caption": "['Cuadro 17. Medias y diferencia de medias en las variables evaluadas por el gén"
- },
- {
-  "doc": "df1588ddee86_PDFs_of_included_programs_121498842_Spanish",
-  "page": 55,
-  "row": "Percepción de bienestar actual",
-  "column": "Diferencia",
-  "cell": "-0,39***",
-  "caption": "['Cuadro 17. Medias y diferencia de medias en las variables evaluadas por el gén"
- },
- {
-  "doc": "df1588ddee86_PDFs_of_included_programs_121498842_Spanish",
-  "page": 55,
-  "row": "Índice de poder e independencia en la toma de decisiones",
-  "column": "Diferencia",
-  "cell": "7,39**",
-  "caption": "['Cuadro 17. Medias y diferencia de medias en las variables evaluadas por el gén"
- },
- {
-  "doc": "df1588ddee86_PDFs_of_included_programs_121498842_Spanish",
-  "page": 55,
-  "row": "Escala roles de género dentro del hogar",
-  "column": "Diferencia",
-  "cell": "-3,71**",
-  "caption": "['Cuadro 17. Medias y diferencia de medias en las variables evaluadas por el gén"
- },
- {
   "doc": "e23a72cd85d8_PDFs_of_included_programs_121326829",
   "page": 72,
   "row": "",
   "column": "Amount Deposited to Savings (PPP$)",
   "cell": "17.725 (54.325)",
   "caption": "['Table 3.7. Spillover impacts with more flexible specifications']"
- },
- {
-  "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
-  "page": 14,
-  "row": "",
-  "column": "1-year results - T2-C",
-  "cell": "-3.769* (2.043)",
-  "caption": "['Table OB5: Livestock']"
- },
- {
-  "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
-  "page": 14,
-  "row": "",
-  "column": "2-year results - T1-C",
-  "cell": "1.431 (2.268)",
-  "caption": "['Table OB5: Livestock']"
- },
- {
-  "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
-  "page": 14,
-  "row": "",
-  "column": "2-year results - T3-C",
-  "cell": "-1.111 (2.049)",
-  "caption": "['Table OB5: Livestock']"
- },
- {
-  "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
-  "page": 14,
-  "row": "",
-  "column": "3-year results - T2-C",
-  "cell": "-3.919 (2.613)",
-  "caption": "['Table OB5: Livestock']"
- },
- {
-  "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
-  "page": 14,
-  "row": "",
-  "column": "3-year results - T3-C",
-  "cell": "-1.514 (2.793)",
-  "caption": "['Table OB5: Livestock']"
- },
- {
-  "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
-  "page": 14,
-  "row": "Average price",
-  "column": "1-year results - T2-C",
-  "cell": "-10.81***",
-  "caption": "['Table OB5: Livestock']"
- },
- {
-  "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
-  "page": 14,
-  "row": "Average price",
-  "column": "1-year results - T3-C",
-  "cell": "-6.547*",
-  "caption": "['Table OB5: Livestock']"
- },
- {
-  "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
-  "page": 14,
-  "row": "Average price",
-  "column": "2-year results - T2-C",
-  "cell": "-5.546**",
-  "caption": "['Table OB5: Livestock']"
- },
- {
-  "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
-  "page": 15,
-  "row": "Agricultural revenue",
-  "column": "3-year results - T3-C",
-  "cell": "-1.802 (11.61)",
-  "caption": "['Table OB6: Farm size and revenue']"
  },
  {
   "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
