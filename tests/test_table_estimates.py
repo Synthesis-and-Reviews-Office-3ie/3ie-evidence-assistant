@@ -264,3 +264,13 @@ def test_a_p_value_that_contradicts_the_stars_is_dropped():
     ok = to_estimate({"outcome": "Income", "estimate_cell": "0.11**", "p_cell": "0.03"}, "t", 3,
                      "| Income | 0.11** (0.03) |")
     assert ok.p_value == 0.03
+
+
+def test_a_printed_t_statistic_gives_the_standard_error():
+    e = to_estimate({"outcome": "Income", "estimate_cell": "0.52***", "se_cell": "4.0", "se_kind": "t"},
+                    "t", 3, "| Income | 0.52*** | 4.0 |")
+    assert abs(e.standard_error - 0.13) < 1e-9
+    assert e.t_stat == 4.0
+    zero = to_estimate({"outcome": "Income", "estimate_cell": "0.00", "se_cell": "4.0", "se_kind": "t"},
+                       "t", 3, "| Income | 0.00 | 4.0 |")
+    assert zero.standard_error is None

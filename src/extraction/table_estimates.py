@@ -337,6 +337,11 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
     if se is not None and se == 0:
         se = None
     estimate_value = parse_number(est_cell)
+    if kind == "t" and t:
+        # t = estimate / se by definition, so a printed t gives the standard error exactly. The tolerance is
+        # arithmetic, not an estimate, and it is only taken when both numbers are present.
+        if estimate_value not in (None, 0):
+            se = abs(estimate_value / t)
     # An interval that does not contain its own estimate was misread or belongs to another row; the
     # estimate is the printed cell beside it, so the interval is dropped rather than stored as a bracket.
     if lo is not None and hi is not None and estimate_value is not None:
