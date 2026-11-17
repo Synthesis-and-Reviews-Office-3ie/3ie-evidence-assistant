@@ -49,7 +49,7 @@ def reason(row_label: str, column_label: str, caption: str, page: int, pages: in
     # ("2005 - Treated") or a difference between baseline groups ("SUP-NSUP (2)", "SB1-SNB0 (4)").
     if re.match(r"^(19|20)\d{2}\s*[-–]\s*(treated|control|treatment)\b", column, re.I):
         return "balance or attrition table"
-    if re.match(r"^[A-Za-z]{2,5}\s*[-–]\s*[A-Za-z0-9]{2,5}\s*\(\d\)\s*$", column):
+    if re.match(r"^[A-Za-z0-9]{2,6}\s*[-–]\s*[A-Za-z0-9]{2,6}\s*\(\d\)\s*$", column):
         return "balance or attrition table"
     # A mean with its standard deviation in brackets, on a row that is itself a descriptive average, is
     # descriptive statistics rather than an effect.

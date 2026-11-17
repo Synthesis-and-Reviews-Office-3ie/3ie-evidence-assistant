@@ -5,9 +5,9 @@
 - stored on another page: 1132 (55%)
 - table of means: 343 (17%)
 - covariate row: 214 (10%)
-- balance or attrition table: 90 (4%)
-- unexplained: 73 (4%)
+- balance or attrition table: 92 (4%)
 - observation count: 73 (4%)
+- unexplained: 71 (3%)
 - control mean: 64 (3%)
 - late appendix page: 55 (3%)
 - hypothesis test: 9 (0%)
@@ -15,7 +15,7 @@
 - statistic: 2 (0%)
 - mean row: 1 (0%)
 
-The unexplained remainder is 73 cells, against 2058 on the raw count that the coverage report quotes.
+The unexplained remainder is 71 cells, against 2058 on the raw count that the coverage report quotes.
 
 - 20883ddebbf3_PDFs_of_included_programs_Banglad p15: row 'Average cost of doctor's fees + medicine', column '2002 - Difference (3=1-2)', cell -71.84**
 - 20883ddebbf3_PDFs_of_included_programs_Banglad p15: row 'Average cost of doctor's fees + medicine', column 'Difference in Difference - (', cell 86.67**
@@ -26,8 +26,6 @@ The unexplained remainder is 73 cells, against 2058 on the raw count that the co
 - 442bb134bc3b_PDFs_of_included_programs_1212954 p10: row 'market or town (x0.1', column '(1) Total number of poultry ', cell 1.031**
 - 442bb134bc3b_PDFs_of_included_programs_1212954 p10: row 'market or town (x0.1', column '(2) Value of sold poultry (s', cell 113.776*
 - 442bb134bc3b_PDFs_of_included_programs_1212954 p10: row 'Predicted baseline expenditure', column '(3) Number of eggs sold in l', cell 2.490***
-- 4f557b0ab223_PDFs_of_included_programs_Banglad p17: row 'Per capita income', column 'SNB1-SNB0 ð3Þ', cell 2371.40***
-- 4f557b0ab223_PDFs_of_included_programs_Banglad p17: row 'Per capita income', column 'SB1-SNB0 ð4Þ', cell 2437.55***
 - 61ddcec5e910_PDFs_of_included_programs_1212949 p12: row 'Number of months needed for drought recovery', column 'Overall project', cell -1.24**
 - 61ddcec5e910_PDFs_of_included_programs_1212949 p12: row 'Number of months needed for drought recovery', column 'Lump-sum plus training', cell -1.98***
 - 61ddcec5e910_PDFs_of_included_programs_1212949 p12: row 'Number of months needed for drought recovery', column 'Lump-sum only', cell -1.80***
@@ -47,3 +45,5 @@ The unexplained remainder is 73 cells, against 2058 on the raw count that the co
 - b5a18f177248_PDFs_of_included_programs_1212976 p33: row 'Household under 5 members', column '(1) - Per capita consumption', cell 1.229*** (0.110)
 - b5a18f177248_PDFs_of_included_programs_1212976 p33: row 'Household under 5 members', column '(4) - Per capita consumption', cell 1.178*** (0.113)
 - c5f7f6a26ce7_PDFs_of_included_programs_1213548 p5: row 'Own', column '', cell 2.688 [2.514]
+- c5f7f6a26ce7_PDFs_of_included_programs_1213548 p5: row 'Own', column '', cell 6.646 [7.784]
+- c5f7f6a26ce7_PDFs_of_included_programs_1213548 p5: row 'Own', column '', cell 2.841 [3.340]

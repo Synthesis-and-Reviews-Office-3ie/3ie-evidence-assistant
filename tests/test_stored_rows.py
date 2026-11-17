@@ -149,3 +149,9 @@ def test_means_and_difference_of_means_is_not_an_effect():
 
     assert reason("Ingreso mensual", "Diferencia", "Cuadro 17. Medias y diferencia de medias por genero",
                   55, 60, "47,11***") == "table of means"
+
+
+def test_a_balance_column_can_carry_digits():
+    from evaluation.coverage_triage import reason
+
+    assert reason("Per capita income", "SNB1-SNB0 (3)", "", 17, 60, "2371.40***") == "balance or attrition table"
