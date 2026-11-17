@@ -463,6 +463,23 @@ def table_units(content_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     return units
 
 
+_OUTCOME_PREFIX = re.compile(r"^\s*(?:\(\d+\)|\d+[.)]|panel\s+[a-z][:.]?|table\s+\d+[:.]?)\s*", re.I)
+
+
+def _merge_outcome(text: object) -> str:
+    """The outcome with its leading column marker removed, for comparing two reads of one table.
+
+    A column view may call the same row "(1) Indicator if household owns sheep" and the whole-table read
+    "Indicator if household owns sheep"; without this the merge stores the coefficient twice.
+    """
+    value = re.sub(r"\s+", " ", str(text or "")).strip().lower()
+    previous = None
+    while previous != value:
+        previous = value
+        value = _OUTCOME_PREFIX.sub("", value).strip()
+    return value
+
+
 def merge_reads(rows: List["Estimate"]) -> List["Estimate"]:
     """One row per (outcome, estimate) across the reads of one table.
 
@@ -473,7 +490,7 @@ def merge_reads(rows: List["Estimate"]) -> List["Estimate"]:
     best: Dict[tuple, "Estimate"] = {}
     order: List[tuple] = []
     for row in rows:
-        key = (re.sub(r"\s+", " ", str(row.outcome or "").lower()).strip(), row.effect_size)
+        key = (_merge_outcome(row.outcome or row.row_label), row.effect_size)
         current = best.get(key)
         if current is None:
             best[key] = row

@@ -329,3 +329,18 @@ def test_per_column_observation_counts_are_read_only_when_they_differ():
 | Income | 0.11*** | 0.14*** |
 | Observations | 3,247 | 3,247 |"""
     assert all(view.get("n_hint") is None for view in split_estimate_columns(pooled))
+
+
+def test_a_single_row_table_is_read_whole_not_by_column():
+    table = """| | Bridging social capital | Education & training |
+| --- | --- | --- |
+| Treatment | -0.01 (0.05) | 0.72*** (0.05) |"""
+    assert split_estimate_columns(table) == []
+
+
+def test_a_table_whose_rows_are_arms_and_outcomes_are_columns_is_read_whole():
+    table = """| | Bridging social capital | Education & training |
+| --- | --- | --- |
+| Treatment | -0.01 (0.05) | 0.72*** (0.05) |
+| Control mean | 2.26 | 1.46 |"""
+    assert split_estimate_columns(table) == []

@@ -274,3 +274,34 @@ def test_a_printed_t_statistic_gives_the_standard_error():
     zero = to_estimate({"outcome": "Income", "estimate_cell": "0.00", "se_cell": "4.0", "se_kind": "t"},
                        "t", 3, "| Income | 0.00 | 4.0 |")
     assert zero.standard_error is None
+
+
+def test_a_level_sentence_is_not_a_prose_effect():
+    from src.extraction.prose_estimates import states_an_effect
+
+    assert states_an_effect("The probability of owning poultry increases by about 40 percentage points")
+    assert states_an_effect("the treatment effect is estimated as 2.7 percentage points")
+    assert not states_an_effect("88% of female respondents in households who received a transfer use a VESA")
+    assert not states_an_effect("64% of households who received a poultry package reported income from sales")
+
+
+def test_the_same_row_read_two_ways_is_one_row():
+    def row(outcome, value):
+        return module_row(outcome, value)
+
+    merged = module_merge([row("(1) Indicator if Household Owns Sheep", 0.076),
+                           row("Indicator if Household Owns Sheep", 0.076)])
+    assert len(merged) == 1
+
+
+def module_row(outcome, value):
+    import src.extraction.table_estimates as module
+
+    return module.to_estimate({"outcome": outcome, "estimate_cell": f"{value}***"},
+                              "t", 35, "| x | 0.076*** |")
+
+
+def module_merge(rows):
+    import src.extraction.table_estimates as module
+
+    return module.merge_reads(rows)

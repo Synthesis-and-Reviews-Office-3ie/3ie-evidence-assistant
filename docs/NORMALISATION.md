@@ -575,6 +575,32 @@ now read 218 of 218 intervals containing their estimate, 23,357 of 23,357 standa
 243 p-values consistent with their stars. The hand-typed key independently confirms the classification where it
 matters: all 412 of its standard errors match.
 
+### Precision: what a sample showed and what the fixes changed (17 November 2026)
+
+Recall against the key says the values a person coded are found; it says nothing about the rows the key does not
+cover. To get a sense of that, I read fifty stored rows across three papers with few tables, by eye against
+their printed tables.
+
+Of the fifty, every value was a number the paper prints, so no coefficient or standard error was misread. But
+only 38 were treatment effects: twelve were levels, such as "88% of female respondents use a VESA" from a paper
+with no tables, where the prose reader accepted a share as an estimate. Six were duplicates, because a column
+view called a row "(1) Indicator if household owns sheep" and the whole-table read called it "Indicator if
+household owns sheep". And the arm field was wrong on 28 rows, because a table whose only body row is
+"Treatment" and whose columns are outcomes had its columns read as arms.
+
+Three fixes followed. The prose reader now requires a sentence to report a change, and rejects a share written
+as "N% of"; a single-row table whose row names an arm is read whole rather than by column; and the merge that
+combines a table's reads strips a leading column marker before comparing outcomes.
+
+Re-extracting five small papers, three from the first sample and two new ones, and reading the result again: 53
+of 54 rows are treatment effects, one duplicate remains (a hyphenated line break in the label defeats the
+merge), and the arm field is still wrong where a row names the arm and the columns are outcomes, because the
+model assigns the column heading as the arm even when the table is read whole.
+
+Recall is unchanged at 854 of 854. The fixes apply where a document is re-extracted; the other 93 documents
+still carry the prose levels and marker duplicates the sample found, and cleaning them means re-extracting with
+`prune`, which is a supervised run rather than a routine one.
+
 ## Coverage and accuracy: where the work stands (17 November 2026)
 
 This is the short account of a long week, for a reader who does not want the dated entries below.

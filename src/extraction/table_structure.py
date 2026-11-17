@@ -419,6 +419,10 @@ def subgroup_rows_layout(grid: TableGrid) -> bool:
     return not any(_STAT_HEADER.match(header) for header in named)
 
 
+_ARM_ROW = re.compile(r"^\s*(treatment|treated|control|untreated|placebo|comparison|programme|program"
+                        r"|intervention|arm|full|half|t\d+|sup|nsup)\b", re.I)
+
+
 _OBS_ROW = re.compile(r"^\s*(observations?|obs\.?|no\.? of observations|number of observations|n|"
                       r"sample size|n obs)\s*$", re.I)
 
@@ -515,6 +519,13 @@ def split_estimate_columns(text: str, limit: int = MAX_SPLIT_COLUMNS, min_column
     grid = parse_markdown_table(text)
     if grid.ncols < 3 or not grid.body:
         return []
+    # A table whose only row is an arm ("Treatment", "Full cost") and whose columns are outcomes must be
+    # read whole: a column view would mistake an outcome for an arm. Paper 121378494 page 6 is that shape.
+    labelled = [row for row in grid.body if row and str(row[0]).strip()]
+    if labelled and _ARM_ROW.match(str(labelled[0][0])):
+        outcomes = [row for row in labelled if not _ARM_ROW.match(str(row[0]))]
+        if len(outcomes) <= 1:
+            return []
     columns = estimate_columns(grid, limit)
     if len(columns) < min_columns:
         return []

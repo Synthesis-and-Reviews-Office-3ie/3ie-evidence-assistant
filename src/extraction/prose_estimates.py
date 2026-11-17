@@ -77,6 +77,32 @@ def page_for_quote(quote: str, content_list: Sequence[Dict[str, Any]]) -> Option
     return None
 
 
+_EFFECT_CUES = re.compile(
+    r"increas|decreas|reduc|rais|higher|lower|more than|less than|relative to|compared (to|with)|"
+    r"impact|effect of|difference (between|in)|treatment effect|percentage points?|p\s*[<=]\s*0?\.0?[15]",
+    re.I)
+_SHARE_LEVEL = re.compile(r"\b\d+(?:\.\d+)?\s*%\s+of\b", re.I)
+_CHANGE_BEFORE = re.compile(r"increas|decreas|reduc|rises?|falls?|raises?|lowers?", re.I)
+
+
+def states_an_effect(sentence: object) -> bool:
+    """True when a sentence reports a difference rather than a level.
+
+    "The probability of owning poultry increases by about 40 percentage points" is an effect; "88% of
+    respondents use a VESA" is a level. A cue word alone is not enough, because a level sentence can say
+    "compared to" or "more than": a share written as "N% of households" is rejected unless a change word
+    stands immediately before it.
+    """
+    text = str(sentence or "")
+    if not _EFFECT_CUES.search(text):
+        return False
+    for match in _SHARE_LEVEL.finditer(text):
+        before = text[max(0, match.start() - 45):match.start()].lower()
+        if not _CHANGE_BEFORE.search(before):
+            return False
+    return True
+
+
 def build_rows(project_id: str, doc: Dict[str, Any], content_list: Sequence[Dict[str, Any]],
                text: str, data: Dict[str, Any], model: str) -> List[Dict[str, Any]]:
     """Rows in the `effect_estimates` shape, keeping only quotes that appear in the paper text."""
@@ -89,6 +115,10 @@ def build_rows(project_id: str, doc: Dict[str, Any], content_list: Sequence[Dict
         value = parse_number(raw.get("effect"))
         quote = _flat(raw.get("quote"))
         if value is None or not quote_in_text(quote, text):
+            continue
+        if not states_an_effect(quote):
+            # A sentence that reports a level ("88% of respondents use a VESA") is not a treatment effect,
+            # and paper 121058361 lost half its rows to that shape before this rule.
             continue
         se = parse_number(raw.get("standard_error"))
         p = raw.get("p_value") if isinstance(raw.get("p_value"), (int, float)) else None
