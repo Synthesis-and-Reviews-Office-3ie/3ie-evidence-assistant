@@ -1,6 +1,6 @@
 """Table structure interpretation: roles, notes, consistency, and multi-page stitching."""
 
-from src.extraction.table_structure import (
+from src.extraction.table_structure import (carry_merged_labels, 
     ESTIMATE, LAYOUT_ROWS, SE,
     estimate_columns, interpret_table, parse_conventions, parse_markdown_table,
     split_estimate_columns, stitch_units,
@@ -259,3 +259,31 @@ def test_stars_in_the_next_column_still_make_a_view():
     split = split_estimate_columns(table)
     assert len(split) == 2
     assert "71.6 **" in split[0]["text"] or "71.6**" in split[0]["text"]
+
+
+MERGED = """| Outcome | Coef |
+| --- | --- |
+| Cash savings | 0.11*** |
+|  | 0.12*** |
+|  | (0.03) |"""
+
+
+def test_a_merged_label_is_carried_onto_the_rows_it_covers():
+    out = carry_merged_labels(MERGED)
+    lines = out.splitlines()
+    assert lines[2] == "| Cash savings | 0.11*** |"
+    assert lines[3] == "| Cash savings | 0.12*** |"
+    assert lines[4] == "|  | (0.03) |"
+
+
+def test_a_table_without_merged_labels_is_unchanged():
+    table = "| Outcome | Coef |\n| --- | --- |\n| A | 0.1*** |\n| B | 0.2*** |"
+    assert carry_merged_labels(table) == table
+
+
+def test_the_split_uses_the_carried_label():
+    split = split_estimate_columns(carry_merged_labels(MERGED))
+    assert split == []
+    filled = carry_merged_labels("| Outcome | (1) | (2) |\n| --- | --- | --- |\n| Savings | 0.1*** | 0.2*** |\n|  | 0.3*** | 0.4*** |")
+    views = split_estimate_columns(filled)
+    assert len(views) == 2 and "Savings" in views[0]["text"] and views[0]["text"].count("Savings") == 2

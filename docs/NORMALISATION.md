@@ -326,8 +326,9 @@ and two were our own faults.
   gender. That is a subgroup difference, not the programme's effect, and both readers declined it. The triage
   now recognises that caption, in Spanish and English, and no longer counts it as a gap.
 
-After those, the real gap is 70 cells in 20 documents, 66 omitted from tables that were read and 4 on pages
-with no stored rows, down from 296 and then 107. The others in the old count were already stored, or were
+A fourth class came out of the same tracing. A table that merges one label across several rows leaves the later rows with an empty first cell, so their values arrive without an outcome name; eight cells were lost that way. `carry_merged_labels` now fills an empty label from the row above when the row carries an estimate, and leaves a row that holds only a parenthesised standard error alone. Re-extracting the three documents with merged labels took their unexplained cells from ten to five.
+
+After those, the real gap is 65 cells in 19 documents, 63 omitted from tables that were read and 2 on pages with no stored rows, down from 296 and then 107. The others in the old count were already stored, or were
 tables of means and balance sheets. The lesson for production is that an unusual layout is more often a table
 that should not be stored than a reader failure, and the triage is where that judgement belongs.
 

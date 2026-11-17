@@ -393,6 +393,41 @@ def estimate_columns(grid: TableGrid, limit: int = MAX_SPLIT_COLUMNS) -> List[in
     return out
 
 
+def carry_merged_labels(text: str) -> str:
+    """Fill an empty first-column cell with the label above it, when the row carries an estimate.
+
+    A table that merges one label across several rows gives the later rows an empty first cell, so their
+    values arrive with no outcome name and the reader cannot store them. Eight cells in the collection were
+    lost this way. A row that holds only a parenthesised standard error is a continuation of the row above
+    and is left alone, so the error is not turned into an outcome of its own.
+    """
+    grid = parse_markdown_table(text)
+    if not grid.body or grid.ncols < 2:
+        return text
+    last = ""
+    changed = False
+    body = [list(row) for row in grid.body]
+    for row in body:
+        if not row:
+            continue
+        label = str(row[0]).strip()
+        if label:
+            last = label
+            continue
+        rest = [str(cell).strip() for cell in row[1:] if str(cell).strip()]
+        carries_estimate = any(re.search(r"\d", cell) and not _PAREN_ONLY.match(cell) for cell in rest)
+        if last and carries_estimate:
+            row[0] = last
+            changed = True
+    if not changed:
+        return text
+    lines = ["| " + " | ".join(row) + " |" for row in grid.headers]
+    lines.append("| " + " | ".join(["---"] * grid.ncols) + " |")
+    lines += ["| " + " | ".join(row) + " |" for row in body]
+    lines += grid.notes
+    return "\n".join(lines)
+
+
 def split_estimate_columns(text: str, limit: int = MAX_SPLIT_COLUMNS, min_columns: int = 2) -> List[Dict[str, str]]:
     """One narrow table per estimate column, so a wide table is read one column at a time.
 

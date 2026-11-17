@@ -306,7 +306,7 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
 def table_units(content_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """Each table with its page, caption and the text items just before and after it."""
     from src.extraction.table_rules import looks_garbled
-    from src.extraction.table_structure import split_estimate_columns
+    from src.extraction.table_structure import carry_merged_labels, split_estimate_columns
 
     units = []
     for i, item in enumerate(content_list):
@@ -316,6 +316,8 @@ def table_units(content_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         if "|" not in text or looks_garbled(text):
             # A garbled table has a broken font mapping; the page image is read instead.
             continue
+        # A merged label leaves the following rows without an outcome name; carry it down first.
+        text = carry_merged_labels(text)
         around = []
         for j in list(range(max(0, i - CONTEXT_ITEMS), i)) + list(range(i + 1, min(len(content_list), i + 1 + CONTEXT_ITEMS))):
             other = content_list[j]

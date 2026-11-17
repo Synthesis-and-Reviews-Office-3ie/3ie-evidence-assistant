@@ -1,13 +1,13 @@
 # Coverage triage 2026-11-17
 
-2058 estimate-shaped cells on 98 documents have no stored row on their page.
+1949 estimate-shaped cells on 98 documents have no stored row on their page.
 
-- stored on another page: 1132 (55%)
-- table of means: 343 (17%)
-- covariate row: 214 (10%)
-- balance or attrition table: 92 (4%)
+- stored on another page: 1069 (55%)
+- table of means: 300 (15%)
+- covariate row: 214 (11%)
+- balance or attrition table: 92 (5%)
 - observation count: 73 (4%)
-- unexplained: 71 (3%)
+- unexplained: 68 (3%)
 - control mean: 64 (3%)
 - late appendix page: 55 (3%)
 - hypothesis test: 9 (0%)
@@ -15,7 +15,7 @@
 - statistic: 2 (0%)
 - mean row: 1 (0%)
 
-The unexplained remainder is 71 cells, against 2058 on the raw count that the coverage report quotes.
+The unexplained remainder is 68 cells, against 1949 on the raw count that the coverage report quotes.
 
 - 20883ddebbf3_PDFs_of_included_programs_Banglad p15: row 'Average cost of doctor's fees + medicine', column '2002 - Difference (3=1-2)', cell -71.84**
 - 20883ddebbf3_PDFs_of_included_programs_Banglad p15: row 'Average cost of doctor's fees + medicine', column 'Difference in Difference - (', cell 86.67**

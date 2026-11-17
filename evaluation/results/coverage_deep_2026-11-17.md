@@ -1,23 +1,23 @@
-# Why the remaining 73 cells are unstored
+# Why the remaining 68 cells are unstored
 
-3 of the 73 are stored somewhere in the study; the real gap is 70 cells, in 18 documents.
+3 of the 68 are stored somewhere in the study; the real gap is 65 cells, in 17 documents.
 
 | Reason | Cells |
 | --- | --- |
-| table read but this cell omitted | 66 |
-| page has no stored rows | 4 |
+| table read but this cell omitted | 63 |
 | stored in another document of the study | 3 |
+| page has no stored rows | 2 |
 
 Largest real gaps:
 
 - 12: 442bb134bc3b_PDFs_of_included_programs_121295428
 - 9: 61ddcec5e910_PDFs_of_included_programs_121294984
 - 7: db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BR
-- 7: f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BR
 - 6: 20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BR
 - 4: 79628963eddc_PDFs_of_included_programs_Nicaragua_-_Atencion_a_Crisis_Nic
 - 4: a72b17099de1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BR
 - 4: b34636f4eeb7_PDFs_of_included_programs_121498871
+- 4: f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BR
 
 Examples:
 
@@ -33,8 +33,6 @@ Examples:
 - e50119e4539d_PDFs_of_included_ p16: row 'saving, amount', cell 5.328 [129.6]
 
 **page has no stored rows**
-- 4f557b0ab223_PDFs_of_included_ p17: row 'Per capita income', cell 2371.40***
-- 4f557b0ab223_PDFs_of_included_ p17: row 'Per capita income', cell 2437.55***
 - 701165f57f97_PDFs_of_included_ p36: row 'Treatment indicator', cell -1.412** (0.656)
 - 701165f57f97_PDFs_of_included_ p36: row 'Whether household owns land', cell -0.766** (0.375)
 
