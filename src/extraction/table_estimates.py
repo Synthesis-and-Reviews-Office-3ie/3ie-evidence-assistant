@@ -34,6 +34,19 @@ RETRY_MIN_ROWS = 4
 RETRIES_PER_DOC = 12
 
 
+def _p_value_for(cell, stars: int):
+    """The printed p-value, dropped when it contradicts the stars beside the estimate.
+
+    The stars sit with the coefficient, so a p-value in another column that disagrees with them belongs to a
+    different test; paper offsets were cleared this way.
+    """
+    value = parse_number(cell) if cell else None
+    limit = {1: 0.10, 2: 0.05, 3: 0.01}.get(stars)
+    if value is not None and limit is not None and value > limit + 1e-9:
+        return None
+    return value
+
+
 def _outcome_key(estimate: "Estimate") -> str:
     return re.sub(r"[^a-z0-9 ]", " ", str(estimate.outcome or estimate.row_label or "").lower()).strip()
 
@@ -320,6 +333,15 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
     elif se_cell:
         se = parse_number(se_cell)
         se = abs(se) if se is not None else None
+    # A zero standard error is a printing artefact or a misread cell, and it would imply infinite precision.
+    if se is not None and se == 0:
+        se = None
+    estimate_value = parse_number(est_cell)
+    # An interval that does not contain its own estimate was misread or belongs to another row; the
+    # estimate is the printed cell beside it, so the interval is dropped rather than stored as a bracket.
+    if lo is not None and hi is not None and estimate_value is not None:
+        if not (min(lo, hi) <= estimate_value <= max(lo, hi)):
+            lo = hi = None
     n = parse_number(raw.get("n"))
     if n is None and n_hint:
         n = float(n_hint)
@@ -371,7 +393,7 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
         row_label=str(raw.get("row_label") or ""), column_label=str(raw.get("column_label") or "") or arm_hint,
         estimate_cell=est_cell, se_cell=se_cell, se_kind=kind, p_cell=str(raw.get("p_cell") or ""),
         effect_size=parse_number(est_cell), standard_error=se, t_stat=t, ci_low=lo, ci_high=hi,
-        p_value=parse_number(raw.get("p_cell")) if raw.get("p_cell") else None,
+        p_value=_p_value_for(raw.get("p_cell"), count_stars(est_cell)),
         stars=count_stars(est_cell), sample_size=int(n) if n is not None and n.is_integer() and n > 0 else None,
         control_mean=control_mean, control_sd=control_sd, n_treatment=n_treatment, n_control=n_control,
         grounded=grounded, notes=notes,

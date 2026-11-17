@@ -243,3 +243,24 @@ def test_a_control_sd_is_joined_by_outcome_within_the_document():
     module.attach_document_statistics([effect, descriptive, other])
     assert effect.control_sd == 612.5
     assert other.control_sd == 109.0
+
+
+def test_a_zero_standard_error_is_not_stored():
+    e = to_estimate({"outcome": "Income", "estimate_cell": "0.11***", "se_cell": "(0.00)"}, "t", 3,
+                    "| Income | 0.11*** (0.00) |")
+    assert e.standard_error is None
+
+
+def test_an_interval_that_excludes_its_own_estimate_is_dropped():
+    e = to_estimate({"outcome": "Income", "estimate_cell": "2.07", "se_cell": "[2.47, 28.0]",
+                     "se_kind": "ci"}, "t", 3, "| Income | 2.07 [2.47, 28.0] |")
+    assert e.ci_low is None and e.ci_high is None and e.standard_error is None
+
+
+def test_a_p_value_that_contradicts_the_stars_is_dropped():
+    e = to_estimate({"outcome": "Income", "estimate_cell": "0.11***", "p_cell": "0.04"}, "t", 3,
+                    "| Income | 0.11*** (0.04) |")
+    assert e.p_value is None
+    ok = to_estimate({"outcome": "Income", "estimate_cell": "0.11**", "p_cell": "0.03"}, "t", 3,
+                     "| Income | 0.11** (0.03) |")
+    assert ok.p_value == 0.03

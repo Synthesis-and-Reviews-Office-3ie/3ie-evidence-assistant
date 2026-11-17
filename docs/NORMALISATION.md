@@ -556,6 +556,25 @@ So standardised effects are produced wherever the inputs exist and will accumula
 cannot be reconstructed at scale from the papers in this collection. Reproducing the key's `d`, `g` and `yi`
 needs that output, not a better reader.
 
+### Coefficients, standard errors, intervals and p-values (17 November 2026)
+
+The second cell of a results table can hold a standard error, a t statistic, a confidence interval or a
+p-value, and telling them apart is what the store depends on. Of the 30,801 stored rows, 23,357 carry a standard
+error, 218 carry a confidence interval, and 7,226 carry neither, which is a t statistic or nothing printed. The
+non-negative standard errors and the intervals that contain their own estimate are the checks that catch a
+misread cell.
+
+Three faults surfaced. Thirty-seven standard errors were zero or negative, which cannot be a standard error and
+implies infinite precision. Twenty-seven intervals did not contain the estimate printed beside them, so the
+bracket and the number came from different places. Twenty-nine p-values contradicted the significance stars on
+the same estimate, which means the p-value belonged to another test.
+
+The reader now drops a zero standard error, an interval that excludes its own estimate, and a p-value that
+contradicts its stars; each has a test. The rows already stored under the old rule were cleared, and the checks
+now read 218 of 218 intervals containing their estimate, 23,357 of 23,357 standard errors positive, and 243 of
+243 p-values consistent with their stars. The hand-typed key independently confirms the classification where it
+matters: all 412 of its standard errors match.
+
 ## Coverage and accuracy: where the work stands (17 November 2026)
 
 This is the short account of a long week, for a reader who does not want the dated entries below.
