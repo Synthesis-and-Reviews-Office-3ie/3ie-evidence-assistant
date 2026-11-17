@@ -11,7 +11,7 @@ from typing import List, Optional
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
 
-from src.auth import fetch_all_rows
+from src.auth import document_counts_by_project, fetch_all_rows, usage_by_user
 from src.config.costs import MODEL_PRICING, calculate_cost
 from src.utils.logging import get_logger
 from src.utils.usage_logger import get_usage_logger
@@ -375,10 +375,10 @@ async def get_admin_overview():
         user_ids = set(p.get("user_id") for p in (projects_result.data or []) if p.get("user_id"))
         user_count = len(user_ids)
         
-        # Get document count and total chunks (paged: can exceed 1,000 rows)
-        docs = fetch_all_rows(lambda: supabase.table("documents").select("id, chunk_count"))
-        doc_count = len(docs)
-        chunk_count = sum(d.get("chunk_count", 0) or 0 for d in docs)
+        # Document totals, aggregated in Postgres
+        counts = document_counts_by_project(supabase)
+        doc_count = sum(c["docs"] for c in counts.values())
+        chunk_count = sum(c["chunks"] for c in counts.values())
         
         # Get query count from chat_history (the actual query log)
         try:
@@ -387,10 +387,9 @@ async def get_admin_overview():
         except Exception:
             query_count = 0
         
-        # Get cost totals from usage_logs (if any logged), paged
+        # Cost total, aggregated in Postgres
         try:
-            usage_rows = fetch_all_rows(lambda: supabase.table("usage_logs").select("cost_usd"))
-            total_cost = sum(float(u.get("cost_usd", 0) or 0) for u in usage_rows)
+            total_cost = sum(u["cost"] for u in usage_by_user(supabase).values())
         except Exception:
             total_cost = 0.0
         

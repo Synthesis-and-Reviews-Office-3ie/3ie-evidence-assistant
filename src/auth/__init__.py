@@ -12,6 +12,8 @@ from .supabase_auth import (
     verify_supabase_token,
     fetch_all_rows,
     update_by_ids,
+    document_counts_by_project,
+    usage_by_user,
 )
 
 __all__ = [
@@ -24,4 +26,6 @@ __all__ = [
     "verify_supabase_token",
     "fetch_all_rows",
     "update_by_ids",
+    "document_counts_by_project",
+    "usage_by_user",
 ]

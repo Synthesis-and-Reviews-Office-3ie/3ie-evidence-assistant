@@ -11,7 +11,7 @@ from typing import List, Optional, Dict, Any
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-from src.auth import fetch_all_rows
+from src.auth import document_counts_by_project, usage_by_user
 from src.utils.logging import get_logger
 
 logger = get_logger(__name__)
@@ -105,35 +105,11 @@ async def get_all_users():
         if not rags_response.data:
             return []
         
-        # Get document counts per project (paged: a project can exceed 1,000 rows)
-        docs_data = fetch_all_rows(
-            lambda: supabase.table("documents").select("rag_project_id, chunk_count")
-        )
+        # Document counts per project, aggregated in Postgres
+        doc_counts = document_counts_by_project(supabase)
         
-        # Build document count map
-        doc_counts: Dict[str, Dict[str, int]] = {}
-        for doc in docs_data:
-            project_id = doc.get("rag_project_id")
-            if project_id:
-                if project_id not in doc_counts:
-                    doc_counts[project_id] = {"docs": 0, "chunks": 0}
-                doc_counts[project_id]["docs"] += 1
-                doc_counts[project_id]["chunks"] += doc.get("chunk_count") or 0
-        
-        # Get usage stats per user (paged)
-        usage_data = fetch_all_rows(
-            lambda: supabase.table("usage_logs").select("user_id, cost_usd")
-        )
-        
-        # Build usage map
-        usage_map: Dict[str, Dict[str, Any]] = {}
-        for log in usage_data:
-            user_id = log.get("user_id")
-            if user_id:
-                if user_id not in usage_map:
-                    usage_map[user_id] = {"queries": 0, "cost": 0.0}
-                usage_map[user_id]["queries"] += 1
-                usage_map[user_id]["cost"] += log.get("cost_usd") or 0.0
+        # Usage per user, aggregated in Postgres
+        usage_map = usage_by_user(supabase)
         
         # Group RAGs by user
         users_map: Dict[str, Dict[str, Any]] = {}
@@ -226,23 +202,8 @@ async def get_user_detail(user_id: str):
         if not rags_response.data:
             raise HTTPException(status_code=404, detail="User not found or has no projects")
         
-        # Get document counts for these projects (paged)
-        project_ids = [r["id"] for r in rags_response.data]
-        docs_data = fetch_all_rows(
-            lambda: supabase.table("documents").select(
-                "rag_project_id, chunk_count"
-            ).in_("rag_project_id", project_ids)
-        )
-        
-        # Build document count map
-        doc_counts: Dict[str, Dict[str, int]] = {}
-        for doc in docs_data:
-            project_id = doc.get("rag_project_id")
-            if project_id:
-                if project_id not in doc_counts:
-                    doc_counts[project_id] = {"docs": 0, "chunks": 0}
-                doc_counts[project_id]["docs"] += 1
-                doc_counts[project_id]["chunks"] += doc.get("chunk_count") or 0
+        # Document counts for these projects, aggregated in Postgres
+        doc_counts = document_counts_by_project(supabase)
         
         # Build RAG projects list
         rag_projects = []
@@ -338,19 +299,8 @@ async def get_all_rags():
         if not rags_response.data:
             return []
         
-        # Get document counts (paged)
-        docs_data = fetch_all_rows(
-            lambda: supabase.table("documents").select("rag_project_id, chunk_count")
-        )
-        
-        doc_counts: Dict[str, Dict[str, int]] = {}
-        for doc in docs_data:
-            project_id = doc.get("rag_project_id")
-            if project_id:
-                if project_id not in doc_counts:
-                    doc_counts[project_id] = {"docs": 0, "chunks": 0}
-                doc_counts[project_id]["docs"] += 1
-                doc_counts[project_id]["chunks"] += doc.get("chunk_count") or 0
+        # Document counts, aggregated in Postgres
+        doc_counts = document_counts_by_project(supabase)
         
         # Get user emails
         user_emails: Dict[str, str] = {}

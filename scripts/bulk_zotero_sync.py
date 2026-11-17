@@ -22,6 +22,7 @@ from supabase import create_client
 
 # Add src to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from src.auth import fetch_all_rows  # noqa: E402 - imported after sys.path setup
 from src.utils.zotero_client import ZoteroClient
 
 
@@ -55,16 +56,18 @@ def sync_batch(
     """Sync a batch of items from Zotero."""
     bucket_name = os.getenv("R2_BUCKET_NAME", "devchat-pdfs")
     
-    # Get existing documents for matching
-    existing_docs = supabase.table("documents").select(
-        "id, filename, original_filename, metadata"
-    ).eq("rag_project_id", project_id).execute()
+    # Get existing documents for matching (paged: a project can exceed 1,000 rows)
+    existing_docs = fetch_all_rows(
+        lambda: supabase.table("documents").select(
+            "id, filename, original_filename, metadata"
+        ).eq("rag_project_id", project_id)
+    )
     
     # Build lookup maps
     doi_map = {}
     title_map = {}
     zotero_key_map = {}
-    for doc in existing_docs.data:
+    for doc in existing_docs:
         meta = doc.get("metadata", {}) or {}
         if meta.get("doi"):
             doi_map[meta["doi"].lower().strip()] = doc

@@ -89,6 +89,58 @@ def update_by_ids(client, table: str, ids: list, payload: dict, chunk: int = 500
         client.table(table).update(payload).in_("id", ids[i:i + chunk]).execute()
 
 
+def document_counts_by_project(client) -> dict:
+    """Per-project document and chunk counts.
+
+    Uses the Postgres aggregate ``document_counts_by_project`` when it is present and
+    falls back to paging the documents table otherwise. Returns
+    ``{project_id: {"docs": int, "chunks": int}}``.
+    """
+    try:
+        rows = client.rpc("document_counts_by_project").execute().data or []
+        return {
+            r["project_id"]: {"docs": int(r["doc_count"] or 0),
+                              "chunks": int(r["chunk_count"] or 0)}
+            for r in rows
+        }
+    except Exception:
+        counts: dict = {}
+        for d in fetch_all_rows(
+            lambda: client.table("documents").select("rag_project_id, chunk_count")
+        ):
+            project_id = d.get("rag_project_id")
+            if project_id:
+                entry = counts.setdefault(project_id, {"docs": 0, "chunks": 0})
+                entry["docs"] += 1
+                entry["chunks"] += d.get("chunk_count") or 0
+        return counts
+
+
+def usage_by_user(client) -> dict:
+    """Per-user query count and cost.
+
+    Uses the Postgres aggregate ``usage_by_user`` when it is present and falls back to
+    paging usage_logs otherwise. Returns ``{user_id: {"queries": int, "cost": float}}``.
+    """
+    try:
+        rows = client.rpc("usage_by_user").execute().data or []
+        return {
+            r["user_id"]: {"queries": int(r["queries"] or 0), "cost": float(r["cost"] or 0)}
+            for r in rows
+        }
+    except Exception:
+        out: dict = {}
+        for log in fetch_all_rows(
+            lambda: client.table("usage_logs").select("user_id, cost_usd")
+        ):
+            user_id = log.get("user_id")
+            if user_id:
+                entry = out.setdefault(user_id, {"queries": 0, "cost": 0.0})
+                entry["queries"] += 1
+                entry["cost"] += float(log.get("cost_usd") or 0)
+        return out
+
+
 def verify_supabase_token(token: str) -> Optional[AuthenticatedUser]:
     """
     Verify a Supabase JWT token and extract user info.
