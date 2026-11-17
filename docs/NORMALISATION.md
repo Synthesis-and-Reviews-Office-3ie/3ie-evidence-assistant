@@ -308,6 +308,25 @@ remain unexplained. That remainder is dominated by the 91 documents still carryi
 which is what the full re-extraction is for. The hand-typed key stays at 305 estimates and 284 standard
 errors throughout, so the coverage work is additive rather than a trade against accuracy.
 
+### Deployed, and the tail measured (17 November 2026)
+
+The reader is now deployed: `python -m modal deploy infrastructure/modal_mineru.py` created the functions and
+the web endpoint the API calls, and the configured trigger URL answers a GET with 405, which is the healthy
+signal that the function exists and expects a POST. From here a paper uploaded through the app is processed by
+the current reader, not the one from before this week.
+
+A sample of thirty-two of the remaining cells answered the question the count could not. They are not one
+mechanism: about a third are shapes (baseline group columns, bracketed descriptive means), and about two
+thirds are genuine estimates printed without significance stars, spread across twenty documents. That exposed
+a gap in the completeness trigger, which compared the answer to the table's labelled rows: a call can return
+every row and still leave a non-significant cell out. The trigger now counts estimate-shaped cells and asks
+again whenever the answer is short of that number, and it no longer accepts 85 percent as complete.
+
+On the three worst documents that took unexplained cells from 103 to 82, and the collection stands at 296, down
+from 1,905 when the triage was first run. The remaining cells are a long tail with no single cause: the fix
+rate per iteration is now about twenty cells for half an hour of work, so the honest next step is to leave them
+listed in `evaluation/results/coverage_unexplained_<date>.json` and stop, rather than keep chasing.
+
 ### Reading a table to the end (17 November 2026)
 
 The 519 unexplained cells that remained after the measurement fixes were real values, and most of them sat in

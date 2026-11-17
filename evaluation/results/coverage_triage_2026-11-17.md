@@ -1,11 +1,11 @@
 # Coverage triage 2026-11-17
 
-2120 estimate-shaped cells on 98 documents have no stored row on their page.
+2094 estimate-shaped cells on 98 documents have no stored row on their page.
 
-- table of means: 788 (37%)
-- covariate row: 345 (16%)
+- table of means: 788 (38%)
+- covariate row: 340 (16%)
 - balance or attrition table: 330 (16%)
-- unexplained: 317 (15%)
+- unexplained: 296 (14%)
 - control mean: 121 (6%)
 - late appendix page: 115 (5%)
 - observation count: 75 (4%)
@@ -14,7 +14,7 @@
 - appendix table: 4 (0%)
 - mean row: 3 (0%)
 
-The unexplained remainder is 317 cells, against 2120 on the raw count that the coverage report quotes.
+The unexplained remainder is 296 cells, against 2094 on the raw count that the coverage report quotes.
 
 - 0cb609fbf433_PDFs_of_included_programs_1221827 p38: row 'T1: Grp LH / Grp C', column '(3) Average Cantril's ladder', cell 0.06 (0.08)
 - 0cb609fbf433_PDFs_of_included_programs_1221827 p38: row 'T3: Ind LH / Ind C', column '(3) Average Cantril's ladder', cell 0.14* (0.07)

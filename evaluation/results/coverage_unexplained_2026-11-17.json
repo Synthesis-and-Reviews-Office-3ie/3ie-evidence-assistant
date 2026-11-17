@@ -1880,14 +1880,6 @@
   "caption": ""
  },
  {
-  "doc": "c5f7f6a26ce7_PDFs_of_included_programs_121354848",
-  "page": 7,
-  "row": "Weight-for-height",
-  "column": "1-year results - C",
-  "cell": "-0.800 [1.106]",
-  "caption": "['Table 5 Anthropometrics measures - children between 0 and 5 years old.']"
- },
- {
   "doc": "c6f56d86e783_PDFs_of_included_programs_121058369",
   "page": 7,
   "row": "(9)",
@@ -2322,126 +2314,6 @@
  {
   "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
   "page": 11,
-  "row": "HH head female",
-  "column": "Model 2",
-  "cell": "7490.80***",
-  "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 11,
-  "row": "HH head female",
-  "column": "Model 4",
-  "cell": "7493.87***",
-  "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 11,
-  "row": "SUP female",
-  "column": "Model 2",
-  "cell": "423.46***",
-  "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 11,
-  "row": "HH head single",
-  "column": "Model 2",
-  "cell": "427.85 (262.47)",
-  "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 11,
-  "row": "HH head single",
-  "column": "Model 4",
-  "cell": "420.58*",
-  "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 11,
-  "row": "",
-  "column": "Model 2",
-  "cell": "7743.35*** (286.02)",
-  "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 11,
-  "row": "HH head literate",
-  "column": "Model 2",
-  "cell": "194.64** (87.84)",
-  "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 11,
-  "row": "HH head literate",
-  "column": "Model 4",
-  "cell": "168.54* (86.45)",
-  "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 11,
-  "row": "",
-  "column": "Model 4",
-  "cell": "22.44***",
-  "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 11,
-  "row": "Total land",
-  "column": "Model 2",
-  "cell": "23.71***",
-  "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 11,
-  "row": "Household events House damaged",
-  "column": "Model 4",
-  "cell": "7182.43***",
-  "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 11,
-  "row": "Member died",
-  "column": "Model 4",
-  "cell": "7186.26*** (55.48)",
-  "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 11,
-  "row": "",
-  "column": "Model 4",
-  "cell": "745.29 (141.07)",
-  "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 11,
-  "row": "",
-  "column": "Model 4",
-  "cell": "332.42***",
-  "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 11,
-  "row": "Livestock died",
-  "column": "Model 4",
-  "cell": "797.88 (102.37)",
-  "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 11,
   "row": "",
   "column": "Model 1",
   "cell": "2784.50***",
@@ -2462,46 +2334,6 @@
   "column": "Model 3",
   "cell": "4914.26***",
   "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 11,
-  "row": "",
-  "column": "Model 4",
-  "cell": "5025.32***",
-  "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 12,
-  "row": "HH head female",
-  "column": "Model 3",
-  "cell": "71150.06***",
-  "caption": "['Table 5. Change in real per capita income between 2005 and 2008 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 12,
-  "row": "HH head single",
-  "column": "Model 3",
-  "cell": "840.95**",
-  "caption": "['Table 5. Change in real per capita income between 2005 and 2008 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 12,
-  "row": "Total land",
-  "column": "Model 3",
-  "cell": "31.85***",
-  "caption": "['Table 5. Change in real per capita income between 2005 and 2008 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 12,
-  "row": "Household events",
-  "column": "Model 3",
-  "cell": "478.12*** (76.75)",
-  "caption": "['Table 5. Change in real per capita income between 2005 and 2008 (per capita in"
  },
  {
   "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",

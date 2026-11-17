@@ -30,7 +30,6 @@ TABLE_CONCURRENCY = 8
 # A call on a table with several labelled rows sometimes stops early. When it returns clearly fewer
 # estimates than the table has rows, one more call asks for the rest; the budget bounds the cost per
 # document, because a long appendix can hold hundreds of tables.
-RETRY_SHARE = 0.85
 RETRY_MIN_ROWS = 4
 RETRIES_PER_DOC = 12
 
@@ -41,6 +40,24 @@ def _labelled_rows(text: str) -> int:
 
     grid = parse_markdown_table(text)
     return sum(1 for row in grid.body if row and str(row[0]).strip())
+
+
+_ESTIMATE_CELL = re.compile(
+    r"^\s*[-−–]?\d[\d,]*(?:\.\d+)?\s*"
+    r"(?:[*†‡]+(?:\s*[(\[]\s*[-−–]?\d[\d,]*(?:\.\d+)?\s*[)\]])?"
+    r"|[(\[]\s*[-−–]?\d[\d,]*(?:\.\d+)?\s*[)\]])")
+
+
+def _estimate_cells(text: str) -> int:
+    """How many cells in the table look like estimates: a value with stars or a bracketed statistic.
+
+    Counting rows is not enough: a call can return every row and still leave a row's unstarred cell
+    out, which is how the non-significant estimates in the tail go missing. Counting cells catches that.
+    """
+    from src.extraction.table_structure import parse_markdown_table
+
+    grid = parse_markdown_table(text)
+    return sum(1 for row in grid.body for cell in row[1:] if _ESTIMATE_CELL.match(str(cell)))
 
 
 def _has_starred_cell(text: str) -> bool:
@@ -481,13 +498,13 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
                 for attempt in range(2):
                     try:
                         data = _parse_json(await _chat(client, model, prompt))
-                        expected = _labelled_rows(u["text"])
+                        expected = max(_labelled_rows(u["text"]), _estimate_cells(u["text"]))
                         got = len(data.get("estimates") or [])
                         must_read_as_results = (not data.get("results_table")
                                                 and expected >= RETRY_MIN_ROWS
                                                 and _has_starred_cell(u["text"]))
                         incomplete = (data.get("results_table") and expected >= RETRY_MIN_ROWS
-                                      and got < max(2, int(expected * RETRY_SHARE)))
+                                      and got < expected)
                         if (must_read_as_results or incomplete) and retry_budget["left"] > 0:
                             # Ask once more, either because the answer stopped short of the rows or because the
                             # structure says results and the model said it was not a results table.

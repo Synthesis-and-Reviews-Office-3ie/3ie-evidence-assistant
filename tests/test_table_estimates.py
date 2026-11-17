@@ -176,3 +176,21 @@ def test_a_table_the_model_calls_prose_is_read_as_results_when_the_structure_say
     out = asyncio.run(module.extract_document([{"type": "table", "page_idx": 0, "text": PARTIAL_TABLE}], "m", "k"))
     assert len(calls) == 2 and "reports estimated effects" in calls[1]
     assert len(out["estimates"]) == 5
+
+
+def test_a_table_that_skips_one_cell_is_asked_again(monkeypatch):
+    import asyncio
+
+    import src.extraction.table_estimates as module
+
+    table = "| Outcome | Coef |\n| --- | --- |\n| A | 0.1*** |\n| B | -0.10 (0.065) |\n| C | 0.3 |\n| D | 0.4 |\n| E | 0.5 |"
+    partial = {"results_table": True, "estimates": [
+        {"outcome": name, "estimate_cell": value} for name, value in
+        (("A", "0.1***"), ("C", "0.3"), ("D", "0.4"), ("E", "0.5"))]}
+    full = {"results_table": True, "estimates": [
+        {"outcome": name, "estimate_cell": value} for name, value in
+        (("A", "0.1***"), ("B", "-0.10 (0.065)"), ("C", "0.3"), ("D", "0.4"), ("E", "0.5"))]}
+    calls = _fake_chat(monkeypatch, [partial, full])
+    out = asyncio.run(module.extract_document([{"type": "table", "page_idx": 0, "text": table}], "m", "k"))
+    assert len(calls) == 2
+    assert any(e["outcome"] == "B" for e in out["estimates"])
