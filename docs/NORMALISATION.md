@@ -597,6 +597,14 @@ of 54 rows are treatment effects, one duplicate remains (a hyphenated line break
 merge), and the arm field is still wrong where a row names the arm and the columns are outcomes, because the
 model assigns the column heading as the arm even when the table is read whole.
 
+Two measures were then taken on six more papers, 1,097 rows: value identification, meaning the stored number is
+printed on the page the row names, is 1,085 of 1,097 (98.9 percent); parameter identification, meaning the stored
+standard error is printed, is 819 of 819, and 819 of 1,097 rows carry one at all, because paper 82fc prints
+estimates and contributions with no error and 6954's effect rows come from prose. The eleven values not found on
+their page are prose rows whose quote also appears on another page, so the page attribution is the fault rather
+than the value. Paper 82fc prints the same estimates in two tables and both are stored, which is faithful to the
+paper but would double-count in a meta-analysis.
+
 Recall is unchanged at 854 of 854. The fixes apply where a document is re-extracted; the other 93 documents
 still carry the prose levels and marker duplicates the sample found, and cleaning them means re-extracting with
 `prune`, which is a supervised run rather than a routine one.
