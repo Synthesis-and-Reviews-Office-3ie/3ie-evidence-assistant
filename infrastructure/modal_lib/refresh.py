@@ -103,11 +103,22 @@ def refresh_document_metadata(project_id: str, document_id: str, reclassify: str
 def refresh_project_metadata(project_id: str, reclassify: str = "weak",
                              only_doc: Optional[str] = None) -> list:
     """Refresh every completed document of a project (or one, by filename)."""
-    query = (_supabase().table("documents").select("id, filename")
+    # Page past the 1,000-row response cap; a project can have far more documents.
+    def _make_query():
+        q = (_supabase().table("documents").select("id, filename")
              .eq("rag_project_id", project_id).eq("status", "completed"))
-    if only_doc:
-        query = query.eq("filename", only_doc)
-    docs = query.execute().data or []
+        if only_doc:
+            q = q.eq("filename", only_doc)
+        return q
+
+    docs = []
+    start = 0
+    while True:
+        batch = _make_query().range(start, start + 999).execute().data or []
+        docs.extend(batch)
+        if len(batch) < 1000:
+            break
+        start += 1000
     print(f"Refreshing metadata for {len(docs)} documents (reclassify={reclassify})")
     results = []
     for result in refresh_document_metadata.starmap(

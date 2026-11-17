@@ -17,7 +17,15 @@ from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File,
 from pydantic import BaseModel, Field
 from botocore.exceptions import ClientError
 
-from src.auth import AuthenticatedUser, get_current_user, get_optional_user, get_supabase_client, is_multi_tenant_enabled
+from src.auth import (
+    AuthenticatedUser,
+    get_current_user,
+    get_optional_user,
+    get_supabase_client,
+    is_multi_tenant_enabled,
+    fetch_all_rows as _fetch_all,
+    update_by_ids as _update_by_ids,
+)
 from src.utils.logging import get_logger
 from src.ingestion.indexer import ChunkIndexer, doc_key_from
 from src.vectorstore import ChunkStore
@@ -1109,12 +1117,13 @@ async def list_project_documents(
             processed_at=d.get("processed_at"),
         ))
     
-    # Get summary stats (unfiltered totals for this project)
-    stats_query = client.table("documents").select(
-        "status, chunk_count"
-    ).eq("rag_project_id", project_id).execute()
-    
-    stats_data = stats_query.data or []
+    # Get summary stats (unfiltered totals for this project). Paged because a single
+    # PostgREST response stops at 1,000 rows.
+    stats_data = _fetch_all(
+        lambda: client.table("documents").select("status, chunk_count").eq(
+            "rag_project_id", project_id
+        )
+    )
     stats = DocumentStats(
         total_documents=len(stats_data),
         completed=sum(1 for d in stats_data if d.get("status") == "completed"),
@@ -1159,9 +1168,15 @@ async def sync_project_documents(
     bucket_name = settings.r2_bucket_name
     client = get_supabase_client()
     
-    # Get existing documents from Supabase
-    result = client.table("documents").select("filename").eq("rag_project_id", project_id).execute()
-    existing_filenames = set(d["filename"] for d in result.data or [])
+    # Get existing documents from Supabase (paged: a project can exceed 1,000 rows)
+    existing_filenames = {
+        d["filename"]
+        for d in _fetch_all(
+            lambda: client.table("documents").select("filename").eq(
+                "rag_project_id", project_id
+            )
+        )
+    }
     
     # Get files from R2
     prefix = f"rags/{project_id}/input-pdfs/"
@@ -1228,18 +1243,20 @@ def find_existing_document_for_project(r2_client, bucket_name: str, project_id: 
     """Check if a document with the same content hash already exists in the project's R2 folder."""
     prefix = f"rags/{project_id}/input-pdfs/"
     try:
-        response = r2_client.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
-        for obj in response.get("Contents", []):
-            key = obj["Key"]
-            # Doc ID is the filename without .pdf
-            filename = key.replace(prefix, "")
-            if filename.startswith(f"{content_hash}_"):
-                doc_id = os.path.splitext(filename)[0]
-                return {
-                    "key": key,
-                    "doc_id": doc_id,
-                    "size": obj["Size"],
-                }
+        # list_objects_v2 returns at most 1,000 keys per call; page through all of them.
+        paginator = r2_client.get_paginator("list_objects_v2")
+        for page in paginator.paginate(Bucket=bucket_name, Prefix=prefix):
+            for obj in page.get("Contents", []):
+                key = obj["Key"]
+                # Doc ID is the filename without .pdf
+                filename = key.replace(prefix, "")
+                if filename.startswith(f"{content_hash}_"):
+                    doc_id = os.path.splitext(filename)[0]
+                    return {
+                        "key": key,
+                        "doc_id": doc_id,
+                        "size": obj["Size"],
+                    }
     except Exception as e:
         logger.warning(f"Error checking for duplicates: {e}")
     return None
@@ -1496,13 +1513,13 @@ async def import_bibliography(
                 message="No bibliography entries found in file"
             )
         
-        # Get existing documents for this project
+        # Get existing documents for this project (paged)
         client = get_supabase_client()
-        docs_result = client.table("documents").select(
-            "id, filename, original_filename, metadata"
-        ).eq("rag_project_id", project_id).execute()
-        
-        documents = docs_result.data or []
+        documents = _fetch_all(
+            lambda: client.table("documents").select(
+                "id, filename, original_filename, metadata"
+            ).eq("rag_project_id", project_id)
+        )
         
         # Match entries to documents
         matched_results, unmatched_results = match_entries(entries, documents)
@@ -1753,13 +1770,20 @@ async def trigger_processing(
     project = await get_user_project(user, project_id)
     client = get_supabase_client()
     
-    # Get documents that need processing (status != 'completed')
+    # Get documents that need processing (status != 'completed'). Paged so large
+    # projects are not truncated to the first 1,000 rows.
     if force:
-        docs_result = client.table("documents").select("id, original_filename, status").eq("rag_project_id", project_id).execute()
+        pending_docs = _fetch_all(
+            lambda: client.table("documents").select("id, original_filename, status").eq(
+                "rag_project_id", project_id
+            )
+        )
     else:
-        docs_result = client.table("documents").select("id, original_filename, status").eq("rag_project_id", project_id).neq("status", "completed").execute()
-    
-    pending_docs = docs_result.data or []
+        pending_docs = _fetch_all(
+            lambda: client.table("documents").select("id, original_filename, status").eq(
+                "rag_project_id", project_id
+            ).neq("status", "completed")
+        )
     
     if not pending_docs:
         return ProcessResponse(
@@ -1768,12 +1792,13 @@ async def trigger_processing(
             skipped=0,
         )
     
-    # Update status to 'processing' for all pending docs
+    # Update status to 'processing' for all pending docs, in chunks to stay within
+    # request-size limits.
     doc_ids = [d["id"] for d in pending_docs]
-    client.table("documents").update({
+    _update_by_ids(client, "documents", doc_ids, {
         "status": "processing",
         "updated_at": datetime.utcnow().isoformat(),
-    }).in_("id", doc_ids).execute()
+    })
     
     # Trigger Modal function
     # Modal needs to know:
@@ -1842,9 +1867,11 @@ async def clear_project_locks(
     project = await get_user_project(user, project_id)
     client = get_supabase_client()
     
-    # Find stuck documents
-    stuck_result = client.table("documents").select("id").eq("rag_project_id", project_id).eq("status", "processing").execute()
-    stuck_count = len(stuck_result.data or [])
+    # Count stuck documents with a head request (exact count, no row cap).
+    stuck_result = client.table("documents").select("id", count="exact", head=True).eq(
+        "rag_project_id", project_id
+    ).eq("status", "processing").execute()
+    stuck_count = stuck_result.count or 0
     
     if stuck_count > 0:
         # Reset to pending
@@ -1870,20 +1897,21 @@ async def retry_failed_documents(
     project = await get_user_project(user, project_id)
     client = get_supabase_client()
     
-    # Find failed documents
-    failed_result = client.table("documents").select("id, original_filename").eq("rag_project_id", project_id).eq("status", "failed").execute()
-    failed_count = len(failed_result.data or [])
+    # Count failed documents with a head request (exact count, no row cap).
+    failed_result = client.table("documents").select("id", count="exact", head=True).eq(
+        "rag_project_id", project_id
+    ).eq("status", "failed").execute()
+    failed_count = failed_result.count or 0
     
     if failed_count == 0:
         return {"message": "No failed documents to retry", "retried": 0}
     
-    # Reset to pending
-    doc_ids = [d["id"] for d in failed_result.data]
+    # Reset to pending with a single status-filtered update (no id list needed).
     client.table("documents").update({
         "status": "pending",
         "error_message": None,
         "updated_at": datetime.utcnow().isoformat(),
-    }).in_("id", doc_ids).execute()
+    }).eq("rag_project_id", project_id).eq("status", "failed").execute()
     
     # Trigger Modal processing
     modal_webhook_url = os.environ.get("MODAL_WEBHOOK_URL")
@@ -2463,10 +2491,12 @@ async def enrich_all_documents(
     project = await get_user_project(user, project_id)
     client = get_supabase_client()
     
-    # Get all documents
-    result = client.table("documents").select("*").eq("rag_project_id", project_id).execute()
+    # Get all documents (paged)
+    all_docs = _fetch_all(
+        lambda: client.table("documents").select("*").eq("rag_project_id", project_id)
+    )
     
-    if not result.data:
+    if not all_docs:
         return {"enriched": 0, "failed": 0, "skipped": 0, "total": 0, "details": []}
     
     enriched_count = 0
@@ -2477,7 +2507,7 @@ async def enrich_all_documents(
     crossref = CrossRefClient()
     openalex = OpenAlexClient()
     
-    for doc in result.data:
+    for doc in all_docs:
         doc_id = doc["id"]
         current_metadata = doc.get("metadata", {}) or {}
         doi = current_metadata.get("doi")
@@ -2589,7 +2619,7 @@ async def enrich_all_documents(
         "enriched": enriched_count,
         "failed": failed_count,
         "skipped": skipped_count,
-        "total": len(result.data),
+        "total": len(all_docs),
         "details": details,
     }
 
@@ -3032,9 +3062,12 @@ async def sync_document_status(
         
         logger.info(f"Found {len(completed_stems)} JSON outputs in R2")
         
-        # Get all documents from Supabase
-        docs_result = client.table("documents").select("id, filename, status").eq("rag_project_id", project_id).execute()
-        docs = docs_result.data or []
+        # Get all documents from Supabase (paged)
+        docs = _fetch_all(
+            lambda: client.table("documents").select("id, filename, status").eq(
+                "rag_project_id", project_id
+            )
+        )
         
         updated = 0
         for doc in docs:
@@ -3048,10 +3081,13 @@ async def sync_document_status(
                 updated += 1
                 logger.info(f"  Synced to completed: {filename}")
         
-        # Count final status
-        final_result = client.table("documents").select("status").eq("rag_project_id", project_id).execute()
+        # Count final status (paged)
         status_counts = {}
-        for d in final_result.data or []:
+        for d in _fetch_all(
+            lambda: client.table("documents").select("status").eq(
+                "rag_project_id", project_id
+            )
+        ):
             s = d["status"]
             status_counts[s] = status_counts.get(s, 0) + 1
         

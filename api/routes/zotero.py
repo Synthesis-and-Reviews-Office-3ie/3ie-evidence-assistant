@@ -11,6 +11,8 @@ from datetime import datetime
 from typing import List, Optional
 from uuid import UUID
 
+from src.auth import fetch_all_rows
+
 
 def sanitize_to_ascii(text: str, max_length: int = 200) -> str:
     """
@@ -517,16 +519,18 @@ async def sync_from_zotero(
         
         logger.info(f"Found {len(items)} items in Zotero (raw offset {request.start} -> {next_raw_start})")
         
-        # Get existing documents for matching
-        existing_docs = supabase.table("documents").select(
-            "id, filename, original_filename, metadata"
-        ).eq("rag_project_id", project_id).execute()
+        # Get existing documents for matching (paged: can exceed 1,000 rows)
+        existing_docs = fetch_all_rows(
+            lambda: supabase.table("documents").select(
+                "id, filename, original_filename, metadata"
+            ).eq("rag_project_id", project_id)
+        )
         
         # Build lookup maps for matching
         doi_map = {}  # DOI -> document
         title_map = {}  # lowercase title -> document
         zotero_key_set = set()  # Already synced Zotero keys
-        for doc in existing_docs.data:
+        for doc in existing_docs:
             meta = doc.get("metadata", {}) or {}
             if meta.get("doi"):
                 doi_map[meta["doi"].lower().strip()] = doc

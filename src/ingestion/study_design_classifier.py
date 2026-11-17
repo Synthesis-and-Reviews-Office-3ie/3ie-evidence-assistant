@@ -200,13 +200,14 @@ async def batch_classify_project(
     Returns:
         Summary dict with counts
     """
-    from src.auth import get_supabase_client
+    from src.auth import fetch_all_rows, get_supabase_client
     
     client = get_supabase_client()
     
-    # Get all documents
-    result = client.table("documents").select("id, metadata").eq("rag_project_id", project_id).execute()
-    documents = result.data or []
+    # Get all documents (paged: can exceed 1,000 rows)
+    documents = fetch_all_rows(
+        lambda: client.table("documents").select("id, metadata").eq("rag_project_id", project_id)
+    )
     
     logger.info(f"Found {len(documents)} documents in project {project_id}")
     

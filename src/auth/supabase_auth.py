@@ -61,6 +61,34 @@ def get_supabase_anon_client() -> Client:
     )
 
 
+# Supabase/PostgREST caps a single response at 1,000 rows (the project's Max Rows
+# setting), so any select that can match more than that must be paged, or the caller
+# silently sees a truncated set.
+SUPABASE_PAGE_SIZE = 1000
+
+
+def fetch_all_rows(make_query, page_size: int = SUPABASE_PAGE_SIZE) -> list:
+    """Run a Supabase select to completion, paging past the 1,000-row response cap.
+
+    ``make_query`` must be a zero-argument callable returning a fresh query builder
+    each time, for example ``lambda: client.table("documents").select("id")``.
+    """
+    rows: list = []
+    start = 0
+    while True:
+        batch = make_query().range(start, start + page_size - 1).execute().data or []
+        rows.extend(batch)
+        if len(batch) < page_size:
+            return rows
+        start += page_size
+
+
+def update_by_ids(client, table: str, ids: list, payload: dict, chunk: int = 500) -> None:
+    """Update rows by id in chunks, keeping the request filter within URL limits."""
+    for i in range(0, len(ids), chunk):
+        client.table(table).update(payload).in_("id", ids[i:i + chunk]).execute()
+
+
 def verify_supabase_token(token: str) -> Optional[AuthenticatedUser]:
     """
     Verify a Supabase JWT token and extract user info.

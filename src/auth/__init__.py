@@ -10,6 +10,8 @@ from .supabase_auth import (
     get_supabase_anon_client,
     is_multi_tenant_enabled,
     verify_supabase_token,
+    fetch_all_rows,
+    update_by_ids,
 )
 
 __all__ = [
@@ -20,4 +22,6 @@ __all__ = [
     "get_supabase_anon_client",
     "is_multi_tenant_enabled",
     "verify_supabase_token",
+    "fetch_all_rows",
+    "update_by_ids",
 ]

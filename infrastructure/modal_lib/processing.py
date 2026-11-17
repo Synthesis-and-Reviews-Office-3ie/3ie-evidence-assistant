@@ -117,14 +117,11 @@ def sync_to_supabase_rag(
     try:
         client = create_client(supabase_url, supabase_key)
         
-        # Find document by filename field
-        result = client.table("documents").select("id, filename").eq("rag_project_id", project_id).execute()
-        
-        matching_doc = None
-        for doc in result.data or []:
-            if doc.get("filename") == doc_id:
-                matching_doc = doc
-                break
+        # Find the document by filename directly. Filtering in the query avoids the
+        # 1,000-row response cap that a full project fetch would hit.
+        result = (client.table("documents").select("id, filename")
+                  .eq("rag_project_id", project_id).eq("filename", doc_id).limit(1).execute())
+        matching_doc = (result.data or [None])[0]
         
         if not matching_doc:
             print(f"  ⚠ Document not found in Supabase: {doc_id}")

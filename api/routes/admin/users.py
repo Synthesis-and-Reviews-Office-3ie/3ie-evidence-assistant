@@ -11,6 +11,7 @@ from typing import List, Optional, Dict, Any
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
+from src.auth import fetch_all_rows
 from src.utils.logging import get_logger
 
 logger = get_logger(__name__)
@@ -104,14 +105,14 @@ async def get_all_users():
         if not rags_response.data:
             return []
         
-        # Get document counts per project
-        docs_response = supabase.table("documents").select(
-            "rag_project_id, chunk_count"
-        ).execute()
+        # Get document counts per project (paged: a project can exceed 1,000 rows)
+        docs_data = fetch_all_rows(
+            lambda: supabase.table("documents").select("rag_project_id, chunk_count")
+        )
         
         # Build document count map
         doc_counts: Dict[str, Dict[str, int]] = {}
-        for doc in docs_response.data or []:
+        for doc in docs_data:
             project_id = doc.get("rag_project_id")
             if project_id:
                 if project_id not in doc_counts:
@@ -119,14 +120,14 @@ async def get_all_users():
                 doc_counts[project_id]["docs"] += 1
                 doc_counts[project_id]["chunks"] += doc.get("chunk_count") or 0
         
-        # Get usage stats per user
-        usage_response = supabase.table("usage_logs").select(
-            "user_id, cost_usd"
-        ).execute()
+        # Get usage stats per user (paged)
+        usage_data = fetch_all_rows(
+            lambda: supabase.table("usage_logs").select("user_id, cost_usd")
+        )
         
         # Build usage map
         usage_map: Dict[str, Dict[str, Any]] = {}
-        for log in usage_response.data or []:
+        for log in usage_data:
             user_id = log.get("user_id")
             if user_id:
                 if user_id not in usage_map:
@@ -225,15 +226,17 @@ async def get_user_detail(user_id: str):
         if not rags_response.data:
             raise HTTPException(status_code=404, detail="User not found or has no projects")
         
-        # Get document counts for these projects
+        # Get document counts for these projects (paged)
         project_ids = [r["id"] for r in rags_response.data]
-        docs_response = supabase.table("documents").select(
-            "rag_project_id, chunk_count"
-        ).in_("rag_project_id", project_ids).execute()
+        docs_data = fetch_all_rows(
+            lambda: supabase.table("documents").select(
+                "rag_project_id, chunk_count"
+            ).in_("rag_project_id", project_ids)
+        )
         
         # Build document count map
         doc_counts: Dict[str, Dict[str, int]] = {}
-        for doc in docs_response.data or []:
+        for doc in docs_data:
             project_id = doc.get("rag_project_id")
             if project_id:
                 if project_id not in doc_counts:
@@ -335,13 +338,13 @@ async def get_all_rags():
         if not rags_response.data:
             return []
         
-        # Get document counts
-        docs_response = supabase.table("documents").select(
-            "rag_project_id, chunk_count"
-        ).execute()
+        # Get document counts (paged)
+        docs_data = fetch_all_rows(
+            lambda: supabase.table("documents").select("rag_project_id, chunk_count")
+        )
         
         doc_counts: Dict[str, Dict[str, int]] = {}
-        for doc in docs_response.data or []:
+        for doc in docs_data:
             project_id = doc.get("rag_project_id")
             if project_id:
                 if project_id not in doc_counts:

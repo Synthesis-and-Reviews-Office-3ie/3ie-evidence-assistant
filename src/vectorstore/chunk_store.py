@@ -270,11 +270,16 @@ class ChunkStore:
 
     def doc_keys(self, project_id: str) -> List[str]:
         """Distinct document keys in a project (from chunk 0 of each document)."""
-        rows = self._check(self._client.get("/chunks", params={
-            "rag_project_id": f"eq.{project_id}", "chunk_index": "eq.0", "select": "doc_key",
-            "order": "doc_key.asc", "limit": "100000",
-        })).json()
-        return [r["doc_key"] for r in rows]
+        out: list[str] = []
+        params = {"rag_project_id": f"eq.{project_id}", "chunk_index": "eq.0",
+                  "select": "doc_key", "order": "doc_key.asc"}
+        while True:
+            batch = self._check(self._client.get(
+                "/chunks", params={**params, "limit": str(PAGE_SIZE), "offset": str(len(out))},
+            )).json()
+            out.extend(r["doc_key"] for r in batch)
+            if len(batch) < PAGE_SIZE:
+                return out
 
     def hybrid_search(
         self,
