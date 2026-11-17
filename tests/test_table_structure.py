@@ -315,3 +315,17 @@ def test_a_table_with_ten_estimate_columns_gets_ten_views():
     row = "| Income | " + " | ".join(f"0.{i}**" for i in range(1, 11)) + " |"
     table = "\n".join([header, line, row])
     assert len(split_estimate_columns(table)) == 10
+
+
+def test_per_column_observation_counts_are_read_only_when_they_differ():
+    table = """| Outcome | Half cost | Full cost | Control |
+| --- | --- | --- | --- |
+| Income | 0.11*** | 0.14*** | |
+| Observations | 948 | 716 | 725 |"""
+    views = split_estimate_columns(table)
+    assert [view.get("n_hint") for view in views] == [948.0, 716.0]
+    pooled = """| Outcome | Half cost | Full cost |
+| --- | --- | --- |
+| Income | 0.11*** | 0.14*** |
+| Observations | 3,247 | 3,247 |"""
+    assert all(view.get("n_hint") is None for view in split_estimate_columns(pooled))

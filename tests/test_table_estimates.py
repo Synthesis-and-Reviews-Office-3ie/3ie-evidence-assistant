@@ -205,3 +205,41 @@ def test_the_hint_tells_the_model_that_rows_are_subgroups():
     hint = module._structure_hint(module._table_analysis({"text": table, "caption": "", "context": "",
                                                           "index": 0, "page": 1, "arm_hint": ""})[1], table)
     assert "rows are subgroups" in hint
+
+
+def test_a_column_count_becomes_that_arm_count():
+    text = "| Outcome | Half cost |\n| --- | --- |\n| Income | 0.11*** |\n| Observations | 948 |"
+    treated = to_estimate({"outcome": "Income", "estimate_cell": "0.11***"}, "t", 3, text,
+                          arm_hint="Half cost", n_hint=948)
+    assert treated.n_treatment == 948 and treated.n_control is None
+    control = to_estimate({"outcome": "Income", "estimate_cell": "0.11***"}, "t", 3, text,
+                          arm_hint="Control", n_hint=725)
+    assert control.n_control == 725 and control.n_treatment is None
+
+
+def test_the_two_arm_counts_are_paired_within_an_outcome():
+    import src.extraction.table_estimates as module
+
+    treated = module.to_estimate({"outcome": "Income", "arm": "Half cost", "estimate_cell": "0.11***"},
+                                 "t", 3, "| Income | 0.11*** |", arm_hint="Half cost")
+    treated.n_treatment = 948
+    control = module.to_estimate({"outcome": "Income", "arm": "Control", "estimate_cell": "-0.02**"},
+                                 "t", 3, "| Income | -0.02** |", arm_hint="Control")
+    control.n_control = 725
+    module.pair_arm_counts([treated, control])
+    assert treated.n_control == 725 and control.n_treatment == 948
+
+
+def test_a_control_sd_is_joined_by_outcome_within_the_document():
+    import src.extraction.table_estimates as module
+
+    effect = module.to_estimate({"outcome": "Income", "estimate_cell": "0.11***", "se_cell": "(0.04)"},
+                                "t", 3, "| Income | 0.11*** (0.04) |")
+    descriptive = module.to_estimate({"outcome": "income", "estimate_cell": "2,540.00 (612.5)",
+                                      "control_sd_cell": "2,540.00 (612.5)"},
+                                     "t", 5, "| Income | 2,540.00 (612.5) |")
+    other = module.to_estimate({"outcome": "Consumption", "estimate_cell": "276 (109)",
+                                "control_sd_cell": "276 (109)"}, "t", 5, "| Consumption | 276 (109) |")
+    module.attach_document_statistics([effect, descriptive, other])
+    assert effect.control_sd == 612.5
+    assert other.control_sd == 109.0

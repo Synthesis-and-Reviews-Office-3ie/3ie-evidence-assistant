@@ -532,6 +532,30 @@ Four belong to two studies that the wider mapping has just started to score, 121
 and 122182711 (-81.6), plus 121498842's standard error 3.84. Those four are a coverage question of the
 ordinary kind and are the next thing to look at.
 
+### Standardised effect sizes: the arithmetic is ready, the inputs are not (17 November 2026)
+
+`effect_sizes.py` computes `d`, `var(d)`, `g`, `var(g)` and `se(g)`, and the columns exist. It needs four inputs
+per row: the estimate, its standard error, the outcome's standard deviation in the control group, and both arm
+counts. The reader now captures all four where a paper prints them:
+
+- a per-column observation count, taken from an Observations or N row, but only when the counts differ by
+  column, so a pooled count repeated across columns is never mistaken for a per-arm one;
+- the control column's count from its header, because a control column usually carries no stars and so is never
+  one of the estimate views;
+- the two arm counts joined per page and outcome, since a column view holds one arm;
+- the control standard deviation joined to an effect row by the outcome's name within the document, exact match
+  only, because a loose match could attach one outcome's deviation to another's estimate.
+
+Re-extracting the seventeen documents that print a control deviation produced 4,125 control deviations, 2,639
+treated counts and 281 control counts, and 62 rows where all four inputs meet: 54 in paper 121058356 and 8 in
+121294841. That is the finding. Published tables rarely print the control deviation and a per-arm count for the
+same outcome, and the join between a descriptive table and an effect table has to survive a change of outcome
+name. The 8WR coder had the authors' output, which is why its key carries full precision.
+
+So standardised effects are produced wherever the inputs exist and will accumulate from new uploads, but they
+cannot be reconstructed at scale from the papers in this collection. Reproducing the key's `d`, `g` and `yi`
+needs that output, not a better reader.
+
 ## Coverage and accuracy: where the work stands (17 November 2026)
 
 This is the short account of a long week, for a reader who does not want the dated entries below.

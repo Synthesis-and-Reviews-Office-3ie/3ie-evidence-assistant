@@ -419,6 +419,50 @@ def subgroup_rows_layout(grid: TableGrid) -> bool:
     return not any(_STAT_HEADER.match(header) for header in named)
 
 
+_OBS_ROW = re.compile(r"^\s*(observations?|obs\.?|no\.? of observations|number of observations|n|"
+                      r"sample size|n obs)\s*$", re.I)
+
+
+def observation_counts(grid: TableGrid) -> Optional[List[Optional[float]]]:
+    """The per-column observation counts, when the table prints a row of them that varies by column.
+
+    A row of equal counts is a pooled figure repeated across the columns, not a count per arm, and is
+    returned as None so it is never mistaken for one.
+    """
+    for row in grid.body:
+        if not row or not _OBS_ROW.match(str(row[0])):
+            continue
+        counts = []
+        for cell in row[1:]:
+            value = re.sub(r"[^\d]", "", str(cell))
+            counts.append(float(value) if value else None)
+        present = [count for count in counts if count]
+        if len(present) >= 2 and len(set(present)) > 1:
+            return counts
+        return None
+    return None
+
+
+_CONTROL_HEADER = re.compile(r"control|comparison|placebo|untreated|non-?beneficiar|\bnsup\b", re.I)
+
+
+def control_count(grid: TableGrid) -> Optional[float]:
+    """The observation count of the control column, when the table prints one per column.
+
+    A control column usually carries no stars, so it is never one of the estimate views; its count has to be
+    taken from the header instead, and it applies to every effect row of the same table.
+    """
+    counts = observation_counts(grid)
+    if not counts:
+        return None
+    headers = grid.headers[-1] if grid.headers else []
+    for index in range(1, grid.ncols):
+        name = headers[index] if index < len(headers) else ""
+        if _CONTROL_HEADER.search(str(name)) and index - 1 < len(counts) and counts[index - 1]:
+            return counts[index - 1]
+    return None
+
+
 def carry_merged_labels(text: str) -> str:
     """Fill an empty first-column cell with the label above it, when the row carries an estimate.
 
@@ -491,6 +535,7 @@ def split_estimate_columns(text: str, limit: int = MAX_SPLIT_COLUMNS, min_column
         label, data_in_header = header_label(index)
         names.append((index, label or f"column {ordinal}", data_in_header))
     repeats = Counter(name for _, name, _ in names)
+    counts = observation_counts(grid)
     label_head = header_rows[0][0] if header_rows and header_rows[0] else "Outcome"
     units: List[Dict[str, str]] = []
     for ordinal, (index, name, data_in_header) in enumerate(names, start=1):
@@ -509,7 +554,8 @@ def split_estimate_columns(text: str, limit: int = MAX_SPLIT_COLUMNS, min_column
             if not str(label_cell).strip() and not str(value).strip():
                 continue
             lines.append(f"| {label_cell} | {value} |")
-        units.append({"header": name, "text": "\n".join(lines)})
+        units.append({"header": name, "text": "\n".join(lines),
+                      "n_hint": counts[index - 1] if counts and 0 < index <= len(counts) else None})
     return units
 
 

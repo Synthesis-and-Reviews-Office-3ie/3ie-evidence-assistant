@@ -180,7 +180,7 @@ first-row label rule, both of which recur in incoming papers, and the rest docum
    - A Spanish question read only 2 studies against 3 Haku Wiñay documents held. Translate the question for
      retrieval (keep answering in the user's language), or retrieve with both versions.
 
-6. **N6. Effect sizes and pooled comparisons** - steps 1 to 3 done 11 Nov 2026
+6. **N6. Effect sizes and pooled comparisons** - steps 1 to 3 done 11 Nov 2026; the arithmetic and the capture are complete as of 17 Nov, but only 62 rows of the collection supply all four inputs (estimate, standard error, control deviation, both arm counts), so pooled standardised effects need the authors' output rather than a better reader
    - Seven of the 49 gold claims need comparisons across studies, such as smaller income gains when women
      are the transfer recipients.
    - Step 1 (done, PR #21): the `effect_estimates` table, and 7,127 OM_QEX estimates for 77 studies imported

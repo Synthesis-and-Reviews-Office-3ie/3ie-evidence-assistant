@@ -34,6 +34,63 @@ RETRY_MIN_ROWS = 4
 RETRIES_PER_DOC = 12
 
 
+def _outcome_key(estimate: "Estimate") -> str:
+    return re.sub(r"[^a-z0-9 ]", " ", str(estimate.outcome or estimate.row_label or "").lower()).strip()
+
+
+def attach_document_statistics(estimates: List["Estimate"]) -> int:
+    """Fill an effect row's control SD and arm counts from the document's descriptive tables.
+
+    An effect table rarely prints the outcome's standard deviation, and a descriptive or balance table never
+    prints an effect, so the two are joined by the outcome's name within the document. The match is exact on
+    the normalised name, because a loose match could attach one outcome's deviation to another's estimate.
+    Returns how many rows were completed.
+    """
+    sd_by_outcome: Dict[str, float] = {}
+    counts_by_outcome: Dict[str, tuple] = {}
+    for estimate in estimates:
+        key = _outcome_key(estimate)
+        if not key:
+            continue
+        if estimate.control_sd is not None:
+            sd_by_outcome.setdefault(key, estimate.control_sd)
+        if estimate.n_treatment and estimate.n_control:
+            counts_by_outcome.setdefault(key, (estimate.n_treatment, estimate.n_control))
+    filled = 0
+    for estimate in estimates:
+        if estimate.effect_size is None:
+            continue
+        key = _outcome_key(estimate)
+        changed = False
+        if estimate.control_sd is None and key in sd_by_outcome:
+            estimate.control_sd = sd_by_outcome[key]
+            changed = True
+        if not (estimate.n_treatment and estimate.n_control) and key in counts_by_outcome:
+            estimate.n_treatment, estimate.n_control = counts_by_outcome[key]
+            changed = True
+        filled += changed
+    return filled
+
+
+def pair_arm_counts(estimates: List["Estimate"]) -> None:
+    """Give each estimate both arm counts, when the table supplied them one column at a time.
+
+    A column view holds one arm, so its observation count is one side of the comparison. The two sides are
+    joined per page and outcome, which is what the standardised effect needs.
+    """
+    paired: Dict[tuple, List["Estimate"]] = {}
+    for estimate in estimates:
+        key = (estimate.page, (estimate.outcome or estimate.row_label).strip().lower())
+        paired.setdefault(key, []).append(estimate)
+    for rows in paired.values():
+        treated = next((row.n_treatment for row in rows if row.n_treatment), None)
+        control = next((row.n_control for row in rows if row.n_control), None)
+        if treated and control:
+            for row in rows:
+                row.n_treatment = row.n_treatment or treated
+                row.n_control = row.n_control or control
+
+
 def _labelled_rows(text: str) -> int:
     """How many data rows the table has, by the count of rows with a label in the first column."""
     from src.extraction.table_structure import parse_markdown_table
@@ -128,7 +185,8 @@ If it is a results table, list every estimate of a treatment effect on an outcom
   exactly ("" if none). Often the next row, in parentheses or brackets.
 - se_kind: "se", "t", "ci" or "" (from the notes; parentheses are usually SEs)
 - p_cell: an exact p-value cell if the table has one, else ""
-- n: the number of observations for the estimate if the table gives it, else ""
+- n: the number of observations for the estimate if the table gives it, else "". When this view is
+  one arm's column and the table prints that column's count in an Observations or N row, return it
 - control_mean_cell: the control-group mean for this outcome, copied exactly from a row or column
   headed "Control mean" ("" when the table does not print one)
 - control_sd_cell: the control-group standard deviation for this outcome, copied exactly ("" when it
@@ -246,7 +304,8 @@ def _count(value: Optional[float]) -> Optional[int]:
 
 
 def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], table_text: str,
-                arm_hint: str = "") -> Estimate:
+                arm_hint: str = "", n_hint: Optional[float] = None,
+                control_n: Optional[float] = None) -> Estimate:
     est_cell = str(raw.get("estimate_cell") or "")
     se_cell = str(raw.get("se_cell") or "")
     kind = str(raw.get("se_kind") or "").lower()
@@ -262,6 +321,8 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
         se = parse_number(se_cell)
         se = abs(se) if se is not None else None
     n = parse_number(raw.get("n"))
+    if n is None and n_hint:
+        n = float(n_hint)
     table_norm = _norm(table_text)
 
     def _tokens(text: object) -> List[str]:
@@ -292,6 +353,15 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
     control_sd = (_number_in_parens(sd_cell) or parse_number(sd_cell)) if found(sd_cell) else None
     n_treatment = _count(parse_number(nt_cell)) if found(nt_cell) else None
     n_control = _count(parse_number(nc_cell)) if found(nc_cell) else None
+    if n_treatment is None and n_control is None and n_hint and arm_hint:
+        # The view is one arm's column and the table prints that column's observation count, so the count
+        # belongs to this arm. The control side is named, because a treated arm is anything else.
+        if re.search(r"control|comparison|placebo|untreated|non-?beneficiar|\bnsup\b", arm_hint.lower()):
+            n_control = _count(float(n_hint))
+        else:
+            n_treatment = _count(float(n_hint))
+    if n_control is None and control_n:
+        n_control = _count(float(control_n))
 
     grounded = bool(est_cell) and _norm(est_cell) in table_norm and (not se_cell or _norm(se_cell) in table_norm)
     notes = [] if grounded else ["cell not found verbatim in the table"]
@@ -311,7 +381,12 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
 def table_units(content_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """Each table with its page, caption and the text items just before and after it."""
     from src.extraction.table_rules import looks_garbled
-    from src.extraction.table_structure import carry_merged_labels, split_estimate_columns
+    from src.extraction.table_structure import (
+        carry_merged_labels,
+        control_count,
+        parse_markdown_table,
+        split_estimate_columns,
+    )
 
     units = []
     for i, item in enumerate(content_list):
@@ -342,13 +417,15 @@ def table_units(content_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         except (TypeError, ValueError):
             page = None
         base = {"index": i, "page": page, "caption": caption or "", "text": text[:MAX_TABLE_CHARS],
-                "context": "\n".join(x for x in around if x.strip()), "arm_hint": ""}
+                "context": "\n".join(x for x in around if x.strip()), "arm_hint": "",
+                "control_n": control_count(parse_markdown_table(text))}
         # A wide table comes back as one narrow table per estimate column: the model reads the first
         # column across a seven-column row and stops, and the column header is the arm it belongs to.
         columns = split_estimate_columns(text[:MAX_TABLE_CHARS])
         if columns:
             for column in columns:
                 units.append({**base, "text": column["text"][:MAX_TABLE_CHARS], "arm_hint": column["header"],
+                              "n_hint": column.get("n_hint"),
                               "caption": f"{base['caption']} (column: {column['header']})".strip()})
             # The whole-table read runs too and its rows merge with the column views. A narrow view
             # can lose a standard error the wide read saw, and the wide read is what the pipeline did
@@ -412,7 +489,12 @@ def _parse_json(text: str) -> Dict[str, Any]:
 def _table_analysis(u: Dict[str, Any]):
     """Table type and inferred structure, computed before the model call (lazy imports avoid a cycle)."""
     from src.extraction.table_rules import classify_table
-    from src.extraction.table_structure import ESTIMATE, LAYOUT_ROWS, interpret_table, parse_markdown_table
+    from src.extraction.table_structure import (
+        ESTIMATE,
+        LAYOUT_ROWS,
+        interpret_table,
+        parse_markdown_table,
+    )
 
     grid = parse_markdown_table(u["text"])
     header = " | ".join(grid.headers[-1]) if grid.headers else ""
@@ -424,7 +506,11 @@ def _table_analysis(u: Dict[str, Any]):
 
 def _structure_hint(result, text: str = "") -> str:
     """A short description of the inferred columns, for the model prompt."""
-    from src.extraction.table_structure import LAYOUT_ROWS, parse_markdown_table, subgroup_rows_layout
+    from src.extraction.table_structure import (
+        LAYOUT_ROWS,
+        parse_markdown_table,
+        subgroup_rows_layout,
+    )
 
     parts: List[str] = []
     if text:
@@ -551,7 +637,7 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
         is_results = bool(data.get("results_table"))
         raw = (data.get("estimates") or []) if is_results else []
         raw, non_outcome = _drop_non_outcome_rows(raw)
-        rows = [to_estimate(r, label, u["page"], u["text"], u.get("arm_hint") or "")
+        rows = [to_estimate(r, label, u["page"], u["text"], u.get("arm_hint") or "", u.get("n_hint"), u.get("control_n"))
                 for r in raw if isinstance(r, dict)]
         per_item.setdefault(u["index"], []).extend(rows)
         tables.append({"table": label, "page": u["page"], "results_table": is_results, "estimates": len(rows),
@@ -562,6 +648,8 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
     # A wide table read both ways is merged, so the column views add coverage without repeating rows.
     for index, rows in per_item.items():
         estimates.extend(merge_reads(rows) if views_of.get(index) else rows)
+    pair_arm_counts(estimates)
+    attach_document_statistics(estimates)
     estimate_dicts = [asdict(e) for e in estimates]
     duplicates = 0
     if drop_duplicates:
