@@ -346,7 +346,7 @@ def _all_parenthesised(cells: Sequence[str]) -> bool:
     return bool(present) and all(_PAREN_ONLY.match(str(c)) for c in present)
 
 
-MAX_SPLIT_COLUMNS = 8
+MAX_SPLIT_COLUMNS = 16
 
 
 def _starred(value: object) -> bool:

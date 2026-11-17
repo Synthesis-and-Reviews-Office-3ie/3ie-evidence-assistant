@@ -307,3 +307,11 @@ def test_a_table_with_subgroup_rows_and_outcome_columns_is_recognised():
 
 def test_a_regression_table_with_covariates_in_the_rows_is_not():
     assert subgroup_rows_layout(parse_markdown_table(COVARIATES)) is False
+
+
+def test_a_table_with_ten_estimate_columns_gets_ten_views():
+    header = "| Outcome | " + " | ".join(str(i) for i in range(1, 11)) + " |"
+    line = "| --- |" + " --- |" * 10
+    row = "| Income | " + " | ".join(f"0.{i}**" for i in range(1, 11)) + " |"
+    table = "\n".join([header, line, row])
+    assert len(split_estimate_columns(table)) == 10

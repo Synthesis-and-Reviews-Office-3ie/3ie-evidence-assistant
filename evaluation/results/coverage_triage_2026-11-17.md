@@ -1,27 +1,25 @@
 # Coverage triage 2026-11-17
 
-1945 estimate-shaped cells on 98 documents have no stored row on their page.
+1914 estimate-shaped cells on 98 documents have no stored row on their page.
 
-- stored on another page: 1065 (55%)
-- table of means: 300 (15%)
-- covariate row: 216 (11%)
+- stored on another page: 1053 (55%)
+- table of means: 300 (16%)
+- covariate row: 213 (11%)
 - balance or attrition table: 95 (5%)
 - observation count: 73 (4%)
 - control mean: 64 (3%)
-- unexplained: 63 (3%)
-- late appendix page: 55 (3%)
+- unexplained: 56 (3%)
+- late appendix page: 46 (2%)
 - hypothesis test: 9 (0%)
 - appendix table: 2 (0%)
 - statistic: 2 (0%)
 - mean row: 1 (0%)
 
-The unexplained remainder is 63 cells, against 1945 on the raw count that the coverage report quotes.
+The unexplained remainder is 56 cells, against 1914 on the raw count that the coverage report quotes.
 
 - 20883ddebbf3_PDFs_of_included_programs_Banglad p15: row 'Average cost of doctor's fees + medicine', column 'Difference in Difference - (', cell 86.67**
 - 20883ddebbf3_PDFs_of_included_programs_Banglad p15: row 'Average expenditure on transport for medical atten', column 'Difference in Difference - (', cell 31.68*
 - 20883ddebbf3_PDFs_of_included_programs_Banglad p30: row 'Mean present value of living room (at 2002 prices)', column 'Difference in difference - (', cell 298.77**
-- 2b6c38462f7c_PDFs_of_included_programs_Banglad p25: row 'repeat', column '(8) Income I', cell 2313.0* (1316.8)
-- 2b6c38462f7c_PDFs_of_included_programs_Banglad p25: row 'repeat', column '(9) Income II', cell 2320.3* (1306.4)
 - 3d1065d6b553_PDFs_of_included_programs_1214988 p36: row 'Average daily working hours for home', column 'ER - Change', cell 0.45***
 - 442bb134bc3b_PDFs_of_included_programs_1212954 p10: row 'market or town (x0.1', column '(1) Total number of poultry ', cell 1.031**
 - 442bb134bc3b_PDFs_of_included_programs_1212954 p10: row 'market or town (x0.1', column '(2) Value of sold poultry (s', cell 113.776*
@@ -47,3 +45,5 @@ The unexplained remainder is 63 cells, against 1945 on the raw count that the co
 - c5f7f6a26ce7_PDFs_of_included_programs_1213548 p5: row 'Own', column '', cell 2.841 [3.340]
 - c6f56d86e783_PDFs_of_included_programs_1210583 p7: row '(9)', column '1.00', cell 0.81 †
 - d9ca0e85d3e1_PDFs_of_included_programs_1213301 p16: row '% of female HH', column 'MNV test', cell 5.46*
+- d9ca0e85d3e1_PDFs_of_included_programs_1213301 p16: row '# adults in hld (16 to 64)', column 'MNV test', cell 5.49*
+- db0c64366cfe_PDFs_of_included_programs_Banglad p21: row 'HH head female', column 'Model 4', cell -493.87***

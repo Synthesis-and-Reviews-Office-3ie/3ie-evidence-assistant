@@ -24,22 +24,6 @@
   "caption": "['Table 23. Shelter information']"
  },
  {
-  "doc": "2b6c38462f7c_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Bandiera_(2009)",
-  "page": 25,
-  "row": "repeat",
-  "column": "(8) Income I",
-  "cell": "2313.0* (1316.8)",
-  "caption": "['Table 4: Direct Effects of the Programme I']"
- },
- {
-  "doc": "2b6c38462f7c_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Bandiera_(2009)",
-  "page": 25,
-  "row": "repeat",
-  "column": "(9) Income II",
-  "cell": "2320.3* (1306.4)",
-  "caption": "['Table 4: Direct Effects of the Programme I']"
- },
- {
   "doc": "3d1065d6b553_PDFs_of_included_programs_121498842_translated_into_English",
   "page": 36,
   "row": "Average daily working hours for home",
@@ -171,48 +155,8 @@
   "doc": "61ddcec5e910_PDFs_of_included_programs_121294984",
   "page": 52,
   "row": "Labour- constrained",
-  "column": "(9)",
-  "cell": "-0.228 (0.165)",
-  "caption": ""
- },
- {
-  "doc": "61ddcec5e910_PDFs_of_included_programs_121294984",
-  "page": 52,
-  "row": "Labour- constrained",
-  "column": "(10)",
-  "cell": "-17,134** (8,121)",
-  "caption": ""
- },
- {
-  "doc": "61ddcec5e910_PDFs_of_included_programs_121294984",
-  "page": 52,
-  "row": "Labour- constrained",
   "column": "(11)",
   "cell": "-0.57*** (0.151)",
-  "caption": ""
- },
- {
-  "doc": "61ddcec5e910_PDFs_of_included_programs_121294984",
-  "page": 52,
-  "row": "Labour- constrained",
-  "column": "(13)",
-  "cell": "141.8 (720.7)",
-  "caption": ""
- },
- {
-  "doc": "61ddcec5e910_PDFs_of_included_programs_121294984",
-  "page": 52,
-  "row": "Labour- constrained",
-  "column": "(14)",
-  "cell": "-5,658 (6,104)",
-  "caption": ""
- },
- {
-  "doc": "61ddcec5e910_PDFs_of_included_programs_121294984",
-  "page": 52,
-  "row": "Labour- constrained",
-  "column": "(15)",
-  "cell": "-23,735** (11,243)",
   "caption": ""
  },
  {

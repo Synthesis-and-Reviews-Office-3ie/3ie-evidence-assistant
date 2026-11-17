@@ -335,8 +335,15 @@ outright: the column heading is the outcome and the row label is the subgroup. A
 are models or coefficients is excluded, because its rows are covariates, not subgroups. After re-extracting the
 papers with that shape, 21 stored rows carry a subgroup.
 
-After all of those, the real gap is 63 cells in 19 documents: 61 omitted from tables that were read and 2 on
-pages with no stored rows, down from 296 and then 107. The others in the old count were already stored, or were
+A sixth class was simply width. The column split stopped at eight columns, so a table with ten or eighteen
+estimate columns silently lost the rest; paper 121295428's treatment-effects table has ten and paper 121294984's
+has eighteen. The limit is now sixteen, and re-extracting the three such papers recovered seven cells.
+
+After all of those, the real gap is 53 cells in 18 documents: 51 omitted from tables that were read and 2 on
+pages with no stored rows, down from 296 and then 107. What is left is a list of small, distinct clusters rather
+than a class: seven covariate cells in one determinants table that are correctly not stored, five in a subgroup
+table the reader declines, four in a panel table whose first row has no label to carry, three in a
+difference-in-differences column, three under a merged header, and single cells elsewhere. The others in the old count were already stored, or were
 tables of means and balance sheets. The lesson for production is that an unusual layout is more often a table
 that should not be stored than a reader failure, and the triage is where that judgement belongs.
 
