@@ -70,7 +70,7 @@ def rows_for(project_id: str, doc: Dict[str, Any], out: Dict[str, Any], model: s
             "n_treatment": e.get("n_treatment"), "n_control": e.get("n_control"),
             "literal_text": (e["estimate_cell"] + (" " + e["se_cell"] if e["se_cell"] else ""))[:500],
             "text_position": f"{e['table_label']}, row '{e['row_label']}', column '{e['column_label']}'"[:500],
-            "page": e["page"], "extraction_method": model,
+            "page": e["page"], "table_index": e.get("table_index"), "extraction_method": model,
         }
         # Standardised fields are written with the row, from the inputs it actually carries, and stay
         # null when control_sd or a per-arm count is missing rather than being guessed.
@@ -213,7 +213,7 @@ async def extract_and_store(
     headers = {"apikey": key, "Authorization": f"Bearer {key}", "Content-Type": "application/json"}
     bucket, s3 = os.environ.get("R2_BUCKET_NAME", "devchat-pdfs"), _r2()
     wanted = set(doc_keys) if doc_keys is not None else None
-    totals = {"docs": 0, "estimates": 0, "kept": 0, "results_tables": 0, "tables": 0, "errors": 0, "second_pass_units": 0, "second_pass_rows": 0, "carried": 0,
+    totals = {"docs": 0, "estimates": 0, "kept": 0, "results_tables": 0, "tables": 0, "errors": 0, "second_pass_units": 0, "second_pass_rows": 0, "carried": 0, "restored": 0,
               "vision_pages": 0, "vision_rows": 0, "outcome_misses": 0, "prose_rows": 0}
 
     async with httpx.AsyncClient(base_url=url, headers=headers, timeout=120) as db:
@@ -352,8 +352,8 @@ async def extract_and_store(
                     return
                 try:
                     carried = 0
+                    previous = await _stored_rows(db, project_id, name)
                     if not prune:
-                        previous = await _stored_rows(db, project_id, name)
                         keep = carried_forward(rows, previous)
                         # Server-managed columns are not part of an insert payload.
                         rows.extend({k: v for k, v in row.items() if k not in ("id", "created_at")}
@@ -383,6 +383,15 @@ async def extract_and_store(
                 except Exception as e:
                     totals["errors"] += 1
                     log(f"  ✗ {name[:60]}: {type(e).__name__}: {str(e)[:120]}")
+                    if prune and previous:
+                        # A prune deletes before it inserts, so a failed insert would leave the document with
+                        # nothing. Put back what was there.
+                        restored = unify_keys([{k: v for k, v in row.items() if k not in ("id", "created_at")}
+                                               for row in previous])
+                        for i in range(0, len(restored), INSERT_BATCH):
+                            if await _post(db, restored[i:i + INSERT_BATCH]) is None:
+                                totals["restored"] += len(restored[i:i + INSERT_BATCH])
+                        log(f"    restored {totals.get('restored', 0)} row(s) after the failed prune")
                     return
                 results = sum(t["results_table"] for t in out["tables"])
                 totals["docs"] += 1

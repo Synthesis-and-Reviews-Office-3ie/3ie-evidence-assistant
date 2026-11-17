@@ -278,6 +278,7 @@ def parse_interval(text: str) -> Optional[tuple]:
 class Estimate:
     table_label: str
     page: Optional[int]
+    table_index: Optional[int]
     outcome: str
     arm: str
     subgroup: str
@@ -318,7 +319,8 @@ def _count(value: Optional[float]) -> Optional[int]:
 
 def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], table_text: str,
                 arm_hint: str = "", n_hint: Optional[float] = None,
-                control_n: Optional[float] = None, arm_row: str = "") -> Estimate:
+                control_n: Optional[float] = None, arm_row: str = "",
+                table_index: Optional[int] = None) -> Estimate:
     est_cell = str(raw.get("estimate_cell") or "")
     se_cell = str(raw.get("se_cell") or "")
     kind = str(raw.get("se_kind") or "").lower()
@@ -393,7 +395,8 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
     grounded = bool(est_cell) and _norm(est_cell) in table_norm and (not se_cell or _norm(se_cell) in table_norm)
     notes = [] if grounded else ["cell not found verbatim in the table"]
     return Estimate(
-        table_label=table_label, page=page, outcome=str(raw.get("outcome") or ""),
+        table_label=table_label, page=page, table_index=table_index,
+        outcome=str(raw.get("outcome") or ""),
         arm=arm_row or str(raw.get("arm") or "") or arm_hint, subgroup=str(raw.get("subgroup") or ""),
         row_label=str(raw.get("row_label") or ""), column_label=str(raw.get("column_label") or "") or arm_hint,
         estimate_cell=est_cell, se_cell=se_cell, se_kind=kind, p_cell=str(raw.get("p_cell") or ""),
@@ -444,7 +447,11 @@ def table_units(content_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
             page = int(item.get("page_idx")) + 1 if item.get("page_idx") not in (None, "") else None
         except (TypeError, ValueError):
             page = None
-        base = {"index": i, "page": page, "caption": caption or "", "text": text[:MAX_TABLE_CHARS],
+        page_table_index = sum(1 for earlier in content_list[:i]
+                               if earlier.get("type") == "table"
+                               and (earlier.get("page_idx") or 0) == (item.get("page_idx") or 0))
+        base = {"index": i, "page": page, "table_index": page_table_index,
+                "caption": caption or "", "text": text[:MAX_TABLE_CHARS],
                 "context": "\n".join(x for x in around if x.strip()), "arm_hint": "",
                 "control_n": control_count(parse_markdown_table(text)),
                 "arm_row": arm_row_label(parse_markdown_table(text)) or ""}
@@ -686,7 +693,7 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
         raw = (data.get("estimates") or []) if is_results else []
         raw, non_outcome = _drop_non_outcome_rows(raw)
         rows = [to_estimate(r, label, u["page"], u["text"], u.get("arm_hint") or "", u.get("n_hint"), u.get("control_n"),
-                        u.get("arm_row") or "")
+                        u.get("arm_row") or "", u.get("table_index"))
                 for r in raw if isinstance(r, dict)]
         per_item.setdefault(u["index"], []).extend(rows)
         tables.append({"table": label, "page": u["page"], "results_table": is_results, "estimates": len(rows),
