@@ -47,7 +47,7 @@ def reason(row_label: str, column_label: str, caption: str, page: int, pages: in
     column = re.sub(r"[þÞ]", ")", re.sub(r"[ðÐ]", "(", str(column_label or "").strip()))
     # A balance table often has no caption word for it. Its columns give it away: a year against a group
     # ("2005 - Treated") or a difference between baseline groups ("SUP-NSUP (2)", "SB1-SNB0 (4)").
-    if re.match(r"^(19|20)\d{2}\s*[-–]\s*(treated|control|treatment)\b", column, re.I):
+    if re.match(r"^(19|20)\d{2}\s*[-–]\s*(treated|control|treatment|difference)\b", column, re.I):
         return "balance or attrition table"
     if re.match(r"^[A-Za-z0-9]{2,6}\s*[-–]\s*[A-Za-z0-9]{2,6}\s*\(\d\)\s*$", column):
         return "balance or attrition table"

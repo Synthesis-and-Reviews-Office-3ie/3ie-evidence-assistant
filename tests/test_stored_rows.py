@@ -155,3 +155,13 @@ def test_a_balance_column_can_carry_digits():
     from evaluation.coverage_triage import reason
 
     assert reason("Per capita income", "SNB1-SNB0 (3)", "", 17, 60, "2371.40***") == "balance or attrition table"
+
+
+def test_a_year_tagged_difference_column_is_a_balance_comparison():
+    from evaluation.coverage_triage import reason
+
+    assert reason("Average household size", "2002 - Difference (3=1-2)", "", 15, 60, "-0.24**") == \
+        "balance or attrition table"
+    # The difference-in-differences column is the programme's effect and stays a gap.
+    assert reason("Average household size", "Difference in Difference - (7=6-3)", "", 15, 60, "0.31**") == \
+        "unexplained"

@@ -3,14 +3,6 @@
   "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
   "page": 15,
   "row": "Average cost of doctor's fees + medicine",
-  "column": "2002 - Difference (3=1-2)",
-  "cell": "-71.84**",
-  "caption": "['Table 8. Prevalence, impact of illness and costs of healthcare']"
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 15,
-  "row": "Average cost of doctor's fees + medicine",
   "column": "Difference in Difference - (7=6-3)",
   "cell": "86.67**",
   "caption": "['Table 8. Prevalence, impact of illness and costs of healthcare']"
@@ -22,22 +14,6 @@
   "column": "Difference in Difference - (7=6-3)",
   "cell": "31.68*",
   "caption": "['Table 8. Prevalence, impact of illness and costs of healthcare']"
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 30,
-  "row": "Mean present value of living room (at 2002 prices)",
-  "column": "2002 - Difference (3=1-2)",
-  "cell": "-686.31**",
-  "caption": "['Table 23. Shelter information']"
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 30,
-  "row": "Mean present value of living room (at 2002 prices)",
-  "column": "2005 - Difference (6=4-5)",
-  "cell": "-387.54**",
-  "caption": "['Table 23. Shelter information']"
  },
  {
   "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",

@@ -5,21 +5,21 @@
 - stored on another page: 1065 (55%)
 - table of means: 300 (15%)
 - covariate row: 216 (11%)
-- balance or attrition table: 92 (5%)
+- balance or attrition table: 95 (5%)
 - observation count: 73 (4%)
-- unexplained: 66 (3%)
 - control mean: 64 (3%)
+- unexplained: 63 (3%)
 - late appendix page: 55 (3%)
 - hypothesis test: 9 (0%)
 - appendix table: 2 (0%)
 - statistic: 2 (0%)
 - mean row: 1 (0%)
 
-The unexplained remainder is 66 cells, against 1945 on the raw count that the coverage report quotes.
+The unexplained remainder is 63 cells, against 1945 on the raw count that the coverage report quotes.
 
-- 20883ddebbf3_PDFs_of_included_programs_Banglad p15: row 'Average cost of doctor's fees + medicine', column '2002 - Difference (3=1-2)', cell -71.84**
 - 20883ddebbf3_PDFs_of_included_programs_Banglad p15: row 'Average cost of doctor's fees + medicine', column 'Difference in Difference - (', cell 86.67**
 - 20883ddebbf3_PDFs_of_included_programs_Banglad p15: row 'Average expenditure on transport for medical atten', column 'Difference in Difference - (', cell 31.68*
+- 20883ddebbf3_PDFs_of_included_programs_Banglad p30: row 'Mean present value of living room (at 2002 prices)', column 'Difference in difference - (', cell 298.77**
 - 2b6c38462f7c_PDFs_of_included_programs_Banglad p25: row 'repeat', column '(8) Income I', cell 2313.0* (1316.8)
 - 2b6c38462f7c_PDFs_of_included_programs_Banglad p25: row 'repeat', column '(9) Income II', cell 2320.3* (1306.4)
 - 3d1065d6b553_PDFs_of_included_programs_1214988 p36: row 'Average daily working hours for home', column 'ER - Change', cell 0.45***
