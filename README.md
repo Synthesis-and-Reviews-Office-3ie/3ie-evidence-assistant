@@ -252,7 +252,7 @@ workspace that owns the deployed app is `lsempe77`. Activate that profile before
 | [docs/EXTRACTION.md](docs/EXTRACTION.md) | Extraction pipeline reference |
 | [docs/MINERU_POSTPROCESSING_PLAN.md](docs/MINERU_POSTPROCESSING_PLAN.md) | The eight post-processing steps |
 | [tutorials/README.md](tutorials/README.md) | Learning series. Part 1 (posts 1–10) is written, Parts 2–5 are planned |
-| [CHANGELOG.md](CHANGELOG.md) | Version history (last entry January 2026) |
+| [CHANGELOG.md](CHANGELOG.md) | Version history |
 
 ---
 

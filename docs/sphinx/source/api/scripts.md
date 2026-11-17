@@ -31,6 +31,26 @@ The `scripts/` directory contains utility scripts for various operational tasks.
    :show-inheritance:
 ```
 
+## SharePoint Ingestion
+
+### SharePoint to R2 Probe
+
+```{eval-rst}
+.. automodule:: scripts.sharepoint_r2_probe
+   :members:
+   :undoc-members:
+   :show-inheritance:
+```
+
+### Promote Staging to a Project
+
+```{eval-rst}
+.. automodule:: scripts.promote_staging_to_project
+   :members:
+   :undoc-members:
+   :show-inheritance:
+```
+
 ## Qdrant Management
 
 ### Deduplicate Qdrant

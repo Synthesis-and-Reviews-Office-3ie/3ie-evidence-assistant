@@ -2,6 +2,28 @@
 
 All notable changes to DevChat v2.0 are documented in this file.
 
+## [2.0.14] - 2026-11-17
+
+### Fixed
+- **Every count that read past 1,000 rows was wrong.** Supabase returns at most 1,000 rows from a single request
+  and does not warn, so the queries that fetched a whole project's documents silently truncated. Ten call sites
+  were affected: the Processing tab's stat cards and the "Process Pending" selection (`api/routes/rags.py`), the
+  worker's document lookup before it writes metadata (`infrastructure/modal_lib/processing.py`), `doc_keys` in
+  `src/vectorstore/chunk_store.py`, the Zotero matcher, the study-design classifier, the metadata refresh, and the
+  two admin dashboards. A project with 16,468 documents showed "Pending 1000"; it now shows 16,468.
+
+### Added
+- **Paging helpers.** `src/auth/supabase_auth.py` gains `fetch_all_rows`, which pages a select to completion, and
+  `update_by_ids`, which chunks an id-filtered update. `tests/test_supabase_paging.py` covers both.
+- **Postgres aggregates for the admin counts.** `supabase/migrations/20261117000200_admin_count_functions.sql`
+  adds `document_counts_by_project()` and `usage_by_user()`, so the admin dashboards answer with one small
+  response. The Python helpers fall back to paging when the functions are absent.
+- **SharePoint to R2 ingest.** `scripts/sharepoint_r2_probe.py` signs in by device code, resolves a document
+  library folder through Microsoft Graph and streams files into R2, so a 20 GB corpus moves server-side rather
+  than through a machine. `scripts/promote_staging_to_project.py` copies staged PDFs into a project's
+  `rags/{project_id}/input-pdfs/` prefix under the app's `{sha256[:12]}_{name}.pdf` convention and inserts the
+  matching `documents` rows.
+
 ## [2.0.13] - 2026-11-15
 
 ### Added

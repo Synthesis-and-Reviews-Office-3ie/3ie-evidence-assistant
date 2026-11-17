@@ -59,6 +59,16 @@ When adding new modules:
 2. Update the appropriate `.md` file in `docs/sphinx/source/api/`
 3. Rebuild docs: `cd docs/sphinx && make html`
 
+## Gotchas
+
+### Supabase caps a response at 1,000 rows
+
+A `select` through the Supabase client returns at most 1,000 rows and does not warn, so any query that can match
+more must page or it silently truncates. Use `fetch_all_rows` from `src.auth` for reads and `update_by_ids` for
+id-filtered writes. When only a count is needed, aggregate in Postgres instead of reading rows; see
+`supabase/migrations/20261117000200_admin_count_functions.sql`. This under-reported the admin dashboards and the
+Processing tab once a project passed 1,000 documents.
+
 ## Testing
 
 ```bash
