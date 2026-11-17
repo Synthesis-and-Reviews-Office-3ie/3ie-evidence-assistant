@@ -296,6 +296,14 @@
   "caption": "['Table 3. Full Tobit regression on child labor hours']"
  },
  {
+  "doc": "79628963eddc_PDFs_of_included_programs_Nicaragua_-_Atencion_a_Crisis_Nicaragua_-_Atencion_a_Crisis_121315117",
+  "page": 8,
+  "row": "Dist. in time to health center in 2005",
+  "column": "Chores",
+  "cell": "0.325 **",
+  "caption": "['Table 3. Full Tobit regression on child labor hours']"
+ },
+ {
   "doc": "a72b17099de1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2012)",
   "page": 41,
   "row": "Grain stocks (kg)",
@@ -339,24 +347,8 @@
   "doc": "b34636f4eeb7_PDFs_of_included_programs_121498871",
   "page": 12,
   "row": "Cohort 2",
-  "column": "Income decrease",
-  "cell": "0.234 **",
-  "caption": ""
- },
- {
-  "doc": "b34636f4eeb7_PDFs_of_included_programs_121498871",
-  "page": 12,
-  "row": "Cohort 2",
   "column": "HFIAS",
   "cell": "-0.405***",
-  "caption": ""
- },
- {
-  "doc": "b34636f4eeb7_PDFs_of_included_programs_121498871",
-  "page": 12,
-  "row": "Cohort 3",
-  "column": "Income decrease",
-  "cell": "0.283 *",
   "caption": ""
  },
  {
@@ -366,14 +358,6 @@
   "column": "HFIAS",
   "cell": "-0.476**",
   "caption": ""
- },
- {
-  "doc": "b5a18f177248_PDFs_of_included_programs_121297660",
-  "page": 33,
-  "row": "Household under 5 members",
-  "column": "(1) - Per capita consumption",
-  "cell": "1.229*** (0.110)",
-  "caption": "['Table 4: Heterogeneous effects']"
  },
  {
   "doc": "b5a18f177248_PDFs_of_included_programs_121297660",

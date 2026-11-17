@@ -328,7 +328,15 @@ and two were our own faults.
 
 A fourth class came out of the same tracing. A table that merges one label across several rows leaves the later rows with an empty first cell, so their values arrive without an outcome name; eight cells were lost that way. `carry_merged_labels` now fills an empty label from the row above when the row carries an estimate, and leaves a row that holds only a parenthesised standard error alone. Re-extracting the three documents with merged labels took their unexplained cells from ten to five.
 
-After those, the real gap is 65 cells in 19 documents, 63 omitted from tables that were read and 2 on pages with no stored rows, down from 296 and then 107. The others in the old count were already stored, or were
+A fifth class was heterogeneity tables, which put subgroups down the rows and outcomes across the columns.
+The reader treated the row as the outcome, or refused the table, so effects by subgroup were lost. A structural
+test now recognises the shape, a prompt paragraph explains what to do with it, and the structure hint says it
+outright: the column heading is the outcome and the row label is the subgroup. A regression table whose columns
+are models or coefficients is excluded, because its rows are covariates, not subgroups. After re-extracting the
+papers with that shape, 21 stored rows carry a subgroup.
+
+After all of those, the real gap is 63 cells in 19 documents: 61 omitted from tables that were read and 2 on
+pages with no stored rows, down from 296 and then 107. The others in the old count were already stored, or were
 tables of means and balance sheets. The lesson for production is that an unusual layout is more often a table
 that should not be stored than a reader failure, and the triage is where that judgement belongs.
 

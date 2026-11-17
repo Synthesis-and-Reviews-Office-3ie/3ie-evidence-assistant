@@ -393,6 +393,32 @@ def estimate_columns(grid: TableGrid, limit: int = MAX_SPLIT_COLUMNS) -> List[in
     return out
 
 
+_SUBGROUP_ROW = re.compile(
+    r"\b(age|gender|sex|male|female|boys?|girls?|men|women|members?|children|household size|cohort|"
+    r"young|old|elderly|literate|educated|married|widow)", re.I)
+_STAT_HEADER = re.compile(r"^(\(?\d+\)?|model\b|coef|c\.o\.e|s\.?e\.?\b|t[- ]?stat|p[- ]?value|"
+                          r"treatment\b|control\b|t\d)", re.I)
+
+
+def subgroup_rows_layout(grid: TableGrid) -> bool:
+    """Rows define subgroups and the columns are outcomes, as in a heterogeneity table.
+
+    Paper 121354848's page 33 is the shape: "Household under 5 members" and "Household over 5 members"
+    down the rows, "Per capita consumption" across the columns. A regression table that puts covariates in
+    the rows is excluded, because its columns are models, coefficients or statistics rather than outcomes.
+    """
+    labels = [str(row[0]).strip() for row in grid.body if row and str(row[0]).strip()]
+    if len(labels) < 2:
+        return False
+    if sum(1 for label in labels if _SUBGROUP_ROW.search(label)) / len(labels) < 0.6:
+        return False
+    headers = [str(cell).strip() for cell in (grid.headers[-1] if grid.headers else [])][1:]
+    named = [header for header in headers if header]
+    if len(named) < 2:
+        return False
+    return not any(_STAT_HEADER.match(header) for header in named)
+
+
 def carry_merged_labels(text: str) -> str:
     """Fill an empty first-column cell with the label above it, when the row carries an estimate.
 

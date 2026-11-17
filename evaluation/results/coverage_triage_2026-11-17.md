@@ -1,13 +1,13 @@
 # Coverage triage 2026-11-17
 
-1949 estimate-shaped cells on 98 documents have no stored row on their page.
+1945 estimate-shaped cells on 98 documents have no stored row on their page.
 
-- stored on another page: 1069 (55%)
+- stored on another page: 1065 (55%)
 - table of means: 300 (15%)
-- covariate row: 214 (11%)
+- covariate row: 216 (11%)
 - balance or attrition table: 92 (5%)
 - observation count: 73 (4%)
-- unexplained: 68 (3%)
+- unexplained: 66 (3%)
 - control mean: 64 (3%)
 - late appendix page: 55 (3%)
 - hypothesis test: 9 (0%)
@@ -15,7 +15,7 @@
 - statistic: 2 (0%)
 - mean row: 1 (0%)
 
-The unexplained remainder is 68 cells, against 1949 on the raw count that the coverage report quotes.
+The unexplained remainder is 66 cells, against 1945 on the raw count that the coverage report quotes.
 
 - 20883ddebbf3_PDFs_of_included_programs_Banglad p15: row 'Average cost of doctor's fees + medicine', column '2002 - Difference (3=1-2)', cell -71.84**
 - 20883ddebbf3_PDFs_of_included_programs_Banglad p15: row 'Average cost of doctor's fees + medicine', column 'Difference in Difference - (', cell 86.67**
@@ -39,11 +39,11 @@ The unexplained remainder is 68 cells, against 1949 on the raw count that the co
 - a72b17099de1_PDFs_of_included_programs_Banglad p41: row 'Grain stocks (kg)', column 'radius caliper (1)', cell 2.66**
 - a72b17099de1_PDFs_of_included_programs_Banglad p41: row 'Grain stocks (kg)', column 'sup nearest 2 neighbors (2)', cell 2.71*
 - b100f5a42714_PDFs_of_included_programs_Banglad p16: row 'Old (>65 years old)', column 'SUP', cell -0.007 (0.62)
-- b34636f4eeb7_PDFs_of_included_programs_1214988 p12: row 'Cohort 2', column 'Income decrease', cell 0.234 **
 - b34636f4eeb7_PDFs_of_included_programs_1214988 p12: row 'Cohort 2', column 'HFIAS', cell -0.405***
-- b34636f4eeb7_PDFs_of_included_programs_1214988 p12: row 'Cohort 3', column 'Income decrease', cell 0.283 *
-- b5a18f177248_PDFs_of_included_programs_1212976 p33: row 'Household under 5 members', column '(1) - Per capita consumption', cell 1.229*** (0.110)
+- b34636f4eeb7_PDFs_of_included_programs_1214988 p12: row 'Cohort 3', column 'HFIAS', cell -0.476**
 - b5a18f177248_PDFs_of_included_programs_1212976 p33: row 'Household under 5 members', column '(4) - Per capita consumption', cell 1.178*** (0.113)
 - c5f7f6a26ce7_PDFs_of_included_programs_1213548 p5: row 'Own', column '', cell 2.688 [2.514]
 - c5f7f6a26ce7_PDFs_of_included_programs_1213548 p5: row 'Own', column '', cell 6.646 [7.784]
 - c5f7f6a26ce7_PDFs_of_included_programs_1213548 p5: row 'Own', column '', cell 2.841 [3.340]
+- c6f56d86e783_PDFs_of_included_programs_1210583 p7: row '(9)', column '1.00', cell 0.81 †
+- d9ca0e85d3e1_PDFs_of_included_programs_1213301 p16: row '% of female HH', column 'MNV test', cell 5.46*

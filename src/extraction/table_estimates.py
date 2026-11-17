@@ -106,6 +106,11 @@ If the columns repeat a coefficient, standard error and p-value block per method
 coef.", "No adjustment - s.e.", "Matching & regression - coef.", ...), return one estimate for each
 row and method, with the method as the arm and the standard error from the same block.
 
+If the rows name subgroups ("Gender of child", "Household under 5 members", "Cohort 2", "Old (>65
+years)") and the column headers name outcomes ("Farm work", "Total labor hours", "Per capita
+consumption"), then the row is the subgroup and the column is the outcome: put the column heading in
+outcome and the row label in subgroup. Those are heterogeneity results and they count as estimates.
+
 First decide: does this table report estimated effects of a programme or treatment, such as
 regression coefficients, differences between treatment and control (or before and after),
 impact estimates or marginal effects? Descriptive statistics, sample descriptions, balance
@@ -417,11 +422,19 @@ def _table_analysis(u: Dict[str, Any]):
     return kind, result, has_estimate
 
 
-def _structure_hint(result) -> str:
+def _structure_hint(result, text: str = "") -> str:
     """A short description of the inferred columns, for the model prompt."""
-    from src.extraction.table_structure import LAYOUT_ROWS
+    from src.extraction.table_structure import LAYOUT_ROWS, parse_markdown_table, subgroup_rows_layout
 
     parts: List[str] = []
+    if text:
+        grid = parse_markdown_table(text)
+        if subgroup_rows_layout(grid):
+            headers = grid.headers[-1] if grid.headers else []
+            names = ", ".join(str(cell) for cell in headers[1:4] if str(cell).strip())
+            parts.append("the rows are subgroups and the columns are outcomes (" + names + "); put the "
+                         "column heading in outcome, the row label in subgroup, and do not treat the row as "
+                         "the outcome")
     if result.stat_blocks:
         parts.append("the columns repeat in method blocks (" + ", ".join(result.stat_blocks[:5])
                      + "); for each row and method, return the coefficient and read its standard "
@@ -488,7 +501,7 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
             kind, result, has_estimate = _table_analysis(u)
             if _should_skip(kind, has_estimate):
                 return u, {"skipped": "descriptive table", "estimates": []}, None, kind
-            structure = _structure_hint(result)
+            structure = _structure_hint(result, u["text"])
             view = ("one estimate column, whose header is the arm it belongs to: "
                     f"'{u['arm_hint']}'. Return one entry for every outcome row in this view, with "
                     "that header as the arm, including a row whose cell carries no stars.") if u.get("arm_hint") \

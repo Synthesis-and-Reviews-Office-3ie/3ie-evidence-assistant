@@ -1,6 +1,6 @@
 """Table structure interpretation: roles, notes, consistency, and multi-page stitching."""
 
-from src.extraction.table_structure import (carry_merged_labels, 
+from src.extraction.table_structure import (carry_merged_labels, subgroup_rows_layout, 
     ESTIMATE, LAYOUT_ROWS, SE,
     estimate_columns, interpret_table, parse_conventions, parse_markdown_table,
     split_estimate_columns, stitch_units,
@@ -287,3 +287,23 @@ def test_the_split_uses_the_carried_label():
     filled = carry_merged_labels("| Outcome | (1) | (2) |\n| --- | --- | --- |\n| Savings | 0.1*** | 0.2*** |\n|  | 0.3*** | 0.4*** |")
     views = split_estimate_columns(filled)
     assert len(views) == 2 and "Savings" in views[0]["text"] and views[0]["text"].count("Savings") == 2
+
+
+HETEROGENEITY = """| Subgroup | Farm work | Chores | Total labor hours |
+| --- | --- | --- | --- |
+| Gender of child (boy = 1, girl = 0) | 4.206*** | | 1.436*** |
+| Gender of household head (male = 1) | 1.285** | | 0.921 |"""
+
+COVARIATES = """| Variable | Model 1 | Model 2 |
+| --- | --- | --- |
+| HH head female | -493.87*** | -420.58* |
+| Total land owned | 22.44*** | 19.10** |
+| Nilphamari | -884.77*** | -700.12*** |"""
+
+
+def test_a_table_with_subgroup_rows_and_outcome_columns_is_recognised():
+    assert subgroup_rows_layout(parse_markdown_table(HETEROGENEITY)) is True
+
+
+def test_a_regression_table_with_covariates_in_the_rows_is_not():
+    assert subgroup_rows_layout(parse_markdown_table(COVARIATES)) is False

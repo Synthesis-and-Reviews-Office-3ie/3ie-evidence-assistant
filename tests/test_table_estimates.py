@@ -194,3 +194,14 @@ def test_a_table_that_skips_one_cell_is_asked_again(monkeypatch):
     out = asyncio.run(module.extract_document([{"type": "table", "page_idx": 0, "text": table}], "m", "k"))
     assert len(calls) == 2
     assert any(e["outcome"] == "B" for e in out["estimates"])
+
+
+def test_the_hint_tells_the_model_that_rows_are_subgroups():
+    import src.extraction.table_estimates as module
+
+    table = ("| Subgroup | Farm work | Chores |\n| --- | --- | --- |\n"
+             "| Gender of child (boy = 1) | 4.206*** | 1.436*** |\n"
+             "| Gender of household head | 1.285** | 0.921 |")
+    hint = module._structure_hint(module._table_analysis({"text": table, "caption": "", "context": "",
+                                                          "index": 0, "page": 1, "arm_hint": ""})[1], table)
+    assert "rows are subgroups" in hint
