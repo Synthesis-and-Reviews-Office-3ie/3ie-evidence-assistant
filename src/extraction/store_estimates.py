@@ -63,6 +63,8 @@ def rows_for(project_id: str, doc: Dict[str, Any], out: Dict[str, Any], model: s
             "effect_size": e["effect_size"], "standard_error": _finite(e["standard_error"]),
             "p_value": p if p is not None and 0 <= p <= 1 else None,
             "p_text": ("*" * e["stars"]) if e["stars"] else None, "ci_text": ci,
+            "t_stat": _finite(e.get("t_stat")), "ci_low": _finite(e.get("ci_low")),
+            "ci_high": _finite(e.get("ci_high")), "se_kind": e.get("se_kind") or None,
             "sample_size": int(n) if n is not None and abs(n) < 2**31 and n == int(n) else None,
             "control_mean": e.get("control_mean"), "control_sd": e.get("control_sd"),
             "n_treatment": e.get("n_treatment"), "n_control": e.get("n_control"),

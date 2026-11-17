@@ -79,3 +79,20 @@ def test_a_duplicate_identity_in_one_run_is_written_once():
     rows = unify_keys([{"outcome_name": "Income", "effect_size": 1.0, "page": 3},
                        {"outcome_name": "Income ", "effect_size": 1.0, "page": 3}])
     assert len(rows) == 1
+
+
+def test_the_uncertainty_fields_travel_with_the_row():
+    from src.extraction.table_estimates import to_estimate
+
+    def row(raw, text):
+        return asdict(to_estimate(raw, "t", 3, text))
+
+    ci = row({"outcome": "Income", "estimate_cell": "0.52***", "se_cell": "[0.44, 0.60]", "se_kind": "ci"},
+             "| Income | 0.52*** [0.44, 0.60] |")
+    stored = rows_for("p", DOC, {"estimates": [ci]}, "m")[0]
+    assert stored["ci_low"] == 0.44 and stored["ci_high"] == 0.60 and stored["se_kind"] == "ci"
+
+    tstat = row({"outcome": "Income", "estimate_cell": "0.52***", "se_cell": "4.0", "se_kind": "t"},
+                "| Income | 0.52*** | 4.0 |")
+    stored = rows_for("p", DOC, {"estimates": [tstat]}, "m")[0]
+    assert stored["t_stat"] == 4.0 and stored["se_kind"] == "t"
