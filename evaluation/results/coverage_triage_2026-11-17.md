@@ -1,20 +1,20 @@
 # Coverage triage 2026-11-17
 
-2242 estimate-shaped cells on 98 documents have no stored row on their page.
+2120 estimate-shaped cells on 98 documents have no stored row on their page.
 
-- table of means: 772 (34%)
-- unexplained: 519 (23%)
-- covariate row: 314 (14%)
-- balance or attrition table: 282 (13%)
-- control mean: 128 (6%)
-- late appendix page: 122 (5%)
-- observation count: 75 (3%)
+- table of means: 788 (37%)
+- covariate row: 345 (16%)
+- balance or attrition table: 330 (16%)
+- unexplained: 317 (15%)
+- control mean: 121 (6%)
+- late appendix page: 115 (5%)
+- observation count: 75 (4%)
 - hypothesis test: 14 (1%)
 - statistic: 8 (0%)
 - appendix table: 4 (0%)
-- mean row: 4 (0%)
+- mean row: 3 (0%)
 
-The unexplained remainder is 519 cells, against 2242 on the raw count that the coverage report quotes.
+The unexplained remainder is 317 cells, against 2120 on the raw count that the coverage report quotes.
 
 - 0cb609fbf433_PDFs_of_included_programs_1221827 p38: row 'T1: Grp LH / Grp C', column '(3) Average Cantril's ladder', cell 0.06 (0.08)
 - 0cb609fbf433_PDFs_of_included_programs_1221827 p38: row 'T3: Ind LH / Ind C', column '(3) Average Cantril's ladder', cell 0.14* (0.07)
@@ -43,6 +43,6 @@ The unexplained remainder is 519 cells, against 2242 on the raw count that the c
 - 442bb134bc3b_PDFs_of_included_programs_1212954 p10: row 'market or town (x0.1', column '(1) Total number of poultry ', cell 1.031**
 - 442bb134bc3b_PDFs_of_included_programs_1212954 p10: row 'market or town (x0.1', column '(2) Value of sold poultry (s', cell 113.776*
 - 442bb134bc3b_PDFs_of_included_programs_1212954 p10: row 'Predicted baseline expenditure', column '(3) Number of eggs sold in l', cell 2.490***
-- 4a1f5e7f9586_PDFs_of_included_programs_Banglad p43: row 'fem14to55', column '2002 - Treated', cell 0.362***
-- 4a1f5e7f9586_PDFs_of_included_programs_Banglad p43: row 'fem14to55', column '2005 - Treated', cell 0.366***
-- 4a1f5e7f9586_PDFs_of_included_programs_Banglad p43: row 'fem14to55', column '2008 - Treated', cell 0.356***
+- 4f557b0ab223_PDFs_of_included_programs_Banglad p17: row 'Per capita income', column 'SNB1-SNB0 ð3Þ', cell 2371.40***
+- 4f557b0ab223_PDFs_of_included_programs_Banglad p17: row 'Per capita income', column 'SB1-SNB0 ð4Þ', cell 2437.55***
+- 4f557b0ab223_PDFs_of_included_programs_Banglad p17: row 'Cash savings ðdummyÞ', column 'SNB1-SNB0 ð3Þ', cell 2.15***

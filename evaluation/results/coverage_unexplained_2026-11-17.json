@@ -131,14 +131,6 @@
   "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
   "page": 29,
   "row": "Financial assets",
-  "column": "Status in food security (1=chronic deficit, … 4=surplus) - 2005",
-  "cell": "0.17*",
-  "caption": "['Table 22. Correlation between asset indices and food security']"
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 29,
-  "row": "Financial assets",
   "column": "Incidence of severe food shortage (1=yes, 0=no) - 2002",
   "cell": "-0.09*",
   "caption": "['Table 22. Correlation between asset indices and food security']"
@@ -149,22 +141,6 @@
   "row": "Financial assets",
   "column": "Incidence of severe food shortage (1=yes, 0=no) - 2005",
   "cell": "-0.12*",
-  "caption": "['Table 22. Correlation between asset indices and food security']"
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 29,
-  "row": "Human assets",
-  "column": "Status in food security (1=chronic deficit, … 4=surplus) - 2002",
-  "cell": "0.11*",
-  "caption": "['Table 22. Correlation between asset indices and food security']"
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 29,
-  "row": "Human assets",
-  "column": "Status in food security (1=chronic deficit, … 4=surplus) - 2005",
-  "cell": "0.10*",
   "caption": "['Table 22. Correlation between asset indices and food security']"
  },
  {
@@ -187,22 +163,6 @@
   "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
   "page": 29,
   "row": "Natural assets",
-  "column": "Status in food security (1=chronic deficit, … 4=surplus) - 2002",
-  "cell": "0.28*",
-  "caption": "['Table 22. Correlation between asset indices and food security']"
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 29,
-  "row": "Natural assets",
-  "column": "Status in food security (1=chronic deficit, … 4=surplus) - 2005",
-  "cell": "0.19*",
-  "caption": "['Table 22. Correlation between asset indices and food security']"
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 29,
-  "row": "Natural assets",
   "column": "Incidence of severe food shortage (1=yes, 0=no) - 2005",
   "cell": "-0.18*",
   "caption": "['Table 22. Correlation between asset indices and food security']"
@@ -213,14 +173,6 @@
   "row": "Physical assets",
   "column": "Status in food security (1=chronic deficit, … 4=surplus) - 2002",
   "cell": "0.35*",
-  "caption": "['Table 22. Correlation between asset indices and food security']"
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 29,
-  "row": "Physical assets",
-  "column": "Status in food security (1=chronic deficit, … 4=surplus) - 2005",
-  "cell": "0.27*",
   "caption": "['Table 22. Correlation between asset indices and food security']"
  },
  {
@@ -251,14 +203,6 @@
   "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
   "page": 29,
   "row": "Social assets",
-  "column": "Status in food security (1=chronic deficit, … 4=surplus) - 2005",
-  "cell": "0.11*",
-  "caption": "['Table 22. Correlation between asset indices and food security']"
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 29,
-  "row": "Social assets",
   "column": "Incidence of severe food shortage (1=yes, 0=no) - 2005",
   "cell": "-0.09*",
   "caption": "['Table 22. Correlation between asset indices and food security']"
@@ -269,14 +213,6 @@
   "row": "Overall asset index",
   "column": "Status in food security (1=chronic deficit, … 4=surplus) - 2002",
   "cell": "0.38*",
-  "caption": "['Table 22. Correlation between asset indices and food security']"
- },
- {
-  "doc": "20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006)",
-  "page": 29,
-  "row": "Overall asset index",
-  "column": "Status in food security (1=chronic deficit, … 4=surplus) - 2005",
-  "cell": "0.28*",
   "caption": "['Table 22. Correlation between asset indices and food security']"
  },
  {
@@ -656,294 +592,6 @@
   "caption": ""
  },
  {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "fem14to55",
-  "column": "2002 - Treated",
-  "cell": "0.362***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "fem14to55",
-  "column": "2005 - Treated",
-  "cell": "0.366***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "fem14to55",
-  "column": "2008 - Treated",
-  "cell": "0.356***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "fem14to55",
-  "column": "2011 - Treated",
-  "cell": "0.343**",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "hhsex",
-  "column": "2002 - Treated",
-  "cell": "0.573***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "hhsex",
-  "column": "2005 - Treated",
-  "cell": "0.560***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "hhsex",
-  "column": "2008 - Treated",
-  "cell": "0.563***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "hhsex",
-  "column": "2011 - Treated",
-  "cell": "0.549***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "hhsize",
-  "column": "2002 - Treated",
-  "cell": "3.55***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "hhsize",
-  "column": "2005 - Treated",
-  "cell": "3.996***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "hhsize",
-  "column": "2008 - Treated",
-  "cell": "4.347***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "hhsize",
-  "column": "2011 - Treated",
-  "cell": "4.114***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "hh_edunone",
-  "column": "2002 - Treated",
-  "cell": "0.917***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "hh_edunone",
-  "column": "2005 - Treated",
-  "cell": "0.859***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "hh_edunone",
-  "column": "2008 - Treated",
-  "cell": "0.856***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "hh_edunone",
-  "column": "2011 - Treated",
-  "cell": "0.865***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "hh_eduprim",
-  "column": "2002 - Treated",
-  "cell": "0.064***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "hh_eduprim",
-  "column": "2005 - Treated",
-  "cell": "0.113***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "hh_eduprim",
-  "column": "2008 - Treated",
-  "cell": "0.105***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "hh_eduprim",
-  "column": "2011 - Treated",
-  "cell": "0.104***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "hh_edumidhigh",
-  "column": "2002 - Treated",
-  "cell": "0.019***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "hh_edumidhigh",
-  "column": "2005 - Treated",
-  "cell": "0.028***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "hh_edumidhigh",
-  "column": "2008 - Treated",
-  "cell": "0.038**",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "hh_edumidhigh",
-  "column": "2011 - Treated",
-  "cell": "0.031***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "less10",
-  "column": "2002 - Treated",
-  "cell": "0.952***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "less10",
-  "column": "2005 - Treated",
-  "cell": "0.925***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "less10",
-  "column": "2011 - Treated",
-  "cell": "0.924***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "nogovbenf",
-  "column": "2002 - Treated",
-  "cell": "0.816*",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "nogovbenf",
-  "column": "2005 - Treated",
-  "cell": "0.875***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "nogovbenf",
-  "column": "2008 - Treated",
-  "cell": "0.812***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "nogovbenf",
-  "column": "2011 - Treated",
-  "cell": "0.820***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "pro_asset",
-  "column": "2002 - Treated",
-  "cell": "0.407***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "pro_asset",
-  "column": "2005 - Treated",
-  "cell": "0.929***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "pro_asset",
-  "column": "2008 - Treated",
-  "cell": "0.914***",
-  "caption": ""
- },
- {
-  "doc": "4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019)",
-  "page": 43,
-  "row": "pro_asset",
-  "column": "2011 - Treated",
-  "cell": "0.748***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Per capita income",
-  "column": "SUP-NSUP ð2Þ",
-  "cell": "2323.75***",
-  "caption": ""
- },
- {
   "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
   "page": 17,
   "row": "Per capita income",
@@ -957,14 +605,6 @@
   "row": "Per capita income",
   "column": "SB1-SNB0 ð4Þ",
   "cell": "2437.55***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Cash savings ðdummyÞ",
-  "column": "SUP-NSUP ð2Þ",
-  "cell": "2.12***",
   "caption": ""
  },
  {
@@ -995,14 +635,6 @@
   "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
   "page": 17,
   "row": "Food availability",
-  "column": "SUP-NSUP ð2Þ",
-  "cell": "2.29***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Food availability",
   "column": "SNB1-SNB0 ð3Þ",
   "cell": "2.31***",
   "caption": ""
@@ -1021,14 +653,6 @@
   "row": "Meals twice a day ðdummyÞ",
   "column": "SB1-SB0 ð1Þ",
   "cell": "2.15***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Meals twice a day ðdummyÞ",
-  "column": "SUP-NSUP ð2Þ",
-  "cell": "2.18***",
   "caption": ""
  },
  {
@@ -1059,14 +683,6 @@
   "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
   "page": 17,
   "row": "Total land owned",
-  "column": "SUP-NSUP ð2Þ",
-  "cell": "23.94***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Total land owned",
   "column": "SNB1-SNB0 ð3Þ",
   "cell": "24.69***",
   "caption": ""
@@ -1085,14 +701,6 @@
   "row": "Own homestead land ðdummyÞ",
   "column": "SB1-SB0 ð1Þ",
   "cell": "2.08***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Own homestead land ðdummyÞ",
-  "column": "SUP-NSUP ð2Þ",
-  "cell": "2.14***",
   "caption": ""
  },
  {
@@ -1123,14 +731,6 @@
   "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
   "page": 17,
   "row": "Roof made of tin ðdummyÞ",
-  "column": "SUP-NSUP ð2Þ",
-  "cell": "2.11***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Roof made of tin ðdummyÞ",
   "column": "SNB1-SNB0 ð3Þ",
   "cell": "2.13***",
   "caption": ""
@@ -1141,14 +741,6 @@
   "row": "Roof made of tin ðdummyÞ",
   "column": "SB1-SNB0 ð4Þ",
   "cell": "2.10***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of saris",
-  "column": "SUP-NSUP ð2Þ",
-  "cell": "2.15***",
   "caption": ""
  },
  {
@@ -1179,14 +771,6 @@
   "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
   "page": 17,
   "row": "Number of lungis",
-  "column": "SUP-NSUP ð2Þ",
-  "cell": "2.13***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of lungis",
   "column": "SNB1-SNB0 ð3Þ",
   "cell": "2.13***",
   "caption": ""
@@ -1211,14 +795,6 @@
   "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
   "page": 17,
   "row": "Shoes ðdummyÞ",
-  "column": "SUP-NSUP ð2Þ",
-  "cell": "2.11***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Shoes ðdummyÞ",
   "column": "SNB1-SNB0 ð3Þ",
   "cell": "2.12***",
   "caption": ""
@@ -1237,14 +813,6 @@
   "row": "Number of cows/bulls",
   "column": "SB1-SB0 ð1Þ",
   "cell": "2.03***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of cows/bulls",
-  "column": "SUP-NSUP ð2Þ",
-  "cell": "2.15***",
   "caption": ""
  },
  {
@@ -1267,24 +835,8 @@
   "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
   "page": 17,
   "row": "Number of goats/sheep",
-  "column": "SUP-NSUP ð2Þ",
-  "cell": "2.04**",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of goats/sheep",
   "column": "SB1-SNB0 ð4Þ",
   "cell": "2.09***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of ducks/hens",
-  "column": "SUP-NSUP ð2Þ",
-  "cell": "2.57***",
   "caption": ""
  },
  {
@@ -1307,14 +859,6 @@
   "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
   "page": 17,
   "row": "Number of big trees",
-  "column": "SUP-NSUP ð2Þ",
-  "cell": "2.74***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of big trees",
   "column": "SNB1-SNB0 ð3Þ",
   "cell": "2.85***",
   "caption": ""
@@ -1331,14 +875,6 @@
   "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
   "page": 17,
   "row": "Number of rickshaw vans",
-  "column": "SUP-NSUP ð2Þ",
-  "cell": "2.03***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of rickshaw vans",
   "column": "SNB1-SNB0 ð3Þ",
   "cell": "2.04***",
   "caption": ""
@@ -1349,14 +885,6 @@
   "row": "Number of rickshaw vans",
   "column": "SB1-SNB0 ð4Þ",
   "cell": "2.04***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of bicycles",
-  "column": "SUP-NSUP ð2Þ",
-  "cell": "2.01***",
   "caption": ""
  },
  {
@@ -1381,14 +909,6 @@
   "row": "Number of chairs/tables",
   "column": "SB1-SB0 ð1Þ",
   "cell": "2.12***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of chairs/tables",
-  "column": "SUP-NSUP ð2Þ",
-  "cell": "2.31***",
   "caption": ""
  },
  {
@@ -1419,14 +939,6 @@
   "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
   "page": 17,
   "row": "Number of beds",
-  "column": "SUP-NSUP ð2Þ",
-  "cell": "2.26***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of beds",
   "column": "SNB1-SNB0 ð3Þ",
   "cell": "2.30***",
   "caption": ""
@@ -1443,14 +955,6 @@
   "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
   "page": 17,
   "row": "Number of radios/TVs",
-  "column": "SUP-NSUP ð2Þ",
-  "cell": "2.01**",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of radios/TVs",
   "column": "SNB1-SNB0 ð3Þ",
   "cell": "2.01**",
   "caption": ""
@@ -1461,14 +965,6 @@
   "row": "Number of radios/TVs",
   "column": "SB1-SNB0 ð4Þ",
   "cell": "2.02***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of quilts/blankets",
-  "column": "SUP-NSUP ð2Þ",
-  "cell": "2.03***",
   "caption": ""
  },
  {
@@ -1485,14 +981,6 @@
   "row": "Number of quilts/blankets",
   "column": "SB1-SNB0 ð4Þ",
   "cell": "2.05***",
-  "caption": ""
- },
- {
-  "doc": "4f557b0ab223_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2014)",
-  "page": 17,
-  "row": "Number of tube-wells",
-  "column": "SUP-NSUP ð2Þ",
-  "cell": "2.02***",
   "caption": ""
  },
  {
@@ -1609,174 +1097,6 @@
  },
  {
   "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 8,
-  "row": "Education",
-  "column": "(1)",
-  "cell": "0.210***",
-  "caption": "['Table 2 Determining components of human support']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 8,
-  "row": "Education",
-  "column": "(3)",
-  "cell": "0.098 *",
-  "caption": "['Table 2 Determining components of human support']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 8,
-  "row": "Perceived health",
-  "column": "(1)",
-  "cell": "-0.167***",
-  "caption": "['Table 2 Determining components of human support']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 8,
-  "row": "Dependant ratio",
-  "column": "(2)",
-  "cell": "0.347 *",
-  "caption": "['Table 2 Determining components of human support']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 8,
-  "row": "No. of member",
-  "column": "(1)",
-  "cell": "0.103***",
-  "caption": "['Table 2 Determining components of human support']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 8,
-  "row": "No. of member",
-  "column": "(2)",
-  "cell": "0.103***",
-  "caption": "['Table 2 Determining components of human support']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 8,
-  "row": "No. of member",
-  "column": "(3)",
-  "cell": "0.078***",
-  "caption": "['Table 2 Determining components of human support']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 8,
-  "row": "Near poor",
-  "column": "(1)",
-  "cell": "-0.434***",
-  "caption": "['Table 2 Determining components of human support']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 8,
-  "row": "Near poor",
-  "column": "(2)",
-  "cell": "-0.643***",
-  "caption": "['Table 2 Determining components of human support']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 8,
-  "row": "Near poor",
-  "column": "(3)",
-  "cell": "-0.506***",
-  "caption": "['Table 2 Determining components of human support']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 8,
-  "row": "Escapee",
-  "column": "(1)",
-  "cell": "-0.790***",
-  "caption": "['Table 2 Determining components of human support']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 8,
-  "row": "Escapee",
-  "column": "(2)",
-  "cell": "-0.942***",
-  "caption": "['Table 2 Determining components of human support']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 8,
-  "row": "Escapee",
-  "column": "(3)",
-  "cell": "-1.430***",
-  "caption": "['Table 2 Determining components of human support']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 8,
-  "row": "Participate in union(s)",
-  "column": "(2)",
-  "cell": "0.973***",
-  "caption": "['Table 2 Determining components of human support']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 8,
-  "row": "Participate in union(s)",
-  "column": "(3)",
-  "cell": "0.990***",
-  "caption": "['Table 2 Determining components of human support']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 8,
-  "row": "Near poor × Participate in union(s)",
-  "column": "(3)",
-  "cell": "-0.325*",
-  "caption": "['Table 2 Determining components of human support']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 8,
-  "row": "Escapee × Participate in union(s)",
-  "column": "(3)",
-  "cell": "0.763***",
-  "caption": "['Table 2 Determining components of human support']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 8,
-  "row": "Unstable housing",
-  "column": "(1)",
-  "cell": "-0.696***",
-  "caption": "['Table 3 Determining components of living support']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 8,
-  "row": "Near poor",
-  "column": "(1)",
-  "cell": "-1.213***",
-  "caption": "['Table 3 Determining components of living support']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 8,
-  "row": "Escapee",
-  "column": "(1)",
-  "cell": "-1.436***",
-  "caption": "['Table 3 Determining components of living support']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 20,
-  "row": "POmean",
-  "column": "(1) MPI",
-  "cell": "0.333***",
-  "caption": "['Table 6 Effect of human support on multidimensional poverty']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
   "page": 20,
   "row": "POmean",
   "column": "(2) Multidimensionally poor",
@@ -1805,14 +1125,6 @@
   "row": "POmean",
   "column": "(1) Job",
   "cell": "0.132 ***",
-  "caption": "['Table 8 Effect of human support on MPI components']"
- },
- {
-  "doc": "6e10e8679862_PDFs_of_included_programs_121294873",
-  "page": 21,
-  "row": "POmean",
-  "column": "(2) Education",
-  "cell": "0.461 ***",
   "caption": "['Table 8 Effect of human support on MPI components']"
  },
  {
@@ -1941,14 +1253,6 @@
   "row": "",
   "column": "Estimated coefficient",
   "cell": "-0.143 (0.121)",
-  "caption": "['Table A.1 Probit estimation of probability of staying in sample between 2007 a"
- },
- {
-  "doc": "701165f57f97_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Das_(2013)",
-  "page": 36,
-  "row": "Whether main female has completed secondary school",
-  "column": "Estimated coefficient",
-  "cell": "-0.017 (0.013)",
   "caption": "['Table A.1 Probit estimation of probability of staying in sample between 2007 a"
  },
  {
@@ -2611,209 +1915,9 @@
   "doc": "d9ca0e85d3e1_PDFs_of_included_programs_121330141",
   "page": 16,
   "row": "# adults in hld (16 to 64)",
-  "column": "Wald test",
-  "cell": "9.62*",
-  "caption": ""
- },
- {
-  "doc": "d9ca0e85d3e1_PDFs_of_included_programs_121330141",
-  "page": 16,
-  "row": "# adults in hld (16 to 64)",
   "column": "MNV test",
   "cell": "5.49*",
   "caption": ""
- },
- {
-  "doc": "d9ca0e85d3e1_PDFs_of_included_programs_121330141",
-  "page": 17,
-  "row": "% of Female HH",
-  "column": "Wald test",
-  "cell": "16.97**",
-  "caption": ""
- },
- {
-  "doc": "d9ca0e85d3e1_PDFs_of_included_programs_121330141",
-  "page": 17,
-  "row": "% of Female HH",
-  "column": "MNV test",
-  "cell": "8,74**",
-  "caption": ""
- },
- {
-  "doc": "d9ca0e85d3e1_PDFs_of_included_programs_121330141",
-  "page": 17,
-  "row": "# adults in hld (16 to 64)",
-  "column": "Wald test",
-  "cell": "26.06**",
-  "caption": ""
- },
- {
-  "doc": "d9ca0e85d3e1_PDFs_of_included_programs_121330141",
-  "page": 17,
-  "row": "# adults in hld (16 to 64)",
-  "column": "MNV test",
-  "cell": "14.22**",
-  "caption": ""
- },
- {
-  "doc": "d9ca0e85d3e1_PDFs_of_included_programs_121330141",
-  "page": 17,
-  "row": "% who cultivate land",
-  "column": "Wald test",
-  "cell": "9.80*",
-  "caption": ""
- },
- {
-  "doc": "d9ca0e85d3e1_PDFs_of_included_programs_121330141",
-  "page": 17,
-  "row": "% who cultivate land",
-  "column": "MNV test",
-  "cell": "7.73**",
-  "caption": ""
- },
- {
-  "doc": "d9ca0e85d3e1_PDFs_of_included_programs_121330141",
-  "page": 17,
-  "row": "Proportion who owned",
-  "column": "MNV test",
-  "cell": "3.97*",
-  "caption": ""
- },
- {
-  "doc": "d9ca0e85d3e1_PDFs_of_included_programs_121330141",
-  "page": 17,
-  "row": "Asset value at baseline (in USD)",
-  "column": "Wald test",
-  "cell": "71.50**",
-  "caption": ""
- },
- {
-  "doc": "d9ca0e85d3e1_PDFs_of_included_programs_121330141",
-  "page": 17,
-  "row": "Asset value at baseline (in USD)",
-  "column": "MNV test",
-  "cell": "45.58**",
-  "caption": ""
- },
- {
-  "doc": "d9ca0e85d3e1_PDFs_of_included_programs_121330141",
-  "page": 18,
-  "row": "# adults in hld (16 to 64)",
-  "column": "Wald test",
-  "cell": "14.12**",
-  "caption": "['Table 3c. Measure of heterogeneity: trajectories based on tropical livestock u"
- },
- {
-  "doc": "d9ca0e85d3e1_PDFs_of_included_programs_121330141",
-  "page": 18,
-  "row": "# adults in hld (16 to 64)",
-  "column": "MNV test",
-  "cell": "14.11**",
-  "caption": "['Table 3c. Measure of heterogeneity: trajectories based on tropical livestock u"
- },
- {
-  "doc": "d9ca0e85d3e1_PDFs_of_included_programs_121330141",
-  "page": 18,
-  "row": "% who cultivate land",
-  "column": "Wald test",
-  "cell": "14.24**",
-  "caption": "['Table 3c. Measure of heterogeneity: trajectories based on tropical livestock u"
- },
- {
-  "doc": "d9ca0e85d3e1_PDFs_of_included_programs_121330141",
-  "page": 18,
-  "row": "Proportion who owned",
-  "column": "Wald test",
-  "cell": "9.33*",
-  "caption": "['Table 3c. Measure of heterogeneity: trajectories based on tropical livestock u"
- },
- {
-  "doc": "d9ca0e85d3e1_PDFs_of_included_programs_121330141",
-  "page": 18,
-  "row": "Proportion who owned",
-  "column": "MNV test",
-  "cell": "6.53*",
-  "caption": "['Table 3c. Measure of heterogeneity: trajectories based on tropical livestock u"
- },
- {
-  "doc": "d9ca0e85d3e1_PDFs_of_included_programs_121330141",
-  "page": 18,
-  "row": "Asset value at baseline (in USD)",
-  "column": "Wald test",
-  "cell": "8.51*",
-  "caption": "['Table 3c. Measure of heterogeneity: trajectories based on tropical livestock u"
- },
- {
-  "doc": "d9ca0e85d3e1_PDFs_of_included_programs_121330141",
-  "page": 18,
-  "row": "Asset value at baseline (in USD)",
-  "column": "MNV test",
-  "cell": "8.36**",
-  "caption": "['Table 3c. Measure of heterogeneity: trajectories based on tropical livestock u"
- },
- {
-  "doc": "d9ca0e85d3e1_PDFs_of_included_programs_121330141",
-  "page": 18,
-  "row": "% member of cooperatives baseline",
-  "column": "Wald test",
-  "cell": "9.27*",
-  "caption": "['Table 3c. Measure of heterogeneity: trajectories based on tropical livestock u"
- },
- {
-  "doc": "d9ca0e85d3e1_PDFs_of_included_programs_121330141",
-  "page": 18,
-  "row": "% member of cooperatives baseline",
-  "column": "MNV test",
-  "cell": "6.73**",
-  "caption": "['Table 3c. Measure of heterogeneity: trajectories based on tropical livestock u"
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 21,
-  "row": "Year 2005",
-  "column": "Model 1",
-  "cell": "830.95***",
-  "caption": "['Table 6: Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 21,
-  "row": "Year 2005",
-  "column": "Model 2",
-  "cell": "797.30***",
-  "caption": "['Table 6: Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 21,
-  "row": "Year 2005",
-  "column": "Model 3",
-  "cell": "792.77***",
-  "caption": "['Table 6: Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 21,
-  "row": "Year 2005",
-  "column": "Model 4",
-  "cell": "724.87***",
-  "caption": "['Table 6: Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 21,
-  "row": "HH head female",
-  "column": "Model 2",
-  "cell": "-490.80***",
-  "caption": "['Table 6: Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 21,
-  "row": "HH head female",
-  "column": "Model 3",
-  "cell": "-522.95***",
-  "caption": "['Table 6: Change in real per capita income between 2002 and 2005 (per capita in"
  },
  {
   "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
@@ -2821,38 +1925,6 @@
   "row": "HH head female",
   "column": "Model 4",
   "cell": "-493.87***",
-  "caption": "['Table 6: Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 21,
-  "row": "SUP female",
-  "column": "Model 2",
-  "cell": "423.46***",
-  "caption": "['Table 6: Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 21,
-  "row": "SUP female",
-  "column": "Model 3",
-  "cell": "395.75***",
-  "caption": "['Table 6: Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 21,
-  "row": "SUP female",
-  "column": "Model 4",
-  "cell": "401.38***",
-  "caption": "['Table 6: Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 21,
-  "row": "HH head single",
-  "column": "Model 3",
-  "cell": "439.51*",
   "caption": "['Table 6: Change in real per capita income between 2002 and 2005 (per capita in"
  },
  {
@@ -2867,40 +1939,8 @@
   "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
   "page": 21,
   "row": "HH head single female",
-  "column": "Model 2",
-  "cell": "-743.35***",
-  "caption": "['Table 6: Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 21,
-  "row": "HH head single female",
-  "column": "Model 3",
-  "cell": "-701.57**",
-  "caption": "['Table 6: Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 21,
-  "row": "HH head single female",
   "column": "Model 4",
   "cell": "-708.12**",
-  "caption": "['Table 6: Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 21,
-  "row": "HH head literate",
-  "column": "Model 2",
-  "cell": "194.64**",
-  "caption": "['Table 6: Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 21,
-  "row": "HH head literate",
-  "column": "Model 3",
-  "cell": "175.54**",
   "caption": "['Table 6: Change in real per capita income between 2002 and 2005 (per capita in"
  },
  {
@@ -2915,32 +1955,8 @@
   "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
   "page": 21,
   "row": "Total land owned",
-  "column": "Model 2",
-  "cell": "23.71***",
-  "caption": "['Table 6: Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 21,
-  "row": "Total land owned",
-  "column": "Model 3",
-  "cell": "22.69***",
-  "caption": "['Table 6: Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 21,
-  "row": "Total land owned",
   "column": "Model 4",
   "cell": "22.44***",
-  "caption": "['Table 6: Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 21,
-  "row": "Nilphamari",
-  "column": "Model 3",
-  "cell": "-891.67***",
   "caption": "['Table 6: Change in real per capita income between 2002 and 2005 (per capita in"
  },
  {
@@ -2955,209 +1971,9 @@
   "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
   "page": 21,
   "row": "Kurigram",
-  "column": "Model 3",
-  "cell": "-274.91***",
-  "caption": "['Table 6: Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 21,
-  "row": "Kurigram",
   "column": "Model 4",
   "cell": "-287.30***",
   "caption": "['Table 6: Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 23,
-  "row": "Year 2008",
-  "column": "Model 1",
-  "cell": "2354.71***",
-  "caption": ""
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 23,
-  "row": "Year 2008",
-  "column": "Model 2",
-  "cell": "2357.43***",
-  "caption": ""
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 23,
-  "row": "Year 2008",
-  "column": "Model 4",
-  "cell": "2340.39***",
-  "caption": ""
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 23,
-  "row": "HH head female",
-  "column": "Model 2",
-  "cell": "-1022.64***",
-  "caption": ""
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 23,
-  "row": "HH head female",
-  "column": "Model 3",
-  "cell": "-1150.06***",
-  "caption": ""
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 23,
-  "row": "HH head female",
-  "column": "Model 4",
-  "cell": "-1152.58***",
-  "caption": ""
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 23,
-  "row": "SUP female",
-  "column": "Model 3",
-  "cell": "908.72***",
-  "caption": ""
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 23,
-  "row": "SUP female",
-  "column": "Model 4",
-  "cell": "912.82***",
-  "caption": ""
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 23,
-  "row": "HH head single",
-  "column": "Model 2",
-  "cell": "842.61**",
-  "caption": ""
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 23,
-  "row": "HH head single",
-  "column": "Model 3",
-  "cell": "840.95**",
-  "caption": ""
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 23,
-  "row": "HH head single",
-  "column": "Model 4",
-  "cell": "784.85**",
-  "caption": ""
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 23,
-  "row": "HH head single female",
-  "column": "Model 2",
-  "cell": "-952.62***",
-  "caption": ""
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 23,
-  "row": "HH head single female",
-  "column": "Model 3",
-  "cell": "-837.05**",
-  "caption": ""
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 23,
-  "row": "HH head single female",
-  "column": "Model 4",
-  "cell": "-781.97**",
-  "caption": ""
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 23,
-  "row": "Total land owned",
-  "column": "Model 2",
-  "cell": "33.35***",
-  "caption": ""
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 23,
-  "row": "Total land owned",
-  "column": "Model 3",
-  "cell": "31.85***",
-  "caption": ""
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 23,
-  "row": "Total land owned",
-  "column": "Model 4",
-  "cell": "31.44***",
-  "caption": ""
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 23,
-  "row": "Nilphamari",
-  "column": "Model 3",
-  "cell": "-436.19***",
-  "caption": ""
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 23,
-  "row": "Nilphamari",
-  "column": "Model 4",
-  "cell": "-441.48***",
-  "caption": ""
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 23,
-  "row": "Kurigram",
-  "column": "Model 3",
-  "cell": "478.12***",
-  "caption": ""
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 23,
-  "row": "Kurigram",
-  "column": "Model 4",
-  "cell": "459.74***",
-  "caption": ""
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 23,
-  "row": "House damaged",
-  "column": "Model 4",
-  "cell": "-227.03**",
-  "caption": ""
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 23,
-  "row": "Member ill",
-  "column": "Model 4",
-  "cell": "-228.47***",
-  "caption": ""
- },
- {
-  "doc": "db0c64366cfe_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2010)",
-  "page": 23,
-  "row": "",
-  "column": "Model 4",
-  "cell": "652.00***",
-  "caption": ""
  },
  {
   "doc": "df1588ddee86_PDFs_of_included_programs_121498842_Spanish",
@@ -3331,14 +2147,6 @@
   "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
   "page": 14,
   "row": "",
-  "column": "2-year results - T2-C",
-  "cell": "-1.774 (2.041)",
-  "caption": "['Table OB5: Livestock']"
- },
- {
-  "doc": "e50119e4539d_PDFs_of_included_programs_121354848_appendix",
-  "page": 14,
-  "row": "",
   "column": "2-year results - T3-C",
   "cell": "-1.111 (2.049)",
   "caption": "['Table OB5: Livestock']"
@@ -3490,89 +2298,9 @@
  {
   "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
   "page": 18,
-  "row": "Average age of the household members",
-  "column": "IV (B, C, D, E vs. F) - Controls",
-  "cell": "22.31 [7.450]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Average age of the household members",
-  "column": "IV (B, C, D, E vs. F) - Treated",
-  "cell": "22.30 [7.158]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Average age of the household members",
-  "column": "IV (B, C, D, E vs. F) - Difference",
-  "cell": "-0.01 [0.526]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "SOF participant age",
-  "column": "IV (B, C, D, E vs. F) - Controls",
-  "cell": "41.35 [10.34]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "SOF participant age",
-  "column": "IV (B, C, D, E vs. F) - Treated",
-  "cell": "41.71 [10.69]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "SOF participant age",
-  "column": "IV (B, C, D, E vs. F) - Difference",
-  "cell": "0.36 [0.766]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Proportion of male HH",
-  "column": "IV (B, C, D, E vs. F) - Controls",
-  "cell": "0.654 [0.477]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Proportion of male HH",
-  "column": "IV (B, C, D, E vs. F) - Treated",
-  "cell": "0.547 [0.498]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
   "row": "Proportion of male HH",
   "column": "IV (B, C, D, E vs. F) - Difference",
   "cell": "-0.107*** [0.036]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Proportion of male participants",
-  "column": "IV (B, C, D, E vs. F) - Controls",
-  "cell": "0.217 [0.413]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Proportion of male participants",
-  "column": "IV (B, C, D, E vs. F) - Treated",
-  "cell": "0.100 [0.300]",
   "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
  },
  {
@@ -3586,193 +2314,9 @@
  {
   "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
   "page": 18,
-  "row": "Total men in the household",
-  "column": "IV (B, C, D, E vs. F) - Controls",
-  "cell": "3.136 [1.376]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Total men in the household",
-  "column": "IV (B, C, D, E vs. F) - Treated",
-  "cell": "3.107 [1.493]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Total men in the household",
-  "column": "IV (B, C, D, E vs. F) - Difference",
-  "cell": "-0.029 [0.105]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Total women in the household",
-  "column": "IV (B, C, D, E vs. F) - Controls",
-  "cell": "2.899 [1.364]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Total women in the household",
-  "column": "IV (B, C, D, E vs. F) - Treated",
-  "cell": "3.088 [1.450]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
   "row": "Total women in the household",
   "column": "IV (B, C, D, E vs. F) - Difference",
   "cell": "0.189* [0.103]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Average years of education of the HH",
-  "column": "IV (B, C, D, E vs. F) - Controls",
-  "cell": "5.021 [2.604]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Average years of education of the HH",
-  "column": "IV (B, C, D, E vs. F) - Treated",
-  "cell": "4.932 [2.636]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Average years of education of the HH",
-  "column": "IV (B, C, D, E vs. F) - Difference",
-  "cell": "-0.089 [0.190]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Participants' average years of education",
-  "column": "IV (B, C, D, E vs. F) - Controls",
-  "cell": "4.930 [2.480]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Participants' average years of education",
-  "column": "IV (B, C, D, E vs. F) - Treated",
-  "cell": "4.839 [2.724]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Participants' average years of education",
-  "column": "IV (B, C, D, E vs. F) - Difference",
-  "cell": "-0.091 [0.192]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Number of working household members",
-  "column": "IV (B, C, D, E vs. F) - Controls",
-  "cell": "2.465 [1.386]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Number of working household members",
-  "column": "IV (B, C, D, E vs. F) - Treated",
-  "cell": "2.467 [1.413]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Number of working household members",
-  "column": "IV (B, C, D, E vs. F) - Difference",
-  "cell": "0.002 [0.102]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Number of unemployed household members",
-  "column": "IV (B, C, D, E vs. F) - Controls",
-  "cell": "0 [0]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Number of unemployed household members",
-  "column": "IV (B, C, D, E vs. F) - Treated",
-  "cell": "0.00702 [0.0835]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Number of unemployed household members",
-  "column": "IV (B, C, D, E vs. F) - Difference",
-  "cell": "0.00702 [0.005]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Proportion of poor households",
-  "column": "IV (B, C, D, E vs. F) - Controls",
-  "cell": "0.179 [0.384]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Proportion of poor households",
-  "column": "IV (B, C, D, E vs. F) - Treated",
-  "cell": "0.184 [0.388]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Proportion of poor households",
-  "column": "IV (B, C, D, E vs. F) - Difference",
-  "cell": "0.005 [0.028]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Proportion of households in extreme poverty",
-  "column": "IV (B, C, D, E vs. F) - Controls",
-  "cell": "0.807 [0.395]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Proportion of households in extreme poverty",
-  "column": "IV (B, C, D, E vs. F) - Treated",
-  "cell": "0.801 [0.399]",
-  "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
- },
- {
-  "doc": "ed8331ab9500_PDFs_of_included_programs_121058364",
-  "page": 18,
-  "row": "Proportion of households in extreme poverty",
-  "column": "IV (B, C, D, E vs. F) - Difference",
-  "cell": "-0.006 [0.029]",
   "caption": "['Table 3: Socioeconomic differences between control and treatment groups']"
  },
  {
@@ -3781,14 +2325,6 @@
   "row": "HH head female",
   "column": "Model 2",
   "cell": "7490.80***",
-  "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 11,
-  "row": "HH head female",
-  "column": "Model 3",
-  "cell": "7522.95***",
   "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
  },
  {
@@ -3810,14 +2346,6 @@
  {
   "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
   "page": 11,
-  "row": "SUP female",
-  "column": "Model 4",
-  "cell": "401.38*** (96.03)",
-  "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 11,
   "row": "HH head single",
   "column": "Model 2",
   "cell": "427.85 (262.47)",
@@ -3834,14 +2362,6 @@
  {
   "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
   "page": 11,
-  "row": "HH head single female",
-  "column": "Model 3",
-  "cell": "7701.57** (282.00)",
-  "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 11,
   "row": "",
   "column": "Model 2",
   "cell": "7743.35*** (286.02)",
@@ -3850,41 +2370,9 @@
  {
   "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
   "page": 11,
-  "row": "HH head age",
-  "column": "Model 2",
-  "cell": "0.43 (1.83)",
-  "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 11,
-  "row": "HH head age",
-  "column": "Model 3",
-  "cell": "2.26 (1.81)",
-  "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 11,
-  "row": "HH head age",
-  "column": "Model 4",
-  "cell": "2.06 (1.82)",
-  "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 11,
   "row": "HH head literate",
   "column": "Model 2",
   "cell": "194.64** (87.84)",
-  "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 11,
-  "row": "HH head literate",
-  "column": "Model 3",
-  "cell": "175.54** (86.61)",
   "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
  },
  {
@@ -3909,14 +2397,6 @@
   "row": "Total land",
   "column": "Model 2",
   "cell": "23.71***",
-  "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 11,
-  "row": "owned",
-  "column": "Model 3",
-  "cell": "22.69***",
   "caption": "['Table 4. Change in real per capita income between 2002 and 2005 (per capita in"
  },
  {
@@ -3995,32 +2475,8 @@
   "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
   "page": 12,
   "row": "HH head female",
-  "column": "Model 2",
-  "cell": "71022.64***",
-  "caption": "['Table 5. Change in real per capita income between 2005 and 2008 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 12,
-  "row": "HH head female",
   "column": "Model 3",
   "cell": "71150.06***",
-  "caption": "['Table 5. Change in real per capita income between 2005 and 2008 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 12,
-  "row": "HH head female",
-  "column": "Model 4",
-  "cell": "71152.58***",
-  "caption": "['Table 5. Change in real per capita income between 2005 and 2008 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 12,
-  "row": "HH head single",
-  "column": "Model 2",
-  "cell": "842.61**",
   "caption": "['Table 5. Change in real per capita income between 2005 and 2008 (per capita in"
  },
  {
@@ -4034,22 +2490,6 @@
  {
   "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
   "page": 12,
-  "row": "HH head single",
-  "column": "Model 4",
-  "cell": "784.85**",
-  "caption": "['Table 5. Change in real per capita income between 2005 and 2008 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 12,
-  "row": "Total land",
-  "column": "Model 2",
-  "cell": "33.35***",
-  "caption": "['Table 5. Change in real per capita income between 2005 and 2008 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 12,
   "row": "Total land",
   "column": "Model 3",
   "cell": "31.85***",
@@ -4058,65 +2498,9 @@
  {
   "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
   "page": 12,
-  "row": "Total land",
-  "column": "Model 4",
-  "cell": "31.44*** (2.23)",
-  "caption": "['Table 5. Change in real per capita income between 2005 and 2008 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 12,
-  "row": "Kurigram",
-  "column": "Model 4",
-  "cell": "459.74***",
-  "caption": "['Table 5. Change in real per capita income between 2005 and 2008 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 12,
   "row": "Household events",
   "column": "Model 3",
   "cell": "478.12*** (76.75)",
-  "caption": "['Table 5. Change in real per capita income between 2005 and 2008 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 12,
-  "row": "House damaged",
-  "column": "Model 4",
-  "cell": "7227.03** (96.64)",
-  "caption": "['Table 5. Change in real per capita income between 2005 and 2008 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 12,
-  "row": "Member ill",
-  "column": "Model 4",
-  "cell": "7228.47*** (87.13)",
-  "caption": "['Table 5. Change in real per capita income between 2005 and 2008 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 12,
-  "row": "Member died",
-  "column": "Model 4",
-  "cell": "96.94 (230.34)",
-  "caption": "['Table 5. Change in real per capita income between 2005 and 2008 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 12,
-  "row": "Marriage",
-  "column": "Model 4",
-  "cell": "652.00*** (128.77)",
-  "caption": "['Table 5. Change in real per capita income between 2005 and 2008 (per capita in"
- },
- {
-  "doc": "f9f7e477392d_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Krishna_(2012)",
-  "page": 12,
-  "row": "Livestock died",
-  "column": "Model 4",
-  "cell": "787.56 (139.67)",
   "caption": "['Table 5. Change in real per capita income between 2005 and 2008 (per capita in"
  },
  {

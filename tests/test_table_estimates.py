@@ -110,3 +110,69 @@ def test_a_control_statistic_that_is_not_in_the_table_is_not_taken():
     e = to_estimate(raw, "Table 1", 3, TABLE_WITH_CONTROL)
     assert e.control_mean is None and e.control_sd is None
     assert e.n_treatment is None and e.n_control is None
+
+
+PARTIAL_TABLE = """| Outcome | Coef |
+| --- | --- |
+| A | 0.1*** |
+| B | 0.2*** |
+| C | 0.3 |
+| D | 0.4 |
+| E | 0.5 |"""
+
+
+def _fake_chat(monkeypatch, replies):
+    import src.extraction.table_estimates as module
+
+    calls = []
+
+    async def fake(client, model, prompt):
+        calls.append(prompt)
+        reply = replies[min(len(calls) - 1, len(replies) - 1)]
+        return reply if isinstance(reply, str) else __import__("json").dumps(reply)
+
+    monkeypatch.setattr(module, "_chat", fake)
+    return calls
+
+
+def test_a_table_that_returns_fewer_rows_is_asked_again(monkeypatch):
+    import asyncio
+
+    import src.extraction.table_estimates as module
+
+    partial = {"results_table": True, "estimates": [{"outcome": "A", "estimate_cell": "0.1***"}]}
+    full = {"results_table": True, "estimates": [
+        {"outcome": name, "estimate_cell": value} for name, value in
+        (("A", "0.1***"), ("B", "0.2***"), ("C", "0.3"), ("D", "0.4"), ("E", "0.5"))]}
+    calls = _fake_chat(monkeypatch, [partial, full])
+    out = asyncio.run(module.extract_document([{"type": "table", "page_idx": 0, "text": PARTIAL_TABLE}], "m", "k"))
+    assert len(calls) == 2 and "COMPLETENESS" in calls[1]
+    assert len(out["estimates"]) == 5
+
+
+def test_a_complete_table_is_not_asked_again(monkeypatch):
+    import asyncio
+
+    import src.extraction.table_estimates as module
+
+    full = {"results_table": True, "estimates": [
+        {"outcome": name, "estimate_cell": value} for name, value in
+        (("A", "0.1***"), ("B", "0.2***"), ("C", "0.3"), ("D", "0.4"), ("E", "0.5"))]}
+    calls = _fake_chat(monkeypatch, [full])
+    asyncio.run(module.extract_document([{"type": "table", "page_idx": 0, "text": PARTIAL_TABLE}], "m", "k"))
+    assert len(calls) == 1
+
+
+def test_a_table_the_model_calls_prose_is_read_as_results_when_the_structure_says_so(monkeypatch):
+    import asyncio
+
+    import src.extraction.table_estimates as module
+
+    refusal = {"results_table": False, "estimates": []}
+    full = {"results_table": True, "estimates": [
+        {"outcome": name, "estimate_cell": value} for name, value in
+        (("A", "0.1***"), ("B", "0.2***"), ("C", "0.3"), ("D", "0.4"), ("E", "0.5"))]}
+    calls = _fake_chat(monkeypatch, [refusal, full])
+    out = asyncio.run(module.extract_document([{"type": "table", "page_idx": 0, "text": PARTIAL_TABLE}], "m", "k"))
+    assert len(calls) == 2 and "reports estimated effects" in calls[1]
+    assert len(out["estimates"]) == 5

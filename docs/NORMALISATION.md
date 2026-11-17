@@ -308,6 +308,28 @@ remain unexplained. That remainder is dominated by the 91 documents still carryi
 which is what the full re-extraction is for. The hand-typed key stays at 305 estimates and 284 standard
 errors throughout, so the coverage work is additive rather than a trade against accuracy.
 
+### Reading a table to the end (17 November 2026)
+
+The 519 unexplained cells that remained after the measurement fixes were real values, and most of them sat in
+tables the reader had only partly returned. Extraction now finishes a table. When a table has at least four
+labelled rows and the answer covers fewer than 85 percent of them, one more call asks for the rest and the
+answers are merged, so a row cannot be doubled. The retry also fires when a table with starred cells was
+called prose, since a table of stars is a table of estimates. The budget is twelve retries per document, which
+bounds the cost on a long appendix.
+
+Applied to the ten documents holding most of the remainder, unexplained cells fell from 370 to 169, and on the
+collection from 519 to 317; the unstored cells fell from 2,242 to 2,120. Accuracy was unchanged at 854 of 854,
+so the retry added rows without disturbing the values checked against the key.
+
+The triage also learned three shapes it had been calling gaps: a balance column written as `2005 - Treated` or
+`SUP-NSUP (2)`, including the broken-glyph form `ð2Þ` that one PDF produces, a descriptive mean printed as
+`22.31 [7.450]`, and a household-characteristic row printed without stars. The same rows printed with stars are
+left on the work list, because those are estimates.
+
+What remains is 317 cells, 51 of them in one document. They are the tail of the collection: balance-shaped
+tables with starred cells, merged labels, and layouts that neither the retry nor a label rule reaches. They are
+listed cell by cell in `evaluation/results/coverage_unexplained_<date>.json` for review rather than chased.
+
 ### What the coverage queue actually contained (17 November 2026)
 
 Reading the 941 unexplained cells one by one found three faults in the measurement, not in the reader.

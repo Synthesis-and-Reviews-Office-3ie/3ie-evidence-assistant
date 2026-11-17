@@ -27,6 +27,45 @@ OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 CONTEXT_ITEMS = 2          # text items before and after a table that travel with it
 MAX_TABLE_CHARS = 24000
 TABLE_CONCURRENCY = 8
+# A call on a table with several labelled rows sometimes stops early. When it returns clearly fewer
+# estimates than the table has rows, one more call asks for the rest; the budget bounds the cost per
+# document, because a long appendix can hold hundreds of tables.
+RETRY_SHARE = 0.85
+RETRY_MIN_ROWS = 4
+RETRIES_PER_DOC = 12
+
+
+def _labelled_rows(text: str) -> int:
+    """How many data rows the table has, by the count of rows with a label in the first column."""
+    from src.extraction.table_structure import parse_markdown_table
+
+    grid = parse_markdown_table(text)
+    return sum(1 for row in grid.body if row and str(row[0]).strip())
+
+
+def _has_starred_cell(text: str) -> bool:
+    """True when any body cell carries significance stars, which makes the table one of estimates."""
+    from src.extraction.table_structure import parse_markdown_table
+
+    grid = parse_markdown_table(text)
+    return any(re.search(r"\d[\d,]*\.?\d*\s*[*†‡]", str(cell)) for row in grid.body for cell in row[1:])
+
+
+def _unique_estimates(raw: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """One entry per outcome, arm, subgroup and printed cell, for the two answers to one table."""
+    seen, out = set(), []
+    for entry in raw:
+        if not isinstance(entry, dict):
+            continue
+        key = (str(entry.get("outcome") or "").strip().lower(),
+               str(entry.get("arm") or "").strip().lower(),
+               str(entry.get("subgroup") or "").strip().lower(),
+               str(entry.get("estimate_cell") or "").strip())
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(entry)
+    return out
 
 PROMPT = """You extract treatment-effect estimates from one table of an impact evaluation.
 
@@ -424,6 +463,7 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
 
     units = table_units(content_list)
     sem = asyncio.Semaphore(TABLE_CONCURRENCY)
+    retry_budget = {"left": RETRIES_PER_DOC}
     async with httpx.AsyncClient(timeout=300, headers={"Authorization": f"Bearer {api_key}"}) as client:
         async def one(u):
             kind, result, has_estimate = _table_analysis(u)
@@ -440,7 +480,29 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
             async with sem:
                 for attempt in range(2):
                     try:
-                        return u, _parse_json(await _chat(client, model, prompt)), None, kind
+                        data = _parse_json(await _chat(client, model, prompt))
+                        expected = _labelled_rows(u["text"])
+                        got = len(data.get("estimates") or [])
+                        must_read_as_results = (not data.get("results_table")
+                                                and expected >= RETRY_MIN_ROWS
+                                                and _has_starred_cell(u["text"]))
+                        incomplete = (data.get("results_table") and expected >= RETRY_MIN_ROWS
+                                      and got < max(2, int(expected * RETRY_SHARE)))
+                        if (must_read_as_results or incomplete) and retry_budget["left"] > 0:
+                            # Ask once more, either because the answer stopped short of the rows or because the
+                            # structure says results and the model said it was not a results table.
+                            retry_budget["left"] -= 1
+                            ask = (f"\n\nCOMPLETENESS: you returned {got} of about {expected} data rows. "
+                                   "Return every row in the table, including rows whose cell carries no stars "
+                                   "and rows whose estimate is small, and do not stop early.")
+                            if must_read_as_results:
+                                ask = ("\n\nThis table reports estimated effects: its caption, labels and "
+                                       "arithmetic say so. Set results_table true and return every row, "
+                                       "including rows whose cell carries no stars.")
+                            more = _parse_json(await _chat(client, model, prompt + ask))
+                            merged = _unique_estimates((data.get("estimates") or []) + (more.get("estimates") or []))
+                            data = {**data, "results_table": True, "estimates": merged, "completed": True}
+                        return u, data, None, kind
                     except Exception as e:
                         err = f"{type(e).__name__}: {e}"[:200]
                 return u, {}, err, kind

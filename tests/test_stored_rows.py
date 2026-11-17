@@ -120,3 +120,25 @@ def test_a_number_is_read_under_both_conventions():
     assert cell_values("0.145***") == [0.145]
     assert cell_values("1,222***") == [1.222, 1222.0]
     assert cell_values("(0.43)") == []
+
+
+def test_the_triage_names_balance_test_and_mean_rows():
+    from evaluation.coverage_triage import reason
+
+    assert reason("Treatment Status", "Endline 1", "Table S1f: Pooled Attrition", 26, 60) == \
+        "balance or attrition table"
+    assert reason("Treatment Status", "Endline 1",
+                  "Table 2a: Test of difference in mean characteristics between groups", 37, 60) == \
+        "balance or attrition table"
+    assert reason("t-test", "", "Table 1", 3, 60) == "hypothesis test"
+    assert reason("po mean", "", "Table 1", 3, 60) == "mean row"
+
+
+def test_balance_columns_and_descriptive_cells_are_recognised_without_a_caption():
+    from evaluation.coverage_triage import reason
+
+    assert reason("fem14to55", "2005 - Treated", "", 43, 60) == "balance or attrition table"
+    assert reason("Per capita income", "SUP-NSUP (2)", "", 17, 60) == "balance or attrition table"
+    assert reason("Average age of the household members", "IV (B, C, D, E vs. F) -", "", 18, 60,
+                  "22.31 [7.450]") == "table of means"
+    assert reason("Average income", "Effect", "", 3, 60, "22.31*** [7.45]") == "unexplained"

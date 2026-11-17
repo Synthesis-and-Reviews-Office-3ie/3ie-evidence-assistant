@@ -40,8 +40,27 @@ CACHE = ROOT / "evaluation" / "results" / "usage_study" / PROJECT / "content"
 SAMPLE = 30
 
 
-def reason(row_label: str, column_label: str, caption: str, page: int, pages: int) -> str:
+def reason(row_label: str, column_label: str, caption: str, page: int, pages: int,
+           cell: str = "") -> str:
     label = f"{row_label} {column_label}".lower()
+    # Some PDFs render brackets with a broken glyph: "SUP-NSUP ð2Þ" is "SUP-NSUP (2)".
+    column = re.sub(r"[þÞ]", ")", re.sub(r"[ðÐ]", "(", str(column_label or "").strip()))
+    # A balance table often has no caption word for it. Its columns give it away: a year against a group
+    # ("2005 - Treated") or a difference between baseline groups ("SUP-NSUP (2)", "SB1-SNB0 (4)").
+    if re.match(r"^(19|20)\d{2}\s*[-–]\s*(treated|control|treatment)\b", column, re.I):
+        return "balance or attrition table"
+    if re.match(r"^[A-Za-z]{2,5}\s*[-–]\s*[A-Za-z0-9]{2,5}\s*\(\d\)\s*$", column):
+        return "balance or attrition table"
+    # A mean with its standard deviation in brackets, on a row that is itself a descriptive average, is
+    # descriptive statistics rather than an effect.
+    if (re.match(r"\s*(average|proportion|mean|share)\b", str(row_label or ""), re.I)
+            and re.search(r"\[\s*[\d.,]+\s*\]", str(cell or "")) and not re.search(r"[*†‡]", str(cell or ""))):
+        return "table of means"
+    # Household characteristics printed without stars are descriptions of the sample, not effects; the
+    # same rows with stars are estimates and stay unexplained so they remain on the work list.
+    if (re.search(r"\b(age|men|women|male|female|members?|participants?|household size|children)\b",
+                  str(row_label or ""), re.I) and not re.search(r"[*†‡]", str(cell or ""))):
+        return "covariate row"
     # A balance or attrition table reports pre-programme differences or who answered the survey, not an
     # effect of the programme. Paper a72b's "Table 2a: Test of difference in mean characteristics ... in
     # 2002" and 121058373's "Pooled Attrition" are the examples; storing their starred cells would be wrong.
@@ -134,7 +153,7 @@ def main() -> None:
                         why = "table of means"
                     else:
                         why = reason(row_label, headers[index] if index < len(headers) else "",
-                                     f"{caption} {page_text.get(page, '')}", page, pages)
+                                     f"{caption} {page_text.get(page, '')}", page, pages, cell)
                     counts[why] += 1
                     if why == "unexplained":
                         unexplained_cells.append({
