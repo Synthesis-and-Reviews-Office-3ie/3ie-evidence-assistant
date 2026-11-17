@@ -308,6 +308,30 @@ remain unexplained. That remainder is dominated by the 91 documents still carryi
 which is what the full re-extraction is for. The hand-typed key stays at 305 estimates and 284 standard
 errors throughout, so the coverage work is additive rather than a trade against accuracy.
 
+### What the coverage queue actually contained (17 November 2026)
+
+Reading the 941 unexplained cells one by one found three faults in the measurement, not in the reader.
+
+- **A Spanish decimal was read as a large integer.** `0,84** (0,43)` was parsed as 84, so 167 cells of paper
+  121498842's Spanish version looked unstored while the store held 0.84. A cell now yields both readings and
+  counts as stored when either matches, which also covers the English `1,222` against the Spanish `1.222`.
+- **Balance and attrition tables look like results.** Paper a72b's "Test of difference in mean characteristics
+  between treatment and control groups in 2002" and 121058373's "Pooled Attrition" print starred cells that are
+  pre-programme differences or survey response, not effects. The page's text now identifies them, which
+  accounts for 282 cells.
+- **A test statistic's p-value and a potential-outcome mean are not effects.** Rows labelled `t-test` and
+  `po mean` are now named as such.
+
+With those, the unstored count falls from 4,231 to 2,242 and the unexplained remainder from 1,905 to 519. Those
+519 are not a measurement artefact: the samples are real values the reader did not store, such as Cantril ladder
+effects of 0.06 and 0.14 in paper 0cb6 and food-security effects of -0.219 in paper 1a25, concentrated in about
+ten documents. The next production fix is therefore in extraction, not measurement: a per-table completeness
+retry that re-asks once when a results table yields clearly fewer rows than it has outcome rows, in the way the
+second pass already works for whole documents.
+
+The full list is exported to `evaluation/results/coverage_unexplained_<date>.json` with the document, page, row
+label and column, so any remaining cell can be checked against its paper.
+
 ### The collection re-read (16 November 2026)
 
 All 98 documents were re-read with the current reader, in thirteen paced batches at one document at a time

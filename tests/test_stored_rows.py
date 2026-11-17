@@ -111,3 +111,12 @@ def test_an_explicit_assignment_finds_a_document_named_by_author():
     # A document already found by id is not listed twice.
     assert documents_for("121058359", names + ["121058359_x"], overrides) == [
         "121058359_x", "abc_PDFs_of_included_programs_Misha_(2019)"]
+
+
+def test_a_number_is_read_under_both_conventions():
+    from evaluation.table_coverage import cell_values
+
+    assert cell_values("0,84** (0,43)") == [0.84, 84.0]
+    assert cell_values("0.145***") == [0.145]
+    assert cell_values("1,222***") == [1.222, 1222.0]
+    assert cell_values("(0.43)") == []

@@ -47,15 +47,44 @@ CELL = re.compile(
     r"\s*$")
 
 
-def cell_value(cell: str):
-    """The estimate of a table cell when the whole cell is an estimate, else None."""
+def cell_values(cell: str) -> list:
+    """Every plausible value of a cell, because the same glyphs mean different numbers by convention.
+
+    A Spanish paper prints `0,84` for 0.84 and an English one prints `1,222` for 1222. Rather than guess the
+    document's language, both readings are returned and a cell counts as stored when either one matches.
+    """
     found = CELL.match(str(cell or ""))
     if not found:
-        return None
-    try:
-        return float(found.group(1).replace(",", ""))
-    except ValueError:
-        return None
+        return []
+    raw = found.group(1)
+    out = []
+
+    def add(text: str) -> None:
+        try:
+            value = float(text)
+        except ValueError:
+            return
+        if value not in out:
+            out.append(value)
+
+    if "," in raw and "." not in raw:
+        add(raw.replace(",", "."))
+        add(raw.replace(",", ""))
+    elif "." in raw and "," not in raw:
+        add(raw)
+        # "1.222" is ambiguous and both readings are offered; "0.145" is a decimal, never a thousands form.
+        unsigned = raw.lstrip("-−–")
+        if re.fullmatch(r"\d{1,3}(?:\.\d{3})+", unsigned) and not unsigned.startswith("0."):
+            add(raw.replace(".", ""))
+    else:
+        add(raw.replace(",", ""))
+    return out
+
+
+def cell_value(cell: str):
+    """The estimate of a table cell when the whole cell is an estimate, else None."""
+    values = cell_values(cell)
+    return values[0] if values else None
 
 
 def estimate_cells(text: str) -> list:

@@ -11,6 +11,7 @@ labels, so the sample can be checked by eye against the papers.
 
 from __future__ import annotations
 
+import json
 import os
 import re
 import sys
@@ -26,7 +27,7 @@ from dotenv import load_dotenv  # noqa: E402
 load_dotenv(ROOT / ".env")
 
 from evaluation.stored_rows import fetch_all, matches  # noqa: E402
-from evaluation.table_coverage import cell_value  # noqa: E402
+from evaluation.table_coverage import cell_values  # noqa: E402
 from evaluation.usage_study import load_content  # noqa: E402
 from src.extraction.table_rules import classify_table, looks_garbled  # noqa: E402
 from src.extraction.table_structure import parse_markdown_table  # noqa: E402
@@ -34,15 +35,25 @@ from supabase import create_client  # noqa: E402
 
 PROJECT = os.environ.get("RAG_PROJECT_ID") or "7efdc60e-e863-480c-929e-616574725e5f"
 REPORT = ROOT / "evaluation" / "results" / f"coverage_triage_{date.today().isoformat()}.md"
+EXPORT = ROOT / "evaluation" / "results" / f"coverage_unexplained_{date.today().isoformat()}.json"
 CACHE = ROOT / "evaluation" / "results" / "usage_study" / PROJECT / "content"
 SAMPLE = 30
 
 
 def reason(row_label: str, column_label: str, caption: str, page: int, pages: int) -> str:
     label = f"{row_label} {column_label}".lower()
-    if re.match(r"\s*test\b", str(row_label or "").lower()) or "p-value of" in label:
-        # "Test: T2 = T3 | 0.072*" is the p-value of an equality test between arms, not an estimate.
+    # A balance or attrition table reports pre-programme differences or who answered the survey, not an
+    # effect of the programme. Paper a72b's "Table 2a: Test of difference in mean characteristics ... in
+    # 2002" and 121058373's "Pooled Attrition" are the examples; storing their starred cells would be wrong.
+    if re.search(r"balance|attrition|orthogonal|take[- ]?up|compliance|test of difference in mean|"
+                 r"baseline characteristics|completed survey|surveyed mean", str(caption or "").lower()):
+        return "balance or attrition table"
+    if re.match(r"\s*(test|t[- ]?test|f[- ]?test)\b", str(row_label or "").lower()) or "p-value of" in label:
+        # "Test: T2 = T3 | 0.072*" and "t-test | 0.31" carry the p-value of a test, not an estimate.
         return "hypothesis test"
+    if re.match(r"\s*(po mean|potential outcome mean)\b", str(row_label or "").lower()):
+        # A potential-outcome mean is a level, not an effect.
+        return "mean row"
     if re.search(r"control\s+(mean|group mean)|mean (in|of) (the )?control|control\b.*\bmean", label):
         return "control mean"
     # Regression tables with outcomes in the columns list the covariates down the rows. Paper 121058367
@@ -74,6 +85,14 @@ def main() -> None:
 
     counts: Counter = Counter()
     examples: dict = defaultdict(list)
+    unexplained_cells = []
+    # One pass over the project's rows, grouped by document and page: the instance budgets disk IO.
+    by_document: dict = defaultdict(lambda: defaultdict(list))
+    for row in fetch_all(sb.table("effect_estimates").select("doc_key,page,effect_size,standard_error")
+                         .eq("rag_project_id", PROJECT).eq("source", "tables_v1")):
+        for field in ("effect_size", "standard_error"):
+            if row.get(field) is not None:
+                by_document[row.get("doc_key")][row.get("page")].append(row[field])
     read = 0
     for name in names:
         try:
@@ -82,13 +101,14 @@ def main() -> None:
             continue
         read += 1
         pages = max(((item.get("page_idx") or 0) + 1 for item in content), default=0)
-        rows = fetch_all(sb.table("effect_estimates").select("page,effect_size,standard_error")
-                         .eq("rag_project_id", PROJECT).eq("doc_key", name).eq("source", "tables_v1"))
-        stored = defaultdict(list)
-        for r in rows:
-            for field in ("effect_size", "standard_error"):
-                if r.get(field) is not None:
-                    stored[r.get("page")].append(r[field])
+        # Captions often arrive as a separate title item, so the page's text is the context that says
+        # whether a table is a balance, attrition or compliance table rather than a table of effects.
+        page_text: dict = {}
+        for other in content:
+            if other.get("type") in ("text", "title"):
+                key = (other.get("page_idx") or 0) + 1
+                page_text[key] = (page_text.get(key, "") + " " + str(other.get("text") or ""))[:2000]
+        stored = by_document.get(name, {})
         for item in content:
             text = str(item.get("text") or "")
             if item.get("type") != "table" or "|" not in text or looks_garbled(text):
@@ -107,17 +127,24 @@ def main() -> None:
             for body in grid.body:
                 row_label = body[0] if body else ""
                 for index, cell in enumerate(body[1:], start=1):
-                    value = cell_value(cell)
-                    if value is None or matches(value, stored.get(page, [])):
+                    candidates = cell_values(cell)
+                    if not candidates or any(matches(value, stored.get(page, [])) for value in candidates):
                         continue
                     if not table_has_stars:
                         why = "table of means"
                     else:
                         why = reason(row_label, headers[index] if index < len(headers) else "",
-                                     caption, page, pages)
+                                     f"{caption} {page_text.get(page, '')}", page, pages)
                     counts[why] += 1
-                    if why == "unexplained" and len(examples[name]) < 3:
-                        examples[name].append((page, row_label[:50], (headers[index] if index < len(headers) else "")[:28], cell[:20]))
+                    if why == "unexplained":
+                        unexplained_cells.append({
+                            "doc": name, "page": page, "row": str(row_label)[:120],
+                            "column": str(headers[index] if index < len(headers) else "")[:80],
+                            "cell": str(cell)[:40], "caption": caption[:80]})
+                        if len(examples[name]) < 3:
+                            examples[name].append((page, row_label[:50],
+                                                   (headers[index] if index < len(headers) else "")[:28],
+                                                   cell[:20]))
 
     total = sum(counts.values())
     lines = [f"# Coverage triage {date.today().isoformat()}", "",
@@ -136,6 +163,7 @@ def main() -> None:
             lines.append(f"- {name[:46]} p{page}: row '{label}', column '{column}', cell {cell}")
             shown += 1
     REPORT.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    EXPORT.write_text(json.dumps(unexplained_cells, indent=1, ensure_ascii=False), encoding="utf-8")
     print(f"documents read {read} of {len(names)} | cells {total}")
     for why, count in counts.most_common():
         print(f"  {why:20} {count}")
