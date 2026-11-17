@@ -53,11 +53,21 @@ All notable changes to DevChat v2.0 are documented in this file.
 - **A row label with a units note was dropped as a non-outcome.** `is_non_outcome_label` matched its cues anywhere in the label, so `Per capita income (BDT constant price)` was dropped for the cue "constant", and paper 122182716's `936` with it. Cues are matched against the label with parenthetical units removed, in the same normalised form as the cue, which also restored `F-statistic` once hyphens were normalised.
 
 ### Measured
-Against the hand-typed key (36 studies, 325 estimates, 305 standard errors), after re-parsing and re-extracting the affected papers and after the wide-table and second-pass work: 305 estimates (94%) and 284 standard errors (93%), against 300 and 284 as last reported. Paper 121328483 is restored from 0 of 13 to 13 of 13, no garbled tables are left in the three re-parsed documents, and paper 122182716's two values are now found. Setting aside the 36 values for 121766336, whose document is a summary without the cited table, attainable recall is 589 of 594 values (99%).
+Against the hand-typed key, every study that has a document is scored: 43 of 43 studies and 854 of 854 values,
+which is 442 of 442 estimates and 412 of 412 standard errors, one of them at the precision the paper printed.
+The key itself carried seven errors, each checked against its paper and corrected in the workbook and in the
+copy the gate reads, so `evaluation/key_errata.json` is empty and the mechanism remains for future corrections.
+Paper 121328483 was restored from 0 of 13 to 13 of 13, and paper 121766336's 36 values came from a three-page
+companion note that carries the two tables its brief cites; both documents are in the collection.
 
-Of the values still missing, 3 estimates and 3 standard errors sit outside the retrieval queue and all are differences between the key and what the papers print: 122182715's `57.645` and `192.975` against printed `57.02` and `192.974`, 121294795's `92.8` which is not in the text, and the standard errors `16.96`, `4.24` and `691.179` against printed `16.698`, `4.224` and `691.149`.
+Coverage of everything the key does not cover is measured by estimate-shaped cells with no stored row: 1,914
+unstored across 98 documents, 56 of them unexplained after the triage names the tables of means, balance and
+attrition sheets, covariate rows, appendix pages, test p-values and subgroup differences. The real gap is 53
+cells in 18 documents, down from 4,231 and 1,905 when the check was written.
 
-The 18 misses for 121766336 (Bab Amal, Egypt) were re-checked. The study paper exists (Assaad, Osman, Parienté and Valente, *How Big Does a "Big Push" Need to Be?*) but reports rounded values that differ from the key, and the 12-page policy brief held for that id prints its results as figures, not as the estimate table the key cites. A vision pass over the brief returned 27 rows and none of the 18 values, so they remain outside the collection rather than unexplained; `evaluation/retrieval_queue.py` now lists them for retrieval.
+The recall gate runs weekly and on changes, reads the key from private storage, and fails when the matched
+count falls below `evaluation/results/recall_baseline.json`. The reader is deployed to the Modal app the API
+calls, so new uploads use the current pipeline.
 
 ---
 

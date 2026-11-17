@@ -532,6 +532,40 @@ Four belong to two studies that the wider mapping has just started to score, 121
 and 122182711 (-81.6), plus 121498842's standard error 3.84. Those four are a coverage question of the
 ordinary kind and are the next thing to look at.
 
+## Coverage and accuracy: where the work stands (17 November 2026)
+
+This is the short account of a long week, for a reader who does not want the dated entries below.
+
+**Accuracy against the hand-typed key.** All 43 studies are mapped and all 854 values match: 442 of 442
+estimates and 412 of 412 standard errors, one of them at the precision the paper printed rather than exactly.
+The key itself had seven errors, verified against the papers and corrected in the workbook and in the copy the
+CI gate reads; `evaluation/key_errata.json` is empty and the mechanism remains for future corrections.
+
+**Coverage of everything else.** The hand-typed key covers 854 numbers; the collection prints far more. A
+coverage check reads every table, lists the cells that carry an estimate (a value with stars or a bracketed
+statistic) and compares them with the store. It began at 4,231 unstored cells and 1,905 it could not explain.
+It is now 1,914 unstored and 56 unexplained, a real gap of 53: 51 cells omitted from tables that were read and
+2 on pages that were not.
+
+**What was actually wrong, in six mechanisms.** Broken font mapping in three papers, repaired by reading the page
+image; wide tables read in part, now one view per estimate column up to sixteen; estimate columns with a
+t-statistic and no stars, never selected; significance stars printed in the column beside the value; merged row
+labels leaving later rows nameless; and heterogeneity tables whose rows are subgroups and columns outcomes. Each
+has a test. Three measurement faults sat on top: a Spanish decimal read as an integer, a page-level comparison
+that counted values stored on another page as missing, and a filter that dropped outcomes beginning "Average".
+
+**What the queue still calls unexplained, and why it is left.** Seven cells in a determinants table are
+covariates and should not be stored. Five sit in one subgroup table the reader declines. Four are a panel
+table's first row, which has no label above it to carry. Three are a difference-in-differences column, three sit
+under a merged multi-row header, and the rest are singles. Two of those are worth fixing because they recur: the
+DiD column view and the first-row label. The others are correct exclusions or need the page image rather than the
+text, and are listed cell by cell in `evaluation/results/coverage_unexplained_<date>.json`.
+
+**How it runs.** The recall gate runs weekly and on changes, from `.github/workflows/quality-gate.yml`, and fails
+when the matched count falls below `evaluation/results/recall_baseline.json`. The audits read the estimates table
+once per run, not once per study. Re-extraction runs in paced batches at one document at a time for the disk IO
+budget. The reader is deployed to the Modal app the API calls, so new uploads use it.
+
 ### Every reachable value is now found (16 November 2026)
 
 Two faults kept five values out of the match, and both were ours rather than the papers'.

@@ -123,6 +123,18 @@ estimate-shaped cells, 4,231 with no stored row. Two mechanisms are fixed: an es
 had no view, and a header mentioning "0.25 SD" was read as a standard-deviation column. All 98 documents were re-read in paced batches, which took the estimate-shaped cells with no stored row
 from 4,231 to 2,510 and the unexplained ones from 1,905 to 941, with accuracy unchanged at 854 of 854.
 
+### Status on 17 November 2026
+
+Accuracy and coverage are now measured by machinery that runs itself. All 43 studies map and all 854 hand-typed
+values match (442 estimates, 412 standard errors). Coverage of the rest of the collection stands at 1,914
+unstored estimate-shaped cells with 56 unexplained, a real gap of 53 in 18 documents, down from 4,231 and
+1,905 when the check was written. Six reader mechanisms were fixed, each with a test, and three measurement
+faults; the reader is deployed to the Modal app and the recall gate runs weekly in CI. Detail and evidence:
+[NORMALISATION.md](NORMALISATION.md), "Coverage and accuracy: where the work stands".
+
+What is left of the coverage work is deliberately small: the difference-in-differences column view and the
+first-row label rule, both of which recur in incoming papers, and the rest documented rather than chased.
+
 ### ▶ Next up (after the model review, 10 November 2026)
 
 > Since 9 November 2026 answers come from the "read every relevant study, then synthesise" pipeline with
