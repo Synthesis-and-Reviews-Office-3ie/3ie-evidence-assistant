@@ -318,7 +318,7 @@ def _count(value: Optional[float]) -> Optional[int]:
 
 def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], table_text: str,
                 arm_hint: str = "", n_hint: Optional[float] = None,
-                control_n: Optional[float] = None) -> Estimate:
+                control_n: Optional[float] = None, arm_row: str = "") -> Estimate:
     est_cell = str(raw.get("estimate_cell") or "")
     se_cell = str(raw.get("se_cell") or "")
     kind = str(raw.get("se_kind") or "").lower()
@@ -394,7 +394,7 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
     notes = [] if grounded else ["cell not found verbatim in the table"]
     return Estimate(
         table_label=table_label, page=page, outcome=str(raw.get("outcome") or ""),
-        arm=str(raw.get("arm") or "") or arm_hint, subgroup=str(raw.get("subgroup") or ""),
+        arm=arm_row or str(raw.get("arm") or "") or arm_hint, subgroup=str(raw.get("subgroup") or ""),
         row_label=str(raw.get("row_label") or ""), column_label=str(raw.get("column_label") or "") or arm_hint,
         estimate_cell=est_cell, se_cell=se_cell, se_kind=kind, p_cell=str(raw.get("p_cell") or ""),
         effect_size=parse_number(est_cell), standard_error=se, t_stat=t, ci_low=lo, ci_high=hi,
@@ -409,6 +409,7 @@ def table_units(content_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """Each table with its page, caption and the text items just before and after it."""
     from src.extraction.table_rules import looks_garbled
     from src.extraction.table_structure import (
+        arm_row_label,
         carry_merged_labels,
         control_count,
         parse_markdown_table,
@@ -445,7 +446,8 @@ def table_units(content_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
             page = None
         base = {"index": i, "page": page, "caption": caption or "", "text": text[:MAX_TABLE_CHARS],
                 "context": "\n".join(x for x in around if x.strip()), "arm_hint": "",
-                "control_n": control_count(parse_markdown_table(text))}
+                "control_n": control_count(parse_markdown_table(text)),
+                "arm_row": arm_row_label(parse_markdown_table(text)) or ""}
         # A wide table comes back as one narrow table per estimate column: the model reads the first
         # column across a seven-column row and stops, and the column header is the arm it belongs to.
         columns = split_estimate_columns(text[:MAX_TABLE_CHARS])
@@ -473,6 +475,8 @@ def _merge_outcome(text: object) -> str:
     "Indicator if household owns sheep"; without this the merge stores the coefficient twice.
     """
     value = re.sub(r"\s+", " ", str(text or "")).strip().lower()
+    # A label wrapped at a hyphen comes back as "diversifica- tion"; joining it makes the two reads one.
+    value = re.sub(r"(?<=[a-z])-\s+(?=[a-z])", "", value)
     previous = None
     while previous != value:
         previous = value
@@ -681,7 +685,8 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
         is_results = bool(data.get("results_table"))
         raw = (data.get("estimates") or []) if is_results else []
         raw, non_outcome = _drop_non_outcome_rows(raw)
-        rows = [to_estimate(r, label, u["page"], u["text"], u.get("arm_hint") or "", u.get("n_hint"), u.get("control_n"))
+        rows = [to_estimate(r, label, u["page"], u["text"], u.get("arm_hint") or "", u.get("n_hint"), u.get("control_n"),
+                        u.get("arm_row") or "")
                 for r in raw if isinstance(r, dict)]
         per_item.setdefault(u["index"], []).extend(rows)
         tables.append({"table": label, "page": u["page"], "results_table": is_results, "estimates": len(rows),

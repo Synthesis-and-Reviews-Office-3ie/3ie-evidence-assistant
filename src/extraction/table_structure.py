@@ -467,6 +467,22 @@ def control_count(grid: TableGrid) -> Optional[float]:
     return None
 
 
+def arm_row_label(grid: TableGrid) -> Optional[str]:
+    """The row that names the arm, when the columns of the table are outcomes.
+
+    Paper 121378494 page 6 prints one body row, "Treatment", with the outcomes across the columns. The model
+    labels each estimate with the column heading as its arm, so the row label is the arm and must be used.
+    """
+    labelled = [row for row in grid.body if row and str(row[0]).strip()]
+    if not labelled or not _ARM_ROW.match(str(labelled[0][0])):
+        return None
+    outcomes = [row for row in labelled if not _ARM_ROW.match(str(row[0]))
+                and not _OBS_ROW.match(str(row[0]))]
+    if len(outcomes) <= 1:
+        return str(labelled[0][0]).strip()
+    return None
+
+
 def carry_merged_labels(text: str) -> str:
     """Fill an empty first-column cell with the label above it, when the row carries an estimate.
 
@@ -523,7 +539,8 @@ def split_estimate_columns(text: str, limit: int = MAX_SPLIT_COLUMNS, min_column
     # read whole: a column view would mistake an outcome for an arm. Paper 121378494 page 6 is that shape.
     labelled = [row for row in grid.body if row and str(row[0]).strip()]
     if labelled and _ARM_ROW.match(str(labelled[0][0])):
-        outcomes = [row for row in labelled if not _ARM_ROW.match(str(row[0]))]
+        outcomes = [row for row in labelled if not _ARM_ROW.match(str(row[0]))
+                    and not _OBS_ROW.match(str(row[0]))]
         if len(outcomes) <= 1:
             return []
     columns = estimate_columns(grid, limit)

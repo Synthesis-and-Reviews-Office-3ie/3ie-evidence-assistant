@@ -305,3 +305,17 @@ def module_merge(rows):
     import src.extraction.table_estimates as module
 
     return module.merge_reads(rows)
+
+
+def test_a_label_broken_at_a_hyphen_merges_with_its_whole_form():
+    broken = module_row("Livelihoods diversifica- tion", 0.39)
+    whole = module_row("Livelihoods diversification", 0.39)
+    assert len(module_merge([broken, whole])) == 1
+
+
+def test_a_row_that_names_the_arm_overrides_the_column_heading():
+    e = to_estimate({"outcome": "Bridging social capital", "arm": "Bridging social capital",
+                     "estimate_cell": "-0.01 (0.05)"}, "t", 6,
+                    "| | Bridging social capital |\n| --- | --- |\n| Treatment | -0.01 (0.05) |",
+                    arm_row="Treatment")
+    assert e.arm == "Treatment" and e.outcome == "Bridging social capital"
