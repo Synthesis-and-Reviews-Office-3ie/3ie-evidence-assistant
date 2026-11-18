@@ -142,6 +142,26 @@ def locate_source_cell(unit_text: str, row_label: str, column_label: str, arm: s
     return str(rows[0][column]).strip()
 
 
+def locate_cell_position(unit_text: str, estimate_cell: str):
+    """Row and column of the printed cell, when the cell's text identifies exactly one place in the table.
+
+    A label repeats across panels and wraps across lines, but the cell's own text usually does not. Matching it
+    against the parsed grid gives a position that needs no label, and a repeated text yields nothing rather
+    than a guess.
+    """
+    from src.extraction.table_structure import parse_markdown_table
+
+    target = re.sub(r"\s+", "", str(estimate_cell or "")).lower()
+    if not target:
+        return None, None
+    grid = parse_markdown_table(unit_text)
+    hits = [(row_index, column_index)
+            for row_index, row in enumerate(grid.body)
+            for column_index, cell in enumerate(row)
+            if column_index > 0 and re.sub(r"\s+", "", str(cell)).lower() == target]
+    return hits[0] if len(hits) == 1 else (None, None)
+
+
 def _labelled_rows(text: str) -> int:
     """How many data rows the table has, by the count of rows with a label in the first column."""
     from src.extraction.table_structure import parse_markdown_table
@@ -340,6 +360,8 @@ class Estimate:
     n_control: Optional[int]
     grounded: bool
     source_cell: str = ""
+    cell_row: Optional[int] = None
+    cell_column: Optional[int] = None
     notes: List[str] = field(default_factory=list)
 
 
@@ -748,6 +770,7 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
             estimate.source_cell = locate_source_cell(u["text"], _merge_outcome(estimate.row_label),
                                                        _merge_outcome(estimate.column_label),
                                                        _merge_outcome(estimate.arm))
+            estimate.cell_row, estimate.cell_column = locate_cell_position(u["text"], estimate.estimate_cell)
         per_item.setdefault(u["index"], []).extend(rows)
         tables.append({"table": label, "page": u["page"], "results_table": is_results, "estimates": len(rows),
                        "grounded": sum(r.grounded for r in rows), "error": err,

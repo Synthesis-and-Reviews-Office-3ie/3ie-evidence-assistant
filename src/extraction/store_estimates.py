@@ -71,6 +71,7 @@ def rows_for(project_id: str, doc: Dict[str, Any], out: Dict[str, Any], model: s
             "literal_text": (e["estimate_cell"] + (" " + e["se_cell"] if e["se_cell"] else ""))[:500],
             "text_position": f"{e['table_label']}, row '{e['row_label']}', column '{e['column_label']}'"[:500],
             "page": e["page"], "table_index": e.get("table_index"), "source_cell": e.get("source_cell") or None,
+            "cell_row": e.get("cell_row"), "cell_column": e.get("cell_column"),
             "extraction_method": model,
         }
         # Standardised fields are written with the row, from the inputs it actually carries, and stay
