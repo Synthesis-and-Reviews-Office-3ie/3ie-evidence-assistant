@@ -609,6 +609,33 @@ Recall is unchanged at 854 of 854. The fixes apply where a document is re-extrac
 still carry the prose levels and marker duplicates the sample found, and cleaning them means re-extracting with
 `prune`, which is a supervised run rather than a routine one.
 
+### Two-level accuracy, measured by address (18 November 2026)
+
+The checker could only see a third of the rows because it found cells by name: the model records a column as
+"Half cost" while the paper prints "1-year results - T1-C", and in 2,394 rows no heading matched. Naming is not
+address, and a check that depends on names measures the names.
+
+The reader now returns the address of the cell it read: the row number, the column number, and which view of a
+wide table it was reading. The address is accepted only when the printed cell holds the reported number with the
+same sign, and once accepted the printed token becomes the value, so a copy that dropped a minus or reformatted a
+number cannot reach the store.
+
+Measured on the six papers, 4,777 rows:
+
+| | Result |
+| --- | --- |
+| Rows carrying an address | 4,290 (90%) |
+| Value matches the addressed cell | 4,289 of 4,290 (100.0%) |
+| Parameter matches the addressed cell | 3,181 of 3,241 (98.1%) |
+| Parameter printed but not stored | 29 |
+
+The rows without an address are the residual: 487 rows where the model did not return a usable number or the
+printed cell did not hold its figure. They are reported as unaddressed, not scored.
+
+What survives is a different class of error, and it is a reading error rather than a copying one: in a table whose
+cells hold two numbers, such as "(0.706) 1.109", the model occasionally pairs a coefficient with the wrong
+standard error, 60 rows of 3,241. That is the next thing to fix, and it is now visible per row.
+
 ## Coverage and accuracy: where the work stands (17 November 2026)
 
 This is the short account of a long week, for a reader who does not want the dated entries below.
