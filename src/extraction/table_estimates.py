@@ -253,6 +253,9 @@ If it is a results table, list every estimate of a treatment effect on an outcom
 - row_number and column_number: where that cell sits in the table shown, counting rows from 1 on the
   first data row and columns from 1 on the first column (the label column is 1). The pipeline opens this
   address to check the cell, so a wrong number is wasted.
+- se_row_number and se_column_number: where the standard error cell sits, by the same counting. When the
+  error is printed in the same cell as the coefficient, use the same address. It must be the cell beside
+  the coefficient: the next column on the same row, or the same column on the next row.
 - estimate_cell: the cell holding the estimate, copied EXACTLY as printed (keep stars, commas,
   signs and spacing)
 - se_cell: the cell holding its standard error, t-statistic or confidence interval, copied
@@ -366,6 +369,8 @@ class Estimate:
     cell_row: Optional[int] = None
     cell_column: Optional[int] = None
     unit_index: Optional[int] = None
+    se_row: Optional[int] = None
+    se_column: Optional[int] = None
     notes: List[str] = field(default_factory=list)
 
 
@@ -392,6 +397,8 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
     cell_se = None
     cell_interval = None
     cell_numbers = 0
+    se_row = se_column = None
+    grid = None
     try:
         row_number = int(float(raw.get("row_number")))
         column_number = int(float(raw.get("column_number")))
@@ -521,6 +528,7 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
         control_mean=control_mean, control_sd=control_sd, n_treatment=n_treatment, n_control=n_control,
         grounded=grounded, notes=notes,
         cell_row=cell_row, cell_column=cell_column, unit_index=unit_index,
+        se_row=se_row, se_column=se_column,
     )
 
 

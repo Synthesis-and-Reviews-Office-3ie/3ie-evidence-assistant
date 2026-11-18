@@ -624,10 +624,10 @@ Measured on the six papers, 4,777 rows:
 
 | | Result |
 | --- | --- |
-| Rows carrying an address | 4,266 (91%) |
-| Value matches the addressed cell | 4,265 of 4,266 (100.0%) |
-| Parameter matches the addressed cell | 3,155 of 3,212 (98.2%) |
-| Parameter printed but not stored | 18 |
+| Rows carrying an address | 4,347 (93%) |
+| Value matches the addressed cell | 4,346 of 4,347 (100.0%) |
+| Parameter matches the addressed cell | 3,207 of 3,270 (98.1%) |
+| Parameter printed but not stored | 15 |
 
 The rows without an address are the residual: 487 rows where the model did not return a usable number or the
 printed cell did not hold its figure. They are reported as unaddressed, not scored.
@@ -637,9 +637,12 @@ immediately after the coefficient is taken, so "0.076 (0.156) 0.410" pairs 0.076
 dropped the model's parameter whenever a cell held more than one number was tried and rejected on measurement: it
 also discarded parameters printed in the row beneath, and took the parameter rate from 98.1 to 93.3 percent.
 
-What survives is a different class of error, and it is a reading error rather than a copying one: in a table whose
+The same address was asked for the standard error, and that was tried and rejected on measurement too. The model
+points at the row beneath while the error is in the same cell, so letting the address drive the value corrupted
+pairs that were right; the address is now stored and used only to check the parameter, never to set it. What
+survives is a different class of error, and it is a reading error rather than a copying one: in a table whose
 cells hold two numbers, such as "(0.706) 1.109", the model occasionally pairs a coefficient with the standard
-error of the neighbouring estimate, 57 rows of 3,212. That is the next thing to fix, and it is now visible per row.
+error of the neighbouring estimate, 63 rows of 3,270. That is the next thing to fix, and it is now visible per row.
 
 ## Coverage and accuracy: where the work stands (17 November 2026)
 
