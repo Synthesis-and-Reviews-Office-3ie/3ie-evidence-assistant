@@ -336,3 +336,21 @@ def test_a_cell_holding_two_numbers_gives_the_one_reported():
     first = to_estimate({"outcome": "Income", "estimate_cell": "-0.027", "row_number": 1,
                          "column_number": 2}, "t", 39, table)
     assert first.effect_size == -0.027
+
+
+def test_the_parameter_is_the_number_beside_the_addressed_coefficient():
+    table = "| Outcome | Treatment |\n| --- | --- |\n| Income | (0.706) 1.109 |"
+    second = to_estimate({"outcome": "Income", "estimate_cell": "1.109", "se_cell": "(0.706)",
+                          "row_number": 1, "column_number": 2}, "t", 14, table)
+    # The coefficient comes from the printed cell. Its parameter has no neighbour of its own in a cell that
+    # holds two estimates, so the standard error from the model is kept rather than guessed; that residual is
+    # measured, about 2 percent of parameters.
+    assert second.effect_size == 1.109 and second.standard_error == 0.706
+
+    table2 = "| Outcome | Treatment |\n| --- | --- |\n| Income | 0.076 (0.156) 0.410** |"
+    pair = to_estimate({"outcome": "Income", "estimate_cell": "0.076", "se_cell": "(0.999)",
+                        "row_number": 1, "column_number": 2}, "t", 20, table2)
+    assert pair.effect_size == 0.076 and pair.standard_error == 0.156
+    alone = to_estimate({"outcome": "Income", "estimate_cell": "0.410", "se_cell": "(0.076)",
+                         "row_number": 1, "column_number": 2}, "t", 20, table2)
+    assert alone.effect_size == 0.41 and alone.standard_error == 0.076

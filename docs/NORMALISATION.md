@@ -624,17 +624,22 @@ Measured on the six papers, 4,777 rows:
 
 | | Result |
 | --- | --- |
-| Rows carrying an address | 4,290 (90%) |
-| Value matches the addressed cell | 4,289 of 4,290 (100.0%) |
-| Parameter matches the addressed cell | 3,181 of 3,241 (98.1%) |
-| Parameter printed but not stored | 29 |
+| Rows carrying an address | 4,266 (91%) |
+| Value matches the addressed cell | 4,265 of 4,266 (100.0%) |
+| Parameter matches the addressed cell | 3,155 of 3,212 (98.2%) |
+| Parameter printed but not stored | 18 |
 
 The rows without an address are the residual: 487 rows where the model did not return a usable number or the
 printed cell did not hold its figure. They are reported as unaddressed, not scored.
 
+The parameter printed beside a coefficient now wins when it sits in the same cell: the number in parentheses
+immediately after the coefficient is taken, so "0.076 (0.156) 0.410" pairs 0.076 with 0.156. A blanket rule that
+dropped the model's parameter whenever a cell held more than one number was tried and rejected on measurement: it
+also discarded parameters printed in the row beneath, and took the parameter rate from 98.1 to 93.3 percent.
+
 What survives is a different class of error, and it is a reading error rather than a copying one: in a table whose
-cells hold two numbers, such as "(0.706) 1.109", the model occasionally pairs a coefficient with the wrong
-standard error, 60 rows of 3,241. That is the next thing to fix, and it is now visible per row.
+cells hold two numbers, such as "(0.706) 1.109", the model occasionally pairs a coefficient with the standard
+error of the neighbouring estimate, 57 rows of 3,212. That is the next thing to fix, and it is now visible per row.
 
 ## Coverage and accuracy: where the work stands (17 November 2026)
 
@@ -846,3 +851,4 @@ Next, in order:
 2. Apply the control-stats migration, then read `control_sd` and the per-arm counts in extraction, so the standardised effects can run.
 3. Reproduce the 8WR `Formula Used` codes once their definitions are known.
 4. Resolve the two remaining real misses: they are key values that do not appear in the paper text, so check them against the paper rather than the extractor.
+

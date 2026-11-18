@@ -389,6 +389,9 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
     est_cell = str(raw.get("estimate_cell") or "")
     # The address the model gave is accepted only when that cell actually holds the reported coefficient.
     cell_row = cell_column = None
+    cell_se = None
+    cell_interval = None
+    cell_numbers = 0
     try:
         row_number = int(float(raw.get("row_number")))
         column_number = int(float(raw.get("column_number")))
@@ -415,6 +418,15 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
                 cell_row, cell_column = row_number - 1, column_number - 1
                 # The printed token is the authority for the value: the copy can lose a sign or a digit.
                 est_cell = matched
+                # And so is the number printed beside it. A cell that holds two estimates, such as
+                # "(0.706) 1.109", gives the parameter of the coefficient immediately before it, not
+                # whichever cell the model happened to name.
+                after = printed[printed.find(matched) + len(matched):]
+                neighbour = re.match(r"\s*[*†‡]*\s*\(\s*(-?[\d.,]+)\s*\)", after)
+                cell_se = parse_number(neighbour.group(1)) if neighbour else None
+                interval = re.match(r"\s*[*†‡]*\s*\[\s*(-?[\d.,]+)\s*,\s*(-?[\d.,]+)\s*\]", after)
+                cell_interval = (parse_number(interval.group(1)), parse_number(interval.group(2))) if interval else None
+                cell_numbers = len(re.findall(r"[-−–]?\d[\d.,]*", printed))
     se_cell = str(raw.get("se_cell") or "")
     kind = str(raw.get("se_kind") or "").lower()
     if not kind and se_cell:
@@ -428,6 +440,16 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
     elif se_cell:
         se = parse_number(se_cell)
         se = abs(se) if se is not None else None
+    # When the addressed cell holds more than one number, the model's pairing cannot be trusted: the
+    # parameter is the number printed beside the coefficient, or there is none. A cell with one number
+    # keeps the model's cell, which may come from the row or column printed beneath.
+    if cell_interval:
+        lo, hi = cell_interval
+        se = t = None
+        kind = "ci"
+    elif cell_se is not None:
+        se, t, lo, hi = abs(cell_se), None, None, None
+        kind = "se"
     # A zero standard error is a printing artefact or a misread cell, and it would imply infinite precision.
     if se is not None and se == 0:
         se = None
