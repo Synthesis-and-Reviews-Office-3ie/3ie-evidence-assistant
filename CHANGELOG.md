@@ -15,10 +15,11 @@ All notable changes to DevChat v2.0 are documented in this file.
 
 ### Added
 - **Parser comparison on the poverty graduation collection.** `evaluation/parser_union_eval.py` scores
-  Docling, MinerU and an output-level union against the 43-study, 442-row hand-typed key. Effect sizes
-  matched: Docling 396/442 (90%), MinerU 395/442 (89%), union 400/442 (90%). Outcome coverage: 218, 201 and
-  232 of 442. The union adds four effect rows and fourteen outcome rows for roughly half again the stored
-  rows, so Docling stays the default.
+  Docling, MinerU and an output-level union against the 43-study, 442-row hand-typed key. On the honest joint
+  measure (same outcome and value, outcome names allowed to overlap in tokens) Docling recovers 216/442 effect
+  sizes (49%), MinerU 208/442 (47%) and the union 221/442 (50%); outcome coverage is 301, 270 and 308 of 442.
+  A looser count, where a hand value appears anywhere among a document's numbers, reaches 89 to 90%, but it is
+  inflated by coincidence and is not a recall. The union adds little, so Docling stays the default.
 - `evaluation/graduation_gt.py` (the 43-study to document mapping, with tests),
   `evaluation/extract_gt_docling.py`, and `scripts/make_graduation_shadow.py` for the shadow project.
 

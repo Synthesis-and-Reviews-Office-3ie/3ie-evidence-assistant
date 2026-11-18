@@ -1,10 +1,19 @@
 """Score Docling, MinerU and their output-level union against the graduation ground truth.
 
 The key is data/8WR QEX Combined.xlsx: 43 studies, 442 outcome rows, with the hand-typed
-estimate and standard error in ``Coeff reg`` and ``SE reg``. Each source is a project's
-``effect_estimates`` rows. The union merges the Docling and MinerU rows, deduplicated on
-document, normalised outcome name and the printed numbers, mirroring the TVET inventory
-union.
+estimate and standard error in ``Coeff reg`` and ``SE reg``.
+
+Three match rules are reported, because they answer different questions:
+
+- value anywhere: the hand value appears among any stored value in the document. This is
+  inflated by coincidence (a document holds thousands of numbers) and is not a recall.
+- exact outcome + value: a stored row with the same normalised outcome name carries the
+  value. This is the honest joint recall.
+- fuzzy outcome + value: as above, but the outcome names need only overlap in their tokens,
+  which separates missing estimates from naming differences.
+
+For rows that fail the exact joint rule, the reason is classified with the audit's own
+categories (rounding, sign, scale, outcome present but value differs, outcome missing).
 
     python evaluation/parser_union_eval.py [--mineru-project <uuid>]
 
@@ -17,6 +26,7 @@ import argparse
 import os
 import re
 import sys
+from collections import Counter
 from datetime import date
 from pathlib import Path
 
@@ -29,6 +39,7 @@ from dotenv import load_dotenv  # noqa: E402
 load_dotenv(ROOT / ".env")
 
 from evaluation.graduation_gt import PROJECT_ID, load_key, study_to_document  # noqa: E402
+from evaluation.missing_estimates_audit import classify as audit_classify  # noqa: E402
 from evaluation.stored_rows import classify_miss  # noqa: E402
 
 SOURCE = "tables_v1"
@@ -54,6 +65,23 @@ def num(value):
 
 def norm(text):
     return re.sub(r"[^a-z0-9]+", " ", str(text or "").lower()).strip()
+
+
+def tokens(text):
+    return set(norm(text).split())
+
+
+def same_outcome(a, b):
+    """Token overlap strong enough to call two outcome labels the same estimate."""
+    ta, tb = tokens(a), tokens(b)
+    if not ta or not tb:
+        return False
+    intersect = len(ta & tb)
+    if not intersect:
+        return False
+    if intersect / len(ta | tb) >= 0.5:
+        return True
+    return (ta <= tb or tb <= ta) and min(len(ta), len(tb)) >= 2
 
 
 def fetch_rows(project_id, doc_key):
@@ -91,50 +119,67 @@ def union_rows(a, b):
     return out
 
 
+def _values(rows, field):
+    return [r[field] for r in rows if r.get(field) is not None]
+
+
+def _matched(value, values):
+    return bool(values) and classify_miss(value, values) in ("exact", "rounded")
+
+
 def score(label, rows_by_doc, key, study_doc):
-    est_total = est_match = 0
-    se_total = se_match = 0
-    out_total = out_covered = 0
-    stored_total = 0
-    per_study = []
+    c = Counter()
+    reasons = Counter()
     for sid, group in key.groupby("sid"):
         doc = study_doc.get(sid)
         if not doc:
             continue
         rows = rows_by_doc.get(doc, [])
-        stored_total += len(rows)
-        est_values = [r["effect_size"] for r in rows if r.get("effect_size") is not None]
-        se_values = [r["standard_error"] for r in rows if r.get("standard_error") is not None]
-        outcomes = {norm(r.get("outcome_name")) for r in rows if norm(r.get("outcome_name"))}
-        s_est = s_est_m = s_se = s_se_m = s_out = s_out_c = 0
-        for _, row in group.iterrows():
-            outcome = row.get("Outcome name")
-            if norm(outcome):
-                s_out += 1
-                if norm(outcome) in outcomes:
-                    s_out_c += 1
-            value = num(row.get("Coeff reg"))
+        all_est = _values(rows, "effect_size")
+        all_se = _values(rows, "standard_error")
+        outcome_names = {norm(r.get("outcome_name")) for r in rows if norm(r.get("outcome_name"))}
+        for _, gt in group.iterrows():
+            outcome = gt.get("Outcome name")
+            same = [r for r in rows if norm(r.get("outcome_name")) == norm(outcome)]
+            near = [r for r in rows if r.get("outcome_name") and same_outcome(r.get("outcome_name"), outcome)]
+
+            c["out_total"] += 1
+            if norm(outcome) in outcome_names:
+                c["out_exact"] += 1
+            if near:
+                c["out_fuzzy"] += 1
+
+            value = num(gt.get("Coeff reg"))
             if value is not None:
-                s_est += 1
-                if classify_miss(value, est_values) in ("exact", "rounded"):
-                    s_est_m += 1
-            se = num(row.get("SE reg"))
+                c["est_total"] += 1
+                if _matched(value, all_est):
+                    c["est_anywhere"] += 1
+                if _matched(value, _values(same, "effect_size")):
+                    c["est_exact"] += 1
+                near_values = _values(near, "effect_size")
+                if _matched(value, near_values):
+                    c["est_fuzzy"] += 1
+                elif not _matched(value, _values(same, "effect_size")):
+                    if near:
+                        kind = audit_classify(value, near_values, outcome,
+                                              {norm(r.get("outcome_name")) for r in near})
+                        if kind == "missing":
+                            kind = "value differs (name variant)"
+                    else:
+                        kind = "outcome missing"
+                    reasons[kind] += 1
+
+            se = num(gt.get("SE reg"))
             if se is not None:
-                s_se += 1
-                if classify_miss(se, se_values) in ("exact", "rounded"):
-                    s_se_m += 1
-        est_total += s_est; est_match += s_est_m
-        se_total += s_se; se_match += s_se_m
-        out_total += s_out; out_covered += s_out_c
-        per_study.append((sid, s_est, s_est_m, s_out, s_out_c))
-    return {
-        "label": label,
-        "stored": stored_total,
-        "est": (est_match, est_total),
-        "se": (se_match, se_total),
-        "outcome": (out_covered, out_total),
-        "per_study": per_study,
-    }
+                c["se_total"] += 1
+                if _matched(se, all_se):
+                    c["se_anywhere"] += 1
+                if _matched(se, _values(same, "standard_error")):
+                    c["se_exact"] += 1
+                if _matched(se, _values(near, "standard_error")):
+                    c["se_fuzzy"] += 1
+
+    return {"label": label, "counts": c, "reasons": reasons, "stored": sum(len(v) for v in rows_by_doc.values())}
 
 
 def pct(matched, total):
@@ -171,13 +216,34 @@ def main():
               score("Union", union, key, study_doc)]
 
     lines = ["# Parser comparison on the poverty graduation collection", "",
-             f"Test set: {key['sid'].nunique()} studies, {len(key)} outcome rows with a hand-typed key.",
-             "Match means the stored value equals the hand-typed value at the paper's printed precision.", "",
-             "| Source | Effect size matched | Standard error matched | Outcome covered | Stored rows |",
-             "| --- | --- | --- | --- | --- |"]
+             f"Test set: {key['sid'].nunique()} studies, {len(key)} outcome rows with a hand-typed key.", "",
+             "`Value anywhere` is the inflated count (a hand value appears among any stored value in the",
+             "document). `Exact + value` requires the same normalised outcome name; `Fuzzy + value` allows",
+             "token overlap in the outcome names. The last two are the honest recalls.", "",
+             "| Source | Value anywhere (est) | Exact + value (est) | Fuzzy + value (est) |",
+             "| --- | --- | --- | --- |"]
     for s in scores:
-        lines.append(f"| {s['label']} | {pct(*s['est'])} | {pct(*s['se'])} | {pct(*s['outcome'])} | {s['stored']} |")
-    lines.append("")
+        c = s["counts"]
+        lines.append(f"| {s['label']} | {pct(c['est_anywhere'], c['est_total'])} | "
+                     f"{pct(c['est_exact'], c['est_total'])} | {pct(c['est_fuzzy'], c['est_total'])} |")
+    lines += ["", "| Source | Exact + value (SE) | Fuzzy + value (SE) | Outcome exact | Outcome fuzzy | Stored rows |",
+              "| --- | --- | --- | --- | --- | --- |"]
+    for s in scores:
+        c = s["counts"]
+        lines.append(f"| {s['label']} | {pct(c['se_exact'], c['se_total'])} | "
+                     f"{pct(c['se_fuzzy'], c['se_total'])} | {pct(c['out_exact'], c['out_total'])} | "
+                     f"{pct(c['out_fuzzy'], c['out_total'])} | {s['stored']} |")
+
+    lines += ["", "## Why the exact joint match misses an estimate", ""]
+    for s in scores:
+        if not s["reasons"]:
+            continue
+        lines.append(f"**{s['label']}** ({sum(s['reasons'].values())} misses)")
+        lines += ["", "| Reason | Rows |", "| --- | --- |"]
+        for reason, n in s["reasons"].most_common():
+            lines.append(f"| {reason} | {n} |")
+        lines.append("")
+
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.write_text("\n".join(lines), encoding="utf-8")
     print("\n".join(lines))
