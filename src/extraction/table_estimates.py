@@ -250,6 +250,9 @@ If it is a results table, list every estimate of a treatment effect on an outcom
   "TUP vs control", "Endline"); "" if there is only one
 - subgroup: the subgroup if the estimate is for one (e.g. "Women", "Bangladesh"); "" otherwise
 - row_label and column_label: exactly as printed
+- row_number and column_number: where that cell sits in the table shown, counting rows from 1 on the
+  first data row and columns from 1 on the first column (the label column is 1). The pipeline opens this
+  address to check the cell, so a wrong number is wasted.
 - estimate_cell: the cell holding the estimate, copied EXACTLY as printed (keep stars, commas,
   signs and spacing)
 - se_cell: the cell holding its standard error, t-statistic or confidence interval, copied
@@ -362,6 +365,7 @@ class Estimate:
     source_cell: str = ""
     cell_row: Optional[int] = None
     cell_column: Optional[int] = None
+    unit_index: Optional[int] = None
     notes: List[str] = field(default_factory=list)
 
 
@@ -381,8 +385,36 @@ def _count(value: Optional[float]) -> Optional[int]:
 def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], table_text: str,
                 arm_hint: str = "", n_hint: Optional[float] = None,
                 control_n: Optional[float] = None, arm_row: str = "",
-                table_index: Optional[int] = None) -> Estimate:
+                table_index: Optional[int] = None, unit_index: Optional[int] = None) -> Estimate:
     est_cell = str(raw.get("estimate_cell") or "")
+    # The address the model gave is accepted only when that cell actually holds the reported coefficient.
+    cell_row = cell_column = None
+    try:
+        row_number = int(float(raw.get("row_number")))
+        column_number = int(float(raw.get("column_number")))
+    except (TypeError, ValueError):
+        row_number = column_number = None
+    if row_number and column_number:
+        from src.extraction.table_structure import parse_markdown_table
+
+        grid = parse_markdown_table(table_text)
+        if 1 <= row_number <= len(grid.body) and 1 <= column_number <= len(grid.body[row_number - 1]):
+            printed = str(grid.body[row_number - 1][column_number - 1])
+            # Match the token the model reported, sign included, so a dropped minus cannot pass and a cell
+            # holding two numbers gives the one the model meant rather than the first.
+            digits = re.sub(r"\D", "", est_cell)
+            negative = est_cell.strip().startswith(("-", "\u2212", "\u2013"))
+            same_digits = [token for token in re.findall(r"[-−–]?\d[\d.,]*", printed)
+                           if digits and re.sub(r"\D", "", token) == digits]
+            # The printed token wins on the sign too: a copy that dropped a minus is a copy error, and the
+            # cell itself is the evidence.
+            matched = next((token for token in same_digits
+                            if token.startswith(("-", "\u2212", "\u2013")) == negative),
+                           same_digits[0] if same_digits else None)
+            if matched:
+                cell_row, cell_column = row_number - 1, column_number - 1
+                # The printed token is the authority for the value: the copy can lose a sign or a digit.
+                est_cell = matched
     se_cell = str(raw.get("se_cell") or "")
     kind = str(raw.get("se_kind") or "").lower()
     if not kind and se_cell:
@@ -466,6 +498,7 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
         stars=count_stars(est_cell), sample_size=int(n) if n is not None and n.is_integer() and n > 0 else None,
         control_mean=control_mean, control_sd=control_sd, n_treatment=n_treatment, n_control=n_control,
         grounded=grounded, notes=notes,
+        cell_row=cell_row, cell_column=cell_column, unit_index=unit_index,
     )
 
 
@@ -540,6 +573,9 @@ def table_units(content_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
             units.append({**base, "whole_of_views": True})
             continue
         units.append(base)
+    # The view's identity in the reader's order, so a stored cell address can be opened again later.
+    for position, unit in enumerate(units):
+        unit["unit_index"] = position
     return units
 
 
@@ -764,13 +800,14 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
         raw = (data.get("estimates") or []) if is_results else []
         raw, non_outcome = _drop_non_outcome_rows(raw)
         rows = [to_estimate(r, label, u["page"], u["text"], u.get("arm_hint") or "", u.get("n_hint"), u.get("control_n"),
-                        u.get("arm_row") or "", u.get("table_index"))
+                        u.get("arm_row") or "", u.get("table_index"), u.get("unit_index"))
                 for r in raw if isinstance(r, dict)]
         for estimate in rows:
             estimate.source_cell = locate_source_cell(u["text"], _merge_outcome(estimate.row_label),
                                                        _merge_outcome(estimate.column_label),
                                                        _merge_outcome(estimate.arm))
-            estimate.cell_row, estimate.cell_column = locate_cell_position(u["text"], estimate.estimate_cell)
+            if estimate.cell_row is None:
+                estimate.cell_row, estimate.cell_column = locate_cell_position(u["text"], estimate.estimate_cell)
         per_item.setdefault(u["index"], []).extend(rows)
         tables.append({"table": label, "page": u["page"], "results_table": is_results, "estimates": len(rows),
                        "grounded": sum(r.grounded for r in rows), "error": err,

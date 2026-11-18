@@ -319,3 +319,20 @@ def test_a_row_that_names_the_arm_overrides_the_column_heading():
                     "| | Bridging social capital |\n| --- | --- |\n| Treatment | -0.01 (0.05) |",
                     arm_row="Treatment")
     assert e.arm == "Treatment" and e.outcome == "Bridging social capital"
+
+
+def test_the_printed_cell_is_the_authority_for_the_value():
+    table = "| Outcome | Treatment |\n| --- | --- |\n| Income | -0,20** |"
+    dropped = to_estimate({"outcome": "Income", "estimate_cell": "0,20**", "row_number": 1,
+                           "column_number": 2}, "t", 42, table)
+    assert dropped.effect_size == -0.2 and dropped.cell_row == 0 and dropped.cell_column == 1
+
+
+def test_a_cell_holding_two_numbers_gives_the_one_reported():
+    table = "| Outcome | Treatment |\n| --- | --- |\n| Income | -0.027 (0.075) 0.010 (0.07) |"
+    second = to_estimate({"outcome": "Income", "estimate_cell": "0.010", "row_number": 1,
+                          "column_number": 2}, "t", 39, table)
+    assert second.effect_size == 0.01
+    first = to_estimate({"outcome": "Income", "estimate_cell": "-0.027", "row_number": 1,
+                         "column_number": 2}, "t", 39, table)
+    assert first.effect_size == -0.027

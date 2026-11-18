@@ -21,7 +21,7 @@ import httpx
 from src.extraction.effect_sizes import standardise
 from src.extraction.identity import row_key
 from src.extraction.table_estimates import extract_document
-from src.extraction.table_rules import reclassify_pipe_tables
+from src.extraction.table_rules import normalise_tables, reclassify_pipe_tables
 
 SOURCE = "tables_v1"
 DEFAULT_MODEL = "anthropic/claude-haiku-5.5"
@@ -72,6 +72,7 @@ def rows_for(project_id: str, doc: Dict[str, Any], out: Dict[str, Any], model: s
             "text_position": f"{e['table_label']}, row '{e['row_label']}', column '{e['column_label']}'"[:500],
             "page": e["page"], "table_index": e.get("table_index"), "source_cell": e.get("source_cell") or None,
             "cell_row": e.get("cell_row"), "cell_column": e.get("cell_column"),
+            "unit_index": e.get("unit_index"),
             "extraction_method": model,
         }
         # Standardised fields are written with the row, from the inputs it actually carries, and stay
@@ -240,6 +241,7 @@ async def extract_and_store(
                     obj = await asyncio.to_thread(
                         s3.get_object, Bucket=bucket, Key=f"rags/{project_id}/outputs/json/{name}.json")
                     content = json.loads(obj["Body"].read()).get("content_list") or []
+                    content = normalise_tables(content)
                     content = reclassify_pipe_tables(content)
                     out = await extract_document(content, model, os.environ["OPENROUTER_API_KEY"])
                     rows = rows_for(project_id, doc, out, model)
