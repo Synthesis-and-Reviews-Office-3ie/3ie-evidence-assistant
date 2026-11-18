@@ -433,7 +433,8 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
                 cell_se = parse_number(neighbour.group(1)) if neighbour else None
                 interval = re.match(r"\s*[*†‡]*\s*\[\s*(-?[\d.,]+)\s*,\s*(-?[\d.,]+)\s*\]", after)
                 cell_interval = (parse_number(interval.group(1)), parse_number(interval.group(2))) if interval else None
-                cell_numbers = len(re.findall(r"[-−–]?\d[\d.,]*", printed))
+                stripped = re.sub(r"\([^)]*\)|\[[^]]*\]", "", printed)
+                cell_numbers = len(re.findall(r"[-−–]?\d[\d.,]*", stripped))
     se_cell = str(raw.get("se_cell") or "")
     kind = str(raw.get("se_kind") or "").lower()
     if not kind and se_cell:
@@ -457,6 +458,11 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
     elif cell_se is not None:
         se, t, lo, hi = abs(cell_se), None, None, None
         kind = "se"
+    elif cell_numbers >= 2:
+        # The cell holds two coefficients and the one addressed has no error beside it, so the model's
+        # standard error belongs to the other coefficient and must not be attached here.
+        se = t = lo = hi = None
+        kind = ""
     # A zero standard error is a printing artefact or a misread cell, and it would imply infinite precision.
     if se is not None and se == 0:
         se = None

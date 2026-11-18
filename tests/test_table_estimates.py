@@ -353,4 +353,5 @@ def test_the_parameter_is_the_number_beside_the_addressed_coefficient():
     assert pair.effect_size == 0.076 and pair.standard_error == 0.156
     alone = to_estimate({"outcome": "Income", "estimate_cell": "0.410", "se_cell": "(0.076)",
                          "row_number": 1, "column_number": 2}, "t", 20, table2)
-    assert alone.effect_size == 0.41 and alone.standard_error == 0.076
+    # The cell holds two coefficients and this one has no error beside it, so the model error is dropped.
+    assert alone.effect_size == 0.41 and alone.standard_error is None
