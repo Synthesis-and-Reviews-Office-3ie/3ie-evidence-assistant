@@ -345,7 +345,7 @@ def test_the_parameter_is_the_number_beside_the_addressed_coefficient():
     # The coefficient comes from the printed cell. Its parameter has no neighbour of its own in a cell that
     # holds two estimates, so the standard error from the model is kept rather than guessed; that residual is
     # measured, about 2 percent of parameters.
-    assert second.effect_size == 1.109 and second.standard_error == 0.706
+    assert second.effect_size == 1.109 and second.standard_error is None
 
     table2 = "| Outcome | Treatment |\n| --- | --- |\n| Income | 0.076 (0.156) 0.410** |"
     pair = to_estimate({"outcome": "Income", "estimate_cell": "0.076", "se_cell": "(0.999)",
@@ -355,3 +355,10 @@ def test_the_parameter_is_the_number_beside_the_addressed_coefficient():
                          "row_number": 1, "column_number": 2}, "t", 20, table2)
     # The cell holds two coefficients and this one has no error beside it, so the model error is dropped.
     assert alone.effect_size == 0.41 and alone.standard_error is None
+
+
+def test_an_error_printed_before_a_coefficient_is_not_its_own():
+    table = "| Outcome | Treatment |\n| --- | --- |\n| Income | (0.706) 1.109 |"
+    e = to_estimate({"outcome": "Income", "estimate_cell": "1.109", "se_cell": "(0.706)",
+                     "row_number": 1, "column_number": 2}, "t", 14, table)
+    assert e.effect_size == 1.109 and e.standard_error is None

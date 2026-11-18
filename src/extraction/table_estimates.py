@@ -259,7 +259,9 @@ If it is a results table, list every estimate of a treatment effect on an outcom
 - estimate_cell: the cell holding the estimate, copied EXACTLY as printed (keep stars, commas,
   signs and spacing)
 - se_cell: the cell holding its standard error, t-statistic or confidence interval, copied
-  exactly ("" if none). Often the next row, in parentheses or brackets.
+  exactly ("" if none). Often the next row, in parentheses or brackets. A number in parentheses
+  printed BEFORE a coefficient belongs to the coefficient before it, not to this one, so do not
+  report it as this estimate's error.
 - se_kind: "se", "t", "ci" or "" (from the notes; parentheses are usually SEs)
 - p_cell: an exact p-value cell if the table has one, else ""
 - n: the number of observations for the estimate if the table gives it, else "". When this view is
@@ -397,6 +399,7 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
     cell_se = None
     cell_interval = None
     cell_numbers = 0
+    cell_prior = None
     se_row = se_column = None
     grid = None
     try:
@@ -435,6 +438,12 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
                 cell_interval = (parse_number(interval.group(1)), parse_number(interval.group(2))) if interval else None
                 stripped = re.sub(r"\([^)]*\)|\[[^]]*\]", "", printed)
                 cell_numbers = len(re.findall(r"[-−–]?\d[\d.,]*", stripped))
+                # A number in parentheses before the coefficient belongs to the coefficient before it. When
+                # nothing follows the addressed coefficient, that preceding number is recorded so a model
+                # that names it as this row's error can be refused.
+                before = printed[:printed.find(matched)]
+                prior = re.findall(r"\(\s*(-?[\d.,]+)\s*\)", before)
+                cell_prior = parse_number(prior[-1]) if prior else None
     se_cell = str(raw.get("se_cell") or "")
     kind = str(raw.get("se_kind") or "").lower()
     if not kind and se_cell:
@@ -461,6 +470,11 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
     elif cell_numbers >= 2:
         # The cell holds two coefficients and the one addressed has no error beside it, so the model's
         # standard error belongs to the other coefficient and must not be attached here.
+        se = t = lo = hi = None
+        kind = ""
+    elif cell_prior is not None and cell_se is None and se is not None and \
+            abs(abs(se) - abs(cell_prior)) <= max(0.006, abs(cell_prior) * 0.005):
+        # The model named the error printed before this coefficient, which belongs to the coefficient above.
         se = t = lo = hi = None
         kind = ""
     # A zero standard error is a printing artefact or a misread cell, and it would imply infinite precision.
