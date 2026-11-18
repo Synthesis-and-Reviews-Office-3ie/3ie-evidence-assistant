@@ -189,6 +189,10 @@ def pct(matched, total):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--mineru-project", default=DEFAULT_MINERU)
+    ap.add_argument("--mineru-label", default="MinerU",
+                    help="label for the second project (e.g. Union when its parses are merged)")
+    ap.add_argument("--no-double-union", action="store_true",
+                    help="skip the in-memory union of the two sources (use when the second source is union)")
     args = ap.parse_args()
 
     key = load_key()
@@ -208,12 +212,12 @@ def main():
     print(f"studies mapped: {len(study_doc)} / {key['sid'].nunique()}", flush=True)
 
     docling = load_rows(PROJECT_ID, list(study_doc.values()))
-    mineru = load_rows(args.mineru_project, list(study_doc.values()))
-    union = union_rows(docling, mineru)
+    other = load_rows(args.mineru_project, list(study_doc.values()))
 
     scores = [score("Docling", docling, key, study_doc),
-              score("MinerU", mineru, key, study_doc),
-              score("Union", union, key, study_doc)]
+              score(args.mineru_label, other, key, study_doc)]
+    if not args.no_double_union:
+        scores.append(score("Union", union_rows(docling, other), key, study_doc))
 
     lines = ["# Parser comparison on the poverty graduation collection", "",
              f"Test set: {key['sid'].nunique()} studies, {len(key)} outcome rows with a hand-typed key.", "",
