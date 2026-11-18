@@ -2,6 +2,17 @@
 
 All notable changes to DevChat v2.0 are documented in this file.
 
+## [2.0.19] - 2026-11-18
+
+### Added
+- **Three-way comparison on the canonical, all-documents basis.** Docling, MinerU and their union were scored on
+  the same footing: canonical outcome category and a value at printed precision, rows pooled across every
+  document that names the study. Docling 381/439 (87%), MinerU 361/439 (82%), union 378/439 (86%). Standard
+  errors: 87%, 82% and 85%. Outcome present: 93%, 92% and 94%. Stored rows: 17,370, 17,761 and 18,536. The union
+  buys outcome coverage and eight more exact-name matches but three fewer canonical-and-value matches than
+  Docling, for 6.7% more rows. Docling remains the best single source; the binding constraint is the reader's
+  selection and naming, not table availability.
+
 ## [2.0.18] - 2026-11-18
 
 ### Fixed
