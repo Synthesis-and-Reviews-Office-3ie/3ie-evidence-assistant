@@ -2,6 +2,16 @@
 
 All notable changes to DevChat v2.0 are documented in this file.
 
+## [2.0.16] - 2026-11-18
+
+### Added
+- **Outcome normalisation and gap audit.** `evaluation/outcome_taxonomy.py` maps hand-typed and extracted
+  outcome labels to a small canonical set, and `evaluation/outcome_gap_audit.py` explains each unmatched key
+  row. With canonical matching, Docling's honest joint recall rises from 216/442 (49%) to 307/439 (70%), and
+  the canonical outcome is present somewhere in the scored document for 400/439 rows (91%). Of the 132
+  remaining misses, 76 are found in another document of the same study, 30 have no document reporting the
+  construct, and 26 have the construct but a different value.
+
 ## [2.0.15] - 2026-11-18
 
 ### Fixed
