@@ -2,10 +2,14 @@
 
 Key: 43 studies, 442 outcome rows. Scored document is one per study.
 
-Canonical outcome present in the mapped document: 400/439 (91%).
-Canonical outcome and value matched: 307/439 (70%).
+Two units are reported: the single mapped document per study, and every document that names the study (appendix, brief, translation).
 
-## Where an unmatched estimate is
+Canonical outcome present in the mapped document: 400/439 (91%).
+Canonical outcome present across the study's documents: 409/439 (93%).
+Canonical outcome and value matched, mapped document: 307/439 (70%).
+Canonical outcome and value matched, all of the study's documents: 383/439 (87%).
+
+## Where an unmatched estimate is (mapped document)
 
 | Disposition | Rows |
 | --- | --- |

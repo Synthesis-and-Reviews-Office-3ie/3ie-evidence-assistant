@@ -132,7 +132,9 @@ def main():
     examples_absent = []
     value_cases = []
     canonical_est_total = canonical_est_match = 0
+    full_est_match = 0
     canonical_out_total = canonical_out_present = 0
+    full_out_present = 0
 
     for sid, group in key.groupby("sid"):
         doc = mapped.get(sid)
@@ -140,7 +142,10 @@ def main():
             continue
         rows = rows_by_doc.get(doc, [])
         others = [r for d in all_docs[sid] if d != doc for r in rows_by_doc.get(d, [])]
+        study_rows = rows + others
         outcome_cats_here = set().union(*[categories(r.get("outcome_name")) for r in rows]) if rows else set()
+        outcome_cats_all = (set().union(*[categories(r.get("outcome_name")) for r in study_rows])
+                            if study_rows else set())
         for _, gt in group.iterrows():
             outcome = gt.get("Outcome name")
             cats = categories(outcome) - {"noise"}
@@ -150,23 +155,26 @@ def main():
             canonical_out_total += 1
             if cats & outcome_cats_here:
                 canonical_out_present += 1
+            if cats & outcome_cats_all:
+                full_out_present += 1
             here_cat = [r for r in rows if categories(r.get("outcome_name")) & cats]
+            other_cat = [r for r in others if categories(r.get("outcome_name")) & cats]
             value = num(gt.get("Coeff reg"))
             if value is None:
                 continue
             canonical_est_total += 1
+            if matched(value, here_cat + other_cat):
+                full_est_match += 1
             if matched(value, here_cat):
                 canonical_est_match += 1
                 continue
-            other_cat = [r for r in others if categories(r.get("outcome_name")) & cats]
             if matched(value, other_cat):
                 disposition["found in another document of the study"] += 1
                 if len(examples_other) < 12:
                     examples_other.append((Path(doc).name, outcome, value))
             elif here_cat:
                 disposition["mapped document has the category, value differs"] += 1
-                if len(value_cases) < 200:
-                    value_cases.append((sid, outcome, value, here_cat))
+                value_cases.append((sid, outcome, value, here_cat))
             elif other_cat:
                 disposition["other document has the category, value differs"] += 1
             else:
@@ -177,11 +185,18 @@ def main():
     lines = ["# Outcome gap audit", "",
              f"Key: {key['sid'].nunique()} studies, {len(key)} outcome rows. Scored document is one per study.",
              "",
+             "Two units are reported: the single mapped document per study, and every document that names the "
+             "study (appendix, brief, translation).",
+             "",
              f"Canonical outcome present in the mapped document: {canonical_out_present}/{canonical_out_total} "
              f"({100 * canonical_out_present / canonical_out_total:.0f}%).",
-             f"Canonical outcome and value matched: {canonical_est_match}/{canonical_est_total} "
-             f"({100 * canonical_est_match / canonical_est_total:.0f}%).", "",
-             "## Where an unmatched estimate is", "", "| Disposition | Rows |", "| --- | --- |"]
+             f"Canonical outcome present across the study's documents: {full_out_present}/{canonical_out_total} "
+             f"({100 * full_out_present / canonical_out_total:.0f}%).",
+             f"Canonical outcome and value matched, mapped document: {canonical_est_match}/{canonical_est_total} "
+             f"({100 * canonical_est_match / canonical_est_total:.0f}%).",
+             f"Canonical outcome and value matched, all of the study's documents: {full_est_match}/{canonical_est_total} "
+             f"({100 * full_est_match / canonical_est_total:.0f}%).", "",
+             "## Where an unmatched estimate is (mapped document)", "", "| Disposition | Rows |", "| --- | --- |"]
     for reason, n in disposition.most_common():
         lines.append(f"| {reason} | {n} |")
     lines += ["", "Examples found in another document:", ""]
