@@ -2,6 +2,14 @@
 
 All notable changes to DevChat v2.0 are documented in this file.
 
+## [2.0.18] - 2026-11-18
+
+### Fixed
+- **An out-of-range integer discarded a whole document.** `n_treatment` and `n_control` were written raw,
+  and one paper produced 28,018,568,575, which Postgres rejected with `22003`, aborting that document's
+  entire insert. All integer estimate fields now pass through `_int32`, so a misread sample size drops to
+  null instead of losing the document's 431 rows.
+
 ## [2.0.17] - 2026-11-18
 
 ### Added

@@ -38,6 +38,12 @@ def _clean(v: Any) -> Any:
     return v.replace("\x00", "") if isinstance(v, str) else v
 
 
+def _int32(v: Any) -> Optional[int]:
+    """An integer that fits a Postgres integer column, or None. Guards misread sample sizes."""
+    n = _finite(v)
+    return int(n) if n is not None and abs(n) < 2**31 and n == int(n) else None
+
+
 def estimate_text(r: Dict[str, Any]) -> str:
     """The text embedded for an estimate: outcome, arm and subgroup."""
     parts = [r["outcome_name"]]
@@ -66,9 +72,9 @@ def rows_for(project_id: str, doc: Dict[str, Any], out: Dict[str, Any], model: s
             "p_text": ("*" * e["stars"]) if e["stars"] else None, "ci_text": ci,
             "t_stat": _finite(e.get("t_stat")), "ci_low": _finite(e.get("ci_low")),
             "ci_high": _finite(e.get("ci_high")), "se_kind": e.get("se_kind") or None,
-            "sample_size": int(n) if n is not None and abs(n) < 2**31 and n == int(n) else None,
+            "sample_size": _int32(n),
             "control_mean": e.get("control_mean"), "control_sd": e.get("control_sd"),
-            "n_treatment": e.get("n_treatment"), "n_control": e.get("n_control"),
+            "n_treatment": _int32(e.get("n_treatment")), "n_control": _int32(e.get("n_control")),
             "literal_text": (e["estimate_cell"] + (" " + e["se_cell"] if e["se_cell"] else ""))[:500],
             "text_position": f"{e['table_label']}, row '{e['row_label']}', column '{e['column_label']}'"[:500],
             "page": e["page"], "table_index": e.get("table_index"), "source_cell": e.get("source_cell") or None,
