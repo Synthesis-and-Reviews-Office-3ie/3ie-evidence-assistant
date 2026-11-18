@@ -104,6 +104,44 @@ def pair_arm_counts(estimates: List["Estimate"]) -> None:
                 row.n_control = row.n_control or control
 
 
+def locate_source_cell(unit_text: str, row_label: str, column_label: str, arm: str) -> str:
+    """The printed cell the estimate came from, or "" when the lookup is not unique.
+
+    The row and column are found by the labels the model named, compared on normalised text, and only an
+    unambiguous match is accepted. A page can hold several tables and a panel repeats its row labels, so a
+    guessed cell would be worse than none: an empty value is reported as unverifiable.
+    """
+    from src.extraction.table_structure import parse_markdown_table
+
+    grid = parse_markdown_table(unit_text)
+    headers = grid.headers[-1] if grid.headers else []
+
+    def pick(label: str):
+        options = [(i, _merge_outcome(cell)) for i, cell in enumerate(headers) if str(cell).strip()]
+        if not options or not label:
+            return None
+        exact = [i for i, name in options if name == label]
+        if len(exact) == 1:
+            return exact[0]
+        near = sorted((abs(len(name) - len(label)), i) for i, name in options
+                      if name and (name in label or label in name))
+        if not near or (len(near) > 1 and near[0][0] == near[1][0]):
+            return None
+        return near[0][1]
+
+    column = pick(_merge_outcome(column_label)) if column_label else None
+    if column is None and arm:
+        column = pick(_merge_outcome(arm))
+    if column is None:
+        return ""
+    rows = [row for row in grid.body
+            if row and str(row[0]).strip() and row_label and
+            (_merge_outcome(row[0]) in row_label or row_label in _merge_outcome(row[0]))]
+    if len(rows) != 1 or column >= len(rows[0]):
+        return ""
+    return str(rows[0][column]).strip()
+
+
 def _labelled_rows(text: str) -> int:
     """How many data rows the table has, by the count of rows with a label in the first column."""
     from src.extraction.table_structure import parse_markdown_table
@@ -301,6 +339,7 @@ class Estimate:
     n_treatment: Optional[int]
     n_control: Optional[int]
     grounded: bool
+    source_cell: str = ""
     notes: List[str] = field(default_factory=list)
 
 
@@ -408,6 +447,16 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
     )
 
 
+def _included_table(item: Dict[str, Any]) -> bool:
+    """A table the reader actually reads: a table, with a pipe grid, that is not garbled."""
+    from src.extraction.table_rules import looks_garbled
+
+    if item.get("type") != "table":
+        return False
+    text = str(item.get("text") or item.get("table_body") or "")
+    return "|" in text and not looks_garbled(text)
+
+
 def table_units(content_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """Each table with its page, caption and the text items just before and after it."""
     from src.extraction.table_rules import looks_garbled
@@ -448,7 +497,7 @@ def table_units(content_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         except (TypeError, ValueError):
             page = None
         page_table_index = sum(1 for earlier in content_list[:i]
-                               if earlier.get("type") == "table"
+                               if _included_table(earlier)
                                and (earlier.get("page_idx") or 0) == (item.get("page_idx") or 0))
         base = {"index": i, "page": page, "table_index": page_table_index,
                 "caption": caption or "", "text": text[:MAX_TABLE_CHARS],
@@ -695,6 +744,10 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
         rows = [to_estimate(r, label, u["page"], u["text"], u.get("arm_hint") or "", u.get("n_hint"), u.get("control_n"),
                         u.get("arm_row") or "", u.get("table_index"))
                 for r in raw if isinstance(r, dict)]
+        for estimate in rows:
+            estimate.source_cell = locate_source_cell(u["text"], _merge_outcome(estimate.row_label),
+                                                       _merge_outcome(estimate.column_label),
+                                                       _merge_outcome(estimate.arm))
         per_item.setdefault(u["index"], []).extend(rows)
         tables.append({"table": label, "page": u["page"], "results_table": is_results, "estimates": len(rows),
                        "grounded": sum(r.grounded for r in rows), "error": err,
