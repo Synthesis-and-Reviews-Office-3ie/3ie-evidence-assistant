@@ -814,3 +814,136 @@ def run_docling(pdf_path: Path, do_ocr: bool = True) -> dict:
     except Exception as e:
         print(f"  Docling failed: {e}\n{traceback.format_exc()}")
         return {"success": False, "error": str(e), "parser": "docling"}
+
+
+# ============================================================================
+# Parser union: Docling and MinerU to one canonical document
+# ============================================================================
+
+_UNION_TAG = re.compile(r"<[^>]+>")
+
+
+def _union_words(text: str) -> set:
+    cleaned = _UNION_TAG.sub(" ", str(text or "")).lower()
+    return {w for w in re.sub(r"[^a-z0-9]+", " ", cleaned).split() if len(w) >= 3}
+
+
+def _union_numbers(text: str) -> set:
+    return {round(float(x), 4) for x in re.findall(r"-?\d+(?:\.\d+)?", _UNION_TAG.sub(" ", str(text or "")))}
+
+
+def _jaccard(a: set, b: set) -> float:
+    return len(a & b) / len(a | b) if a and b else 0.0
+
+
+def _table_caption(item: dict) -> str:
+    caption = item.get("table_caption")
+    if isinstance(caption, (list, tuple)):
+        return " ".join(str(c) for c in caption)
+    return str(caption or "")
+
+
+def _table_body(item: dict) -> str:
+    return str(item.get("text") or item.get("table_body") or "")
+
+
+def _page_idx(item: dict) -> Optional[int]:
+    try:
+        return int(item.get("page_idx"))
+    except (TypeError, ValueError):
+        return None
+
+
+def _merge_table(primary_item: dict, other_item: dict, primary: str, secondary: str, order: int) -> dict:
+    """A table both parsers produced: keep the primary render, keep the other as alt text."""
+    return {**primary_item, "_sources": [primary, secondary], "_alt_text": _table_body(other_item),
+            "_order": order, "page_idx": _page_idx(primary_item)}
+
+
+def merge_parser_outputs(docling: dict, mineru: dict, primary: str = "docling") -> dict:
+    """Merge two parser outputs into one canonical document.
+
+    Tables are unioned: every table found by either parser is kept, matched pairs are merged
+    and tagged with the parsers that produced them, and unmatched tables survive as they are.
+    Matching is deterministic in two passes: same page and similar caption, then same or
+    adjacent page and a matching content signature (number set and word set). Prose comes from
+    the primary parser, plus any page the primary parser left without text or tables and the
+    other parser covered. Nothing is discarded; the caller keeps both original parses.
+
+    Returns run_mineru's shape with ``parser="union"``, so the chunker and the estimate reader
+    work unchanged.
+    """
+    from src.extraction.table_rules import normalise_tables
+
+    if primary not in ("docling", "mineru"):
+        raise ValueError(f"primary must be docling or mineru, got {primary!r}")
+    secondary = "mineru" if primary == "docling" else "docling"
+    p_items = normalise_tables(list(docling.get("content_list") or []))
+    s_items = normalise_tables(list(mineru.get("content_list") or []))
+
+    p_tables = [(i, item) for i, item in enumerate(p_items) if item.get("type") == "table"]
+    s_tables = [(i, item) for i, item in enumerate(s_items) if item.get("type") == "table"]
+    used_s = set()
+    merged_tables = []
+
+    # Pass 1: same page, similar caption.
+    leftover_p = []
+    for pi, t in p_tables:
+        page = _page_idx(t)
+        strong = [j for j, (si, s) in enumerate(s_tables)
+                  if j not in used_s and page is not None and _page_idx(s) == page
+                  and _jaccard(_union_words(_table_caption(t)), _union_words(_table_caption(s))) >= 0.5]
+        if not strong:
+            leftover_p.append((pi, t))
+            continue
+        best = max(strong, key=lambda j: _jaccard(_union_words(_table_caption(t)), _union_words(_table_caption(s_tables[j][1]))))
+        used_s.add(best)
+        merged_tables.append(_merge_table(t, s_tables[best][1], primary, secondary, pi))
+
+    # Pass 2: same or adjacent page, matching content signature.
+    signatures = {j: (_union_numbers(_table_body(s)), _union_words(_table_body(s)))
+                  for j, (si, s) in enumerate(s_tables) if j not in used_s}
+    for pi, t in leftover_p:
+        page = _page_idx(t)
+        tn, tw = _union_numbers(_table_body(t)), _union_words(_table_body(t))
+        candidates = [j for j, (sn, sw) in signatures.items()
+                      if page is not None and _page_idx(s_tables[j][1]) is not None
+                      and abs(_page_idx(s_tables[j][1]) - page) <= 1
+                      and _jaccard(tn, sn) >= 0.5 and _jaccard(tw, sw) >= 0.3]
+        if candidates:
+            j = candidates[0]
+            used_s.add(j)
+            signatures.pop(j, None)
+            merged_tables.append(_merge_table(t, s_tables[j][1], primary, secondary, pi))
+        else:
+            merged_tables.append({**t, "_sources": [primary], "_order": pi, "page_idx": page})
+    for j, (si, s) in enumerate(s_tables):
+        if j not in used_s:
+            merged_tables.append({**s, "_sources": [secondary], "_order": si, "page_idx": _page_idx(s)})
+
+    # Prose from the primary parser, plus any page it left without text or tables.
+    covered = {_page_idx(item) for item in p_items if item.get("type") in ("text", "title", "table")}
+    prose = [{**item, "_sources": [primary], "_order": i} for i, item in enumerate(p_items)
+             if item.get("type") != "table"]
+    recovered = [{**item, "_sources": [secondary], "_order": i, "recovered": True}
+                 for i, item in enumerate(s_items)
+                 if item.get("type") in ("text", "title") and _page_idx(item) not in covered]
+
+    merged = prose + merged_tables + recovered
+    merged.sort(key=lambda item: (_page_idx(item) if _page_idx(item) is not None else 0, item.get("_order") or 0))
+    content = "\n\n".join(str(item.get("text") or "") for item in merged).strip()
+    meta = docling if primary == "docling" else mineru
+    return {
+        "success": True,
+        "parser": "union",
+        "sources": [primary, secondary],
+        "content": content,
+        "content_list": merged,
+        "tables": [item for item in merged if item.get("type") == "table"],
+        "formulas": list(docling.get("formulas") or mineru.get("formulas") or []),
+        "page_count": max(int(docling.get("page_count") or 0), int(mineru.get("page_count") or 0)),
+        "title": meta.get("title"),
+        "authors": meta.get("authors"),
+        "year": meta.get("year"),
+        "abstract": meta.get("abstract"),
+    }

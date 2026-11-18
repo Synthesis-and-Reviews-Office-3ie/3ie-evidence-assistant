@@ -182,7 +182,7 @@ def main(
         status       - Show R2 and chunk-store status
         run          - Process all pending PDFs with MinerU
         single       - Process a single PDF with MinerU (requires --pdf-key)
-        rag          - Process a RAG project (requires --project-id; --parser docling|mineru)
+        rag          - Process a RAG project (requires --project-id; --parser docling|mineru|union)
         refresh-metadata - Re-derive metadata from saved parser output (requires --project-id;
                        --reclassify weak|all|none, --only-doc <filename> for one document)
         monkeyocr    - Process a single PDF with MonkeyOCR (requires --pdf-key)

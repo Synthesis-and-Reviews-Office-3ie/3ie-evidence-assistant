@@ -2,6 +2,21 @@
 
 All notable changes to DevChat v2.0 are documented in this file.
 
+## [2.0.17] - 2026-11-18
+
+### Added
+- **Multi-parser union in the pipeline.** `merge_parser_outputs` (`infrastructure/modal_lib/extraction.py`) merges
+  Docling and MinerU output into one canonical document. Tables are unioned with per-table provenance and matched
+  in two deterministic passes (same page and caption, then content signature on the same or an adjacent page);
+  prose comes from the primary parser plus any page it left without text or tables. `process_rag_document` gains
+  `parser="union"`: each engine's raw parse is saved under `outputs/parses/{parser}/` and the merged parse under
+  `outputs/parses/union/`, which the union run then processes. `orchestrate_rag` selects the union worker, so
+  `--action rag --parser union` works once both engines have parsed the document. The single-parser paths are
+  unchanged and remain the fallback. On the 43 graduation papers the union keeps 988 tables against 830 for
+  Docling and 902 for MinerU: 744 pairs, 86 Docling-only, 158 MinerU-only, with 144 recovered prose pages.
+- `evaluation/table_union_probe.py` measures how many tables pair deterministically and how many would need a
+  judgement call. On the 43 papers, 88% pair on rules and 12% do not.
+
 ## [2.0.16] - 2026-11-18
 
 ### Added

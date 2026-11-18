@@ -23,7 +23,7 @@ from .config import (
     openrouter_secret,
 )
 from .utils import get_r2_client, get_bucket_name
-from .processing import process_pdf, process_pdf_rag, process_pdf_rag_docling
+from .processing import process_pdf, process_pdf_rag, process_pdf_rag_docling, process_pdf_rag_union
 from .chunks import check_chunks_indexed, get_store, indexed_doc_keys
 
 
@@ -215,7 +215,9 @@ def orchestrate_rag(
     """
     Process all documents for a specific RAG project.
 
-    parser: "docling" (CPU) or "mineru" (GPU); defaults to DEFAULT_PDF_PARSER.
+    parser: "docling" (CPU), "mineru" (GPU) or "union" (merge both); defaults to
+    DEFAULT_PDF_PARSER. The union path merges parses already saved by the two engines, so
+    run docling and mineru first for a document that lacks both.
     
     Called from the backend API when user clicks "Process Documents".
     
@@ -388,7 +390,11 @@ def orchestrate_rag(
     processed_count = 0
     
     parser = parser or DEFAULT_PDF_PARSER
-    worker = process_pdf_rag_docling if parser == "docling" else process_pdf_rag
+    workers = {"docling": process_pdf_rag_docling, "mineru": process_pdf_rag,
+               "union": process_pdf_rag_union}
+    if parser not in workers:
+        raise ValueError(f"Unknown parser: {parser}; expected one of {sorted(workers)}")
+    worker = workers[parser]
     print(f"Parser: {parser}")
     for result in worker.starmap(
         [(pdf_key, project_id) for pdf_key in all_to_process],

@@ -26,7 +26,7 @@ from .config import (
     model_cache,
 )
 from .utils import get_r2_client, get_bucket_name, sanitize_text, sanitize_dict
-from .extraction import run_docling, run_mineru, post_process_content
+from .extraction import run_docling, run_mineru, post_process_content, merge_parser_outputs
 from .metadata import resolve_metadata, classify_study_design_llm, build_design_excerpt
 from .embedding import embed_and_index
 from .chunks import check_chunks_indexed, delete_doc_chunks
@@ -641,6 +641,22 @@ def process_pdf_rag_docling(pdf_key: str, project_id: str) -> dict:
 
 @app.function(
     image=docling_image,
+    secrets=[r2_secret, cohere_secret, supabase_secret, openrouter_secret],
+    volumes={"/cache": model_cache},
+    cpu=8.0,
+    memory=16384,
+    timeout=3600,
+    retries=1,
+    # Bounded so chunk writes do not pile up on the HNSW index (see ChunkStore._post_with_retry).
+    max_containers=10,
+)
+def process_pdf_rag_union(pdf_key: str, project_id: str) -> dict:
+    """Process one project PDF by merging its Docling and MinerU parses into one document."""
+    return merge_rag_document(pdf_key, project_id)
+
+
+@app.function(
+    image=docling_image,
     secrets=[r2_secret],
     volumes={"/cache": model_cache},
     cpu=8.0,
@@ -663,6 +679,67 @@ def parse_pdf_docling(pdf_key: str) -> dict:
     pdf_path.unlink(missing_ok=True)
     result.pop("docling_document", None)  # large; not needed for the comparison
     return result
+
+
+def _save_raw_parse(s3, bucket: str, project_id: str, doc_id: str, parser: str, result: dict) -> None:
+    """Save an engine's own parse, before post-processing, for the union merge to read."""
+    if parser not in ("docling", "mineru"):
+        return
+    payload = {key: result.get(key) for key in
+               ("content", "content_list", "tables", "formulas", "page_count",
+                "title", "authors", "year", "abstract", "extraction_config")}
+    payload.update({"doc_id": doc_id, "parser": parser, "success": True})
+    s3.put_object(
+        Bucket=bucket,
+        Key=f"rags/{project_id}/outputs/parses/{parser}/{doc_id}.json",
+        Body=json.dumps(payload, ensure_ascii=False).encode("utf-8"),
+        ContentType="application/json",
+    )
+
+
+def _load_raw_parse(s3, bucket: str, project_id: str, doc_id: str, parser: str) -> Optional[dict]:
+    """The saved parse for one engine, or the merged parse when ``parser`` is ``union``."""
+    try:
+        body = s3.get_object(
+            Bucket=bucket, Key=f"rags/{project_id}/outputs/parses/{parser}/{doc_id}.json")["Body"].read()
+        return json.loads(body)
+    except Exception:
+        return None
+
+
+def _write_union_parse(s3, bucket: str, project_id: str, doc_id: str) -> dict:
+    """Merge the saved Docling and MinerU parses and save the canonical parse."""
+    docling = _load_raw_parse(s3, bucket, project_id, doc_id, "docling")
+    mineru = _load_raw_parse(s3, bucket, project_id, doc_id, "mineru")
+    if docling and mineru:
+        merged = merge_parser_outputs(docling, mineru)
+    elif docling or mineru:
+        merged = docling or mineru
+        print(f"  Only one parse available for {doc_id}; using {merged.get('parser')}")
+    else:
+        raise Exception(f"No saved parses to merge for {doc_id}")
+    merged["success"] = True
+    s3.put_object(
+        Bucket=bucket,
+        Key=f"rags/{project_id}/outputs/parses/union/{doc_id}.json",
+        Body=json.dumps(merged, ensure_ascii=False).encode("utf-8"),
+        ContentType="application/json",
+    )
+    return merged
+
+
+def merge_rag_document(pdf_key: str, project_id: str) -> dict:
+    """Merge one document's Docling and MinerU parses, then process it as the union.
+
+    Requires the document to have been parsed by both engines, which save to
+    outputs/parses/docling/ and outputs/parses/mineru/. Falls back to whichever parse
+    exists, and fails when neither does.
+    """
+    s3 = get_r2_client()
+    bucket = get_bucket_name()
+    doc_id = Path(pdf_key).stem
+    _write_union_parse(s3, bucket, project_id, doc_id)
+    return process_rag_document(pdf_key, project_id, parser="union")
 
 
 def process_rag_document(pdf_key: str, project_id: str, parser: str = "mineru") -> dict:
@@ -705,6 +782,11 @@ def process_rag_document(pdf_key: str, project_id: str, parser: str = "mineru") 
             result = run_docling(pdf_path)
         elif parser == "mineru":
             result = run_mineru(pdf_path)
+        elif parser == "union":
+            # The merged parse was written by _write_union_parse from the two engine parses.
+            result = _load_raw_parse(s3, bucket, project_id, doc_id, "union")
+            if not result:
+                raise Exception("No merged parse found; run merge_rag_document first")
         else:
             raise ValueError(f"Unknown parser: {parser}")
 
@@ -712,6 +794,7 @@ def process_rag_document(pdf_key: str, project_id: str, parser: str = "mineru") 
             raise Exception(result.get("error", f"{parser} processing failed"))
 
         print(f"  {parser}: {result.get('page_count', 0)} pages, {len(result.get('content', ''))} chars")
+        _save_raw_parse(s3, bucket, project_id, doc_id, parser, result)
         
         # Post-process content
         result["content"] = post_process_content(
