@@ -23,7 +23,14 @@ from .config import (
     openrouter_secret,
 )
 from .utils import get_r2_client, get_bucket_name
-from .processing import process_pdf, process_pdf_rag, process_pdf_rag_docling, process_pdf_rag_union
+from .processing import (
+    parse_pdf_rag_docling,
+    parse_pdf_rag_mineru,
+    process_pdf,
+    process_pdf_rag,
+    process_pdf_rag_docling,
+    process_pdf_rag_union,
+)
 from .chunks import check_chunks_indexed, get_store, indexed_doc_keys
 
 
@@ -394,10 +401,19 @@ def orchestrate_rag(
                "union": process_pdf_rag_union}
     if parser not in workers:
         raise ValueError(f"Unknown parser: {parser}; expected one of {sorted(workers)}")
+    pairs = [(pdf_key, project_id) for pdf_key in all_to_process]
+    if parser == "union":
+        # The union merges both engines' parses, so parse with each first. Two passes, then one
+        # merge, so indexing runs once, on the merged document.
+        for label, parse_worker in (("Docling", parse_pdf_rag_docling), ("MinerU", parse_pdf_rag_mineru)):
+            print(f"Union: parsing with {label}")
+            for result in parse_worker.starmap(pairs, return_exceptions=True):
+                if isinstance(result, Exception) or (isinstance(result, dict) and not result.get("success")):
+                    print(f"  ✗ {label} parse issue: {result}")
     worker = workers[parser]
     print(f"Parser: {parser}")
     for result in worker.starmap(
-        [(pdf_key, project_id) for pdf_key in all_to_process],
+        pairs,
         return_exceptions=True,
     ):
         processed_count += 1

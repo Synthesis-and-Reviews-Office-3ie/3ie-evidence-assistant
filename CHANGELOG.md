@@ -16,6 +16,10 @@ All notable changes to DevChat v2.0 are documented in this file.
   Docling and 902 for MinerU: 744 pairs, 86 Docling-only, 158 MinerU-only, with 144 recovered prose pages.
 - `evaluation/table_union_probe.py` measures how many tables pair deterministically and how many would need a
   judgement call. On the 43 papers, 88% pair on rules and 12% do not.
+- **Union end to end.** `rag --parser union` now parses each document with both engines in two passes and merges
+  once, so indexing happens on the merged document. `UNION_MODEL_RECONCILE=1` turns on the optional model pass
+  for ambiguous and unmatched tables, which is asked only when the rules cannot decide; without it the merge is
+  fully deterministic.
 
 ## [2.0.16] - 2026-11-18
 

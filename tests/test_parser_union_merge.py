@@ -65,3 +65,52 @@ def test_html_table_from_mineru_is_normalised():
     tables = [i for i in out["content_list"] if i["type"] == "table"]
     assert len(tables) == 1
     assert "| Outcome | Coef |" in tables[0]["text"]
+
+
+def test_resolver_breaks_an_ambiguous_caption_match():
+    body_a = "| x | 1 |\n| --- | --- |\n| a | 1 |"
+    body_b = "| y | 2 |\n| --- | --- |\n| b | 2 |"
+    docling = {"content_list": [_table(body_a, 3, "Table 2 Results")], "page_count": 4}
+    mineru = {"content_list": [_table(body_b, 3, "Table 2 Results"),
+                               _table(body_a, 3, "Table 2 Results")], "page_count": 4}
+    calls = []
+
+    def resolver(table, candidates, reason):
+        calls.append(reason)
+        for i, c in enumerate(candidates):
+            if c.get("text") == body_a:
+                return i
+        return -1
+
+    out = merge_parser_outputs(docling, mineru, resolver=resolver)
+    tables = [i for i in out["content_list"] if i["type"] == "table"]
+    assert calls and calls[0] == "ambiguous"
+    both = [t for t in tables if t["_sources"] == ["docling", "mineru"]]
+    solo = [t for t in tables if t["_sources"] == ["mineru"]]
+    assert len(both) == 1 and both[0]["text"] == body_a
+    assert len(solo) == 1 and solo[0]["text"] == body_b
+
+
+def test_resolver_can_decline_all_candidates():
+    docling = {"content_list": [_table("| a | 1 |\n| --- | --- |\n| a | 1 |", 3, "Table 2 Results")], "page_count": 4}
+    mineru = {"content_list": [_table("| b | 2 |\n| --- | --- |\n| b | 2 |", 3, "Table 2 Results"),
+                               _table("| c | 3 |\n| --- | --- |\n| c | 3 |", 3, "Table 2 Results")], "page_count": 4}
+    out = merge_parser_outputs(docling, mineru, resolver=lambda t, c, r: -1)
+    tables = [i for i in out["content_list"] if i["type"] == "table"]
+    # Declined everywhere, so the primary and both secondary tables each survive alone.
+    assert sorted(tuple(t["_sources"]) for t in tables) == [("docling",), ("mineru",), ("mineru",)]
+
+
+def test_resolver_pairs_across_pages_when_rules_fail():
+    docling = {"content_list": [_table("| q | 7 |\n| --- | --- |\n| q | 7 |", 5, "Annex A")], "page_count": 7}
+    mineru = {"content_list": [_table("| z | 9 |\n| --- | --- |\n| z | 9 |", 6, "Annex")], "page_count": 7}
+    calls = []
+
+    def resolver(table, candidates, reason):
+        calls.append(reason)
+        return 0
+
+    out = merge_parser_outputs(docling, mineru, resolver=resolver)
+    tables = [i for i in out["content_list"] if i["type"] == "table"]
+    assert len(tables) == 1 and tables[0]["_sources"] == ["docling", "mineru"]
+    assert "unmatched" in calls

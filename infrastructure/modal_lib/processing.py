@@ -657,6 +657,34 @@ def process_pdf_rag_union(pdf_key: str, project_id: str) -> dict:
 
 @app.function(
     image=docling_image,
+    secrets=[r2_secret, cohere_secret, supabase_secret, openrouter_secret],
+    volumes={"/cache": model_cache},
+    cpu=8.0,
+    memory=16384,
+    timeout=3600,
+    retries=1,
+    max_containers=10,
+)
+def parse_pdf_rag_docling(pdf_key: str, project_id: str) -> dict:
+    """Parse one project PDF with Docling and save the raw parse, no indexing."""
+    return parse_rag_document(pdf_key, project_id, "docling")
+
+
+@app.function(
+    image=base_image,
+    secrets=[r2_secret],
+    volumes={"/cache": model_cache},
+    gpu="T4",
+    timeout=1800,
+    retries=2,
+)
+def parse_pdf_rag_mineru(pdf_key: str, project_id: str) -> dict:
+    """Parse one project PDF with MinerU and save the raw parse, no indexing."""
+    return parse_rag_document(pdf_key, project_id, "mineru")
+
+
+@app.function(
+    image=docling_image,
     secrets=[r2_secret],
     volumes={"/cache": model_cache},
     cpu=8.0,
@@ -681,6 +709,54 @@ def parse_pdf_docling(pdf_key: str) -> dict:
     return result
 
 
+def _table_snippet(table: dict, limit: int = 700) -> str:
+    return " ".join(str(table.get("text") or table.get("table_body") or "").split())[:limit]
+
+
+def _table_heading(table: dict) -> str:
+    caption = table.get("table_caption")
+    if isinstance(caption, list | tuple):
+        caption = " ".join(str(c) for c in caption)
+    return str(caption or "")
+
+
+def _model_table_resolver():
+    """A resolver asking a small model whether two tables are the same, for the union merge.
+
+    Returns ``(primary_table, candidates, reason) -> int`` or ``None`` when no key is configured.
+    Used only when UNION_MODEL_RECONCILE=1, so its cost and benefit stay visible on their own.
+    """
+    api_key = os.environ.get("OPENROUTER_API_KEY")
+    if not api_key:
+        return None
+    model = os.environ.get("UNION_MODEL", "anthropic/claude-haiku-5.5")
+
+    def resolver(primary_table, candidates, _reason):
+        import httpx
+        import re
+
+        blocks = [f"Table A caption: {_table_heading(primary_table)}\nTable A:\n{_table_snippet(primary_table)}"]
+        for i, cand in enumerate(candidates):
+            blocks.append(f"Table {i} caption: {_table_heading(cand)}\nTable {i}:\n{_table_snippet(cand)}")
+        prompt = ("Two parsers read the same paper. Which candidate table is the same table as Table A? "
+                  "Answer with the candidate number only, or -1 if none is the same table.\n\n" + "\n\n".join(blocks))
+        try:
+            resp = httpx.post(
+                "https://openrouter.ai/api/v1/chat/completions",
+                headers={"Authorization": f"Bearer {api_key}"},
+                json={"model": model, "temperature": 0,
+                      "messages": [{"role": "user", "content": prompt}]},
+                timeout=60,
+            )
+            text = resp.json()["choices"][0]["message"]["content"]
+            match = re.search(r"-?\d+", text)
+            return int(match.group()) if match else None
+        except Exception:
+            return None
+
+    return resolver
+
+
 def _save_raw_parse(s3, bucket: str, project_id: str, doc_id: str, parser: str, result: dict) -> None:
     """Save an engine's own parse, before post-processing, for the union merge to read."""
     if parser not in ("docling", "mineru"):
@@ -697,7 +773,7 @@ def _save_raw_parse(s3, bucket: str, project_id: str, doc_id: str, parser: str, 
     )
 
 
-def _load_raw_parse(s3, bucket: str, project_id: str, doc_id: str, parser: str) -> Optional[dict]:
+def _load_raw_parse(s3, bucket: str, project_id: str, doc_id: str, parser: str) -> dict | None:
     """The saved parse for one engine, or the merged parse when ``parser`` is ``union``."""
     try:
         body = s3.get_object(
@@ -707,12 +783,12 @@ def _load_raw_parse(s3, bucket: str, project_id: str, doc_id: str, parser: str) 
         return None
 
 
-def _write_union_parse(s3, bucket: str, project_id: str, doc_id: str) -> dict:
+def _write_union_parse(s3, bucket: str, project_id: str, doc_id: str, resolver=None) -> dict:
     """Merge the saved Docling and MinerU parses and save the canonical parse."""
     docling = _load_raw_parse(s3, bucket, project_id, doc_id, "docling")
     mineru = _load_raw_parse(s3, bucket, project_id, doc_id, "mineru")
     if docling and mineru:
-        merged = merge_parser_outputs(docling, mineru)
+        merged = merge_parser_outputs(docling, mineru, resolver=resolver)
     elif docling or mineru:
         merged = docling or mineru
         print(f"  Only one parse available for {doc_id}; using {merged.get('parser')}")
@@ -738,8 +814,41 @@ def merge_rag_document(pdf_key: str, project_id: str) -> dict:
     s3 = get_r2_client()
     bucket = get_bucket_name()
     doc_id = Path(pdf_key).stem
-    _write_union_parse(s3, bucket, project_id, doc_id)
+    # The model reconciliation is opt-in so its cost and benefit are visible on their own.
+    resolver = _model_table_resolver() if os.environ.get("UNION_MODEL_RECONCILE") == "1" else None
+    if resolver:
+        print("  Union: model reconciliation enabled for ambiguous tables")
+    _write_union_parse(s3, bucket, project_id, doc_id, resolver=resolver)
     return process_rag_document(pdf_key, project_id, parser="union")
+
+
+def parse_rag_document(pdf_key: str, project_id: str, parser: str) -> dict:
+    """Parse one PDF with a single engine and save its raw parse, without indexing.
+
+    The union merge reads both engines' saved parses, so a union run parses with each
+    engine first and merges afterwards.
+    """
+    import tempfile
+
+    if parser not in ("docling", "mineru"):
+        raise ValueError(f"parse_rag_document expects docling or mineru, got {parser!r}")
+    s3 = get_r2_client()
+    bucket = get_bucket_name()
+    doc_id = Path(pdf_key).stem
+    print(f"  Parsing {doc_id} with {parser}")
+    try:
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
+            s3.download_file(bucket, pdf_key, tmp.name)
+            pdf_path = Path(tmp.name)
+        result = run_docling(pdf_path) if parser == "docling" else run_mineru(pdf_path)
+        if not result.get("success"):
+            raise Exception(result.get("error", f"{parser} parse failed"))
+        _save_raw_parse(s3, bucket, project_id, doc_id, parser, result)
+        pdf_path.unlink(missing_ok=True)
+        return {"success": True, "doc_id": doc_id, "parser": parser,
+                "tables": len(result.get("tables") or []), "pages": result.get("page_count", 0)}
+    except Exception as e:
+        return {"success": False, "doc_id": doc_id, "parser": parser, "error": f"{type(e).__name__}: {e}"}
 
 
 def process_rag_document(pdf_key: str, project_id: str, parser: str = "mineru") -> dict:

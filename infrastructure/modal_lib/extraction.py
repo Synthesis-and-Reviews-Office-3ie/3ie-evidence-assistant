@@ -860,7 +860,7 @@ def _merge_table(primary_item: dict, other_item: dict, primary: str, secondary: 
             "_order": order, "page_idx": _page_idx(primary_item)}
 
 
-def merge_parser_outputs(docling: dict, mineru: dict, primary: str = "docling") -> dict:
+def merge_parser_outputs(docling: dict, mineru: dict, primary: str = "docling", resolver=None) -> dict:
     """Merge two parser outputs into one canonical document.
 
     Tables are unioned: every table found by either parser is kept, matched pairs are merged
@@ -869,6 +869,11 @@ def merge_parser_outputs(docling: dict, mineru: dict, primary: str = "docling") 
     adjacent page and a matching content signature (number set and word set). Prose comes from
     the primary parser, plus any page the primary parser left without text or tables and the
     other parser covered. Nothing is discarded; the caller keeps both original parses.
+
+    ``resolver`` is an optional callable ``(primary_table, candidate_tables, reason) -> int`` that
+    decides table identity where the rules cannot. It returns the chosen candidate index, ``-1``
+    for an explicit no-match, or ``None`` to defer to the rules. Without it the merge is fully
+    deterministic.
 
     Returns run_mineru's shape with ``parser="union"``, so the chunker and the estimate reader
     work unchanged.
@@ -886,32 +891,72 @@ def merge_parser_outputs(docling: dict, mineru: dict, primary: str = "docling") 
     used_s = set()
     merged_tables = []
 
+    def decide(table, candidate_indexes, reason):
+        """Ask the resolver which candidate is the same table: index, -1 for none, None if unsure."""
+        if not resolver:
+            return None
+        try:
+            return resolver(table, [s_tables[j][1] for j in candidate_indexes], reason)
+        except Exception:
+            return None
+
     # Pass 1: same page, similar caption.
-    leftover_p = []
+    leftover = []
     for pi, t in p_tables:
         page = _page_idx(t)
         strong = [j for j, (si, s) in enumerate(s_tables)
                   if j not in used_s and page is not None and _page_idx(s) == page
                   and _jaccard(_union_words(_table_caption(t)), _union_words(_table_caption(s))) >= 0.5]
         if not strong:
-            leftover_p.append((pi, t))
+            leftover.append((pi, t))
             continue
-        best = max(strong, key=lambda j: _jaccard(_union_words(_table_caption(t)), _union_words(_table_caption(s_tables[j][1]))))
-        used_s.add(best)
-        merged_tables.append(_merge_table(t, s_tables[best][1], primary, secondary, pi))
+        if len(strong) == 1:
+            chosen = strong[0]
+        else:
+            choice = decide(t, strong, "ambiguous")
+            if choice is None:
+                chosen = max(strong, key=lambda j: _jaccard(
+                    _union_words(_table_caption(t)), _union_words(_table_caption(s_tables[j][1]))))
+            elif choice < 0:
+                leftover.append((pi, t))
+                continue
+            else:
+                chosen = strong[min(choice, len(strong) - 1)]
+        used_s.add(chosen)
+        merged_tables.append(_merge_table(t, s_tables[chosen][1], primary, secondary, pi))
 
     # Pass 2: same or adjacent page, matching content signature.
     signatures = {j: (_union_numbers(_table_body(s)), _union_words(_table_body(s)))
                   for j, (si, s) in enumerate(s_tables) if j not in used_s}
-    for pi, t in leftover_p:
+    remaining = []
+    for pi, t in leftover:
         page = _page_idx(t)
         tn, tw = _union_numbers(_table_body(t)), _union_words(_table_body(t))
         candidates = [j for j, (sn, sw) in signatures.items()
                       if page is not None and _page_idx(s_tables[j][1]) is not None
                       and abs(_page_idx(s_tables[j][1]) - page) <= 1
                       and _jaccard(tn, sn) >= 0.5 and _jaccard(tw, sw) >= 0.3]
-        if candidates:
-            j = candidates[0]
+        if not candidates:
+            remaining.append((pi, t))
+            continue
+        choice = decide(t, candidates, "content")
+        if choice == -1:
+            remaining.append((pi, t))
+            continue
+        j = candidates[0] if choice is None else candidates[min(choice, len(candidates) - 1)]
+        used_s.add(j)
+        signatures.pop(j, None)
+        merged_tables.append(_merge_table(t, s_tables[j][1], primary, secondary, pi))
+
+    # Pass 3, only with a resolver: pair what the rules could not, among nearby tables.
+    for pi, t in remaining:
+        page = _page_idx(t)
+        candidates = [j for j in signatures
+                      if page is not None and _page_idx(s_tables[j][1]) is not None
+                      and abs(_page_idx(s_tables[j][1]) - page) <= 1]
+        choice = decide(t, candidates, "unmatched") if candidates else None
+        if choice is not None and choice >= 0:
+            j = candidates[min(choice, len(candidates) - 1)]
             used_s.add(j)
             signatures.pop(j, None)
             merged_tables.append(_merge_table(t, s_tables[j][1], primary, secondary, pi))
