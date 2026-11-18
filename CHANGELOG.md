@@ -2,6 +2,26 @@
 
 All notable changes to DevChat v2.0 are documented in this file.
 
+## [2.0.15] - 2026-11-18
+
+### Fixed
+- **MinerU was broken by a floating dependency.** The image installed `mineru[core]>=2.6.0`, and a newer
+  release removed `mineru.cli.common`, so every MinerU parse failed with ModuleNotFoundError. The image now
+  pins `mineru[core]==2.6.8`, the version the code and the January outputs were built on.
+- **The estimate reader skipped every MinerU table.** MinerU returns tables as HTML in `table_body` while
+  Docling returns Markdown in `text`, and the reader accepted only pipe tables. On 43 graduation papers this
+  cut MinerU from 14,345 estimates to 231. `normalise_tables` now renders HTML tables to Markdown before
+  extraction, so both parsers are read the same way.
+
+### Added
+- **Parser comparison on the poverty graduation collection.** `evaluation/parser_union_eval.py` scores
+  Docling, MinerU and an output-level union against the 43-study, 442-row hand-typed key. Effect sizes
+  matched: Docling 396/442 (90%), MinerU 395/442 (89%), union 400/442 (90%). Outcome coverage: 218, 201 and
+  232 of 442. The union adds four effect rows and fourteen outcome rows for roughly half again the stored
+  rows, so Docling stays the default.
+- `evaluation/graduation_gt.py` (the 43-study to document mapping, with tests),
+  `evaluation/extract_gt_docling.py`, and `scripts/make_graduation_shadow.py` for the shadow project.
+
 ## [2.0.14] - 2026-11-17
 
 ### Fixed

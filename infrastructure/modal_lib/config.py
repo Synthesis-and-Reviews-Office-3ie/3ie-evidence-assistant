@@ -32,7 +32,10 @@ base_image = (
         "libxrender-dev",
     )
     .pip_install(
-        "mineru[core]>=2.6.0",
+        # Pinned: 2.6.8 is the version the MinerU code path was written against and
+        # the one that produced the January 2026 outputs. A floating >=2.6.0 pulled a
+        # release where mineru.cli.common no longer exists, which broke every parse.
+        "mineru[core]==2.6.8",
         "boto3",
         "cohere>=5.0.0",
         "httpx",

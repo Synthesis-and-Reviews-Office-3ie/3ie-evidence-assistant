@@ -175,3 +175,53 @@ def is_descriptive_column(header: str) -> bool:
     """True for a column of means or standard deviations, which are not estimates."""
     key = _norm(header)
     return bool(re.search(r"\b(mean|average|sd|std dev|standard deviation)\b", key))
+
+
+def html_table_to_markdown(html: str) -> str:
+    """A GitHub Markdown pipe table from an HTML table, preserving the cell text.
+
+    MinerU returns a table as HTML in ``table_body`` while Docling returns Markdown in
+    ``text``. The estimate reader, the chunker and the vision gate all key on pipe
+    tables, so an HTML table is rendered here rather than silently skipped.
+    """
+    from bs4 import BeautifulSoup
+
+    soup = BeautifulSoup(str(html or ""), "html.parser")
+    table = soup.find("table") or soup
+    rows = []
+    for tr in table.find_all("tr"):
+        cells = []
+        for cell in tr.find_all(["th", "td"]):
+            text = " ".join(cell.get_text(" ", strip=True).split()).replace("|", "\\|")
+            cells.append(text)
+            try:
+                span = int(cell.get("colspan") or 1)
+            except (TypeError, ValueError):
+                span = 1
+            cells.extend([""] * max(0, span - 1))
+        if cells:
+            rows.append(cells)
+    if not rows:
+        return ""
+    width = max(len(row) for row in rows)
+    rows = [row + [""] * (width - len(row)) for row in rows]
+    header, body = rows[0], rows[1:]
+    lines = ["| " + " | ".join(header) + " |", "| " + " | ".join(["---"] * width) + " |"]
+    lines += ["| " + " | ".join(row) + " |" for row in body]
+    return "\n".join(lines)
+
+
+def normalise_tables(content_list: list) -> list:
+    """A copy of the content list with HTML ``table_body`` values rendered as Markdown.
+
+    Items that already carry Markdown text, as Docling's do, are left untouched, so this
+    is safe to apply to any parser's output.
+    """
+    out = []
+    for item in content_list:
+        if item.get("type") == "table" and not str(item.get("text") or "").strip():
+            body = str(item.get("table_body") or "")
+            if "<table" in body.lower():
+                item = {**item, "text": html_table_to_markdown(body)}
+        out.append(item)
+    return out
