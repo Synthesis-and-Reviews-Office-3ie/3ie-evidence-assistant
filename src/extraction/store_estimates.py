@@ -18,6 +18,7 @@ from typing import Any, Callable, Dict, Iterable, List, Optional
 
 import httpx
 
+from src.extraction.consistency import flags_for
 from src.extraction.effect_sizes import standardise
 from src.extraction.identity import row_key
 from src.extraction.table_estimates import extract_document
@@ -75,6 +76,16 @@ def rows_for(project_id: str, doc: Dict[str, Any], out: Dict[str, Any], model: s
             "unit_index": e.get("unit_index"), "se_row": e.get("se_row"), "se_column": e.get("se_column"),
             "extraction_method": model,
         }
+        # The numbers must agree with each other. A field that fails its check is dropped and the reason kept,
+        # because a missing value is recoverable and a wrong one silently biases a pooled estimate.
+        flags = flags_for(row)
+        if "p-value inconsistent" in " ".join(flags):
+            row["p_value"] = None
+        if "interval not centred" in " ".join(flags) or "multiplier" in " ".join(flags):
+            row["ci_low"] = row["ci_high"] = row["ci_text"] = None
+        if "sample size is smaller" in " ".join(flags):
+            row["n_treatment"] = row["n_control"] = None
+        row["quality_flags"] = "; ".join(flags) or None
         # Standardised fields are written with the row, from the inputs it actually carries, and stay
         # null when control_sd or a per-arm count is missing rather than being guessed.
         standard = standardise(row)

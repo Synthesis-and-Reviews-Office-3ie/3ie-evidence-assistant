@@ -96,3 +96,19 @@ def test_the_uncertainty_fields_travel_with_the_row():
                 "| Income | 0.52*** | 4.0 |")
     stored = rows_for("p", DOC, {"estimates": [tstat]}, "m")[0]
     assert stored["t_stat"] == 4.0 and stored["se_kind"] == "t"
+
+
+def test_a_row_whose_total_is_smaller_than_its_arms_loses_the_arms():
+    estimate = _row({"outcome": "Income", "estimate_cell": "155.43*** (121.73)",
+                     "se_cell": "(121.73)"})
+    estimate.update({"n_treatment": 700, "n_control": 900, "sample_size": 400})
+    row = rows_for("p", DOC, {"estimates": [estimate]}, "m")[0]
+    assert row["n_treatment"] is None and row["n_control"] is None
+    assert "sample size is smaller than the arms" in (row["quality_flags"] or "")
+
+
+def test_a_consistent_row_carries_no_flags():
+    estimate = _row({"outcome": "Income", "estimate_cell": "155.43*** (121.73)",
+                     "se_cell": "(121.73)"})
+    estimate.update({"n_treatment": 700, "n_control": 900, "sample_size": 1600})
+    assert rows_for("p", DOC, {"estimates": [estimate]}, "m")[0]["quality_flags"] is None

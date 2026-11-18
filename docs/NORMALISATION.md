@@ -644,6 +644,22 @@ survives is a different class of error, and it is a reading error rather than a 
 cells hold two numbers, such as "(0.706) 1.109", the model occasionally pairs a coefficient with the standard
 error of the neighbouring estimate, 63 rows of 3,270. That is the next thing to fix, and it is now visible per row.
 
+### Arithmetic checks on every stored row (18 November 2026)
+
+A row's numbers constrain each other, so a row can be checked without going back to the page. `src/extraction/consistency.py`
+tests four relations: t equals the coefficient over its standard error; the p-value follows from t; the confidence
+interval is centred on the coefficient at a plausible multiple of the standard error; and the arm counts are
+positive and no larger than a printed total.
+
+Run over the collection, 29,939 rows, 29,738 are consistent (99.3 percent). The 201 that fail all fail the count
+check: the stored sample size is smaller than the sum of the arm counts, which means one of the two was misread.
+The t, p and interval checks found nothing, because those fields are still sparse: t was only added to the store
+today and an interval is stored on a few hundred rows.
+
+The check runs at write time. A row that fails drops the field that cannot be trusted and keeps the reason in
+`quality_flags`, because a missing value is recoverable and a wrong one silently biases a pooled estimate. The
+201 existing failures sit in documents not yet re-read; they disappear as those documents pass through the reader.
+
 ## Coverage and accuracy: where the work stands (17 November 2026)
 
 This is the short account of a long week, for a reader who does not want the dated entries below.
