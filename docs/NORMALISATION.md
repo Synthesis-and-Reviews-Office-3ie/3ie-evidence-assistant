@@ -611,6 +611,14 @@ still carry the prose levels and marker duplicates the sample found, and cleanin
 
 ### Two-level accuracy, measured by address (18 November 2026)
 
+**Superseded 19 November 2026. The figures in this section are withdrawn, not published as results.**
+The 0.006 absolute tolerance used to compare a stored value with a printed cell was too coarse: it
+accepted 0.008 against a printed 0.006 and -0.016 against a printed -0.010, so it hid mismatches it
+should have reported. Twelve of the hidden mismatches in paper 121058367 were not copy errors but a
+structural fault: a first data row such as `0.106* (0.060) [0.206]` was treated as a table header, so
+the first arm's row became the column name and could carry no address. That fault is fixed in commit
+`8c8c913`. The clean re-extraction now in progress will set the final figures.
+
 The checker could only see a third of the rows because it found cells by name: the model records a column as
 "Half cost" while the paper prints "1-year results - T1-C", and in 2,394 rows no heading matched. Naming is not
 address, and a check that depends on names measures the names.
@@ -653,6 +661,26 @@ pairs that were right; the address is now stored and used only to check the para
 survives is a different class of error, and it is a reading error rather than a copying one: in a table whose
 cells hold two numbers, such as "(0.706) 1.109", the model occasionally pairs a coefficient with the standard
 error of the neighbouring estimate, 24 rows of 3,303. That is the next thing to fix, and it is now visible per row.
+
+### What changed after that measurement (19 November 2026)
+
+- Values and parameters are matched at their printed precision, not within 0.006. A value printed to
+  three places no longer matches a two-place number that merely rounds to it.
+- The data-row-as-header fault is fixed (`8c8c913`). A first row whose cells carry a bracketed p-value
+  stays in the body, so its coefficients can be addressed.
+- The thirteenth mismatch, paper 122182715 page 39, was diagnosed separately. The stored value
+  (-0.016) is correct. The address pointed at a cell printing -0.010 because the old tolerance
+  treated a difference of exactly 0.006 as a match. The printed cell is in a data header of a
+  whole-table read, so the row is now left unaddressed rather than misaddressed; making that cell
+  addressable is a separate change.
+- Only about 18 percent of the corpus's table rows carry an address today. Most rows were written
+  before addresses existed, so a whole-corpus address measurement describes a minority of rows until
+  the re-extraction replaces them.
+
+The six-paper table above is not a result to quote. It mixed backfilled rows with re-read rows and
+predates `8c8c913`, so its value and parameter rates are neither the old defect rate nor the new one.
+Final value and parameter figures will follow from the clean re-extraction, measured over the same
+documents before and after at one commit.
 
 ### Arithmetic checks on every stored row (18 November 2026)
 
