@@ -343,7 +343,7 @@ def submit_monkeyocr_jobs(pdf_keys: list[str], force: bool) -> dict[str, dict]:
 
     try:
         # Import the deployed function (Modal 1.x uses from_name instead of lookup)
-        process_fn = modal.Function.from_name("devchat-mineru", "process_pdf_monkeyocr")
+        process_fn = modal.Function.from_name("evidence-assistant-mineru", "process_pdf_monkeyocr")
     except Exception as e:
         print(f"  ⚠️  Could not reach Modal function: {e}")
         print("     Make sure you have run:  modal deploy infrastructure/modal_mineru.py")

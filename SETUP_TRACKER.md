@@ -490,7 +490,7 @@ LANGFUSE_* (host, public/secret key)
 | -------- | --- |
 | Production | <https://3ie-evidence-assistant.vercel.app/> |
 | API Health | <https://3iechat.up.railway.app/health> |
-| Modal App | <https://modal.com/apps/3ieimpact/main/deployed/devchat-mineru> |
+| Modal App | <https://modal.com/apps/3ieimpact/main/deployed/evidence-assistant-mineru> |
 | Langfuse | <https://cloud.langfuse.com/> |
 | Supabase | <https://supabase.com/dashboard> |
 

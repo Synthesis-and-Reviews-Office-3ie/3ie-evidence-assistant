@@ -302,7 +302,7 @@ NEXT_PUBLIC_API_URL=http://localhost:8000  # or production URL
 # Modal
 modal deploy infrastructure/modal_mineru.py    # Deploy
 modal run infrastructure/modal_mineru.py       # Test run
-modal app logs devchat-mineru                  # View logs
+modal app logs evidence-assistant-mineru                # View logs
 
 # Backend (local)
 uvicorn api.server:app --reload --port 8000

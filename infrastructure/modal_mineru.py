@@ -84,7 +84,7 @@ def trigger_processing(request: dict = None) -> dict:
         }
     
     URL will be like:
-        https://[your-workspace]--devchat-mineru-trigger-processing.modal.run
+        https://[your-workspace]--evidence-assistant-mineru-trigger-processing.modal.run
     """
     import os
     from datetime import datetime
