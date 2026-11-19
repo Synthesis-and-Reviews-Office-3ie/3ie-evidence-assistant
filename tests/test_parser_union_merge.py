@@ -70,9 +70,9 @@ def test_html_table_from_mineru_is_normalised():
 def test_resolver_breaks_an_ambiguous_caption_match():
     body_a = "| x | 1 |\n| --- | --- |\n| a | 1 |"
     body_b = "| y | 2 |\n| --- | --- |\n| b | 2 |"
-    docling = {"content_list": [_table(body_a, 3, "Table 2 Results")], "page_count": 4}
-    mineru = {"content_list": [_table(body_b, 3, "Table 2 Results"),
-                               _table(body_a, 3, "Table 2 Results")], "page_count": 4}
+    docling = {"content_list": [_table(body_a, 3, "Table 2 Consumption Results")], "page_count": 4}
+    mineru = {"content_list": [_table(body_b, 3, "Table 2 Consumption Results"),
+                               _table(body_a, 3, "Table 2 Consumption Results")], "page_count": 4}
     calls = []
 
     def resolver(table, candidates, reason):
@@ -114,3 +114,28 @@ def test_resolver_pairs_across_pages_when_rules_fail():
     tables = [i for i in out["content_list"] if i["type"] == "table"]
     assert len(tables) == 1 and tables[0]["_sources"] == ["docling", "mineru"]
     assert "unmatched" in calls
+
+
+def test_duplicate_table_under_different_caption_is_collapsed():
+    body = "| a | 1 |\n| --- | --- |\n| x | 1 |"
+    docling = {"content_list": [_table(body, 3, "Table A")], "page_count": 10}
+    mineru = {"content_list": [_table(body, 8, "Annex Table")], "page_count": 10}
+    out = merge_parser_outputs(docling, mineru)
+    tables = [i for i in out["content_list"] if i["type"] == "table"]
+    assert len(tables) == 1 and tables[0]["_sources"] == ["docling", "mineru"]
+
+
+def test_distinct_tables_are_not_collapsed():
+    docling = {"content_list": [_table("| a | 1 |\n| --- | --- |\n| x | 1 |", 3, "Table A")], "page_count": 5}
+    mineru = {"content_list": [_table("| b | 2 |\n| --- | --- |\n| y | 2 |", 3, "Table B")], "page_count": 5}
+    out = merge_parser_outputs(docling, mineru)
+    assert len([i for i in out["content_list"] if i["type"] == "table"]) == 2
+
+
+def test_captioned_copy_preferred_over_uncaptioned():
+    body = "| a | 1 |\n| --- | --- |\n| x | 1 |"
+    docling = {"content_list": [_table(body, 3, "")], "page_count": 10}
+    mineru = {"content_list": [_table(body, 9, "Annex Table")], "page_count": 10}
+    out = merge_parser_outputs(docling, mineru)
+    tables = [i for i in out["content_list"] if i["type"] == "table"]
+    assert len(tables) == 1 and tables[0]["table_caption"] == "Annex Table"

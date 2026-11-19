@@ -860,6 +860,40 @@ def _merge_table(primary_item: dict, other_item: dict, primary: str, secondary: 
             "_order": order, "page_idx": _page_idx(primary_item)}
 
 
+def _table_quality(table: dict) -> tuple:
+    """Which copy to keep when two tables have the same content: more sources, a caption, docling."""
+    sources = table.get("_sources") or []
+    return (len(sources), bool(_table_caption(table).strip()), "docling" in sources, len(_table_body(table)))
+
+
+_CAPTION_STOP = {"table", "tables", "panel", "appendix", "annex", "figure", "figures",
+                 "results", "result", "continued", "cont", "online", "supplementary",
+                 "additional", "app", "section"}
+
+
+def _caption_words(text: str) -> set:
+    """Caption words without the generic labels that nearly every table caption carries."""
+    return _union_words(text) - _CAPTION_STOP
+
+
+def _same_table(a: dict, b: dict) -> bool:
+    """True when two tables carry the same numbers and words, so one is a duplicate of the other.
+
+    Captions may differ or be missing, which is exactly why the pairing passes miss some duplicates;
+    a caption that says only "Table 3" or "Annex" is treated as no evidence either way.
+    """
+    an, aw = _union_numbers(_table_body(a)), _union_words(_table_body(a))
+    bn, bw = _union_numbers(_table_body(b)), _union_words(_table_body(b))
+    if not an or not bn:
+        return False
+    if _jaccard(an, bn) < 0.85:
+        return False
+    if aw and bw and _jaccard(aw, bw) < 0.6:
+        return False
+    ca, cb = _caption_words(_table_caption(a)), _caption_words(_table_caption(b))
+    return not (ca and cb) or _jaccard(ca, cb) >= 0.3
+
+
 def merge_parser_outputs(docling: dict, mineru: dict, primary: str = "docling", resolver=None) -> dict:
     """Merge two parser outputs into one canonical document.
 
@@ -906,7 +940,7 @@ def merge_parser_outputs(docling: dict, mineru: dict, primary: str = "docling", 
         page = _page_idx(t)
         strong = [j for j, (si, s) in enumerate(s_tables)
                   if j not in used_s and page is not None and _page_idx(s) == page
-                  and _jaccard(_union_words(_table_caption(t)), _union_words(_table_caption(s))) >= 0.5]
+                  and _jaccard(_caption_words(_table_caption(t)), _caption_words(_table_caption(s))) >= 0.5]
         if not strong:
             leftover.append((pi, t))
             continue
@@ -916,7 +950,7 @@ def merge_parser_outputs(docling: dict, mineru: dict, primary: str = "docling", 
             choice = decide(t, strong, "ambiguous")
             if choice is None:
                 chosen = max(strong, key=lambda j: _jaccard(
-                    _union_words(_table_caption(t)), _union_words(_table_caption(s_tables[j][1]))))
+                    _caption_words(_table_caption(t)), _caption_words(_table_caption(s_tables[j][1]))))
             elif choice < 0:
                 leftover.append((pi, t))
                 continue
@@ -965,6 +999,21 @@ def merge_parser_outputs(docling: dict, mineru: dict, primary: str = "docling", 
     for j, (si, s) in enumerate(s_tables):
         if j not in used_s:
             merged_tables.append({**s, "_sources": [secondary], "_order": si, "page_idx": _page_idx(s)})
+
+    # Final pass: drop table copies the pairing missed. An unmatched secondary table can still be the
+    # same table as a kept one under a different caption or page; leaving both invites the reader to
+    # read a duplicate with a weaker row label. Keep the better render and union the provenance.
+    deduped = []
+    for table in merged_tables:
+        match = next((i for i, kept in enumerate(deduped) if _same_table(table, kept)), None)
+        if match is None:
+            deduped.append(dict(table))
+            continue
+        kept = deduped[match]
+        sources = sorted(set((kept.get("_sources") or []) + (table.get("_sources") or [])))
+        better = table if _table_quality(table) > _table_quality(kept) else kept
+        deduped[match] = {**better, "_sources": sources}
+    merged_tables = deduped
 
     # Prose from the primary parser, plus any page it left without text or tables.
     covered = {_page_idx(item) for item in p_items if item.get("type") in ("text", "title", "table")}

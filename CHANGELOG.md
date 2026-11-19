@@ -2,6 +2,16 @@
 
 All notable changes to DevChat v2.0 are documented in this file.
 
+## [2.0.20] - 2026-11-19
+
+### Fixed
+- **Duplicate tables no longer reach the reader as separate tables.** The union's unmatched secondary tables could be
+  copies of a kept table under another caption or page. The reader then read a duplicate whose row label was weaker,
+  which lost a specific outcome label and cost six canonical value matches across the key. The merge now drops a
+  table whose numbers and words match a kept one, unions the provenance, and prefers the copy with a caption.
+  Caption matching now ignores generic words such as "table", "annex" and "panel", so "Table A" and "Table B" no
+  longer pair. Covered by five new tests.
+
 ## [2.0.19] - 2026-11-18
 
 ### Added
