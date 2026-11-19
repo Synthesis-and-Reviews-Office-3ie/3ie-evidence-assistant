@@ -353,8 +353,9 @@ def _starred(value: object) -> bool:
     return bool(re.search(r"[-−–]?\d[\d.,]*\s*[*†‡]", str(value)))
 
 
-# A whole cell that is a number: optional stars, optional parenthesised statistic beside it.
-_DATA_CELL = re.compile(r"^\s*[-−–]?\d[\d.,]*\s*[*†‡]*\s*(?:\([^)]*\))?\s*$")
+# A whole cell that is a number: optional stars, then any parenthesised or bracketed statistics beside it.
+# "0.106* (0.060) [0.206]" is data, not a column name, and the bracket must not hide that.
+_DATA_CELL = re.compile(r"^\s*[-−–]?\d[\d.,]*\s*[*†‡]*\s*(?:\s*[\(\[][^)\]]*[\)\]])*\s*$")
 
 
 def estimate_columns(grid: TableGrid, limit: int = MAX_SPLIT_COLUMNS) -> List[int]:

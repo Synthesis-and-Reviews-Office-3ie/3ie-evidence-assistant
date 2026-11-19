@@ -217,6 +217,22 @@ def test_a_continuation_table_names_its_columns_by_position():
     assert "1664" not in split[0]["text"]
 
 
+CONTINUATION_TABLE_WITH_P = """| Cash savings (BDT) | 0.106* (0.060) [0.206] | 0.096* (0.053) [0.206] |
+| --- | --- | --- |
+| Outstanding loan (BDT) | 0.017 (0.056) [0.759] | 0.053 (0.057) [0.355] |
+| Assets (BDT) | 0.043 (0.044) [0.581] | 0.091** (0.046) [0.128] |"""
+
+
+def test_a_continuation_row_with_a_bracketed_p_value_is_data_not_a_header():
+    # A bracketed p-value used to fail the data-cell pattern, so the first arm's row was taken as the
+    # header: its coefficients became the column names and could hold no address.
+    split = split_estimate_columns(CONTINUATION_TABLE_WITH_P)
+    assert [entry["header"] for entry in split] == ["column 1", "column 2"]
+    lines = split[0]["text"].splitlines()
+    assert "| Cash savings (BDT) | 0.106* (0.060) [0.206] |" in lines
+    assert "0.096" not in split[0]["text"]
+
+
 def test_a_grouped_header_keeps_the_group_number():
     split = split_estimate_columns(GROUPED_TABLE)
     assert split[0]["header"] != split[1]["header"]
