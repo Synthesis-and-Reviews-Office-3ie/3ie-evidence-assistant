@@ -396,16 +396,39 @@ def finalise_addresses(estimates: List["Estimate"], units: Sequence[Dict[str, An
                 estimate.notes.append("standard error dropped: equal to the coefficient")
                 unverified += 1
                 continue
-        cells = [printed]
+        cells = [(estimate.cell_row, estimate.cell_column)]
         if estimate.se_row is not None and estimate.se_column is not None and \
                 estimate.se_row < len(grid.body) and estimate.se_column < len(grid.body[estimate.se_row]):
-            cells.append(grid.body[estimate.se_row][estimate.se_column])
-        if not any(_holds(estimate.standard_error, cell, signed=False) for cell in cells):
+            cells.append((estimate.se_row, estimate.se_column))
+        located = next((cell for cell in cells
+                        if _holds(estimate.standard_error, grid.body[cell[0]][cell[1]], signed=False)), None)
+        if located is None:
+            # A statistic printed on its own row, or in the column beside the estimate, is still this
+            # row's error. Only a parenthesised or bracketed number equal to the reported error counts,
+            # so a neighbouring coefficient cannot be taken for it.
+            located = next((cell for cell in _nearby_cells(estimate.cell_row, estimate.cell_column, grid)
+                            if _stat_in_cell(grid.body[cell[0]][cell[1]], estimate.standard_error)), None)
+        if located is None:
             estimate.standard_error = None
             estimate.se_row = estimate.se_column = None
             estimate.notes.append("standard error unverified: not printed in the addressed cells")
             unverified += 1
+        else:
+            estimate.se_row, estimate.se_column = located
     return unverified
+
+
+def _nearby_cells(row: int, column: int, grid):
+    """The cell below in the same column, then the columns beside it, inside the table."""
+    for r, c in ((row + 1, column), (row, column + 1), (row, column - 1)):
+        if 0 <= r < len(grid.body) and 0 < c < len(grid.body[r]):
+            yield r, c
+
+
+def _stat_in_cell(cell: object, value) -> bool:
+    """A parenthesised or bracketed number in `cell` equals `value` at printed precision."""
+    return any(_holds(value, match.group(1), signed=False)
+               for match in re.finditer(r"[\(\[]\s*([-−–]?\d[\d.,]*)\s*[\)\]]", str(cell or "")))
 
 
 def effect_is_close(effect_size, token) -> bool:

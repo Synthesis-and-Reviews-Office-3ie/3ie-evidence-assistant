@@ -442,3 +442,37 @@ def test_the_second_pass_address_carries_a_unit():
     e = to_estimate({"outcome": "Income", "estimate_cell": "0.5***", "se_cell": "(0.1)"}, "t", 1,
                     table, unit_index=7)
     assert e.unit_index == 7
+
+
+def test_finalise_finds_an_error_in_the_row_below():
+    items = [{"type": "table", "page_idx": 0, "text":
+              "| Outcome | Coef |\n| --- | --- |\n| Income | 0.391** |\n|  | (0.160) |"}]
+    units = table_units(items)
+    e = to_estimate({"outcome": "Income", "estimate_cell": "0.391**", "se_cell": "0.160",
+                     "row_number": 1, "column_number": 2},
+                    "Table 1", units[0]["page"], units[0]["text"], unit_index=units[0]["unit_index"])
+    assert e.standard_error == 0.160
+    finalise_addresses([e], units)
+    assert e.standard_error == 0.160 and (e.se_row, e.se_column) == (1, 1)
+
+
+def test_finalise_finds_an_error_in_the_next_column():
+    items = [{"type": "table", "page_idx": 0, "text":
+              "| Outcome | Coef | SE |\n| --- | --- | --- |\n| Income | 0.391** | (0.160) |"}]
+    units = table_units(items)
+    e = to_estimate({"outcome": "Income", "estimate_cell": "0.391**", "se_cell": "0.160",
+                     "row_number": 1, "column_number": 2},
+                    "Table 1", units[0]["page"], units[0]["text"], unit_index=units[0]["unit_index"])
+    finalise_addresses([e], units)
+    assert e.standard_error == 0.160 and (e.se_row, e.se_column) == (0, 2)
+
+
+def test_finalise_drops_an_error_printed_nowhere():
+    items = [{"type": "table", "page_idx": 0, "text":
+              "| Outcome | Coef |\n| --- | --- |\n| Income | 0.391** |\n| Assets | 0.400** |"}]
+    units = table_units(items)
+    e = to_estimate({"outcome": "Income", "estimate_cell": "0.391**", "se_cell": "0.160",
+                     "row_number": 1, "column_number": 2},
+                    "Table 1", units[0]["page"], units[0]["text"], unit_index=units[0]["unit_index"])
+    finalise_addresses([e], units)
+    assert e.standard_error is None
