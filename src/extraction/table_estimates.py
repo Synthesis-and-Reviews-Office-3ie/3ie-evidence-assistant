@@ -208,6 +208,72 @@ async def repair_addresses(estimates: List["Estimate"], units: Sequence[Dict[str
     return repaired
 
 
+def locate_by_value(unit_text: str, effect_size):
+    """Row and column of the one cell whose numbers equal this coefficient."""
+    from src.extraction.table_structure import parse_markdown_table
+
+    if effect_size is None:
+        return None, None
+    grid = parse_markdown_table(unit_text)
+    hits = [(row_index, column_index)
+            for row_index, row in enumerate(grid.body)
+            for column_index, cell in enumerate(row)
+            if column_index > 0 and _close(float(effect_size), _numbers_in(cell))]
+    return hits[0] if len(hits) == 1 else (None, None)
+
+
+def finalise_addresses(estimates: List["Estimate"], units: Sequence[Dict[str, Any]]) -> int:
+    """Fill a missing standard error from the addressed cell, and drop one that is not there.
+
+    Every addressed row ends in one of two states: its standard error is printed beside the coefficient and
+    stored, or it cannot be found in the cells the row names and is dropped with a note. Nothing is kept on the
+    strength of the model's word alone.
+    """
+    from src.extraction.table_structure import parse_markdown_table
+
+    unverified = 0
+    for estimate in estimates:
+        if estimate.cell_row is None or estimate.unit_index is None or estimate.unit_index >= len(units):
+            continue
+        grid = parse_markdown_table(units[estimate.unit_index]["text"])
+        if estimate.cell_row >= len(grid.body):
+            continue
+        body = grid.body[estimate.cell_row]
+        if estimate.cell_column >= len(body):
+            continue
+        printed = str(body[estimate.cell_column])
+        if estimate.standard_error is None:
+            anchor = printed
+            for match in re.finditer(r"-?\d[\d.,]*", printed):
+                if effect_is_close(estimate.effect_size, match.group(0)):
+                    anchor = printed[match.end():]
+                    break
+            neighbour = re.match(r"\s*[*†‡]*\s*\(\s*(-?[\d.,]+)\s*\)", anchor)
+            if neighbour:
+                value = parse_number(neighbour.group(1))
+                if value is not None:
+                    estimate.standard_error = abs(value)
+                    estimate.se_row, estimate.se_column = estimate.cell_row, estimate.cell_column
+            continue
+        cells = [printed]
+        if estimate.se_row is not None and estimate.se_column is not None and \
+                estimate.se_row < len(grid.body) and estimate.se_column < len(grid.body[estimate.se_row]):
+            cells.append(grid.body[estimate.se_row][estimate.se_column])
+        numbers = [abs(value) for cell in cells for value in _numbers_in(cell)]
+        if not _close(abs(estimate.standard_error), numbers):
+            estimate.standard_error = None
+            estimate.se_row = estimate.se_column = None
+            estimate.notes.append("standard error unverified: not printed in the addressed cells")
+            unverified += 1
+    return unverified
+
+
+def effect_is_close(effect_size, token) -> bool:
+    if effect_size is None:
+        return False
+    return _close(float(effect_size), _numbers_in(token))
+
+
 def pair_arm_counts(estimates: List["Estimate"]) -> None:
     """Give each estimate both arm counts, when the table supplied them one column at a time.
 
@@ -981,6 +1047,10 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
                                                        _merge_outcome(estimate.arm))
             if estimate.cell_row is None:
                 estimate.cell_row, estimate.cell_column = locate_cell_position(u["text"], estimate.estimate_cell)
+            if estimate.cell_row is None:
+                # Still no address: the coefficient's own text often appears once in the table, which is an
+                # address without any need for the model to number rows.
+                estimate.cell_row, estimate.cell_column = locate_by_value(u["text"], estimate.effect_size)
         per_item.setdefault(u["index"], []).extend(rows)
         tables.append({"table": label, "page": u["page"], "results_table": is_results, "estimates": len(rows),
                        "grounded": sum(r.grounded for r in rows), "error": err,
@@ -993,9 +1063,10 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
     pair_arm_counts(estimates)
     attach_document_statistics(estimates)
     address_repairs = await repair_addresses(estimates, units, model, api_key)
+    unverified = finalise_addresses(estimates, units)
     estimate_dicts = [asdict(e) for e in estimates]
     duplicates = 0
     if drop_duplicates:
         estimate_dicts, duplicates = dedupe_estimates(estimate_dicts)
     return {"estimates": estimate_dicts, "tables": tables, "duplicates": duplicates,
-            "address_repairs": address_repairs}
+            "address_repairs": address_repairs, "unverified_se": unverified}

@@ -84,7 +84,7 @@ def rows_for(project_id: str, doc: Dict[str, Any], out: Dict[str, Any], model: s
         }
         # The numbers must agree with each other. A field that fails its check is dropped and the reason kept,
         # because a missing value is recoverable and a wrong one silently biases a pooled estimate.
-        flags = flags_for(row)
+        flags = flags_for(row) + [note for note in (e.get("notes") or []) if note]
         if "p-value inconsistent" in " ".join(flags):
             row["p_value"] = None
         if "interval not centred" in " ".join(flags) or "multiplier" in " ".join(flags):

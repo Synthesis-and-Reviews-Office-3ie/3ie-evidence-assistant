@@ -624,13 +624,18 @@ Measured on the six papers, 4,777 rows:
 
 | | Result |
 | --- | --- |
-| Rows carrying an address | 4,431 (92%) |
-| Value matches the addressed cell | 4,430 of 4,431 (100.0%) |
-| Parameter matches the addressed cell | 3,279 of 3,303 (99.3%) |
-| Parameter printed but not stored | 14 |
+| Rows carrying an address | 4,478 (94%) |
+| Value matches the addressed cell | 4,477 of 4,478 (100.0%) |
+| Parameter matches the addressed cell | 3,342 of 3,351 (99.7%) |
+| Parameter printed but not stored | 4 |
 
-The rows without an address are the residual: 387 rows where the model did not return a usable number or the
-printed cell did not hold its figure. They are reported as unaddressed, not scored.
+The rows without an address are the residual: 284 rows, 6 percent, where the coefficient is not in the parsed
+table at all, which happens with prose and with mangled cells. They are reported as unaddressed, not scored.
+
+All of this runs inside the document job, so it is not an operations step. The address is taken from the model
+when it gives one and from the coefficient's own text when it does not; a missing standard error is filled from
+the parenthesis printed beside the coefficient; and an error that cannot be found in the cells the row names is
+dropped and the row flagged as unverified, because a wrong weight in a pooled estimate is worse than a missing one.
 
 `repair_addresses` makes one more call per affected table view, capped at four views and five rows each,
 asking only where the cells sit. Every answer is validated against the table: the coefficient cell must hold
