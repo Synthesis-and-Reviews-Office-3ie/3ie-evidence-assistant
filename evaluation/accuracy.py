@@ -48,6 +48,10 @@ from supabase import create_client  # noqa: E402
 
 PROJECT = os.environ.get("RAG_PROJECT_ID") or "7efdc60e-e863-480c-929e-616574725e5f"
 SOURCE = "tables_v1"
+# text_position is required: it is the only field that says whether the prose or vision reader wrote a
+# row, so without it every vision row is counted as a table row. See classify().
+ROW_FIELDS = ("doc_key,page,unit_index,cell_row,cell_column,se_row,se_column,"
+              "effect_size,standard_error,table_number,text_position")
 CACHE = ROOT / "evaluation" / "results" / "usage_study" / PROJECT / "content"
 RESULT = ROOT / "evaluation" / "results" / f"accuracy_{date.today().isoformat()}.json"
 PAREN = re.compile(r"\(\s*[-−–]?\d[\d.,]*\s*\)")
@@ -114,8 +118,7 @@ def measure(docs=None, limit=None, project: str = PROJECT) -> dict:
         names = [name for name in names if name in wanted]
     rows_by_doc: dict[str, list] = defaultdict(list)
     for row in fetch_all(sb.table("effect_estimates")
-                         .select("doc_key,page,unit_index,cell_row,cell_column,se_row,se_column,"
-                                 "effect_size,standard_error,table_number")
+                         .select(ROW_FIELDS)
                          .eq("rag_project_id", project).eq("source", SOURCE)):
         rows_by_doc[row["doc_key"]].append(row)
 
