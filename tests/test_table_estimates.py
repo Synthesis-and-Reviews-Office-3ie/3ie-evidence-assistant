@@ -435,3 +435,10 @@ def test_finalise_drops_an_error_copied_from_the_coefficient():
     e.se_row = e.se_column = None
     unverified = finalise_addresses([e], units)
     assert e.standard_error is None and unverified == 1
+
+
+def test_the_second_pass_address_carries_a_unit():
+    table = "| Outcome | (1) |\n| --- | --- |\n| Income | 0.5*** (0.1) |\n| Assets | 0.3*** (0.1) |"
+    e = to_estimate({"outcome": "Income", "estimate_cell": "0.5***", "se_cell": "(0.1)"}, "t", 1,
+                    table, unit_index=7)
+    assert e.unit_index == 7

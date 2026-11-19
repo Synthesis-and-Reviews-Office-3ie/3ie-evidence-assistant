@@ -55,3 +55,21 @@ def test_merge_keeps_a_row_that_differs_in_arm():
                                        "effect_size": 107.0}])
     assert added == 1 and len(merged) == 2
     assert json.dumps(merged).count("107.0") == 2
+
+
+def test_a_missing_address_is_filled_from_the_other_read():
+    current = {"outcome_name": "Expenditure", "treatment_arm": "Half", "effect_size": 107.0,
+               "unit_index": None}
+    extra = {"outcome_name": "Expenditure", "treatment_arm": "Half", "effect_size": 107.0,
+             "unit_index": 7, "cell_row": 1, "cell_column": 2}
+    merged, added = merge_rows([current], [extra])
+    assert added == 0 and merged[0]["unit_index"] == 7 and merged[0]["cell_column"] == 2
+
+
+def test_an_existing_address_is_not_overwritten():
+    current = {"outcome_name": "Expenditure", "treatment_arm": "Half", "effect_size": 107.0,
+               "unit_index": 3, "cell_row": 0, "cell_column": 1}
+    extra = {"outcome_name": "Expenditure", "treatment_arm": "Half", "effect_size": 107.0,
+             "unit_index": 7, "cell_row": 4, "cell_column": 5}
+    merged, _ = merge_rows([current], [extra])
+    assert merged[0]["unit_index"] == 3 and merged[0]["cell_column"] == 1

@@ -108,6 +108,8 @@ async def run_second_pass(content_list: Sequence[dict[str, Any]], names: Sequenc
         _parse_json,
         _structure_hint,
         _table_analysis,
+        locate_by_value,
+        locate_cell_position,
         to_estimate,
     )
 
@@ -134,8 +136,19 @@ async def run_second_pass(content_list: Sequence[dict[str, Any]], names: Sequenc
                 continue
             raw = (data.get("estimates") or []) if data.get("results_table") else []
             raw, _ = _drop_non_outcome_rows(raw)
-            rows = [to_estimate(r, label, unit["page"], unit["text"], unit.get("arm_hint") or "")
+            rows = [to_estimate(r, label, unit["page"], unit["text"], unit.get("arm_hint") or "",
+                                unit_index=unit.get("unit_index"))
                     for r in raw if isinstance(r, dict)]
+            # The model's own row and column are optional, so the same two fallbacks the first pass uses
+            # are applied here; without them the row has a unit but still no cell.
+            for estimate in rows:
+                if estimate.cell_row is None:
+                    estimate.cell_row, estimate.cell_column = locate_cell_position(
+                        unit["text"], estimate.estimate_cell)
+                if estimate.cell_row is None:
+                    estimate.cell_row, estimate.cell_column = locate_by_value(
+                        unit["text"], estimate.effect_size,
+                        estimate.row_label or estimate.outcome, estimate.column_label, estimate.arm)
             estimates += rows
             tables.append({"table": label, "page": unit["page"], "estimates": len(rows), "second_pass": True})
     from src.extraction.prose_estimates import build_rows as prose_rows
@@ -192,4 +205,9 @@ def merge_rows(rows: list[dict[str, Any]], extra: list[dict[str, Any]]) -> tuple
         for field in ("standard_error", "p_value", "ci_text", "sample_size", "literal_text", "text_position"):
             if current.get(field) in (None, "") and row.get(field) not in (None, ""):
                 current[field] = row[field]
+        # The address travels as one piece with the unit it belongs to, never a cell from another view.
+        if current.get("unit_index") is None and row.get("unit_index") is not None:
+            for field in ("unit_index", "cell_row", "cell_column", "se_row", "se_column", "source_cell"):
+                if row.get(field) is not None:
+                    current[field] = row[field]
     return rows, added
