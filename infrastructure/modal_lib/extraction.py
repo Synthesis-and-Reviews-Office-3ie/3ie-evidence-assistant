@@ -876,6 +876,18 @@ def _caption_words(text: str) -> set:
     return _union_words(text) - _CAPTION_STOP
 
 
+def _prefers_primary(a: dict, b: dict, primary: str) -> bool:
+    """Keep the primary parser's render when two copies are duplicates: its row labels are stronger.
+
+    The caption is recovered separately from the other copy, so preferring the primary does not lose it.
+    """
+    a_primary = primary in (a.get("_sources") or [])
+    b_primary = primary in (b.get("_sources") or [])
+    if a_primary != b_primary:
+        return a_primary
+    return _table_quality(a) >= _table_quality(b)
+
+
 def _same_table(a: dict, b: dict) -> bool:
     """True when two tables carry the same numbers and words, so one is a duplicate of the other.
 
@@ -1011,8 +1023,11 @@ def merge_parser_outputs(docling: dict, mineru: dict, primary: str = "docling", 
             continue
         kept = deduped[match]
         sources = sorted(set((kept.get("_sources") or []) + (table.get("_sources") or [])))
-        better = table if _table_quality(table) > _table_quality(kept) else kept
-        deduped[match] = {**better, "_sources": sources}
+        base, other = (kept, table) if _prefers_primary(kept, table, primary) else (table, kept)
+        merged = {**base, "_sources": sources}
+        if not _table_caption(base).strip() and _table_caption(other).strip():
+            merged["table_caption"] = other.get("table_caption")
+        deduped[match] = merged
     merged_tables = deduped
 
     # Prose from the primary parser, plus any page it left without text or tables.

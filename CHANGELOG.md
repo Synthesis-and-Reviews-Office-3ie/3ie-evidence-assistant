@@ -2,6 +2,18 @@
 
 All notable changes to DevChat v2.0 are documented in this file.
 
+## [2.0.21] - 2026-11-19
+
+### Changed
+- **The union now meets Docling on the honest measure.** After collapsing duplicate tables, the six canonical
+  regressions fell to three and three new gains appeared, moving the union from 378/439 to 381/439 against
+  Docling's 380/439. The union is ahead on standard errors (348/409 against 340/409), token-overlap matches
+  (291 against 287) and outcome presence (413 against 409), behind on exact-name matches (162 against 182), and
+  stores 18,870 rows against 17,296.
+- The duplicate merge now keeps the primary parser's render and borrows the caption from the other copy, since
+  MinerU's HTML-to-Markdown row labels are weaker. This change is unit-tested but not yet re-scored; validating it
+  needs another 49-document extraction, about an hour and a half.
+
 ## [2.0.20] - 2026-11-19
 
 ### Fixed
