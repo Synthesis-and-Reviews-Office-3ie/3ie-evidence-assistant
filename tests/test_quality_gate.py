@@ -1,6 +1,7 @@
 """The stored-baseline comparison the weekly gate uses for address accuracy."""
 
 from evaluation.accuracy import baseline_entry, below_baseline, rates
+from evaluation.quality_gate import recall_failures
 
 
 def test_rates_divide_by_their_own_base():
@@ -44,3 +45,21 @@ def test_a_field_absent_from_the_baseline_or_the_measurement_is_skipped():
     assert below_baseline({"value": 0.999}, {"value": 0.5}) == [
         "value accuracy fell from 99.9% to 50.0%"]
     assert below_baseline({"value": 0.999}, {"parameter": 0.5}) == []
+
+
+def test_an_se_recall_drop_is_a_failure():
+    baseline = {"estimate": {"matched": 442}, "se": {"matched": 412}}
+    assert recall_failures(baseline, {"estimate": {"matched": 442}, "se": {"matched": 400}}) == [
+        "se matched fell from 412 to 400"]
+
+
+def test_a_coefficient_recall_drop_is_a_failure():
+    baseline = {"estimate": {"matched": 442}, "se": {"matched": 412}}
+    assert recall_failures(baseline, {"estimate": {"matched": 430}, "se": {"matched": 412}}) == [
+        "estimate matched fell from 442 to 430"]
+
+
+def test_unchanged_or_improved_recall_is_not_a_failure():
+    baseline = {"estimate": {"matched": 442}, "se": {"matched": 412}}
+    assert recall_failures(baseline, {"estimate": {"matched": 442}, "se": {"matched": 412}}) == []
+    assert recall_failures(baseline, {"estimate": {"matched": 450}, "se": {"matched": 420}}) == []

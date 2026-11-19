@@ -143,6 +143,19 @@ def measure(path: Path = KEY_FILE) -> dict:
     return out
 
 
+def recall_failures(baseline: dict | None, current: dict | None) -> list[str]:
+    """Reasons coefficient or standard-error recall sits below the stored baseline."""
+    if not baseline or not current:
+        return []
+    reasons = []
+    for label in ("estimate", "se"):
+        was = (baseline.get(label) or {}).get("matched")
+        now = (current.get(label) or {}).get("matched")
+        if was is not None and now is not None and now < was:
+            reasons.append(f"{label} matched fell from {was} to {now}")
+    return reasons
+
+
 def main() -> int:
     path = key_path()
     if not path.exists():
@@ -205,11 +218,10 @@ def main() -> int:
     if baseline is not None and not updating:
         for label in ("estimate", "se"):
             was, now = baseline[label]["matched"], current[label]["matched"]
-            if now < was:
-                failures.append(f"{label} matched fell from {was} to {now}")
-            elif now > was:
+            if now > was:
                 lines.append(f"- {label} improved from {was} to {now}; update the baseline when the "
                              "change is understood (`--update-baseline`)")
+        failures.extend(recall_failures(baseline, current))
         for reason in below_baseline(baseline_accuracy,
                                      accuracy_rates(current_accuracy) if current_accuracy else None):
             failures.append(reason)
