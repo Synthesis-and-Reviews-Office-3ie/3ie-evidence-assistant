@@ -476,3 +476,14 @@ def test_finalise_drops_an_error_printed_nowhere():
                     "Table 1", units[0]["page"], units[0]["text"], unit_index=units[0]["unit_index"])
     finalise_addresses([e], units)
     assert e.standard_error is None
+
+
+def test_finalise_does_not_take_an_error_from_the_column_to_the_left():
+    items = [{"type": "table", "page_idx": 0, "text":
+              "| Outcome | SE | Coef |\n| --- | --- | --- |\n| Income | (0.160) | 0.391** |"}]
+    units = table_units(items)
+    e = to_estimate({"outcome": "Income", "estimate_cell": "0.391**", "se_cell": "0.160",
+                     "row_number": 1, "column_number": 3},
+                    "Table 1", units[0]["page"], units[0]["text"], unit_index=units[0]["unit_index"])
+    finalise_addresses([e], units)
+    assert e.standard_error is None

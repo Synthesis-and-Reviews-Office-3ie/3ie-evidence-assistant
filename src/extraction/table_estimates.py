@@ -419,8 +419,8 @@ def finalise_addresses(estimates: List["Estimate"], units: Sequence[Dict[str, An
 
 
 def _nearby_cells(row: int, column: int, grid):
-    """The cell below in the same column, then the columns beside it, inside the table."""
-    for r, c in ((row + 1, column), (row, column + 1), (row, column - 1)):
+    """The cell below in the same column, then the cell to the right of the estimate."""
+    for r, c in ((row + 1, column), (row, column + 1)):
         if 0 <= r < len(grid.body) and 0 < c < len(grid.body[r]):
             yield r, c
 
