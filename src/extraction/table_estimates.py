@@ -168,6 +168,12 @@ def _holds(value, text: object, signed: bool = True) -> bool:
     return False
 
 
+def _count_number(text: object, value) -> int:
+    """How many printed tokens in `text` equal `value` at their printed precision."""
+    return sum(1 for token in _TOKEN.findall(str(text or ""))
+               if _holds(value, token, signed=False))
+
+
 def _address_problem(estimate: "Estimate", grid) -> bool:
     """True when the row has no address, or when its standard error cannot be found in the cells it names."""
     if estimate.cell_row is None or estimate.cell_column is None:
@@ -369,6 +375,27 @@ def finalise_addresses(estimates: List["Estimate"], units: Sequence[Dict[str, An
                     estimate.standard_error = abs(value)
                     estimate.se_row, estimate.se_column = estimate.cell_row, estimate.cell_column
             continue
+        if estimate.effect_size is not None and \
+                abs(abs(estimate.standard_error) - abs(estimate.effect_size)) <= \
+                1e-9 * max(1.0, abs(estimate.effect_size)):
+            # The error equals the coefficient. Keep it when the cell prints the error as its own number,
+            # as in "0.02 (0.02)", or when the error cell the row names holds it, because then the reader
+            # named a real printed error. Drop it only when the coefficient is the sole printed number
+            # carrying that value, which is the model copying the coefficient into the error and the
+            # addressed cell then confirming it.
+            other_cell = (estimate.se_row is not None and estimate.se_column is not None
+                          and (estimate.se_row != estimate.cell_row
+                               or estimate.se_column != estimate.cell_column)
+                          and estimate.se_row < len(grid.body)
+                          and estimate.se_column < len(grid.body[estimate.se_row])
+                          and _count_number(grid.body[estimate.se_row][estimate.se_column],
+                                            estimate.standard_error) >= 1)
+            if not other_cell and _count_number(printed, estimate.standard_error) <= 1:
+                estimate.standard_error = None
+                estimate.se_row = estimate.se_column = None
+                estimate.notes.append("standard error dropped: equal to the coefficient")
+                unverified += 1
+                continue
         cells = [printed]
         if estimate.se_row is not None and estimate.se_column is not None and \
                 estimate.se_row < len(grid.body) and estimate.se_column < len(grid.body[estimate.se_row]):
@@ -783,6 +810,13 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
     if se is not None and se == 0:
         se = None
     estimate_value = parse_number(est_cell)
+    # An error equal to its own coefficient is the model copying the coefficient into the error cell, not
+    # a printed standard error. A number printed beside the coefficient already won above, so this fires
+    # only for a model-supplied error with nothing printed beside the value.
+    if cell_se is None and se is not None and estimate_value not in (None, 0) and \
+            abs(abs(se) - abs(estimate_value)) <= 1e-9 * max(1.0, abs(estimate_value)):
+        se = None
+        kind = ""
     if kind == "t" and t:
         # t = estimate / se by definition, so a printed t gives the standard error exactly. The tolerance is
         # arithmetic, not an estimate, and it is only taken when both numbers are present.

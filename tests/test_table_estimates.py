@@ -2,8 +2,8 @@
 
 import pytest
 
-from src.extraction.table_estimates import (count_stars, merge_reads, parse_interval, parse_number,
-                                           table_units, to_estimate)
+from src.extraction.table_estimates import (count_stars, finalise_addresses, merge_reads, parse_interval,
+                                           parse_number, table_units, to_estimate)
 
 
 @pytest.mark.parametrize("text, value", [
@@ -396,3 +396,42 @@ def test_a_repeated_exact_number_is_addressed_by_its_row_label():
     assert locate_by_value(table, 0.16, row_label="Ingreso mensual del participante") == (1, 1)
     # A label that names neither row cannot create an address.
     assert locate_by_value(table, 0.16, row_label="Something else") == (None, None)
+
+
+def test_an_error_equal_to_its_coefficient_is_not_stored():
+    table = "| Outcome | Coef |\n| --- | --- |\n| Income | 0.391** |"
+    e = to_estimate({"outcome": "Income", "estimate_cell": "0.391**", "se_cell": "0.391",
+                     "row_number": 1, "column_number": 2}, "t", 1, table)
+    assert e.effect_size == 0.391 and e.standard_error is None
+
+
+def test_a_printed_error_beside_the_coefficient_still_wins():
+    table = "| Outcome | Coef |\n| --- | --- |\n| Income | 0.391** (0.160) |"
+    e = to_estimate({"outcome": "Income", "estimate_cell": "0.391**", "se_cell": "0.391",
+                     "row_number": 1, "column_number": 2}, "t", 1, table)
+    assert e.standard_error == 0.160
+
+
+def test_finalise_keeps_an_error_printed_as_its_own_token():
+    items = [{"type": "table", "text": "| Outcome | Coef |\n| --- | --- |\n| Income | 0.02 (0.02) |",
+              "page_idx": 0}]
+    units = table_units(items)
+    e = to_estimate({"outcome": "Income", "estimate_cell": "0.02", "se_cell": "",
+                     "row_number": 1, "column_number": 2},
+                    "Table 1", units[0]["page"], units[0]["text"], unit_index=units[0]["unit_index"])
+    assert e.standard_error == 0.02          # taken from the printed parenthesis
+    finalise_addresses([e], units)
+    assert e.standard_error == 0.02          # the backstop must not drop a printed error
+
+
+def test_finalise_drops_an_error_copied_from_the_coefficient():
+    items = [{"type": "table", "text": "| Outcome | Coef |\n| --- | --- |\n| Income | 0.391** |",
+              "page_idx": 0}]
+    units = table_units(items)
+    e = to_estimate({"outcome": "Income", "estimate_cell": "0.391**", "se_cell": "",
+                     "row_number": 1, "column_number": 2},
+                    "Table 1", units[0]["page"], units[0]["text"], unit_index=units[0]["unit_index"])
+    e.standard_error = e.effect_size         # the copy the backstop must reject
+    e.se_row = e.se_column = None
+    unverified = finalise_addresses([e], units)
+    assert e.standard_error is None and unverified == 1
