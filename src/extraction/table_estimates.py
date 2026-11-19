@@ -85,6 +85,129 @@ def attach_document_statistics(estimates: List["Estimate"]) -> int:
     return filled
 
 
+ADDRESS_REPAIR_PROMPT = """This table is shown as a markdown grid.
+
+{table}
+
+For each row listed below, give the address of the cell that holds the estimate and of the cell that holds
+its standard error. Count the first data row as 1 and the first column as 1; the label column is 1.
+
+{rows}
+
+Return JSON only: {{"rows": [{{"outcome": "<as listed>", "row_number": 1, "column_number": 2,
+"se_row_number": 2, "se_column_number": 2}}]}}"""
+
+
+def _numbers_in(text: object) -> List[float]:
+    out: List[float] = []
+    for token in re.findall(r"-?\d[\d.,]*", str(text or "")):
+        for candidate in (re.sub(r"[,\s]", "", token) if token.count(",") and not token.count(".")
+                          else None, token.replace(",", ".")):
+            if candidate is None:
+                continue
+            try:
+                value = float(candidate)
+            except ValueError:
+                continue
+            if value not in out:
+                out.append(value)
+    return out
+
+
+def _close(value: float, options: Sequence[float]) -> bool:
+    return any(abs(value - other) <= max(0.006, abs(value) * 0.005) for other in options)
+
+
+def _address_problem(estimate: "Estimate", grid) -> bool:
+    """True when the row has no address, or when its standard error cannot be found in the cells it names."""
+    if estimate.cell_row is None or estimate.cell_column is None:
+        return True
+    if estimate.standard_error is None:
+        return False
+    cells = []
+    if estimate.cell_row < len(grid.body) and estimate.cell_column < len(grid.body[estimate.cell_row]):
+        cells.append(grid.body[estimate.cell_row][estimate.cell_column])
+    if estimate.se_row is not None and estimate.se_column is not None and \
+            estimate.se_row < len(grid.body) and estimate.se_column < len(grid.body[estimate.se_row]):
+        cells.append(grid.body[estimate.se_row][estimate.se_column])
+    numbers = [value for cell in cells for value in _numbers_in(cell)]
+    return not _close(abs(estimate.standard_error), [abs(value) for value in numbers])
+
+
+async def repair_addresses(estimates: List["Estimate"], units: Sequence[Dict[str, Any]], model: str,
+                           api_key: str, max_units: int = 4, max_rows: int = 5) -> int:
+    """One extra call per affected table view, asking only where the cells sit.
+
+    Rows whose address is missing, or whose standard error cannot be found in the cells they name, are listed to
+    the model with the table. Every answer is validated against the table: the coefficient cell must hold the
+    coefficient and the error cell must be adjacent and hold a number. Nothing is stored that does not pass.
+    """
+    import httpx
+
+    from src.extraction.table_structure import parse_markdown_table
+
+    groups: Dict[int, List["Estimate"]] = {}
+    for estimate in estimates:
+        if estimate.unit_index is None or estimate.unit_index >= len(units):
+            continue
+        grid = parse_markdown_table(units[estimate.unit_index]["text"])
+        if _address_problem(estimate, grid):
+            groups.setdefault(estimate.unit_index, []).append(estimate)
+    repaired = 0
+    async with httpx.AsyncClient(base_url="https://openrouter.ai/api/v1",
+                                 headers={"Authorization": f"Bearer {api_key}"}, timeout=180) as client:
+        for unit_index, rows in list(groups.items())[:max_units]:
+            unit = units[unit_index]
+            grid = parse_markdown_table(unit["text"])
+            listing = "\n".join(f"- {estimate.outcome or estimate.row_label}: {estimate.effect_size}"
+                                for estimate in rows[:max_rows])
+            prompt = ADDRESS_REPAIR_PROMPT.format(table=unit["text"][:6000], rows=listing)
+            try:
+                text = await _chat(client, model, prompt)
+                data = _parse_json(text)
+                answers = data.get("rows") or []
+            except Exception:
+                continue
+            for estimate in rows[:max_rows]:
+                label = _merge_outcome(estimate.outcome or estimate.row_label)
+                answer = next((a for a in answers if isinstance(a, dict)
+                               and _merge_outcome(a.get("outcome")) == label), None)
+                if not answer or estimate.effect_size is None:
+                    continue
+                try:
+                    row_number = int(answer["row_number"])
+                    column_number = int(answer["column_number"])
+                except (KeyError, TypeError, ValueError):
+                    continue
+                if not (1 <= row_number <= len(grid.body)):
+                    continue
+                body = grid.body[row_number - 1]
+                if not (1 <= column_number <= len(body)):
+                    continue
+                printed = body[column_number - 1]
+                if not _close(estimate.effect_size, _numbers_in(printed)):
+                    continue
+                estimate.cell_row, estimate.cell_column = row_number - 1, column_number - 1
+                repaired += 1
+                if estimate.standard_error is None:
+                    continue
+                try:
+                    se_row = int(answer.get("se_row_number"))
+                    se_column = int(answer.get("se_column_number"))
+                except (TypeError, ValueError):
+                    continue
+                adjacent = ((se_row - 1 == estimate.cell_row and se_column - 1 == estimate.cell_column + 1) or
+                            (se_row - 1 == estimate.cell_row + 1 and se_column - 1 == estimate.cell_column))
+                if not adjacent or not (1 <= se_row <= len(grid.body)):
+                    continue
+                se_body = grid.body[se_row - 1]
+                if not (1 <= se_column <= len(se_body)):
+                    continue
+                if _close(abs(estimate.standard_error), [abs(v) for v in _numbers_in(se_body[se_column - 1])]):
+                    estimate.se_row, estimate.se_column = se_row - 1, se_column - 1
+    return repaired
+
+
 def pair_arm_counts(estimates: List["Estimate"]) -> None:
     """Give each estimate both arm counts, when the table supplied them one column at a time.
 
@@ -869,8 +992,10 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
         estimates.extend(merge_reads(rows) if views_of.get(index) else rows)
     pair_arm_counts(estimates)
     attach_document_statistics(estimates)
+    address_repairs = await repair_addresses(estimates, units, model, api_key)
     estimate_dicts = [asdict(e) for e in estimates]
     duplicates = 0
     if drop_duplicates:
         estimate_dicts, duplicates = dedupe_estimates(estimate_dicts)
-    return {"estimates": estimate_dicts, "tables": tables, "duplicates": duplicates}
+    return {"estimates": estimate_dicts, "tables": tables, "duplicates": duplicates,
+            "address_repairs": address_repairs}
