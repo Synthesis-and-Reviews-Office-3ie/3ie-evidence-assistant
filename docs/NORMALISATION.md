@@ -624,10 +624,10 @@ Measured on the six papers, 4,777 rows:
 
 | | Result |
 | --- | --- |
-| Rows carrying an address | 4,354 (90%) |
-| Value matches the addressed cell | 4,353 of 4,354 (100.0%) |
-| Parameter matches the addressed cell | 3,191 of 3,225 (98.9%) |
-| Parameter printed but not stored | 27 |
+| Rows carrying an address | 4,431 (92%) |
+| Value matches the addressed cell | 4,430 of 4,431 (100.0%) |
+| Parameter matches the addressed cell | 3,279 of 3,303 (99.3%) |
+| Parameter printed but not stored | 14 |
 
 The rows without an address are the residual: 487 rows where the model did not return a usable number or the
 printed cell did not hold its figure. They are reported as unaddressed, not scored.
@@ -642,7 +642,7 @@ points at the row beneath while the error is in the same cell, so letting the ad
 pairs that were right; the address is now stored and used only to check the parameter, never to set it. What
 survives is a different class of error, and it is a reading error rather than a copying one: in a table whose
 cells hold two numbers, such as "(0.706) 1.109", the model occasionally pairs a coefficient with the standard
-error of the neighbouring estimate, 34 rows of 3,225. That is the next thing to fix, and it is now visible per row.
+error of the neighbouring estimate, 24 rows of 3,303. That is the next thing to fix, and it is now visible per row.
 
 ### Arithmetic checks on every stored row (18 November 2026)
 
