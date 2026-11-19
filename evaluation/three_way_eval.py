@@ -99,9 +99,23 @@ def fetch_rows(project_id, doc):
 
 
 def requests_get(url, params, headers):
+    import time
+
     import requests
-    r = requests.get(url, params=params, headers=headers, timeout=120)
-    return r.json() if r.status_code < 300 else []
+
+    last = None
+    for attempt in range(6):
+        try:
+            r = requests.get(url, params=params, headers=headers, timeout=120)
+            if r.status_code >= 500:
+                last = RuntimeError(f"status {r.status_code}")
+                time.sleep(2 * (attempt + 1))
+                continue
+            return r.json() if r.status_code < 300 else []
+        except Exception as e:  # transient TLS/connection resets are common against Supabase
+            last = e
+            time.sleep(2 * (attempt + 1))
+    raise last
 
 
 def matched(value, rows, field="effect_size"):
