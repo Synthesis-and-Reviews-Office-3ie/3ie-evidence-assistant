@@ -38,12 +38,20 @@ from evaluation.stored_rows import (  # noqa: E402
     load_errata,
     load_overrides,  # noqa: E402
 )
+from evaluation.accuracy import (  # noqa: E402
+    baseline_entry,
+    below_baseline,
+    measure as measure_accuracy,
+    rates as accuracy_rates,
+)
 from supabase import create_client  # noqa: E402
 
 PROJECT = os.environ.get("RAG_PROJECT_ID") or "7efdc60e-e863-480c-929e-616574725e5f"
 KEY_FILE = ROOT / "data" / "8WR QEX Combined.xlsx"
 BASELINE = ROOT / "evaluation" / "results" / "recall_baseline.json"
 REPORT = ROOT / "evaluation" / "results" / f"quality_gate_{date.today().isoformat()}.md"
+ACCURACY_RESULT = ROOT / "evaluation" / "results" / f"accuracy_{date.today().isoformat()}.json"
+ACCURACY_DOC_LIMIT = int(os.environ.get("ACCURACY_DOC_LIMIT") or 0)  # 0 = every document
 KEY_OBJECT = os.environ.get("RECALL_KEY_OBJECT") or "reference/8WR QEX Combined.xlsx"
 
 
@@ -145,12 +153,31 @@ def main() -> int:
               "private storage credentials are not set. The key stays out of the public repository.")
         return 0
     current = measure(path)
+    updating = "--update-baseline" in sys.argv
     baseline = json.loads(BASELINE.read_text(encoding="utf-8")) if BASELINE.exists() else None
-    if "--update-baseline" in sys.argv or baseline is None:
+    baseline_accuracy = (baseline or {}).get("accuracy")
+    current_accuracy = None
+    if updating:
+        # The accuracy baseline is set deliberately, from re-extracted rows, not on the first run.
+        try:
+            current_accuracy = measure_accuracy(limit=ACCURACY_DOC_LIMIT or None)
+            current["accuracy"] = baseline_entry(current_accuracy)
+        except Exception as error:
+            print(f"::notice::Address accuracy not measured: {type(error).__name__}: {error}")
+    elif baseline_accuracy:
+        try:
+            current_accuracy = measure_accuracy(
+                docs=baseline_accuracy.get("sample") or None,
+                limit=None if baseline_accuracy.get("sample") else (ACCURACY_DOC_LIMIT or None))
+        except Exception as error:
+            print(f"::notice::Address accuracy skipped: {type(error).__name__}: {error}")
+    if updating or baseline is None:
         BASELINE.parent.mkdir(parents=True, exist_ok=True)
         BASELINE.write_text(json.dumps(current, indent=2) + "\n", encoding="utf-8")
         reason = "written" if baseline is None else "updated"
         print(f"baseline {reason} from the current numbers: {BASELINE.relative_to(ROOT)}")
+    if current_accuracy is not None:
+        ACCURACY_RESULT.write_text(json.dumps(current_accuracy, indent=1) + "\n", encoding="utf-8")
 
     lines = [f"# Quality gate {date.today().isoformat()}", "",
              f"Studies mapped: {current['studies']} of {current['mapped_of']}.",
@@ -162,9 +189,20 @@ def main() -> int:
                      f"({counts['exact']} exact, {counts['rounded']} at printed precision, "
                      f"{counts['absent']} absent)")
     lines.append(f"- combined: {current['matched']} of {current['total']}")
+    if current_accuracy is not None:
+        rate = accuracy_rates(current_accuracy)
+        lines.append(f"- address: value {current_accuracy['value_ok']} of {current_accuracy['addressed']} "
+                     f"({100 * rate['value']:.1f}%), parameter {current_accuracy['param_ok']} of "
+                     f"{current_accuracy['param_printed']} ({100 * rate['parameter']:.1f}%), "
+                     f"addressed {current_accuracy['addressed']} of {current_accuracy['table_rows']} "
+                     f"({100 * rate['addressed']:.1f}%)")
+    elif baseline_accuracy:
+        lines.append("- address: not measured this run")
+    else:
+        lines.append("- address: no baseline yet; set it from re-extracted rows with --update-baseline")
 
     failures = []
-    if baseline is not None and "--update-baseline" not in sys.argv:
+    if baseline is not None and not updating:
         for label in ("estimate", "se"):
             was, now = baseline[label]["matched"], current[label]["matched"]
             if now < was:
@@ -172,6 +210,9 @@ def main() -> int:
             elif now > was:
                 lines.append(f"- {label} improved from {was} to {now}; update the baseline when the "
                              "change is understood (`--update-baseline`)")
+        for reason in below_baseline(baseline_accuracy,
+                                     accuracy_rates(current_accuracy) if current_accuracy else None):
+            failures.append(reason)
     if failures:
         lines += ["", "## Failed", ""] + [f"- {reason}" for reason in failures]
     REPORT.write_text("\n".join(lines) + "\n", encoding="utf-8")

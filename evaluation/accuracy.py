@@ -188,6 +188,32 @@ def rates(result: dict) -> dict:
             "addressed": addressed / result["table_rows"] if result["table_rows"] else 0.0}
 
 
+def baseline_entry(result: dict) -> dict:
+    """The stored baseline: both rates, their bases, and the documents they were measured on.
+
+    The sample is stored with the rates so a later run measures the same documents. A rate that fell
+    because a different set of papers was measured would be a false alarm.
+    """
+    return {**rates(result),
+            "documents": result["documents_with_table_rows"],
+            "rows": result["table_rows"],
+            "sample": result["sample"]}
+
+
+def below_baseline(baseline: dict | None, current: dict | None) -> list[str]:
+    """Reasons value or parameter accuracy sits below the stored baseline, in words for the gate."""
+    if not baseline or not current:
+        return []
+    reasons = []
+    for field in ("value", "parameter"):
+        was, now = baseline.get(field), current.get(field)
+        if was is None or now is None:
+            continue
+        if now + 1e-9 < was:
+            reasons.append(f"{field} accuracy fell from {100 * was:.1f}% to {100 * now:.1f}%")
+    return reasons
+
+
 def report(result: dict) -> str:
     rate = rates(result)
     lines = [

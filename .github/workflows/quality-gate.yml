@@ -1,9 +1,14 @@
-# Recall gate (workstream D): fail when the stored rows stop matching the hand-typed key.
+# Quality gate (workstream D): fail when recall or address accuracy drops.
 #
 # Runs weekly and on demand. It reads the database and the key, calls no model, takes about a minute,
-# and compares the matched count with evaluation/results/recall_baseline.json. A fall below the
-# baseline fails the run, which is how a change that loses stored rows reaches a person instead of a
-# report nobody re-reads.
+# and compares the matched count with evaluation/results/recall_baseline.json. The same baseline holds
+# the value and parameter accuracy measured from stored cell addresses, and both are compared over the
+# documents the baseline recorded, so a fall in either fails the run. A change that loses stored rows or
+# misreads an addressed cell reaches a person instead of a report nobody re-reads.
+#
+# The accuracy section is only enforced once it has been set deliberately from re-extracted rows with
+# `python evaluation/quality_gate.py --update-baseline`; until then that stage reports and skips.
+# `ACCURACY_DOC_LIMIT` bounds the documents measured when the baseline is set (0 means every document).
 #
 # Needs repository secrets: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY. Without them the job is skipped
 # with a notice.
@@ -94,4 +99,5 @@ jobs:
           path: |
             evaluation/results/quality_gate_*.md
             evaluation/results/table_coverage_*.md
+            evaluation/results/accuracy_*.json
           if-no-files-found: ignore
