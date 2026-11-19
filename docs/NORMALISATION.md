@@ -629,8 +629,13 @@ Measured on the six papers, 4,777 rows:
 | Parameter matches the addressed cell | 3,279 of 3,303 (99.3%) |
 | Parameter printed but not stored | 14 |
 
-The rows without an address are the residual: 487 rows where the model did not return a usable number or the
+The rows without an address are the residual: 387 rows where the model did not return a usable number or the
 printed cell did not hold its figure. They are reported as unaddressed, not scored.
+
+`repair_addresses` makes one more call per affected table view, capped at four views and five rows each,
+asking only where the cells sit. Every answer is validated against the table: the coefficient cell must hold
+the coefficient and the error cell must be adjacent and hold a number. It raised address coverage from 90 to
+92 percent and parameters from 98.9 to 99.3 percent without changing a value.
 
 The parameter printed beside a coefficient now wins when it sits in the same cell: the number in parentheses
 immediately after the coefficient is taken, so "0.076 (0.156) 0.410" pairs 0.076 with 0.156. A blanket rule that
