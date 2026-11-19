@@ -17,6 +17,7 @@ from __future__ import annotations
 import argparse
 import os
 import re
+import subprocess
 import sys
 from collections import Counter
 from datetime import date
@@ -42,6 +43,31 @@ def supabase():
     url = os.environ["SUPABASE_URL"].rstrip("/")
     key = os.environ["SUPABASE_SERVICE_ROLE_KEY"]
     return url, {"apikey": key, "Authorization": f"Bearer {key}"}
+
+
+def git_commit():
+    try:
+        return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
+    except Exception:
+        return "unknown"
+
+
+def source_window(project_id):
+    """Earliest and latest row timestamps for a source, to prove the rows came from one run."""
+    import requests
+
+    url, headers = supabase()
+    ends = []
+    for order in ("created_at.asc", "created_at.desc"):
+        r = requests.get(
+            f"{url}/rest/v1/effect_estimates",
+            params={"rag_project_id": f"eq.{project_id}", "source": "eq.tables_v1",
+                    "select": "created_at", "order": order},
+            headers={**headers, "Range": "0-0"}, timeout=60,
+        )
+        rows = r.json() if r.status_code < 300 else []
+        ends.append(rows[0]["created_at"][:16] if rows else "none")
+    return ends[0], ends[1]
 
 
 def num(value):
@@ -143,7 +169,11 @@ def main():
     ap.add_argument("--docling", default=PROJECT_ID)
     ap.add_argument("--mineru", required=True)
     ap.add_argument("--union", required=True)
+    ap.add_argument("--out", help="report path; default is commit-stamped in evaluation/results")
+    ap.add_argument("--commit", help="commit to record; default is git HEAD")
+    ap.add_argument("--prune", action="store_true", help="state that rows were replaced, not carried forward")
     args = ap.parse_args()
+    commit = args.commit or git_commit()
 
     import boto3
     s3 = boto3.client(
@@ -159,12 +189,19 @@ def main():
 
     sources = [("Docling", args.docling), ("MinerU", args.mineru), ("Union", args.union)]
     results = []
+    windows = {}
     for label, pid in sources:
         rows_by_doc = {d: fetch_rows(pid, d) for d in docs}
         results.append(score(label, pid, rows_by_doc, load_key(), all_docs))
+        windows[label] = source_window(pid)
         print(f"  {label}: {results[-1]['c']['stored']} stored rows", flush=True)
 
+    window_text = "; ".join(f"{label} {a} to {b}" for label, (a, b) in windows.items())
     lines = ["# Three-way parser comparison, all documents of each study", "",
+             f"Pinned commit `{commit}`. Prune {'on' if args.prune else 'not recorded'}. All sources read by "
+             "this one code version.", "",
+             f"Extraction windows: {window_text}.", "",
+             "Caveat: the reader is still changing, so this measurement is valid for this commit only.", "",
              "Canonical matching: shared outcome category and a value equal at printed precision.",
              "Rows pooled across every document that names the study.", "",
              "| Source | Canonical + value | Exact name + value | Token overlap + value | Canonical SE + value | Outcome present | Stored rows |",
@@ -175,10 +212,12 @@ def main():
                      f"{pct(c['est_exact'], c['est_total'])} | {pct(c['est_fuzzy'], c['est_total'])} | "
                      f"{pct(c['se_canonical'], c['se_total'])} | {pct(c['out_present'], c['out_total'])} | "
                      f"{c['stored']} |")
-    REPORT.parent.mkdir(parents=True, exist_ok=True)
-    REPORT.write_text("\n".join(lines), encoding="utf-8")
+    out = Path(args.out) if args.out else (
+        ROOT / "evaluation" / "results" / f"three_way_{date.today().isoformat()}_{commit[:7]}.md")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("\n".join(lines), encoding="utf-8")
     print("\n".join(lines))
-    print(f"\nwritten to {REPORT}")
+    print(f"\nwritten to {out}")
 
 
 if __name__ == "__main__":
