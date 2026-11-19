@@ -251,59 +251,6 @@ class DocumentRepository:
         return count
 
     # =========================================================================
-    # Sync Operations (Qdrant ↔ Postgres)
-    # =========================================================================
-
-    @staticmethod
-    async def sync_from_qdrant_payload(
-        db: AsyncSession,
-        doc_id: str,
-        payload: Dict[str, Any],
-        chunk_count: int = 1,
-    ) -> Document:
-        """
-        Sync a document from Qdrant payload.
-        
-        Called when processing PDFs to keep Postgres in sync.
-        """
-        # Handle authors - could be string or list
-        authors = payload.get("authors")
-        if isinstance(authors, str):
-            authors = [a.strip() for a in authors.split(",")]
-        
-        # Handle intervention_type - could be string or list
-        intervention_type = payload.get("intervention_type")
-        if isinstance(intervention_type, list):
-            intervention_type = ", ".join(intervention_type)
-        
-        doc_data = {
-            "id": doc_id,
-            "title": payload.get("title", doc_id),
-            "filename": f"{doc_id}.pdf",
-            "authors": authors or [],
-            "year": payload.get("year"),
-            "doi": payload.get("doi"),
-            "journal": payload.get("journal"),
-            "publisher": payload.get("publisher"),
-            "cited_by_count": payload.get("cited_by_count"),
-            "is_open_access": payload.get("is_open_access"),
-            "countries": payload.get("countries") or [],
-            "sectors": payload.get("sectors") or [],
-            "study_type": payload.get("study_type"),
-            "intervention_type": intervention_type,
-            "sdgs": payload.get("sdgs") or [],
-            "keywords": payload.get("keywords") or [],
-            "chunk_count": chunk_count,
-            "page_count": payload.get("page") or 0,
-            "metadata_source": payload.get("metadata_source"),
-            "metadata_confidence": payload.get("metadata_confidence", 0.0),
-            "needs_review": payload.get("needs_review", True),
-            "status": "indexed",
-        }
-        
-        return await DocumentRepository.upsert(db, doc_data)
-
-    # =========================================================================
     # Search Operations
     # =========================================================================
 

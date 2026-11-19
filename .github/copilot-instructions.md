@@ -30,7 +30,7 @@
 - **Frontend**: Next.js 15, TypeScript, Tailwind CSS, shadcn/ui
 - **Backend**: FastAPI, Python 3.12, Pydantic v2
 - **Database**: Supabase PostgreSQL with RLS
-- **Vectors**: Qdrant Cloud (hybrid search)
+- **Vectors**: Supabase pgvector + Postgres full-text (hybrid search)
 - **PDF Processing**: Modal (MinerU GPU parsing)
 
 ## Code Style

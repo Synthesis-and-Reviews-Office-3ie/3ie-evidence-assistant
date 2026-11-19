@@ -432,7 +432,7 @@ exits silently on this machine.
 | Reranker | Cohere `rerank-v3.5` | Cohere Rerank 4 Pro / Fast (Dec 2025, 32K context, multilingual), Voyage rerank-2.5, zerank-2 | Medium: Rerank 4 is a drop-in swap |
 | Embeddings | Cohere `embed-v4.0` | Still Cohere's latest. Voyage-4-large, Gemini Embedding, Qwen3-Embedding-8B (open) | Small: benchmark before paying for a re-index |
 | PDF parsing | MinerU ≥ 2.6 (pipeline backend) | MinerU 3.x with the MinerU2.5-Pro VLM (cross-page table merging), PaddleOCR-VL-1.6, Docling | Medium: see also TVET T4 |
-| Vector DB | Qdrant, client-side BM25 sparse vectors | Qdrant 1.20 (Oct 2026): native BM25 on full-text indexes. 1.19: unified memory setting | Small: simplification, not quality |
+| Vector DB | Supabase pgvector + Postgres full-text (Qdrant removed November 2026) | | None |
 | Faithfulness check | MiniCheck | RAGAS 0.4, Vectara HHEM / FaithJudge, LettuceDetect, FRANQ (ACL 2026 Findings) | Medium: the 5-query baseline is too small to steer by |
 | Answer mode | Single-pass retrieve → Claim Ledger | Routed agentic "deep research" with a claim-evidence graph for complex questions | Medium: Claim Ledger is a good base |
 
@@ -453,6 +453,8 @@ exits silently on this machine.
 3. **S3. Embedding benchmark** - 6h (replaces the Short-Term "Cohere vs Voyage 4" item)
    - Compare Cohere `embed-v4.0`, Voyage-4-large and Gemini Embedding on recall@k and NDCG for 50+ real queries
    - Re-index only if the gain is clear. A re-index rebuilds every vector and contextual prefix
+   - The Voyage embedding option was removed from the code on 19 November 2026. Testing Voyage means adding
+     it back
 
 4. **S4. Parser upgrade** - 8h, together with TVET T4
    - Upgrade to MinerU 3.x and test the VLM / hybrid backend. Check the custom Apache-2.0-based licence
@@ -476,9 +478,8 @@ exits silently on this machine.
    - A living-review study found that 342 two-model answers in its test set, 87% of the total, were concordant, with 0.94 accuracy among them.
      Disagreement is a cheap confidence signal
 
-8. **S8. Qdrant native BM25** - 4h, low priority
-   - Qdrant 1.20 ranks BM25 directly on a full-text index. That could replace the client-side sparse
-     vectors. Check the Qdrant Cloud cluster version first
+8. **S8. Qdrant native BM25** - dropped: Qdrant was removed in November 2026 and Postgres full-text ranking
+   replaced the sparse vectors
 
 9. **S9. Visual page retrieval (ColQwen-style)** - later, part of the Medium-Term "Multimodal Support" item
    - Embeds page images, so tables and figures are searchable without parsing. Storage is about 150–500 KB per

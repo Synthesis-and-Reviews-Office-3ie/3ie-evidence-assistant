@@ -17,7 +17,6 @@ def mock_settings():
     return Settings(
         anthropic_api_key="test-key",
         cohere_api_key="test-key",
-        qdrant_url="http://localhost:6333",
     )
 
 
@@ -81,7 +80,7 @@ class TestEndToEnd:
         
         This test requires:
         - Valid API keys
-        - Running Qdrant instance
+        - A Supabase project with indexed chunks
         - Indexed documents
         
         Skip in CI unless integration testing is enabled.

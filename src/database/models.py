@@ -117,7 +117,7 @@ class Document(Base):
     """
     Document metadata model.
     
-    Stores all metadata about documents indexed in Qdrant.
+    Stores all metadata about documents indexed in the Supabase chunk store.
     Uses Zotero-compatible field names for bibliographic metadata.
     
     Field organization:
@@ -129,7 +129,7 @@ class Document(Base):
     """
     __tablename__ = "documents"
 
-    # Primary identifier (matches Qdrant doc_id)
+    # Primary identifier (matches the chunk store's doc_id)
     id: Mapped[str] = mapped_column(String(255), primary_key=True)
     
     # === CORE FIELDS ===

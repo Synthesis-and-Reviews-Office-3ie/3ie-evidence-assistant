@@ -201,7 +201,7 @@ async def get_admin_status():
             return "disconnected", str(e)[:50], 0, 0
     
     # Check the chunk store (Supabase pgvector)
-    async def check_qdrant():
+    async def check_chunk_store():
         try:
             from src.vectorstore import ChunkStore
 
@@ -237,13 +237,13 @@ async def get_admin_status():
         return "disconnected", "No API key"
     
     # Run checks in parallel
-    r2_result, qdrant_result = await asyncio.gather(
+    r2_result, chunk_store_result = await asyncio.gather(
         check_r2(),
-        check_qdrant(),
+        check_chunk_store(),
     )
     
     r2_status, r2_details, file_count, total_size = r2_result
-    qdrant_status, qdrant_details = qdrant_result
+    chunk_store_status, chunk_store_details = chunk_store_result
     llm_status, llm_details = check_llm()
     cohere_status, cohere_details = check_cohere()
     
@@ -258,7 +258,7 @@ async def get_admin_status():
     
     connections = [
         ServiceConnection(name="Cloudflare R2", status=r2_status, details=r2_details),
-        ServiceConnection(name="Supabase vectors", status=qdrant_status, details=qdrant_details),
+        ServiceConnection(name="Supabase vectors", status=chunk_store_status, details=chunk_store_details),
         ServiceConnection(name="LLM Provider", status=llm_status, details=llm_details),
         ServiceConnection(name="Cohere API", status=cohere_status, details=cohere_details),
     ]

@@ -393,7 +393,6 @@ async def trigger_modal_processing(force_reprocess: bool = False, max_documents:
                 modal_trigger_url,
                 json={
                     "force_reprocess": force_reprocess,
-                    "check_qdrant": True,
                     "max_documents": max_documents,
                 },
                 headers={"Content-Type": "application/json"},

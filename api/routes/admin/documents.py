@@ -507,7 +507,7 @@ async def cleanup_orphan_documents():
     try:
         # Get all doc_ids from the chunk store
         indexer = get_indexer()
-        qdrant_doc_ids = set()
+        chunk_doc_ids = set()
         offset = None
         
         while True:
@@ -515,11 +515,11 @@ async def cleanup_orphan_documents():
             for point in results:
                 doc_id = point.payload.get("doc_id")
                 if doc_id:
-                    qdrant_doc_ids.add(doc_id)
+                    chunk_doc_ids.add(doc_id)
             if offset is None or len(results) == 0:
                 break
         
-        logger.info(f"Found {len(qdrant_doc_ids)} documents in the chunk store")
+        logger.info(f"Found {len(chunk_doc_ids)} documents in the chunk store")
         
         # Get all doc_ids from PostgreSQL
         db = await get_db_session()
@@ -537,7 +537,7 @@ async def cleanup_orphan_documents():
             logger.info(f"Found {len(postgres_ids)} documents in PostgreSQL")
             
             # Find orphans (in Postgres but not in the chunk store)
-            orphans = postgres_ids - qdrant_doc_ids
+            orphans = postgres_ids - chunk_doc_ids
             
             if not orphans:
                 return {
@@ -545,7 +545,7 @@ async def cleanup_orphan_documents():
                     "message": "No orphan documents found",
                     "deleted": 0,
                     "postgres_count": len(postgres_ids),
-                    "qdrant_count": len(qdrant_doc_ids),
+                    "chunk_store_count": len(chunk_doc_ids),
                 }
             
             # Delete orphans
@@ -567,7 +567,7 @@ async def cleanup_orphan_documents():
                 "deleted": len(orphans),
                 "deleted_ids": list(orphans),
                 "postgres_count": len(postgres_ids) - len(orphans),
-                "qdrant_count": len(qdrant_doc_ids),
+                "chunk_store_count": len(chunk_doc_ids),
             }
             
     except Exception as e:

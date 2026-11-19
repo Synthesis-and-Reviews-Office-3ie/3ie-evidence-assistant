@@ -4,7 +4,6 @@
 Cross-encoder reranking for precision improvement.
 Supports:
 - Cohere Rerank v3.5 (recommended)
-- Voyage Rerank
 - Local models (BGE-Reranker)
 """
 

@@ -4,7 +4,6 @@
 Supports multiple embedding providers:
 - Cohere embed-v4 (recommended)
 - OpenAI text-embedding-3-large
-- Voyage AI voyage-3-large
 - Local models via HuggingFace
 
 Features:
@@ -28,7 +27,6 @@ class EmbeddingProvider(str, Enum):
     """Supported embedding providers."""
     COHERE = "cohere"
     OPENAI = "openai"
-    VOYAGE = "voyage"
     HUGGINGFACE = "huggingface"
 
 
@@ -62,8 +60,6 @@ class EmbeddingGenerator:
             self._embed_model = self._get_cohere_model()
         elif self.provider == EmbeddingProvider.OPENAI:
             self._embed_model = self._get_openai_model()
-        elif self.provider == EmbeddingProvider.VOYAGE:
-            self._embed_model = self._get_voyage_model()
         elif self.provider == EmbeddingProvider.HUGGINGFACE:
             self._embed_model = self._get_huggingface_model()
         else:
@@ -101,21 +97,6 @@ class EmbeddingGenerator:
         return OpenAIEmbedding(
             model=self.model,
             api_key=settings.openai_api_key,
-        )
-    
-    def _get_voyage_model(self):
-        """Get Voyage AI embedding model."""
-        try:
-            from llama_index.embeddings.voyageai import VoyageEmbedding
-        except ImportError:
-            raise ImportError(
-                "Voyage AI embeddings not installed. "
-                "Run: pip install llama-index-embeddings-voyageai"
-            )
-        
-        return VoyageEmbedding(
-            model_name=self.model,
-            voyage_api_key=settings.voyage_api_key,
         )
     
     def _get_huggingface_model(self):
@@ -250,7 +231,6 @@ def get_embedding_dimension(provider: str = settings.embedding_provider) -> int:
     dimensions = {
         "cohere": 1536,  # embed-v4.0 default dimension
         "openai": 3072,  # text-embedding-3-large
-        "voyage": 1024,  # voyage-3
         "huggingface": 768,  # varies by model
     }
     return dimensions.get(provider, settings.embedding_dimension)

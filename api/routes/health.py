@@ -9,7 +9,7 @@ from datetime import datetime
 
 from fastapi import APIRouter
 
-from api.qdrant_status import get_qdrant_status_snapshot
+from api.vector_status import get_vector_store_status_snapshot
 from api.schemas import HealthResponse
 from src.config.settings import settings
 from src.utils.cache import get_response_cache
@@ -27,14 +27,14 @@ async def health_check():
     """
     components = {
         "api": True,
-        "qdrant": False,
+        "vector_store": False,
         "llm": False,
         "r2": False,
         "cohere": False,
     }
 
-    qdrant_status = await get_qdrant_status_snapshot()
-    components["qdrant"] = qdrant_status.healthy
+    vector_store_status = await get_vector_store_status_snapshot()
+    components["vector_store"] = vector_store_status.healthy
 
     # Check LLM (basic check - verify API key exists)
     try:

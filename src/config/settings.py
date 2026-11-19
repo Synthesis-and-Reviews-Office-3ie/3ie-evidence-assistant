@@ -62,7 +62,6 @@ class Settings(BaseSettings):
     admin_password: str = Field(default="", description="Admin password for browser login to /admin")
     openai_api_key: str = Field(default="", description="OpenAI API key (fallback)")
     cohere_api_key: str = Field(default="", description="Cohere API key for embeddings/rerank")
-    voyage_api_key: Optional[str] = Field(default=None, description="Voyage AI API key")
     
     # =========================================================================
     # Supabase (Multi-Tenant Auth & Database)
@@ -148,11 +147,11 @@ class Settings(BaseSettings):
     # =========================================================================
     embedding_provider: str = Field(
         default="cohere",
-        description="Embedding provider: 'cohere' or 'voyage'"
+        description="Embedding provider: 'cohere', 'openai' or 'huggingface'"
     )
     embedding_model: str = Field(
         default="embed-v4.0",
-        description="Cohere: 'embed-v4.0' | Voyage: 'voyage-3' or 'voyage-3-lite'"
+        description="Cohere: 'embed-v4.0'"
     )
     embedding_dimension: int = Field(default=1536)
     embedding_input_type: str = Field(default="search_document")

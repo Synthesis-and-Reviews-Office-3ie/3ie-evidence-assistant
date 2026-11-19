@@ -14,13 +14,9 @@ services:
       - "8000:8000"
     environment:
       - ENVIRONMENT=production
-      - QDRANT_URL=http://qdrant:6333
       - LOG_LEVEL=INFO
     env_file:
       - .env
-    depends_on:
-      qdrant:
-        condition: service_healthy
     healthcheck:
       test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8000/health/live', timeout=5)"]
       interval: 30s
@@ -39,35 +35,11 @@ services:
       - "7860:7860"
     environment:
       - ENVIRONMENT=production
-      - QDRANT_URL=http://qdrant:6333
     env_file:
       - .env
     command: ["python", "ui/gradio_app.py"]
     depends_on:
       - devchat
-    restart: unless-stopped
-    networks:
-      - devchat-network
-
-  # ==========================================================================
-  # Vector Database
-  # ==========================================================================
-  
-  qdrant:
-    image: qdrant/qdrant:latest
-    container_name: devchat-qdrant
-    ports:
-      - "6333:6333"
-      - "6334:6334"  # gRPC port
-    volumes:
-      - qdrant_storage:/qdrant/storage
-    environment:
-      - QDRANT__SERVICE__GRPC_PORT=6334
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:6333/"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
     restart: unless-stopped
     networks:
       - devchat-network
@@ -118,6 +90,5 @@ networks:
   devchat-network:
     driver: bridge
 
-volumes:
-  qdrant_storage:
+# volumes:
   # postgres_data:
