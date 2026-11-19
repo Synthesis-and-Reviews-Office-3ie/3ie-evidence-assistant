@@ -35,7 +35,7 @@ from evaluation.outcome_taxonomy import categories  # noqa: E402
 from evaluation.stored_rows import classify_miss  # noqa: E402
 
 PAGE = 1000
-FIELDS = "doc_key,outcome_name,effect_size,standard_error"
+FIELDS = "doc_key,outcome_name,effect_size,standard_error,created_at"
 REPORT = ROOT / "evaluation" / "results" / f"three_way_{date.today().isoformat()}.md"
 
 
@@ -52,22 +52,10 @@ def git_commit():
         return "unknown"
 
 
-def source_window(project_id):
-    """Earliest and latest row timestamps for a source, to prove the rows came from one run."""
-    import requests
-
-    url, headers = supabase()
-    ends = []
-    for order in ("created_at.asc", "created_at.desc"):
-        r = requests.get(
-            f"{url}/rest/v1/effect_estimates",
-            params={"rag_project_id": f"eq.{project_id}", "source": "eq.tables_v1",
-                    "select": "created_at", "order": order},
-            headers={**headers, "Range": "0-0"}, timeout=60,
-        )
-        rows = r.json() if r.status_code < 300 else []
-        ends.append(rows[0]["created_at"][:16] if rows else "none")
-    return ends[0], ends[1]
+def window_of(rows_by_doc):
+    """Earliest and latest row timestamp over the study's documents only."""
+    stamps = [r["created_at"] for rows in rows_by_doc.values() for r in rows if r.get("created_at")]
+    return (min(stamps)[:16], max(stamps)[:16]) if stamps else ("none", "none")
 
 
 def num(value):
@@ -193,7 +181,7 @@ def main():
     for label, pid in sources:
         rows_by_doc = {d: fetch_rows(pid, d) for d in docs}
         results.append(score(label, pid, rows_by_doc, load_key(), all_docs))
-        windows[label] = source_window(pid)
+        windows[label] = window_of(rows_by_doc)
         print(f"  {label}: {results[-1]['c']['stored']} stored rows", flush=True)
 
     window_text = "; ".join(f"{label} {a} to {b}" for label, (a, b) in windows.items())
