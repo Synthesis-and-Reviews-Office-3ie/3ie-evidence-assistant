@@ -362,3 +362,37 @@ def test_an_error_printed_before_a_coefficient_is_not_its_own():
     e = to_estimate({"outcome": "Income", "estimate_cell": "1.109", "se_cell": "(0.706)",
                      "row_number": 1, "column_number": 2}, "t", 14, table)
     assert e.effect_size == 1.109 and e.standard_error is None
+
+
+def test_value_matching_is_at_printed_precision():
+    from src.extraction.table_estimates import _holds
+
+    assert _holds(0.008, "[0.912] 0.008 (0.045)")
+    assert not _holds(0.008, "-0.006 (0.058)")
+    assert _holds(0.085, "0.0850***")
+    assert not _holds(0.085, "0.09***")
+    assert _holds(0.16, "0,16")            # decimal comma
+    assert _holds(4408, "4,408***")        # thousands separator
+    assert not _holds(6, "6.4")            # a whole number is not a nearby decimal
+
+
+def test_a_repeated_small_number_is_addressed_by_precision():
+    from src.extraction.table_estimates import locate_by_value
+
+    table = ("| Outcome | Coef |\n| --- | --- |\n"
+             "| A | -0.006 (0.058) |\n"
+             "| B | [0.912] 0.008 (0.045) |")
+    assert locate_by_value(table, 0.008) == (1, 1)
+
+
+def test_a_repeated_exact_number_is_addressed_by_its_row_label():
+    from src.extraction.table_estimates import locate_by_value
+
+    table = ("| Outcome | Coef |\n| --- | --- |\n"
+             "| Ingreso mensual per capita | 0.16 |\n"
+             "| Ingreso mensual del participante | 0.16 |")
+    assert locate_by_value(table, 0.16) == (None, None)
+    assert locate_by_value(table, 0.16, row_label="Ingreso mensual per capita") == (0, 1)
+    assert locate_by_value(table, 0.16, row_label="Ingreso mensual del participante") == (1, 1)
+    # A label that names neither row cannot create an address.
+    assert locate_by_value(table, 0.16, row_label="Something else") == (None, None)

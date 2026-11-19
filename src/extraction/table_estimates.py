@@ -118,6 +118,56 @@ def _close(value: float, options: Sequence[float]) -> bool:
     return any(abs(value - other) <= max(0.006, abs(value) * 0.005) for other in options)
 
 
+_TOKEN = re.compile(r"[-−–]?\d[\d.,]*")
+
+
+def _printed_decimals(token: str) -> int:
+    """Decimal places a printed number carries, reading a comma as decimal or thousands."""
+    text = str(token).replace("−", "-").replace("–", "-").rstrip(".,")
+    if "," in text and "." in text:
+        return len(text) - max(text.rfind(","), text.rfind(".")) - 1
+    if "," in text:
+        tail = text.rsplit(",", 1)[1]
+        return 0 if len(tail) == 3 else len(tail)
+    if "." in text:
+        return len(text.rsplit(".", 1)[1])
+    return 0
+
+
+def _value_decimals(value) -> int:
+    """Decimal places a stored value carries, with a whole number counting as none."""
+    number = float(value)
+    if number == int(number):
+        return 0
+    text = repr(number)
+    if "e" in text or "E" in text:
+        return 6
+    return len(text.split(".")[1])
+
+
+def _holds(value, text: object, signed: bool = True) -> bool:
+    """True when a number printed in `text` is `value` at the printed number's own precision.
+
+    An absolute tolerance is wrong for this: 0.006 and 0.008 differ by more than half of the last digit
+    they print, so they are different numbers, while 0.085 and 0.0850 are the same one. The comparison
+    uses the finer of the two precisions, so a value printed to three places does not match a two-place
+    number that merely rounds to it. `signed` keeps a coefficient's sign significant, and lets a standard
+    error compare on magnitude.
+    """
+    if value is None:
+        return False
+    target = float(value) if signed else abs(float(value))
+    for token in _TOKEN.findall(str(text or "")):
+        printed = parse_number(token)
+        if printed is None:
+            continue
+        candidate = printed if signed else abs(printed)
+        decimals = max(_printed_decimals(token), _value_decimals(value))
+        if abs(target - candidate) <= 0.5 * 10 ** -decimals + 1e-12:
+            return True
+    return False
+
+
 def _address_problem(estimate: "Estimate", grid) -> bool:
     """True when the row has no address, or when its standard error cannot be found in the cells it names."""
     if estimate.cell_row is None or estimate.cell_column is None:
@@ -130,8 +180,7 @@ def _address_problem(estimate: "Estimate", grid) -> bool:
     if estimate.se_row is not None and estimate.se_column is not None and \
             estimate.se_row < len(grid.body) and estimate.se_column < len(grid.body[estimate.se_row]):
         cells.append(grid.body[estimate.se_row][estimate.se_column])
-    numbers = [value for cell in cells for value in _numbers_in(cell)]
-    return not _close(abs(estimate.standard_error), [abs(value) for value in numbers])
+    return not any(_holds(estimate.standard_error, cell, signed=False) for cell in cells)
 
 
 async def repair_addresses(estimates: List["Estimate"], units: Sequence[Dict[str, Any]], model: str,
@@ -185,7 +234,7 @@ async def repair_addresses(estimates: List["Estimate"], units: Sequence[Dict[str
                 if not (1 <= column_number <= len(body)):
                     continue
                 printed = body[column_number - 1]
-                if not _close(estimate.effect_size, _numbers_in(printed)):
+                if not _holds(estimate.effect_size, printed):
                     continue
                 estimate.cell_row, estimate.cell_column = row_number - 1, column_number - 1
                 repaired += 1
@@ -203,13 +252,45 @@ async def repair_addresses(estimates: List["Estimate"], units: Sequence[Dict[str
                 se_body = grid.body[se_row - 1]
                 if not (1 <= se_column <= len(se_body)):
                     continue
-                if _close(abs(estimate.standard_error), [abs(v) for v in _numbers_in(se_body[se_column - 1])]):
+                if _holds(estimate.standard_error, se_body[se_column - 1], signed=False):
                     estimate.se_row, estimate.se_column = se_row - 1, se_column - 1
     return repaired
 
 
-def locate_by_value(unit_text: str, effect_size):
-    """Row and column of the one cell whose numbers equal this coefficient."""
+def _narrow_by_labels(grid, hits, row_label: str, column_label: str, arm: str):
+    """Keep the candidate cells whose row label, then column heading, matches what the reader reported.
+
+    Labels are used only to break a tie between cells that already hold the same printed number, so a
+    wrong label cannot create an address: it can only leave the set unchanged or reduce it.
+    """
+    label = _merge_outcome(row_label)
+    if label:
+        kept = [hit for hit in hits
+                if hit[0] < len(grid.body) and grid.body[hit[0]]
+                and _merge_outcome(grid.body[hit[0]][0])
+                and (label in _merge_outcome(grid.body[hit[0]][0])
+                     or _merge_outcome(grid.body[hit[0]][0]) in label)]
+        if kept:
+            hits = kept
+    headers = grid.headers[-1] if grid.headers else []
+    wanted = _merge_outcome(column_label) or _merge_outcome(arm)
+    if wanted:
+        kept = [hit for hit in hits if hit[1] < len(headers) and _merge_outcome(headers[hit[1]])
+                and (_merge_outcome(headers[hit[1]]) in wanted
+                     or wanted in _merge_outcome(headers[hit[1]]))]
+        if kept:
+            hits = kept
+    return hits
+
+
+def locate_by_value(unit_text: str, effect_size, row_label: str = "", column_label: str = "",
+                    arm: str = ""):
+    """Row and column of the one cell whose printed number equals this coefficient.
+
+    Matching is at the number's printed precision, so 0.006 and 0.008 are different cells. When the
+    printed number repeats, the row and column labels the reader reported break the tie, and the chosen
+    cell must still hold the coefficient.
+    """
     from src.extraction.table_structure import parse_markdown_table
 
     if effect_size is None:
@@ -218,8 +299,41 @@ def locate_by_value(unit_text: str, effect_size):
     hits = [(row_index, column_index)
             for row_index, row in enumerate(grid.body)
             for column_index, cell in enumerate(row)
-            if column_index > 0 and _close(float(effect_size), _numbers_in(cell))]
+            if column_index > 0 and _holds(effect_size, cell)]
+    if len(hits) > 1:
+        hits = _narrow_by_labels(grid, hits, row_label, column_label, arm)
     return hits[0] if len(hits) == 1 else (None, None)
+
+
+def _locate_in_other_views(units: Sequence[Dict[str, Any]], estimate: "Estimate"):
+    """A unique printed match in one arm view of the same table, when the row's own view lacks it.
+
+    A wide table is read whole and column by column, and a row merged from two reads can keep the view
+    that did not locate it. The value is then found once in exactly one arm view. Only that unambiguous
+    case is accepted, and the view that holds the cell becomes the row's view.
+    """
+    from src.extraction.table_structure import parse_markdown_table
+
+    if estimate.effect_size is None or estimate.unit_index is None or estimate.unit_index >= len(units):
+        return None, None, estimate.unit_index
+    own = units[estimate.unit_index]
+    found = []
+    for unit in units:
+        if unit["page"] != own["page"] or unit["table_index"] != own["table_index"]:
+            continue
+        if unit.get("whole_of_views") or not unit.get("arm_hint"):
+            continue
+        grid = parse_markdown_table(unit["text"])
+        hits = [(row_index, column_index)
+                for row_index, row in enumerate(grid.body)
+                for column_index, cell in enumerate(row)
+                if column_index > 0 and _holds(estimate.effect_size, cell)]
+        if len(hits) > 1:
+            hits = _narrow_by_labels(grid, hits, estimate.row_label or estimate.outcome,
+                                     estimate.column_label, estimate.arm)
+        if len(hits) == 1:
+            found.append((unit["unit_index"], hits[0][0], hits[0][1]))
+    return found[0] if len(found) == 1 else (None, None, estimate.unit_index)
 
 
 def finalise_addresses(estimates: List["Estimate"], units: Sequence[Dict[str, Any]]) -> int:
@@ -259,8 +373,7 @@ def finalise_addresses(estimates: List["Estimate"], units: Sequence[Dict[str, An
         if estimate.se_row is not None and estimate.se_column is not None and \
                 estimate.se_row < len(grid.body) and estimate.se_column < len(grid.body[estimate.se_row]):
             cells.append(grid.body[estimate.se_row][estimate.se_column])
-        numbers = [abs(value) for cell in cells for value in _numbers_in(cell)]
-        if not _close(abs(estimate.standard_error), numbers):
+        if not any(_holds(estimate.standard_error, cell, signed=False) for cell in cells):
             estimate.standard_error = None
             estimate.se_row = estimate.se_column = None
             estimate.notes.append("standard error unverified: not printed in the addressed cells")
@@ -271,7 +384,7 @@ def finalise_addresses(estimates: List["Estimate"], units: Sequence[Dict[str, An
 def effect_is_close(effect_size, token) -> bool:
     if effect_size is None:
         return False
-    return _close(float(effect_size), _numbers_in(token))
+    return _holds(effect_size, token)
 
 
 def pair_arm_counts(estimates: List["Estimate"]) -> None:
@@ -662,7 +775,7 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
         se = t = lo = hi = None
         kind = ""
     elif cell_prior is not None and cell_se is None and se is not None and \
-            abs(abs(se) - abs(cell_prior)) <= max(0.006, abs(cell_prior) * 0.005):
+            abs(abs(se) - abs(cell_prior)) <= 1e-9 * max(1.0, abs(cell_prior)):
         # The model named the error printed before this coefficient, which belongs to the coefficient above.
         se = t = lo = hi = None
         kind = ""
@@ -1049,8 +1162,14 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
                 estimate.cell_row, estimate.cell_column = locate_cell_position(u["text"], estimate.estimate_cell)
             if estimate.cell_row is None:
                 # Still no address: the coefficient's own text often appears once in the table, which is an
-                # address without any need for the model to number rows.
-                estimate.cell_row, estimate.cell_column = locate_by_value(u["text"], estimate.effect_size)
+                # address without any need for the model to number rows. A repeated number is broken by the
+                # row and column labels only, and the cell must still hold the coefficient.
+                estimate.cell_row, estimate.cell_column = locate_by_value(
+                    u["text"], estimate.effect_size,
+                    estimate.row_label or estimate.outcome, estimate.column_label, estimate.arm)
+            if estimate.cell_row is None:
+                estimate.cell_row, estimate.cell_column, estimate.unit_index = \
+                    _locate_in_other_views(units, estimate)
         per_item.setdefault(u["index"], []).extend(rows)
         tables.append({"table": label, "page": u["page"], "results_table": is_results, "estimates": len(rows),
                        "grounded": sum(r.grounded for r in rows), "error": err,
