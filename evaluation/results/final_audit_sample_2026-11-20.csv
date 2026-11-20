@@ -1,0 +1,61 @@
+doc_key,page,table,cell,outcome,arm,subgroup,estimation_method,value,SE,row_role,column_role,keep_effect
+c905701e6922_PDFs_of_included_programs_121058368,40,Asset Only,r2c4,Woman has major say on health decisions (personal and family),Asset Only,,,-0.05,0.06,programme_effect,,True
+1384653aa039_PDFs_of_included_programs_121378494_Leight_(2024),6,Treatment,r5c1,Adoption of improved agricul- tural practices,Treatment,,,0.07,0.01,programme_effect,outcome,True
+0cb609fbf433_PDFs_of_included_programs_122182713,35,T3: Ind LH / Ind C,r0c1,Paid work,T1: Grp LH / Grp C,,,244,293,programme_effect,outcome,True
+1aaf7f99fc9e_PDFs_of_included_programs_121295691,11,Death of duck/hen,r9c1,Livestock sick (money spent),"DD - T2011*SUP (long-run impact, 2011-2002)",2011-2002 - Death,,-0.13,,outcome,programme_effect,True
+c5f7f6a26ce7_PDFs_of_included_programs_121354848,5,Poverty,r2c1,Livestock,1-year results - T3-C,,,0.382,0.118,outcome,programme_effect,True
+99bdbef0f7b7_PDFs_of_included_programs_121378216,35,Baseline Value of Outcome,r0c1,Quantity of Sheep & Goats Owned,(2) Quantity of Sheep & Goats Owned,,,0.167,0.028,programme_effect,outcome,True
+ed8331ab9500_PDFs_of_included_programs_121058364,29,Total per capita expenditure on food (USD ppp),r13c1,Total per capita expenditure on education (USD ppp),,,IV - SD of CG,0.02,,outcome,programme_effect,True
+2af3cf6123e0_PDFs_of_included_programs_121328167,54,Year 11 × above ˆ k,r0c1,Cows,Year 2 × above ˆ k,,,495,365,programme_effect,outcome,True
+b98a0422b2e2_PDFs_of_included_programs_121430610,81,Table 41,r0c1,(2) - Daily Consumption P.C. < $1.90,T1: Ind. coaching + asset,,,-0.19,,,,True
+9b89a1ab05bf_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Montoya_(2023),145,Table 3.2,r17c1,Switch Program,College-Low - Diff-𝛽,,,-0.009,,,,True
+442bb134bc3b_PDFs_of_included_programs_121295428,8,Enhanced Nutrition arms,r6c1,Total number of poultry owned by female,Enhanced Nutrition arms,,,0.375,0.23,programme_effect,outcome,True
+4a1f5e7f9586_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Misha_(2019),42,invited,r1c1,cowbull_a,2005 - Treated,,,1.599,,outcome,outcome,True
+fa42c26c3414_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Selim_(2020),45,Table 8,r0c1,Reciprocity of transfers with - middle class - (4),Treatment,,,0.086,,,,True
+493a2bec10d3_PDFs_of_included_programs_121336027,4,Difference-in-Difference,r4c1,Different poverty threshold TUP1-TUP2,Cubic poverty gap,,,0.0186,0.0032,not_an_effect,outcome,False
+e43fa156b2f1_PDFs_of_included_programs_121294841,57,Treatment,r3c9,N social groups member of,,,,0.0577,0.0199,programme_effect,,True
+fe030238c286_PDFs_of_included_programs_Nicaragua_-_Atencion_a_Crisis_Nicaragua_-_Atencion_a_Crisis_121307773,26,demand any training,r5c1,(3) Has non- agricultural wage job,(3) Has non- agricultural wage job,,,0.0361,0.0586,programme_effect,outcome,True
+63bcc2c07899_PDFs_of_included_programs_121305126,60,Decile 9,r1c1,log(income/month+1),No adjustment,,,-0.69,,outcome,programme_effect,True
+8e7ad75de1f2_PDFs_of_included_programs_122182716,13,Value of the house (BDT),r2c1,No. of income sources,Panel regression results (equation 1) (3),Panel regression,,0.03,0.2,outcome,,True
+4c9d6fa93352_PDFs_of_included_programs_121294795,11,To set up a saving goal and try to achieve it,r6c1,To be motivated to increase household income,Treatment,,,0.08,0.27,outcome,not_an_effect,False
+076ec917aab5_PDFs_of_included_programs_121378172_Gilligan_(2024),83,T3-T2,r7c1,"7a) Mean weight for height Z-score, unconditional estimates",T2-T1,,,-0.079,,programme_effect,programme_effect,True
+b5a18f177248_PDFs_of_included_programs_121297660,55,TLUs,r0c5,Total cons.,Kling-Liebman lower,Panel A,,526,,outcome,programme_effect,True
+df1588ddee86_PDFs_of_included_programs_121498842_Spanish,52,Reducción en la brecha de sus expectativas a 2 años (%),r1c1,Nivel de felicidad,EI2 - Efecto,,,0.01,0.07,outcome,programme_effect,True
+8d23199222c8_PDFs_of_included_programs_121058356,89,Full,r13c1,(4) Large purchases influence {1-3},(4) Large purchases influence {1-3},,,0.02,0.03,programme_effect,programme_effect,True
+d9ca0e85d3e1_PDFs_of_included_programs_121330141,17,Covariate shock,r15c1,Covariate shock,Wald test,shock,,6.7,,control_or_covariate,not_an_effect,False
+fa8b6c2f9ee1_PDFs_of_included_programs_Nicaragua_-_Atencion_a_Crisis_Nicaragua_-_Atencion_a_Crisis_121475071,9,CCT (T1),r3c7,Manufacturing,CCT (T1),,,0.0023,0.01,programme_effect,,True
+ba83facff3d1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Ara_(2021),62,Table 2.5,r0c1,HH chores,HH chores - 2007- 2009,,,-0.16,0.31,,,True
+3d1065d6b553_PDFs_of_included_programs_121498842_translated_into_English,42,Daily income of the self-employed worker,r2c1,Total daily per capita household income (USD PPP),EI1 - Effect,,,-0.16,0.17,outcome,programme_effect,True
+70eedd447e8e_PDFs_of_included_programs_121295095,16,Extended Data Table 4,r1c2,No. of household businesses,Capital,,,0.24,0.05,,,True
+e50119e4539d_PDFs_of_included_programs_121354848_appendix,22,. . . severe underweight,r5c1,"MUAC: .wasting, MUAC",1-year results - T1-C,,,-0.012,0.015,outcome,programme_effect,True
+37ec5820d8e8_PDFs_of_included_programs_121498927,20,Treatment*Round,r2c1,- > 2 meals,,,,2.99,1.93,programme_effect,outcome,True
+6e10e8679862_PDFs_of_included_programs_121294873,21,ATET Human support,r0c4,Health,,,,-0.054,0.022,programme_effect,outcome,True
+27cf2157fc9d_PDFs_of_included_programs_122182711_Spanish,75,Desagregando el ingreso en 6 grandes grupos,r9c1,4.2. Ingresos por trabajo asalariado no agrícola,Impacto del tratamiento,,,-38.9,,outcome,programme_effect,True
+1464d3d16709_PDFs_of_included_programs_121475285,9,CTL mean,r2c1,Tot,TUP*2014,,,9.34,2.26,programme_effect,outcome,True
+a16f5d6f97c3_PDFs_of_included_programs_121295641,42,Life Orientation Test (LOT-R) Index,r10c1,Life Orientation Test (LOT-R) Index,Primary Man - Treatment Effect Level (5),,,0.171,0.08,outcome,programme_effect,True
+1f44cd8c70b8_PDFs_of_included_programs_121058367,150,Pooled effect of N*: T1 or T3,r2c1,Primary female consumed green leafy veg- etables,T3,,,0.017,0.014,programme_effect,outcome,True
+c6f56d86e783_PDFs_of_included_programs_121058369,8,who died from an accident,r26c1,Proportion of members travelling for work,(1) - Coef.,,,0.02,,outcome,programme_effect,True
+9e8b2d113232_PDFs_of_included_programs_121327221,29,Treatment (ITT): Seven Year,r10c1,Mental Health Index,Treatment (ITT): Seven Year,,,-0.0872,0.06,programme_effect,outcome,True
+2ba121015278_PDFs_of_included_programs_122182712_Sulaiman_(2013),10,Cash savings a,r2c1,Number of goats owned,Impact estimates - [A-C],,,0.82,,outcome,programme_effect,True
+67e5321c3a99_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Bandiera_(2017),29,Below poverty line,r2c3,Value of household assets,Program impact after 4 years,,,39.65,9.08,outcome,programme_effect,True
+6ee1e2e3e24e_PDFs_of_included_programs_122182711_English,104,"of income diversification, 6 major groups (1 = complete diversification, 0 = concentration)",r17c1,"Herfindahl index of income diversification, 6 major groups",Intensity of the Intensity of - treatment: - lower third upper third - differences) (2),,,-0.0008,,outcome,programme_effect,True
+8cab193ce8b7_PDFs_of_included_programs_121058373_app,54,Peru,r17c1,"(5) - Self-reported economic status (1/10) - Income, month","(5) - Self-reported economic status (1/10) - Income, month",India (Bandhan),,0.21,0.07,programme_effect,outcome,True
+e23a72cd85d8_PDFs_of_included_programs_121326829,51,Table A6,r4c1,Locus of Control,ITT w3-w4 * Saturation,,,2.59,1.38,,,True
+61ddcec5e910_PDFs_of_included_programs_121294984,41,Training-only,r4c1,Per capita value of harvest sold (MWK),"Project impact on value of agricultural production, consumption and sales - (6)",,,310.9,665.5,programme_effect,outcome,True
+c90cc7f6a768_PDFs_of_included_programs_121499003,61,Non-CT Spillover,r11c1,Area of own Plots cultivated (ha),(2) Area of own Plots cultivated (ha),Household Head,,-0.583,0.396,programme_effect,outcome,True
+details121766336_Bab_Amal_Policy_Brief_Details,3,Full cost restricted,r9c3,Female Designees Agricultural Employment,Full cost restricted,,,0.093,,programme_effect,outcome,True
+7fe6b0bbcef3_PDFs_of_included_programs_121328483_Banerjee_(2022),22,itt,r5c1,Year 1 annual nondurable consumption ITT (assuming treatment effect equal to year 2 for asset only),Year 1 annual nondurable consumption ITT (assuming treatment effect equal,,,17,34,outcome,programme_effect,True
+20883ddebbf3_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Rabbani_(2006),13,Table 6,r2c1,Duck/hen,2005 - Difference (6=4-5),,,0.05,,,,True
+792bc37d6275_PDFs_of_included_programs_122182715,39,(1) Collecting debts,r6c1,Collecting debts,Group coaching,Bangladesh,,-0.027,0.075,outcome,,True
+29beca310349_PDFs_of_included_programs_121327437,24,Psyc. well-being,r24c1,Psyc. well-being,(1) 10th,38-month impacts,,0.418,0.091,outcome,programme_effect,True
+cc6acb106d4b_PDFs_of_included_programs_121295229,12,Treatment,r1c3,Self- employment (typ. month) (3),,,,18.665,5.796,programme_effect,outcome,True
+3db5b3cfc6ec_PDFs_of_included_programs_121326790,40,School Enrollment (Children Ages 6 to 18 Years),r8c1,Number of Livestock Owned by Type: Sheep,NUP Adjusted Difference (Gap) With - Control (1),,,0.3,0.082,outcome,control_or_covariate,False
+cf98b55a200b_PDFs_of_included_programs_121347787,10,"Son's/daughter's marriage (Yes = 1, No = 0)",r1c3,"Lending/borrowing (Yes = 1, No = 0)",,,,0.0127,0.05,outcome,programme_effect,True
+52f188437804_PDFs_of_included_programs_121378379,74,Table (page 74),r10c1,Farm management plan,Intensive Extension X Cash or Input Transfer,,,0.0414,0.094,,,True
+701165f57f97_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Das_(2013),19,Table 5.1,r2c1,Chickens/ducks,Treatment impact on number of livestock - Owned in any part by female,,,0.803,0.121,,,True
+9aa551090ac0_PDFs_of_included_programs_121058369_appendix,12,Debt index (z-score),r5c1,"Non-livestock income, past 12m (PPP$)",Upper Bounds - (5) - 0.1 SD,,,329.32,285.42,outcome,programme_effect,True
+a72b17099de1_PDFs_of_included_programs_Bangladesh_-_all_BRAC_programs_BRAC_programs_(40)_Emran_(2012),49,Table A.4b,r12c1,Number of radio/TVs,snb1 - radius caliper,,,-0.21,,,,True
+893989dfb5e9_PDFs_of_included_programs_121058373,12,Year 3 savings balance ITT treatment effect,r3c3,"Year 4 onward total consumption ITT treatment effect, assuming year 3 gains persist in perpetuity (USD PPP)",,,,6241,,programme_effect,,True
+c905701e6922_PDFs_of_included_programs_121058368,50,Treatment Status,r17c1,Incomes and Revenues Index,Endline,,,0.00069,0.0018,outcome,programme_effect,True
+1384653aa039_PDFs_of_included_programs_121378494_Leight_(2024),6,Treatment,r5c4,Aspirations - confidence to adapt,Treatment,,,0.11,0.09,programme_effect,outcome,True
+0cb609fbf433_PDFs_of_included_programs_122182713,33,T3: Ind LH / Ind C,r0c1,Value of productive assets,T1: Grp LH / Grp C,,,1954,1054,programme_effect,outcome,True
