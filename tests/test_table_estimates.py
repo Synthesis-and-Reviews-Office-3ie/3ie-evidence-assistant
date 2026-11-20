@@ -502,3 +502,28 @@ def test_an_arm_in_columns_table_keeps_the_row_as_the_outcome():
     e = to_estimate({"outcome": "Beds", "row_label": "Beds", "estimate_cell": "0.5***",
                      "se_cell": "(0.1)"}, "t", 1, table, arm_hint="Treatment", unit_index=3)
     assert e.outcome == "Beds" and e.arm == "Treatment"
+
+
+def test_a_method_in_the_arm_moves_to_its_own_field():
+    table = "| Business Assets | T1 |\n| --- | --- |\n| Value | 0.5*** (0.1) |"
+    e = to_estimate({"outcome": "Business Assets", "arm": "DD-PSM - T2005", "row_label": "T1",
+                     "estimate_cell": "0.5***", "se_cell": "(0.1)"}, "t", 1, table,
+                    arm_hint="Business Assets", unit_index=3)
+    assert e.arm == "T1" and e.estimation_method == "DD-PSM - T2005"
+
+
+def test_a_subgroup_in_the_outcome_moves_to_its_own_field():
+    table = "| Total | Income |\n| --- | --- |\n| x | 0.5*** (0.1) |"
+    e = to_estimate({"outcome": "Total", "arm": "Treatment impact", "row_label": "Income",
+                     "estimate_cell": "0.5***", "se_cell": "(0.1)"}, "t", 1, table,
+                    arm_hint="Treatment impact", unit_index=3)
+    assert e.outcome == "Income" and e.subgroup == "Total"
+
+
+def test_a_repeated_arm_takes_the_row_label():
+    table = "| Midline use | Intensive Extension |\n| --- | --- |\n| x | 0.5*** (0.1) |"
+    e = to_estimate({"outcome": "Midline use", "arm": "Midline use",
+                     "row_label": "Intensive Extension in Phase 1",
+                     "estimate_cell": "0.5***", "se_cell": "(0.1)"}, "t", 1, table,
+                    arm_hint="Midline use", unit_index=3)
+    assert e.arm == "Intensive Extension in Phase 1"

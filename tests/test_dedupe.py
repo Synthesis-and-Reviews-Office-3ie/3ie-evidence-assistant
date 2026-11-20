@@ -37,3 +37,22 @@ def test_combined_labels_drops_a_label_contained_in_a_longer_one():
 def test_combined_labels_deduplicates_identical_labels():
     assert combined_labels(["Same", "Same"]) == "Same"
     assert combined_labels([]) == ""
+
+
+def test_dedupe_rows_keeps_one_and_combines_the_labels():
+    from src.extraction.dedupe import dedupe_rows
+
+    rows = [
+        {"unit_index": 2, "cell_row": 1, "cell_column": 1, "effect_size": 0.9,
+         "standard_error": None, "treatment_arm": "", "outcome_name": "Delta Jobs", "text_position": "a"},
+        {"unit_index": 2, "cell_row": 1, "cell_column": 1, "effect_size": 0.9,
+         "standard_error": None, "treatment_arm": "", "outcome_name": "Industry", "text_position": "b"},
+        {"unit_index": 2, "cell_row": 2, "cell_column": 1, "effect_size": 0.4,
+         "standard_error": None, "treatment_arm": "", "outcome_name": "Other", "text_position": "c"},
+        {"unit_index": None, "cell_row": None, "cell_column": None, "effect_size": 0.1,
+         "outcome_name": "Prose"},
+    ]
+    out = dedupe_rows(rows)
+    assert len(out) == 3
+    combined = [row for row in out if row.get("unit_index") == 2 and row.get("cell_row") == 1]
+    assert combined[0]["outcome_name"] == "Delta Jobs - Industry"

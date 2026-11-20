@@ -19,6 +19,7 @@ from typing import Any, Callable, Dict, Iterable, List, Optional
 import httpx
 
 from src.extraction.consistency import flags_for
+from src.extraction.dedupe import dedupe_rows
 from src.extraction.effect_sizes import standardise
 from src.extraction.identity import row_key
 from src.extraction.table_estimates import extract_document
@@ -67,6 +68,7 @@ def rows_for(project_id: str, doc: Dict[str, Any], out: Dict[str, Any], model: s
             "rag_project_id": project_id, "document_id": doc["id"], "doc_key": doc["filename"], "source": SOURCE,
             "table_number": e["table_label"][:120], "outcome_name": (e["outcome"] or e["row_label"] or "?")[:500],
             "treatment_arm": e["arm"] or None, "subgroup": e["subgroup"] or None,
+            "estimation_method": e.get("estimation_method") or None,
             "effect_size": e["effect_size"], "standard_error": _finite(e["standard_error"]),
             "p_value": p if p is not None and 0 <= p <= 1 else None,
             "p_text": ("*" * e["stars"]) if e["stars"] else None, "ci_text": ci,
@@ -363,6 +365,7 @@ async def extract_and_store(
                                     log(f"  ! {name[:60]}: second pass failed: {type(e).__name__}")
                         except Exception as e:
                             log(f"  ! {name[:60]}: outcome confirmation failed: {type(e).__name__}")
+                    rows = dedupe_rows(rows)
                     if rows:
                         vectors = await asyncio.to_thread(embed_documents, [estimate_text(r) for r in rows])
                         for r, v in zip(rows, vectors):

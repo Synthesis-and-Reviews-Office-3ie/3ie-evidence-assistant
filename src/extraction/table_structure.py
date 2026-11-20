@@ -429,6 +429,12 @@ _ROLE_ROW = re.compile(
     r"^\s*(treatment|treated|programme|program|intervention|arm|full|half|t\d+|sup|nsup|"
     r"received|intensive|extension|phase|one year|year\s*\d|waves?\b|round\b|follow[- ]?up|baseline|"
     r"\b(19|20)\d{2}\b)", re.I)
+# The arm test is wider than the layout test: a spillover arm or an ITT row is a role for the arm, but
+# widening _ROLE_ROW itself changes the table interpretation the reader already relies on.
+_ARM_ROLE = re.compile(
+    r"^\s*(treatment|treated|programme|program|intervention|arm|full|half|t\d+|sup|nsup|"
+    r"received|intensive|extension|phase|one year|year\s*\d|waves?\b|round\b|follow[- ]?up|baseline|"
+    r"spillover|itt|\b(19|20)\d{2}\b)", re.I)
 _ORDINAL = re.compile(r"^\s*\(\d+\)\s*[-–]?\s*|\s*\(\d+\)\s*$")
 # Headers that name a position, a period or a fragment, not an outcome.
 _BAD_HEADER = re.compile(
@@ -441,6 +447,80 @@ _BAD_HEADER = re.compile(
 def header_name(text: str) -> str:
     """A column header without the leading or trailing panel ordinal, such as "(2) GVAO" to "GVAO"."""
     return _ORDINAL.sub("", str(text or "")).strip()
+
+
+def _role_norm(text) -> str:
+    return re.sub(r"[^a-z0-9]+", " ", str(text or "").lower()).strip()
+
+
+_METHOD = re.compile(
+    r"(ridge|lasso|dr ?did|\bpsm\b|propensity|2sls|\biv\b|\bols\b|\batt\b|kernel|"
+    r"nearest neighbo|hierarchy|coef\s*/|\bs\.\s?e\.|p ?value|specification|\bitt\b)", re.I)
+_SUBGROUP_WORDS = {"male", "female", "girls", "boys", "girl", "boy", "industry", "industries",
+                   "services", "service", "agriculture", "agricultural", "traditional", "wealth",
+                   "rural", "urban", "age", "religion", "married", "widow", "total"}
+
+
+def method_label(text) -> str:
+    """The label when it names an estimation method, else an empty string."""
+    return str(text or "").strip() if _METHOD.search(str(text or "")) else ""
+
+
+def subgroup_label(text) -> str:
+    """The label when it is a short subgroup category (one or two words), else an empty string."""
+    words = re.findall(r"[a-z]+", str(text or "").lower())
+    return str(text or "").strip() if len(words) <= 2 and any(w in _SUBGROUP_WORDS for w in words) else ""
+
+
+def is_role(label) -> bool:
+    return bool(_ARM_ROLE.match(str(label or "")))
+
+
+def fixed_arm(outcome, arm, row_label, column_header, panel="") -> str:
+    """The arm to store: the row label when the arm merely repeats the header or the outcome.
+
+    A subgroup row is not an arm, and a row that is already the outcome is left alone so the layout swap
+    is not masked by copying the row label into the arm.
+    """
+    if not _role_norm(arm) or not (_role_norm(arm) == _role_norm(column_header)
+                                   or _role_norm(arm) == _role_norm(outcome)):
+        return arm
+    if _role_norm(outcome) == _role_norm(row_label):
+        return arm
+    if is_role(row_label):
+        return str(row_label).strip()
+    if panel:
+        return str(panel).strip()
+    return arm
+
+
+def assign_roles(outcome, arm, row_label, column_header, panel="", subgroup="", raw_arm=""):
+    """Move a method or a subgroup out of the outcome or arm into its own field.
+
+    A method in the arm clears the arm and takes the row label when the row is a treatment. A subgroup in
+    the outcome or arm clears that field and takes the row label when it is a usable outcome. A method in
+    the outcome is tagged but kept, because the table subject is not known from the cell alone. `raw_arm`
+    is the model's arm before an outcome-in-columns swap, so a method it named is not lost.
+    """
+    method = ""
+    from_arm = method_label(arm)
+    if from_arm:
+        method = from_arm
+        arm = str(row_label).strip() if is_role(row_label) else ""
+    elif method_label(raw_arm):
+        method = method_label(raw_arm)
+    if not subgroup:
+        from_arm = subgroup_label(arm) or subgroup_label(raw_arm)
+        if from_arm:
+            subgroup = from_arm
+            arm = str(row_label).strip() if is_role(row_label) else ""
+        else:
+            from_outcome = subgroup_label(outcome)
+            if from_outcome and row_label and not subgroup_label(row_label) and not method_label(row_label):
+                subgroup = from_outcome
+                outcome = str(row_label).strip()
+    arm = fixed_arm(outcome, arm, row_label, column_header, panel)
+    return outcome, arm, method, subgroup
 
 
 def outcome_in_columns(row_label: str, header: str) -> bool:

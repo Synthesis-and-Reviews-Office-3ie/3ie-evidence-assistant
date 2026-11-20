@@ -249,6 +249,31 @@ def test_outcome_in_columns_is_decided_by_the_row_role_and_header():
     assert header_name("Farm management plan (9)") == "Farm management plan"
 
 
+def test_a_repeated_arm_comes_from_the_row_or_panel():
+    from src.extraction.table_structure import fixed_arm
+
+    assert fixed_arm("GVAO (IHST)", "(2) GVAO (IHST)", "Intensive Extension in Phase 1",
+                     "(2) GVAO (IHST)") == "Intensive Extension in Phase 1"
+    assert fixed_arm("X", "X", "", "X", "Panel B") == "Panel B"
+    assert fixed_arm("Delta Jobs", "Hierarchy 5 - Diff", "Industry", "Hierarchy 5 - Diff") == \
+        "Hierarchy 5 - Diff"
+    assert fixed_arm("Beds", "T1", "Beds", "Treatment impact") == "T1"
+
+
+def test_a_method_moves_from_the_arm_and_a_subgroup_from_the_outcome():
+    from src.extraction.table_structure import assign_roles
+
+    outcome, arm, method, subgroup = assign_roles(
+        "Business Assets", "DD-PSM - T2005", "T1: Ind. coaching + asset", "Business Assets")
+    assert outcome == "Business Assets" and arm == "T1: Ind. coaching + asset"
+    assert method == "DD-PSM - T2005" and subgroup == ""
+
+    outcome, arm, method, subgroup = assign_roles(
+        "Total", "Treatment impact", "Income", "Treatment impact")
+    assert outcome == "Income" and arm == "Treatment impact"
+    assert method == "" and subgroup == "Total"
+
+
 def test_a_grouped_header_keeps_the_group_number():
     split = split_estimate_columns(GROUPED_TABLE)
     assert split[0]["header"] != split[1]["header"]

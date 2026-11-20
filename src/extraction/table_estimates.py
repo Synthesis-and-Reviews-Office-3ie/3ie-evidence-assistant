@@ -719,6 +719,7 @@ class Estimate:
     n_treatment: Optional[int]
     n_control: Optional[int]
     grounded: bool
+    estimation_method: str = ""
     source_cell: str = ""
     cell_row: Optional[int] = None
     cell_column: Optional[int] = None
@@ -745,7 +746,7 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
                 arm_hint: str = "", n_hint: Optional[float] = None,
                 control_n: Optional[float] = None, arm_row: str = "",
                 table_index: Optional[int] = None, unit_index: Optional[int] = None) -> Estimate:
-    from src.extraction.table_structure import header_name, outcome_in_columns
+    from src.extraction.table_structure import assign_roles, header_name, outcome_in_columns
 
     est_cell = str(raw.get("estimate_cell") or "")
     # The address the model gave is accepted only when that cell actually holds the reported coefficient.
@@ -900,20 +901,22 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
     outcome = str(raw.get("outcome") or "")
     row_label = str(raw.get("row_label") or "")
     header = arm_hint or str(raw.get("column_label") or "")
+    panel_match = re.search(r"panel\s+([a-z0-9]+)", str(table_label or ""), re.I)
+    panel = f"Panel {panel_match.group(1)}" if panel_match else ""
     if arm_hint and outcome_in_columns(row_label or outcome, header):
-        # The table prints outcomes across the columns and treatments or regressors down the rows. The
-        # column header is the outcome; the row label is the arm or regressor, kept in its own field.
-        panel = re.search(r"panel\s+([a-z0-9]+)", str(table_label or ""), re.I)
         outcome = header_name(header)
         if panel:
-            outcome = f"Panel {panel.group(1)}: {outcome}"
+            outcome = f"{panel}: {outcome}"
         arm_value = row_label or outcome
     else:
         arm_value = arm_row or str(raw.get("arm") or "") or arm_hint
+    outcome, arm_value, estimation_method, subgroup_value = assign_roles(
+        outcome, arm_value, row_label, header, panel, str(raw.get("subgroup") or ""),
+        str(raw.get("arm") or ""))
     return Estimate(
         table_label=table_label, page=page, table_index=table_index,
         outcome=outcome,
-        arm=arm_value, subgroup=str(raw.get("subgroup") or ""),
+        arm=arm_value, subgroup=subgroup_value, estimation_method=estimation_method,
         row_label=row_label, column_label=str(raw.get("column_label") or "") or arm_hint,
         estimate_cell=est_cell, se_cell=se_cell, se_kind=kind, p_cell=str(raw.get("p_cell") or ""),
         effect_size=parse_number(est_cell), standard_error=se, t_stat=t, ci_low=lo, ci_high=hi,
