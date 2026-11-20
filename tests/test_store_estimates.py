@@ -50,6 +50,18 @@ def test_a_non_effect_role_is_carried_to_the_row():
     assert row["row_role"] == "outcome" and row["column_role"] == "control_or_covariate"
 
 
+def test_a_vision_row_without_the_flag_keeps_open_rather_than_null():
+    from src.extraction.store_estimates import unify_keys
+
+    table_row = _row({"outcome": "Income", "estimate_cell": "155.43*** (121.73)", "se_cell": "(121.73)"})
+    table_row["keep_effect"] = False
+    vision_row = {"source": "tables_v1", "page": 9, "outcome_name": "Consumption",
+                  "effect_size": 1.5, "row_key": None}  # vision/prose rows carry no role flag
+    unified = unify_keys([table_row, vision_row])
+    assert all(r["keep_effect"] is True or r["keep_effect"] is False for r in unified)
+    assert [r["keep_effect"] for r in unified if r["outcome_name"] == "Consumption"] == [True]
+
+
 def test_rows_from_different_readers_are_given_the_same_keys():
     from src.extraction.store_estimates import unify_keys
 

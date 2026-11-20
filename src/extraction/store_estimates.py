@@ -150,6 +150,12 @@ def unify_keys(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         seen.add(row["row_key"])
         unique.append(row)
     keys = set().union(*(row.keys() for row in unique)) if unique else set()
+    for row in unique:
+        # The vision and prose readers do not label roles, so their rows arrive without the flag. It
+        # fails open: an unlabelled row is kept. A None here would break the not-null column and lose
+        # the whole document's insert.
+        if row.get("keep_effect") is None:
+            row["keep_effect"] = True
     return [{key: row.get(key) for key in keys} for row in unique]
 
 
