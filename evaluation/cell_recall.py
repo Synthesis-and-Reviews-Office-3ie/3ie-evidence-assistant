@@ -33,7 +33,7 @@ from evaluation.outcome_gap_audit import mapped_and_all  # noqa: E402
 from evaluation.outcome_taxonomy import categories  # noqa: E402
 from evaluation.stored_rows import fetch_all  # noqa: E402
 from evaluation.three_way_eval import num  # noqa: E402
-from src.extraction.table_estimates import _holds  # noqa: E402
+from src.extraction.table_estimates import _holds, parse_number  # noqa: E402
 from src.extraction.table_structure import parse_markdown_table  # noqa: E402
 from supabase import create_client  # noqa: E402
 
@@ -41,6 +41,10 @@ PAGE = re.compile(r"page:\s*(\d+)", re.I)
 TABLE = re.compile(r"table:\s*(\d+)", re.I)
 LABEL = re.compile(r"table label:\s*(.+)", re.I)
 TABLE_IN_CAPTION = re.compile(r"table\s+([a-z]?\d+)", re.I)
+
+
+def _words(text):
+    return {w for w in re.findall(r"[a-z0-9]+", str(text or "").lower()) if len(w) >= 4}
 
 
 def _label_matches(unit, label):
@@ -93,6 +97,22 @@ def measure(project: str = PROJECT_ID) -> Counter:
         except Exception:
             units_by_doc[doc] = []
 
+    # A table the page/label/number match missed can still be found by its values and its outcome words.
+    unit_values, unit_words = {}, {}
+    for doc, units in units_by_doc.items():
+        for unit in units:
+            grid = parse_markdown_table(unit["text"])
+            values = set()
+            for row in grid.body:
+                for cell in row[1:]:
+                    for token in re.findall(r"[-−–]?\d[\d.,]*", str(cell)):
+                        parsed = parse_number(token)
+                        if parsed is not None:
+                            values.add(round(parsed, 6))
+            unit_values[(doc, unit["unit_index"])] = values
+            unit_words[(doc, unit["unit_index"])] = (
+                _words(unit.get("text")) | _words(unit.get("caption")))
+
     counts = Counter()
     for _, gt in load_key().iterrows():
         cats = categories(str(gt.get("Outcome name") or "")) - {"noise"}
@@ -122,6 +142,13 @@ def measure(project: str = PROJECT_ID) -> Counter:
         if not candidates:
             candidates = [(doc, unit) for doc, unit in study_units if _number_matches(unit, table_no)]
             via = "number"
+        if not candidates:
+            wanted = round(value, 6)
+            words = _words(gt.get("Outcome name"))
+            candidates = [(doc, unit) for doc, unit in study_units
+                          if words & unit_words.get((doc, unit["unit_index"]), set())
+                          and wanted in unit_values.get((doc, unit["unit_index"]), set())]
+            via = "value"
         if not candidates:
             counts["no_table"] += 1
             continue
@@ -155,8 +182,8 @@ def report(counts: Counter) -> str:
     return "\n".join([
         f"key values: {counts['key']}",
         f"table matched: {counts['table']} (page {counts['table_by_page']}, label "
-        f"{counts['table_by_label']}, number {counts['table_by_number']}); no table "
-        f"{counts['no_table']}",
+        f"{counts['table_by_label']}, number {counts['table_by_number']}, value "
+        f"{counts['table_by_value']}); no table {counts['no_table']}",
         f"cell-address coefficient: {counts['value_address']}/{counts['key']}; "
         f"{counts['value_address']}/{counts['value_in_table']} of those printed in the named table",
         f"cell-address SE: {counts['se_address']}/{counts['se_total']}; "

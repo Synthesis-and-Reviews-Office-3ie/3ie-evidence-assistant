@@ -44,6 +44,19 @@ RULES = (
 
 _COMPILED = tuple((name, re.compile(pattern)) for name, pattern in RULES)
 
+# A key category accepts its descendants. Livestock is a kind of asset (Lucas's call, 20 November 2026,
+# after reviewing the misses on the 49 study documents). Stored rows keep their own category; only the
+# key side is widened. Do not add another pair without asking.
+DESCENDANTS = {"assets": {"livestock"}}
+
+
+def accepts(key_categories: set) -> set:
+    """The key categories plus their descendants, for matching a key label to stored labels."""
+    widened = set(key_categories)
+    for category in key_categories:
+        widened.update(DESCENDANTS.get(category, ()))
+    return widened
+
 
 def _norm(text: str) -> str:
     return re.sub(r"[^a-z0-9]+", " ", str(text or "").lower()).strip()

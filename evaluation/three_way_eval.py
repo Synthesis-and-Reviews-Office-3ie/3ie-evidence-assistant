@@ -31,7 +31,7 @@ load_dotenv(ROOT / ".env")
 
 from evaluation.graduation_gt import PROJECT_ID, load_key, load_overrides  # noqa: E402
 from evaluation.outcome_gap_audit import mapped_and_all  # noqa: E402
-from evaluation.outcome_taxonomy import categories  # noqa: E402
+from evaluation.outcome_taxonomy import accepts, categories  # noqa: E402
 from evaluation.stored_rows import classify_miss  # noqa: E402
 
 PAGE = 1000
@@ -140,9 +140,10 @@ def score(label, project_id, rows_by_doc, key, all_docs):
                 c["uncategorised"] += 1
                 continue
             c["out_total"] += 1
-            if cats & cats_here:
+            key_cats = accepts(cats)
+            if key_cats & cats_here:
                 c["out_present"] += 1
-            in_cat = [r for r in rows if categories(r.get("outcome_name")) & cats]
+            in_cat = [r for r in rows if categories(r.get("outcome_name")) & key_cats]
             exact = [r for r in rows if norm(r.get("outcome_name")) == norm(outcome)]
             near = [r for r in rows if r.get("outcome_name") and same_outcome(r.get("outcome_name"), outcome)]
             value = num(gt.get("Coeff reg"))

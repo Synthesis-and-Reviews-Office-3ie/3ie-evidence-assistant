@@ -682,6 +682,14 @@ predates `8c8c913`, so its value and parameter rates are neither the old defect 
 Final value and parameter figures will follow from the clean re-extraction, measured over the same
 documents before and after at one commit.
 
+### Category hierarchy: livestock is an asset (20 November 2026)
+
+Lucas decided that livestock is a kind of asset. The matcher lets a key category `assets` accept a
+stored `livestock`, while the stored rows keep `livestock`. The hierarchy is one-way: a key `livestock`
+does not accept a stored `assets`. He made the call after reviewing the misses on the 49 study
+documents, and it is the only such pair; no other category pair has been widened. It is implemented in
+`evaluation/outcome_taxonomy.py` (`DESCENDANTS`, `accepts`).
+
 ### Arithmetic checks on every stored row (18 November 2026)
 
 A row's numbers constrain each other, so a row can be checked without going back to the page. `src/extraction/consistency.py`
