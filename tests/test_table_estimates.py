@@ -527,3 +527,19 @@ def test_a_repeated_arm_takes_the_row_label():
                      "estimate_cell": "0.5***", "se_cell": "(0.1)"}, "t", 1, table,
                     arm_hint="Midline use", unit_index=3)
     assert e.arm == "Intensive Extension in Phase 1"
+
+def test_a_minus_with_a_space_is_negative():
+    from src.extraction.table_estimates import _holds, parse_number
+
+    assert parse_number("- 0.406") == -0.406
+    assert _holds(-0.406, "- 0.406")
+    assert not _holds(0.406, "- 0.406")
+
+
+def test_a_negative_error_position_is_a_t_statistic():
+    table = "| Outcome | Coef | SE |\n| --- | --- | --- |\n| Income | 0.5*** | (-2.99) |"
+    e = to_estimate({"outcome": "Income", "estimate_cell": "0.5***", "se_cell": "(-2.99)",
+                     "row_number": 1, "column_number": 2}, "t", 1, table)
+    assert e.t_stat == -2.99
+    assert e.se_kind == "t"
+    assert e.standard_error is not None and e.standard_error > 0

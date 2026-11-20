@@ -100,7 +100,7 @@ Return JSON only: {{"rows": [{{"outcome": "<as listed>", "row_number": 1, "colum
 
 def _numbers_in(text: object) -> List[float]:
     out: List[float] = []
-    for token in re.findall(r"-?\d[\d.,]*", str(text or "")):
+    for token in re.findall(r"-?\d[\d.,]*", _unspace_minus(text)):
         for candidate in (re.sub(r"[,\s]", "", token) if token.count(",") and not token.count(".")
                           else None, token.replace(",", ".")):
             if candidate is None:
@@ -119,6 +119,13 @@ def _close(value: float, options: Sequence[float]) -> bool:
 
 
 _TOKEN = re.compile(r"[-−–]?\d[\d.,]*")
+# A sign printed with a space after it ("- 0.406") is a negative number, not a range. Only at the start of
+# the cell, so "0.406 - 0.2" stays a range.
+_MINUS_SPACE = re.compile(r"^\s*([-−–])\s+(?=\d)")
+
+
+def _unspace_minus(text: object) -> str:
+    return _MINUS_SPACE.sub(r"\1", str(text or ""))
 
 
 def _printed_decimals(token: str) -> int:
@@ -157,7 +164,7 @@ def _holds(value, text: object, signed: bool = True) -> bool:
     if value is None:
         return False
     target = float(value) if signed else abs(float(value))
-    for token in _TOKEN.findall(str(text or "")):
+    for token in _TOKEN.findall(_unspace_minus(text)):
         printed = parse_number(token)
         if printed is None:
             continue
@@ -653,7 +660,7 @@ def parse_number(text: str) -> Optional[float]:
     """
     if text is None:
         return None
-    s = _STARS.sub("", str(text)).replace("−", "-").replace("–", "-")
+    s = _STARS.sub("", _unspace_minus(text)).replace("−", "-").replace("–", "-")
     m = _NUM.search(s)
     if not m:
         return None
@@ -815,7 +822,9 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
         t = parse_number(se_cell)
     elif se_cell:
         se = parse_number(se_cell)
-        se = abs(se) if se is not None else None
+        if se is not None and se < 0:
+            # A negative number in the error position is a t-statistic, not a standard error.
+            t, se, kind = se, None, "t"
     # When the addressed cell holds more than one number, the model's pairing cannot be trusted: the
     # parameter is the number printed beside the coefficient, or there is none. A cell with one number
     # keeps the model's cell, which may come from the row or column printed beneath.
@@ -824,8 +833,12 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
         se = t = None
         kind = "ci"
     elif cell_se is not None:
-        se, t, lo, hi = abs(cell_se), None, None, None
-        kind = "se"
+        if cell_se < 0:
+            # A negative number in the error position is a t-statistic, not a standard error.
+            t, se, kind = cell_se, None, "t"
+        else:
+            se, t, lo, hi = cell_se, None, None, None
+            kind = "se"
     elif cell_numbers >= 2:
         # The cell holds two coefficients and the one addressed has no error beside it, so the model's
         # standard error belongs to the other coefficient and must not be attached here.
