@@ -1,62 +1,50 @@
-# Effect-role flag: final audit, 2026-11-20
+# Effect-role flag: sample check, 2026-11-20 (corrected)
 
-## What was measured
+## Retraction
 
-Every stored cell now carries the two axes of its table, labelled with one of six roles, and a flag that
-says whether the two axes make a programme effect. The rule fails open: a cell is marked as not an effect
-only when one axis is explicitly a control, a covariate, a fixed effect, a dummy, a comparison before the
-programme, or some other non-effect. Nothing is dropped; the flag is stored and the drop threshold is set
-later.
+The earlier version of this file reported "0 of 43" real effects dropped and called the result an
+independent audit of a fresh sample. Both claims are withdrawn.
 
-The reader is `anthropic/claude-haiku-5.5`. The audit classifier is `anthropic/claude-sonnet-5.5`, a
-different model, given the same six-role rules.
+- The classifier was a model checking a model. Sonnet was given the same six-role rules as the reader,
+  so it is a second opinion under one rule set, not independent evidence about the reader's output.
+- The sample was not fresh. Of its 60 cells, several documents had already been used: `9b89a1ab05bf`,
+  `b98a0422b2e2`, `e23a72cd85d8` and `20883ddebbf3` were in the held-out ten, and `0cb609fbf433`,
+  `8d23199222c8`, `37ec5820d8e8` and `4a1f5e7f9586` are among the 49. The "0 of 43" figure is not
+  evidence and is retracted until a page-checked audit confirms it.
 
-## Corpus state after re-extraction
+## Classifier errors
 
-- 49 mapped documents re-extracted with prune on at commit `8e5f2ae`, then a write-path fix at `7d81ca4`
-  for the documents whose vision and prose rows had no flag. Cost across the runs: $6.89 + $0.22 + $0.09
-  = $7.20, under the $12 cap.
-- Stored rows: 25,834.
-- Rows with a null flag: 0.
-- Rows flagged as a non-effect: 1,211 (4.7%).
-- Rows with a row role: 13,632; with a column role: 12,956. The remainder are vision and prose rows, which
-  carry no role and are kept by the open default.
+The second model was wrong on cells a reader of the page would not confuse. It labelled the outcome
+`Locus of Control` (`e23a72cd85d8`) and `Total number of poultry owned` (`442bb134bc3b`) as controls, and
+marked `cowbull_a` (`4a1f5e7f9586`) and other outcome rows as non-effects. Any count from this classifier
+carries that error rate, which is why the claim is withdrawn.
 
-## The audit
+## What was actually run
 
-A fresh sample of 60 stored cells was drawn from 57 documents that no earlier sample used
-(`evaluation/results/final_audit_sample_2026-11-20.csv`, seed 20261120). Each cell's table was located,
-the two axes were labelled independently, and the fail-open decision was compared to the stored flag.
+- Reader model: `anthropic/claude-haiku-5.5`.
+- Classifier model: `anthropic/claude-sonnet-5.5`, same six-role prompt.
+- Sample: 60 stored cells across 57 documents, seed 20261120, file
+  `evaluation/results/final_audit_sample_2026-11-20.csv`.
+- The classifier labelled the two axes of each cell; the fail-open rule then gave a keep or drop; that
+  was compared with the stored `keep_effect`.
 
-Of the 60 cells, the independent rule calls 43 real effects and 17 non-effects.
+The raw classifier output is in `evaluation/results/final_audit_2026-11-20.json`. It is retained as a
+record of what was run, not as a result.
 
-- Real effects the stored flag drops: **0 of 43**.
-- Non-effects the stored flag keeps: 13 of 17.
-- Non-effects the stored flag drops: 4 of 17.
+## Row count
 
-The costs in this sample fall on precision, not recall: the flag keeps most of the non-effects it meets,
-because a cell whose column cannot be matched keeps open. No real effect is dropped.
+The re-extraction covered the 49 mapped documents only. The stored total of 25,834 rows is the whole
+project, which holds 94 documents:
 
-## Non-effects still kept (13)
+- The 49 mapped documents hold 14,136 rows (the "≈16,500" earlier figure was the 49-document count at
+  commit `5c20164`, so the two numbers are not like for like).
+- The other 45 documents hold 11,698 rows from earlier runs and were not re-extracted.
 
-| Paper | Page | Outcome (row) | Column | Independent roles |
-|---|---|---|---|---|
-| c905701e6922 | 50 | Incomes and Revenues Index | Endline | row=control_or_covariate, col=outcome |
-| 0cb609fbf433 | 33 | Value of productive assets | T1: Grp LH / Grp C | row=not_an_effect |
-| 99bdbef0f7b7 | 35 | Quantity of Sheep & Goats Owned | (2) Quantity of Sheep & Goats | row=not_an_effect, col=outcome |
-| b98a0422b2e2 | 81 | (2) - Daily Consumption P.C. | T1: Ind. coaching + assets | row=not_an_effect |
-| 9b89a1ab05bf | 145 | Switch Program | College-Low - Diff- | row=outcome, col=not_an_effect |
-| 442bb134bc3b | 8 | Total number of poultry owned | Enhanced Nutrition arms | row=control_or_covariate |
-| 4a1f5e7f9586 | 42 | cowbull_a | 2005 - Treated | row=outcome, col=not_an_effect |
-| 8d23199222c8 | 89 | (4) Large purchases influence | (4) Large purchases influence | row=not_an_effect, col=outcome |
-| ba83facff3d1 | 62 | HH chores | HH chores - 2007-2009 | row=control_or_covariate, col=outcome |
-| 37ec5820d8e8 | 20 | - > 2 meals | | row=not_an_effect |
-| e23a72cd85d8 | 51 | Locus of Control | ITT w3-w4 * Saturation | row=control_or_covariate |
-| 20883ddebbf3 | 13 | Duck/hen | 2005 - Difference (6=4-5) | row=outcome, col=not_an_effect |
-| cc6acb106d4b | 12 | Self-employment (typ. month) | | row=not_an_effect |
+So the count did not rise for the 49; the larger total is a wider document set.
 
-## Reading
+## Status
 
-On this sample the flag meets the bar for real effects: none are dropped. The next work, if the flag is to
-be used to drop rows, is the opposite end, the non-effects it keeps, most of which have no column label to
-match. No threshold is applied here.
+The flag is stored on every row and no row is dropped. The reader-side result is unverified: a
+page-checked audit, where a person reads the printed cell against the stored row, is needed before any
+claim about how many real effects the flag would drop. The next step is to re-extract the documents that
+no sample has used and draw a fresh sample from those alone.
