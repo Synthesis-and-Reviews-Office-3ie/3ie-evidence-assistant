@@ -62,6 +62,7 @@ data/
 !evaluation/results/fresh_audit_sample_2026-11-20.csv
 !evaluation/results/fresh_audit_sample_3_2026-11-20.csv
 !evaluation/results/final_audit_sample_2026-11-20.csv
+!evaluation/results/never_used_sample_2026-11-20.csv
 !package.json
 !vercel.json
 !tsconfig.json
