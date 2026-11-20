@@ -455,7 +455,7 @@ def _role_norm(text) -> str:
 
 _METHOD = re.compile(
     r"(ridge|lasso|dr ?did|\bpsm\b|propensity|2sls|\biv\b|\bols\b|\batt\b|kernel|"
-    r"nearest neighbo|hierarchy|coef\s*/|\bs\.\s?e\.|p ?value|specification|\bitt\b)", re.I)
+    r"nearest neighbo|hierarchy|coef\s*/|\bs\.\s?e\.|p ?value|specification)", re.I)
 _SUBGROUP_WORDS = {"male", "female", "girls", "boys", "girl", "boy", "industry", "industries",
                    "services", "service", "agriculture", "agricultural", "traditional", "wealth",
                    "rural", "urban", "age", "religion", "married", "widow", "total"}

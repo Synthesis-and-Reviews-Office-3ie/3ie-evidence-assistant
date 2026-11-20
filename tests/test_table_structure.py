@@ -410,3 +410,9 @@ def test_a_qualifier_is_kept_in_the_subgroup():
     assert derive_subgroup("House damage", "", "", "") == "House damage"
     assert derive_subgroup("", "", "Panel B: Impacts", "Women") == "Women - Panel B"
     assert derive_subgroup("Total", "", "", "") == ""
+
+def test_itt_is_an_arm_not_a_method():
+    from src.extraction.table_structure import is_role, method_label
+
+    assert method_label("Treatment (ITT)") == ""
+    assert is_role("Treatment (ITT)")
