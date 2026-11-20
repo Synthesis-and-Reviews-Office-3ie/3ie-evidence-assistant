@@ -43,6 +43,7 @@ def commit_hash():
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--sources", default="docling,mineru,union")
+    ap.add_argument("--cost-cap", type=float, default=12.0)
     args = ap.parse_args()
     wanted = [s.strip() for s in args.sources.split(",") if s.strip()]
 
@@ -62,7 +63,8 @@ def main():
         pid = PROJECTS[label]
         print(f"== {label} ({pid}): {len(keys)} documents, prune on", flush=True)
         totals = asyncio.run(extract_and_store(
-            pid, doc_keys=keys, prune=True, log=lambda m: print(m, flush=True)))
+            pid, doc_keys=keys, prune=True, cost_cap_usd=args.cost_cap,
+            log=lambda m: print(m, flush=True)))
         print(f"RESULT {label} {json.dumps(totals)}", flush=True)
 
 

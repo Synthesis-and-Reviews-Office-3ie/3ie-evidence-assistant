@@ -543,3 +543,51 @@ def test_a_negative_error_position_is_a_t_statistic():
     assert e.t_stat == -2.99
     assert e.se_kind == "t"
     assert e.standard_error is not None and e.standard_error > 0
+
+
+def test_effect_roles_are_attached_to_each_cell(monkeypatch):
+    import asyncio
+
+    import src.extraction.table_estimates as module
+
+    extract = {"results_table": True, "estimates": [
+        {"outcome": "A", "estimate_cell": "0.1***", "row_label": "A", "column_label": "Coef"},
+        {"outcome": "B", "estimate_cell": "0.2***", "row_label": "Control mean", "column_label": "Coef"}]}
+    roles = {"rows": {"A": "outcome", "Control mean": "control_or_covariate"},
+             "columns": {"Coef": "programme_effect"}}
+    table = "| Outcome | Coef |\n| --- | --- |\n| A | 0.1*** |\n| Control mean | 0.2*** |"
+    _fake_chat(monkeypatch, [extract, roles])
+    out = asyncio.run(module.extract_document([{"type": "table", "page_idx": 0, "text": table}],
+                                              "m", "k", read_roles=True))
+    by = {e["outcome"]: e for e in out["estimates"]}
+    assert by["A"]["keep_effect"] is True
+    assert by["A"]["row_role"] == "outcome" and by["A"]["column_role"] == "programme_effect"
+    assert by["B"]["keep_effect"] is False
+    assert by["B"]["row_role"] == "control_or_covariate"
+
+
+def test_unreadable_roles_keep_every_cell(monkeypatch):
+    import asyncio
+
+    import src.extraction.table_estimates as module
+
+    extract = {"results_table": True, "estimates": [
+        {"outcome": "A", "estimate_cell": "0.1***", "row_label": "A", "column_label": "Coef"}]}
+    table = "| Outcome | Coef |\n| --- | --- |\n| A | 0.1*** |"
+    _fake_chat(monkeypatch, [extract, {"rows": {}, "columns": {}}])
+    out = asyncio.run(module.extract_document([{"type": "table", "page_idx": 0, "text": table}],
+                                              "m", "k", read_roles=True))
+    assert out["estimates"] and all(e["keep_effect"] is True for e in out["estimates"])
+
+
+def test_roles_are_not_read_unless_asked(monkeypatch):
+    import asyncio
+
+    import src.extraction.table_estimates as module
+
+    extract = {"results_table": True, "estimates": [
+        {"outcome": "A", "estimate_cell": "0.1***", "row_label": "A", "column_label": "Coef"}]}
+    table = "| Outcome | Coef |\n| --- | --- |\n| A | 0.1*** |"
+    calls = _fake_chat(monkeypatch, [extract])
+    asyncio.run(module.extract_document([{"type": "table", "page_idx": 0, "text": table}], "m", "k"))
+    assert len(calls) == 1  # only the extraction call; no role call

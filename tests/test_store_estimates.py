@@ -35,6 +35,21 @@ def test_standardised_columns_stay_null_when_the_inputs_are_missing():
     assert row["se_g"] is None
 
 
+def test_the_effect_role_flag_is_written_and_defaults_to_true():
+    estimate = _row({"outcome": "Income", "estimate_cell": "155.43*** (121.73)", "se_cell": "(121.73)"})
+    row = rows_for("p", DOC, {"estimates": [estimate]}, "m")[0]
+    assert row["keep_effect"] is True and row["row_role"] is None and row["column_role"] is None
+
+
+def test_a_non_effect_role_is_carried_to_the_row():
+    estimate = _row({"outcome": "Income", "estimate_cell": "155.43*** (121.73)", "se_cell": "(121.73)"})
+    estimate["row_role"], estimate["column_role"], estimate["keep_effect"] = \
+        "outcome", "control_or_covariate", False
+    row = rows_for("p", DOC, {"estimates": [estimate]}, "m")[0]
+    assert row["keep_effect"] is False
+    assert row["row_role"] == "outcome" and row["column_role"] == "control_or_covariate"
+
+
 def test_rows_from_different_readers_are_given_the_same_keys():
     from src.extraction.store_estimates import unify_keys
 

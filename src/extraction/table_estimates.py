@@ -33,6 +33,9 @@ TABLE_CONCURRENCY = 8
 RETRY_MIN_ROWS = 4
 RETRIES_PER_DOC = 12
 
+# OpenRouter reports each call's cost in the response. The tally lets a caller hold to a spending cap.
+COST = {"usd": 0.0}
+
 
 def _p_value_for(cell, stars: int):
     """The printed p-value, dropped when it contradicts the stars beside the estimate.
@@ -732,6 +735,9 @@ class Estimate:
     n_control: Optional[int]
     grounded: bool
     estimation_method: str = ""
+    row_role: str = ""
+    column_role: str = ""
+    keep_effect: bool = True
     source_cell: str = ""
     cell_row: Optional[int] = None
     cell_column: Optional[int] = None
@@ -1078,7 +1084,9 @@ async def _chat(client: httpx.AsyncClient, model: str, prompt: str) -> str:
             if r.status_code >= 500 or r.status_code == 429:
                 raise httpx.HTTPStatusError("retryable", request=r.request, response=r)
             r.raise_for_status()
-            return r.json()["choices"][0]["message"]["content"] or ""
+            payload = r.json()
+            COST["usd"] += float((payload.get("usage") or {}).get("cost") or 0.0)
+            return payload["choices"][0]["message"]["content"] or ""
         except (httpx.HTTPError, KeyError):
             if attempt == 2:
                 raise
@@ -1176,7 +1184,64 @@ def _drop_non_outcome_rows(raw: List[Any]):
     return kept, dropped
 
 
+async def attach_effect_roles(estimates: List["Estimate"], units: List[Dict[str, Any]],
+                              model: str, api_key: str, page_image=None) -> None:
+    """Label the two axes of each cell so a later step can tell an effect from a description.
+
+    One role call per table, on the fullest view of that table. The decision is written onto every
+    estimate as a flag; no row is dropped here, and a table whose roles cannot be read keeps every cell.
+    `page_image(page)` optionally returns a rendered-page data URL, used only when the table's Markdown
+    looks weak, so the printed labels on the page settle the roles the text could not.
+    """
+    from src.extraction.effect_roles import build_prompt, label_roles, parse_roles, role_for_cell
+    from src.extraction.table_structure import parse_markdown_table
+
+    def weak(text: str) -> bool:
+        grid = parse_markdown_table(text or "")
+        return grid.ncols < 2 or not grid.body or "\ufffd" in (text or "")
+
+    fullest: Dict[tuple, Dict[str, Any]] = {}
+    for unit in units:
+        key = (unit.get("page"), unit.get("table_index"))
+        if not fullest.get(key) or len(unit.get("text") or "") > len(fullest[key].get("text") or ""):
+            fullest[key] = unit
+    if not fullest:
+        return
+
+    async with httpx.AsyncClient(timeout=300, headers={"Authorization": f"Bearer {api_key}"}) as client:
+        sem = asyncio.Semaphore(TABLE_CONCURRENCY)
+
+        async def one(key):
+            unit = fullest[key]
+            grid = parse_markdown_table(unit["text"])
+            rows = [str(row[0]).strip() for row in grid.body if row and str(row[0]).strip()]
+            headers = [str(cell).strip() for cell in (grid.headers[-1] if grid.headers else [])
+                       if str(cell).strip()]
+            image = None
+            if page_image and unit.get("page") is not None and weak(unit["text"]):
+                try:
+                    image = await page_image(unit["page"])
+                except Exception:
+                    image = None
+            async with sem:
+                if image:
+                    roles = await label_roles(client, model, unit.get("caption") or "", rows, headers,
+                                              unit["text"], page_image=image)
+                else:
+                    content = build_prompt(unit.get("caption") or "", rows, headers, unit["text"])
+                    roles = parse_roles(_parse_json(await _chat(client, model, content)))
+            return key, roles
+
+        role_map = dict(await asyncio.gather(*(one(key) for key in fullest)))
+
+    for estimate in estimates:
+        roles = role_map.get((estimate.page, estimate.table_index)) or {"rows": {}, "columns": {}}
+        estimate.row_role, estimate.column_role, estimate.keep_effect = role_for_cell(
+            roles, estimate.row_label or estimate.outcome, estimate.column_label or estimate.arm)
+
+
 async def extract_document(content_list: List[Dict[str, Any]], model: str, api_key: str,
+                           page_image=None, read_roles: bool = False,
                            drop_duplicates: bool = False) -> Dict[str, Any]:
     """All estimates in a document's tables, plus per-table decisions for auditing.
 
@@ -1312,10 +1377,13 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
     attach_document_statistics(estimates)
     address_repairs = await repair_addresses(estimates, units, model, api_key)
     unverified = finalise_addresses(estimates, units)
+    if read_roles:
+        await attach_effect_roles(estimates, units, model, api_key, page_image=page_image)
     estimate_dicts = [asdict(e) for e in estimates]
     duplicates = 0
     if drop_duplicates:
         estimate_dicts, duplicates = dedupe_estimates(estimate_dicts)
     return {"estimates": estimate_dicts, "tables": tables, "duplicates": duplicates,
             "address_repairs": address_repairs, "unverified_se": unverified,
-            "role_disagreements": role_disagreements, "role_decisions": role_decisions}
+            "role_disagreements": role_disagreements, "role_decisions": role_decisions,
+            "cost_usd": round(COST["usd"], 6)}

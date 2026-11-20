@@ -69,6 +69,9 @@ def rows_for(project_id: str, doc: Dict[str, Any], out: Dict[str, Any], model: s
             "table_number": e["table_label"][:120], "outcome_name": (e["outcome"] or e["row_label"] or "?")[:500],
             "treatment_arm": e["arm"] or None, "subgroup": e["subgroup"] or None,
             "estimation_method": e.get("estimation_method") or None,
+            "row_role": e.get("row_role") or None,
+            "column_role": e.get("column_role") or None,
+            "keep_effect": e.get("keep_effect", True),
             "effect_size": e["effect_size"], "standard_error": _finite(e["standard_error"]),
             "p_value": p if p is not None and 0 <= p <= 1 else None,
             "p_text": ("*" * e["stars"]) if e["stars"] else None, "ci_text": ci,
@@ -218,6 +221,7 @@ async def extract_and_store(
     skip_done: bool = False,
     vision: Optional[bool] = None,
     prune: bool = False,
+    cost_cap_usd: Optional[float] = None,
     log: Callable[[str], None] = print,
 ) -> Dict[str, int]:
     """
@@ -236,7 +240,7 @@ async def extract_and_store(
     bucket, s3 = os.environ.get("R2_BUCKET_NAME", "devchat-pdfs"), _r2()
     wanted = set(doc_keys) if doc_keys is not None else None
     totals = {"docs": 0, "estimates": 0, "kept": 0, "results_tables": 0, "tables": 0, "errors": 0, "second_pass_units": 0, "second_pass_rows": 0, "carried": 0, "restored": 0,
-              "vision_pages": 0, "vision_rows": 0, "outcome_misses": 0, "prose_rows": 0, "role_disagreements": 0}
+              "vision_pages": 0, "vision_rows": 0, "outcome_misses": 0, "prose_rows": 0, "role_disagreements": 0, "cost_usd": 0.0}
 
     async with httpx.AsyncClient(base_url=url, headers=headers, timeout=120) as db:
         docs = (await db.get("/documents", params={
@@ -256,13 +260,32 @@ async def extract_and_store(
             async with sem:
                 t0 = time.time()
                 name = doc["filename"]
+                if cost_cap_usd is not None and totals["cost_usd"] >= cost_cap_usd:
+                    log(f"    skip {name[:50]}: cost cap ${cost_cap_usd:.2f} reached (spent ${totals['cost_usd']:.4f})")
+                    return
                 try:
                     obj = await asyncio.to_thread(
                         s3.get_object, Bucket=bucket, Key=f"rags/{project_id}/outputs/json/{name}.json")
                     content = json.loads(obj["Body"].read()).get("content_list") or []
                     content = normalise_tables(content)
                     content = reclassify_pipe_tables(content)
-                    out = await extract_document(content, model, os.environ["OPENROUTER_API_KEY"])
+                    state = {"pdf": None, "loaded": False}
+
+                    async def load_pdf() -> bytes:
+                        if not state["loaded"]:
+                            state["pdf"] = await asyncio.to_thread(_pdf_bytes, s3, bucket, project_id, doc)
+                            state["loaded"] = True
+                        return state["pdf"]
+
+                    async def page_image(page: int):
+                        from src.extraction.page_vision import page_data_url
+
+                        pdf = await load_pdf()
+                        return await asyncio.to_thread(page_data_url, pdf, page) if pdf else None
+
+                    out = await extract_document(content, model, os.environ["OPENROUTER_API_KEY"],
+                                                 page_image=page_image, read_roles=True)
+                    totals["cost_usd"] = max(totals["cost_usd"], float(out.get("cost_usd") or 0.0))
                     role_notes = out.get("role_disagreements") or []
                     if role_notes:
                         totals["role_disagreements"] += len(role_notes)
@@ -280,7 +303,7 @@ async def extract_and_store(
                             vision_pages,
                         )
 
-                        pdf = await asyncio.to_thread(_pdf_bytes, s3, bucket, project_id, doc)
+                        pdf = await load_pdf()
                         pdf_pages = page_count(pdf) if pdf else None
                         pages = vision_pages(content, pdf_pages) if vision else auto_vision_pages(content, pdf_pages)
                         if pdf and pages:
