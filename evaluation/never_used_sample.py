@@ -3,7 +3,7 @@
 Run after the never-used documents are re-extracted, so each row carries the current reader output.
 The rows are for a person to check against the printed page; nothing is classified here.
 
-    python evaluation/never_used_sample.py --n 60 --seed 20261121
+    python evaluation/never_used_sample.py --n 60 --seed 20261122
 """
 
 from __future__ import annotations
@@ -34,7 +34,7 @@ COLUMNS = ["doc_key", "page", "table", "cell", "outcome", "arm", "subgroup", "va
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--n", type=int, default=60)
-    ap.add_argument("--seed", type=int, default=20261121)
+    ap.add_argument("--seed", type=int, default=20261122)
     ap.add_argument("--keys", default=r"C:\Users\LUCASS~1\AppData\Local\Temp\kilo\never_used.json")
     ap.add_argument("--out", default="evaluation/results/never_used_sample_2026-11-20.csv")
     args = ap.parse_args()
