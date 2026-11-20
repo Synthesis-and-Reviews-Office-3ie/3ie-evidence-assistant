@@ -59,6 +59,7 @@ data/
 *.csv
 *.json
 !evaluation/test_cases.json
+!evaluation/results/fresh_audit_sample_2026-11-20.csv
 !package.json
 !vercel.json
 !tsconfig.json
