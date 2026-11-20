@@ -240,6 +240,11 @@ def test_outcome_in_columns_is_decided_by_the_row_role_and_header():
     assert outcome_in_columns("Intensive Extension in Phase 1", "(9) Farm management plan")
     assert not outcome_in_columns("Beds", "Treatment impact on consumer durables")
     assert not outcome_in_columns("Control over earnings", "Capital (Full without Psychosocial)")
+    assert not outcome_in_columns("Received Input Package", "column 2")
+    assert not outcome_in_columns("Received Input Package", "12 months")
+    assert not outcome_in_columns("Received Input Package", "last Mehr season")
+    assert not outcome_in_columns("Received Input Package", "of animals minus production costs)")
+    assert not outcome_in_columns("Received Input Package", "(3) Full Package")
     assert header_name("(2) GVAO (IHST)") == "GVAO (IHST)"
     assert header_name("Farm management plan (9)") == "Farm management plan"
 

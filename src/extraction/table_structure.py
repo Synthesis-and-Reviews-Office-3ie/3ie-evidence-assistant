@@ -430,18 +430,28 @@ _ROLE_ROW = re.compile(
     r"received|intensive|extension|phase|one year|year\s*\d|waves?\b|round\b|follow[- ]?up|baseline|"
     r"\b(19|20)\d{2}\b)", re.I)
 _ORDINAL = re.compile(r"^\s*\(\d+\)\s*[-–]?\s*|\s*\(\d+\)\s*$")
+# Headers that name a position, a period or a fragment, not an outcome.
+_BAD_HEADER = re.compile(
+    r"^\s*(column\s+\d+|of\b|and\b|the\b|"
+    r"\d+\s*(months?|years?|weeks?|days?)|"
+    r"(last|this|next|previous)\s+\w+(\s+\w+)?\s+(season|year|month)|"
+    r"(baseline|endline|midline|follow[- ]?up|round\s+\d+|wave\s+\d+))\s*$", re.I)
+
+
+def header_name(text: str) -> str:
+    """A column header without the leading or trailing panel ordinal, such as "(2) GVAO" to "GVAO"."""
+    return _ORDINAL.sub("", str(text or "")).strip()
 
 
 def outcome_in_columns(row_label: str, header: str) -> bool:
     """True when the row names a treatment or regressor and the column header names the outcome."""
     label = str(row_label or "").strip()
     head = str(header or "").strip()
-    return bool(label and head) and bool(_ROLE_ROW.match(label)) and not bool(_ARM_ROW.match(head))
-
-
-def header_name(text: str) -> str:
-    """A column header without the leading or trailing panel ordinal, such as "(2) GVAO" to "GVAO"."""
-    return _ORDINAL.sub("", str(text or "")).strip()
+    if not label or not head or not _ROLE_ROW.match(label) or _ARM_ROW.match(header_name(head)):
+        return False
+    if _BAD_HEADER.match(head) or head.count(")") > head.count("("):
+        return False
+    return True
 
 
 _OBS_ROW = re.compile(r"^\s*(observations?|obs\.?|no\.? of observations|number of observations|n|"
