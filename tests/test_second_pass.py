@@ -73,3 +73,33 @@ def test_an_existing_address_is_not_overwritten():
              "unit_index": 7, "cell_row": 4, "cell_column": 5}
     merged, _ = merge_rows([current], [extra])
     assert merged[0]["unit_index"] == 3 and merged[0]["cell_column"] == 1
+
+
+def test_a_second_pass_error_is_checked_against_the_cell():
+    from src.extraction.second_pass import _finalise
+    from src.extraction.table_estimates import table_units, to_estimate
+
+    content = [{"type": "table", "page_idx": 0, "text":
+                "| Outcome | Coef |\n| --- | --- |\n| Income | 0.391** |\n|  | (0.160) |"}]
+    units = table_units(content)
+    e = to_estimate({"outcome": "Income", "estimate_cell": "0.391**", "se_cell": "",
+                     "row_number": 1, "column_number": 2},
+                    "Table 1", units[0]["page"], units[0]["text"], unit_index=units[0]["unit_index"])
+    e.standard_error = 0.160          # printed in the row below, not named by the model
+    _finalise([e], content)
+    assert e.standard_error == 0.160 and (e.se_row, e.se_column) == (1, 1)
+
+
+def test_a_second_pass_error_not_printed_anywhere_is_dropped():
+    from src.extraction.second_pass import _finalise
+    from src.extraction.table_estimates import table_units, to_estimate
+
+    content = [{"type": "table", "page_idx": 0, "text":
+                "| Outcome | Coef |\n| --- | --- |\n| Income | 0.391** |\n| Assets | 0.400** |"}]
+    units = table_units(content)
+    e = to_estimate({"outcome": "Income", "estimate_cell": "0.391**", "se_cell": "",
+                     "row_number": 1, "column_number": 2},
+                    "Table 1", units[0]["page"], units[0]["text"], unit_index=units[0]["unit_index"])
+    e.standard_error = 0.160
+    _finalise([e], content)
+    assert e.standard_error is None

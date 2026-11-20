@@ -89,6 +89,19 @@ def select_units(content_list: Sequence[dict[str, Any]], names: Sequence[str],
     return {"tables": tables[:max_units], "texts": texts[:max_units]}
 
 
+def _finalise(estimates: list[Any], content_list: Sequence[dict[str, Any]]) -> list[Any]:
+    """Check each second-pass error against the printed cell, as the first pass does.
+
+    The second pass builds estimates from the same table units, so the same rule applies: an error is
+    kept only when the addressed cell, the cell below it, or the cell to its right prints it. Without
+    this step a second-pass error reaches the store on the model's word alone.
+    """
+    from src.extraction.table_estimates import finalise_addresses, table_units
+
+    finalise_addresses(estimates, table_units(list(content_list)))
+    return estimates
+
+
 async def run_second_pass(content_list: Sequence[dict[str, Any]], names: Sequence[str], model: str,
                           api_key: str, project_id: str = "", doc: dict[str, Any] | None = None,
                           max_units: int = MAX_UNITS) -> dict[str, Any]:
@@ -175,6 +188,7 @@ async def run_second_pass(content_list: Sequence[dict[str, Any]], names: Sequenc
         prose.extend(rows)
         tables.append({"table": f"text at item {unit['index']}", "page": unit["page"],
                        "prose_rows": len(rows), "second_pass": True})
+    _finalise(estimates, content_list)
     return {"estimates": [asdict(e) for e in estimates], "rows": prose, "tables": tables,
             "units": len(selected["tables"]) + len(selected["texts"])}
 
