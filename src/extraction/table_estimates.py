@@ -592,15 +592,19 @@ consumption"), then the row is the subgroup and the column is the outcome: put t
 outcome and the row label in subgroup. Those are heterogeneity results and they count as estimates.
 
 First decide: does this table report estimated effects of a programme or treatment, such as
-regression coefficients, differences between treatment and control (or before and after),
-impact estimates or marginal effects? Descriptive statistics, sample descriptions, balance
-tests, attrition tables and lists of variables are NOT results tables.
+regression coefficients, differences between treatment and control, impact estimates or marginal
+effects? A before/after comparison without a comparison group is not a programme effect.
+Descriptive statistics, sample descriptions, balance tests, attrition tables and lists of
+variables are NOT results tables.
 
 If it is a results table, list every estimate of a treatment effect on an outcome. For each:
 - outcome: the outcome as the table names it (row or column label), with units if given
 - arm: the treatment or comparison the estimate refers to (e.g. "Full graduation package",
-  "TUP vs control", "Endline"); "" if there is only one
+  "TUP vs control"); "" if there is only one
 - subgroup: the subgroup if the estimate is for one (e.g. "Women", "Bangladesh"); "" otherwise
+- role: for a regression table, one of "programme_term", "control", "fixed_effect" or "baseline_gap";
+  "" when the table is not a regression. The pipeline keeps a row when it is a programme term, or when
+  the code check disagrees, and reports the disagreement.
 - row_label and column_label: exactly as printed
 - row_number and column_number: where that cell sits in the table shown, counting rows from 1 on the
   first data row and columns from 1 on the first column (the label column is 1). The pipeline opens this
@@ -1225,6 +1229,7 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
         results = await asyncio.gather(*(one(u) for u in units))
 
     estimates, tables = [], []
+    role_disagreements: List[str] = []
     per_item: Dict[int, List[Estimate]] = {}
     views_of: Dict[int, int] = {}
     for u, data, err, kind in results:
@@ -1234,13 +1239,32 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
         is_results = bool(data.get("results_table"))
         raw = (data.get("estimates") or []) if is_results else []
         if is_results:
-            from src.extraction.table_rules import filter_programme_rows, is_regression_table
+            from src.extraction.table_rules import (
+                is_programme_term, is_regression_table, rows_are_terms,
+            )
             from src.extraction.table_structure import parse_markdown_table
 
             grid = parse_markdown_table(u["text"])
             headers = grid.headers[-1] if grid.headers else []
-            if is_regression_table(u.get("caption"), headers):
-                raw = filter_programme_rows(raw)
+            if is_regression_table(u.get("caption"), headers) and rows_are_terms(grid):
+                kept = []
+                for row in raw:
+                    label = str(row.get("row_label") or row.get("outcome") or "")
+                    role = str(row.get("role") or "").strip().lower()
+                    code = is_programme_term(label)
+                    if role == "programme_term":
+                        kept.append(row)
+                    elif role in ("control", "fixed_effect", "baseline_gap"):
+                        if code:
+                            # The model says this is not a programme term, the code says it is. Keep it
+                            # and report the disagreement rather than silently dropping a possible effect.
+                            role_disagreements.append(f"{label[:70]}: model={role}, code=programme_term")
+                            kept.append(row)
+                    elif role:
+                        kept.append(row)
+                    elif code:
+                        kept.append(row)
+                raw = kept
         raw, non_outcome = _drop_non_outcome_rows(raw)
         rows = [to_estimate(r, label, u["page"], u["text"], u.get("arm_hint") or "", u.get("n_hint"), u.get("control_n"),
                         u.get("arm_row") or "", u.get("table_index"), u.get("unit_index"))
@@ -1279,4 +1303,5 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
     if drop_duplicates:
         estimate_dicts, duplicates = dedupe_estimates(estimate_dicts)
     return {"estimates": estimate_dicts, "tables": tables, "duplicates": duplicates,
-            "address_repairs": address_repairs, "unverified_se": unverified}
+            "address_repairs": address_repairs, "unverified_se": unverified,
+            "role_disagreements": role_disagreements}

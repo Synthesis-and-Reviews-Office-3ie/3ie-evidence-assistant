@@ -236,7 +236,7 @@ async def extract_and_store(
     bucket, s3 = os.environ.get("R2_BUCKET_NAME", "devchat-pdfs"), _r2()
     wanted = set(doc_keys) if doc_keys is not None else None
     totals = {"docs": 0, "estimates": 0, "kept": 0, "results_tables": 0, "tables": 0, "errors": 0, "second_pass_units": 0, "second_pass_rows": 0, "carried": 0, "restored": 0,
-              "vision_pages": 0, "vision_rows": 0, "outcome_misses": 0, "prose_rows": 0}
+              "vision_pages": 0, "vision_rows": 0, "outcome_misses": 0, "prose_rows": 0, "role_disagreements": 0}
 
     async with httpx.AsyncClient(base_url=url, headers=headers, timeout=120) as db:
         docs = (await db.get("/documents", params={
@@ -263,6 +263,11 @@ async def extract_and_store(
                     content = normalise_tables(content)
                     content = reclassify_pipe_tables(content)
                     out = await extract_document(content, model, os.environ["OPENROUTER_API_KEY"])
+                    role_notes = out.get("role_disagreements") or []
+                    if role_notes:
+                        totals["role_disagreements"] += len(role_notes)
+                        for note in role_notes[:3]:
+                            log(f"    role disagreement: {note}")
                     rows = rows_for(project_id, doc, out, model)
                     risky = False
                     if vision is not False:

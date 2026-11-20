@@ -114,7 +114,9 @@ def test_regression_terms_keep_only_the_programme():
     assert is_programme_term("SUP × Post")
     assert is_programme_term("Treatment")
     assert is_programme_term("TUP")
-    assert not is_programme_term("SUP 2002")
+    # A year alone is not a control: the model's row role decides a baseline gap such as SUP 2002.
+    assert is_programme_term("SUP 2002")
+    assert is_programme_term("SUP 2005")
     assert not is_programme_term("Year 2005")
     assert not is_programme_term("Cohort 3")
     assert not is_programme_term("House damaged")
@@ -138,3 +140,12 @@ def test_p_value_header_and_regression_table():
     assert is_p_value_header("p-value")
     assert not is_p_value_header("Predicted")
     assert is_regression_table("Table 6: Determinants of income", ["", "Model 1", "Model 2"])
+
+def test_rows_are_terms_ignores_the_constant_row():
+    from src.extraction.table_rules import rows_are_terms
+    from src.extraction.table_structure import parse_markdown_table
+
+    arms = parse_markdown_table("| Arm | Coef |\n| --- | --- |\n| Africare | -0.59 |\n| BRAC | -0.1 |\n| Constant | 1.0 |")
+    assert not rows_are_terms(arms)
+    terms = parse_markdown_table("| Term | Coef |\n| --- | --- |\n| SUP 2005 | 0.5 |\n| Year 2005 | 0.1 |\n| Constant | 1.0 |")
+    assert rows_are_terms(terms)

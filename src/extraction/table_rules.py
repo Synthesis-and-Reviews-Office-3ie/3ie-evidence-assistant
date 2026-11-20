@@ -230,26 +230,27 @@ def normalise_tables(content_list: list) -> list:
 _PROGRAMME_TERM = re.compile(
     r"\b(treatment|treated|programme|program|intervention|sup|tup|t\d+|cash|asset|coaching|"
     r"training|transfer|grant|graduation|beneficiar)\b", re.I)
+# A year is not a control by itself: "SUP 2005" is a programme effect. Only a label that opens with
+# "year", "cohort", "model" and the like, or names a baseline/covariate, is a non-programme term.
 _CONTROL_TERM = re.compile(
-    r"^\s*(year|cohort|wave|round|model|constant)\b|\b(19|20)\d{2}\b|pre[- ]?programme|baseline|covariate",
-    re.I)
-_BASELINE_GAP = re.compile(
-    r"\b(sup|tup|treatment|programme|program)\s*(?:[−–-]\s*nsup)?\s*(?:in\s*)?(19|20)\d{2}\b", re.I)
+    r"^\s*(year|cohort|wave|round|model|constant)\b|pre[- ]?programme|baseline|covariate", re.I)
 _COVARIATE_TERM = re.compile(
-    r"house\s*damage|religious|age\b|sex\b|male\b|female\b|education|household\s*size|marital|"
-    r"widow|occupation|land\s*size|livestock", re.I)
+    r"\bage\b|\bsex\b|\bmale\b|\bfemale\b|education|household\s*size|marital|widow|occupation|"
+    r"land\s*size", re.I)
 _P_VALUE_HEADER = re.compile(r"^\s*(?:\(?\d+\)?\s*)?(?:p|p[- ]?value|sig(?:nificance)?)\s*$", re.I)
 
 
 def is_programme_term(label: str) -> bool:
-    """True for a regression term that estimates the programme, not a control, dummy or baseline gap."""
+    """True for a regression term that estimates the programme, not a control, dummy or baseline gap.
+
+    This is a check on the model's row role, not the final decision. A year suffix does not make a term a
+    control: "SUP 2005" is a programme effect and "SUP 2002" is left to the model's row role.
+    """
     text = _norm(label)
     if not text:
         return False
     post = bool(re.search(r"\b(post|endline|follow)\b", text))
-    if _CONTROL_TERM.search(text) and not post:
-        return False
-    if _BASELINE_GAP.search(text) and not post:
+    if _CONTROL_TERM.match(text) and not post:
         return False
     if _COVARIATE_TERM.search(text) and not _PROGRAMME_TERM.search(text):
         return False
@@ -261,18 +262,17 @@ def is_before_after_table(headers) -> bool:
     text = _norm(" ".join(str(cell) for cell in headers))
     if not text:
         return False
-    before = any(word in text for word in ("baseline", "pre treatment", "pretreatment", "before", "2002", "2005"))
-    after = any(word in text for word in ("endline", "post", "after", "follow up", "2006", "round 2"))
+    before = any(word in text for word in ("baseline", "pre treatment", "pretreatment", "before"))
+    after = any(word in text for word in ("endline", "post", "after", "follow up", "round 2"))
     effect = any(word in text for word in ("treatment", "control", "impact", "difference", "effect"))
     return before and after and not effect
 
 
 def is_balance_table(caption: str, headers) -> bool:
-    """A baseline or balance table: raw differences, a test of means or a 2002 SUP-NSUP gap."""
+    """A baseline or balance table: raw differences, a test of means or a randomisation check."""
     text = _norm(str(caption or "") + " " + " ".join(str(cell) for cell in headers))
     if not any(word in text for word in ("raw difference", "test of difference", "balance",
-                                         "baseline characteristic", "sup nsup", "supnsup",
-                                         "randomization check")):
+                                         "baseline characteristic", "randomization check")):
         return False
     return not any(word in text for word in ("impact", "effect", "itt", "att", "regression"))
 
@@ -293,3 +293,14 @@ def filter_programme_rows(rows):
     """Keep only the rows whose label is a programme term in a regression table."""
     return [row for row in rows
             if is_programme_term(str(row.get("row_label") or row.get("outcome") or ""))]
+
+
+def rows_are_terms(grid) -> bool:
+    """True when the first column holds regression terms (year, cohort, model, baseline gap, covariate).
+
+    A table with outcomes as rows and treatments as columns is a results table, not a term table, so the
+    programme-term filter must not run on it.
+    """
+    labels = [str(row[0]) for row in grid.body if row and str(row[0]).strip()
+              and not is_non_outcome_label(row[0])]
+    return any(_CONTROL_TERM.search(label) for label in labels)
