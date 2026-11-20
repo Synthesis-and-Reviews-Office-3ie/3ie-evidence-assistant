@@ -401,3 +401,12 @@ def test_a_table_whose_rows_are_arms_and_outcomes_are_columns_is_read_whole():
 | Treatment | -0.01 (0.05) | 0.72*** (0.05) |
 | Control mean | 2.26 | 1.46 |"""
     assert split_estimate_columns(table) == []
+
+
+def test_a_qualifier_is_kept_in_the_subgroup():
+    from src.extraction.table_structure import derive_subgroup
+
+    assert derive_subgroup("", "", "", "", "between 2002 and 2004") == "between 2002 and 2004"
+    assert derive_subgroup("House damage", "", "", "") == "House damage"
+    assert derive_subgroup("", "", "Panel B: Impacts", "Women") == "Women - Panel B"
+    assert derive_subgroup("Total", "", "", "") == ""

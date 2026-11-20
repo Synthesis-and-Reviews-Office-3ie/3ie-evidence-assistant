@@ -397,7 +397,7 @@ def estimate_columns(grid: TableGrid, limit: int = MAX_SPLIT_COLUMNS) -> List[in
 _SUBGROUP_ROW = re.compile(
     r"\b(age|gender|sex|male|female|boys?|girls?|men|women|members?|children|household size|cohort|"
     r"young|old|elderly|literate|educated|married|widow)", re.I)
-_STAT_HEADER = re.compile(r"^(\(?\d+\)?|model\b|coef|c\.o\.e|s\.?e\.?\b|t[- ]?stat|p[- ]?value|"
+_STAT_HEADER = re.compile(r"^(\(?\d+\)?|model\b|coef|c\.o\.e|s\.?e\.?\b|t[- ]?stat|p[- ]?value|p\b|"
                           r"treatment\b|control\b|t\d)", re.I)
 
 
@@ -521,6 +521,40 @@ def assign_roles(outcome, arm, row_label, column_header, panel="", subgroup="", 
                 outcome = str(row_label).strip()
     arm = fixed_arm(outcome, arm, row_label, column_header, panel)
     return outcome, arm, method, subgroup
+
+
+_PERIOD = re.compile(
+    r"between\s+(?:19|20)\d{2}\s+and\s+(?:19|20)\d{2}|(?:19|20)\d{2}\s*[-–]\s*(?:19|20)\d{2}|"
+    r"(?:in|during)\s+(?:19|20)\d{2}", re.I)
+_PANEL = re.compile(r"panel\s+[a-z0-9]+", re.I)
+_SHOCK = re.compile(r"house\s*damage|em\s*died|illness|flood|drought|shock|death", re.I)
+_PATHWAY = re.compile(r"pathway", re.I)
+
+
+def derive_subgroup(row_label, column_header, caption, existing="", outcome="") -> str:
+    """Keep a panel, period, shock type or pathway as a qualifier, never discard it.
+
+    The model's subgroup is kept first, then any such qualifier found in the row label, column header,
+    caption or the (possibly swapped) outcome is appended, without repeating an identical one.
+    """
+    found = []
+    existing = str(existing or "").strip()
+    if existing:
+        found.append(existing)
+    for text in (row_label, column_header, caption, outcome):
+        text = str(text or "")
+        for pattern in (_PERIOD, _PANEL, _SHOCK, _PATHWAY):
+            match = pattern.search(text)
+            if match:
+                found.append(match.group(0).strip())
+    out = []
+    keys = set()
+    for item in found:
+        key = _role_norm(item)
+        if item and key not in keys:
+            out.append(item)
+            keys.add(key)
+    return " - ".join(out)
 
 
 def outcome_in_columns(row_label: str, header: str) -> bool:

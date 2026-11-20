@@ -225,3 +225,71 @@ def normalise_tables(content_list: list) -> list:
                 item = {**item, "text": html_table_to_markdown(body)}
         out.append(item)
     return out
+
+
+_PROGRAMME_TERM = re.compile(
+    r"\b(treatment|treated|programme|program|intervention|sup|tup|t\d+|cash|asset|coaching|"
+    r"training|transfer|grant|graduation|beneficiar)\b", re.I)
+_CONTROL_TERM = re.compile(
+    r"^\s*(year|cohort|wave|round|model|constant)\b|\b(19|20)\d{2}\b|pre[- ]?programme|baseline|covariate",
+    re.I)
+_BASELINE_GAP = re.compile(
+    r"\b(sup|tup|treatment|programme|program)\s*(?:[−–-]\s*nsup)?\s*(?:in\s*)?(19|20)\d{2}\b", re.I)
+_COVARIATE_TERM = re.compile(
+    r"house\s*damage|religious|age\b|sex\b|male\b|female\b|education|household\s*size|marital|"
+    r"widow|occupation|land\s*size|livestock", re.I)
+_P_VALUE_HEADER = re.compile(r"^\s*(?:\(?\d+\)?\s*)?(?:p|p[- ]?value|sig(?:nificance)?)\s*$", re.I)
+
+
+def is_programme_term(label: str) -> bool:
+    """True for a regression term that estimates the programme, not a control, dummy or baseline gap."""
+    text = _norm(label)
+    if not text:
+        return False
+    post = bool(re.search(r"\b(post|endline|follow)\b", text))
+    if _CONTROL_TERM.search(text) and not post:
+        return False
+    if _BASELINE_GAP.search(text) and not post:
+        return False
+    if _COVARIATE_TERM.search(text) and not _PROGRAMME_TERM.search(text):
+        return False
+    return bool(_PROGRAMME_TERM.search(text))
+
+
+def is_before_after_table(headers) -> bool:
+    """A pre-post indicator table: baseline and endline columns, with no treatment effect column."""
+    text = _norm(" ".join(str(cell) for cell in headers))
+    if not text:
+        return False
+    before = any(word in text for word in ("baseline", "pre treatment", "pretreatment", "before", "2002", "2005"))
+    after = any(word in text for word in ("endline", "post", "after", "follow up", "2006", "round 2"))
+    effect = any(word in text for word in ("treatment", "control", "impact", "difference", "effect"))
+    return before and after and not effect
+
+
+def is_balance_table(caption: str, headers) -> bool:
+    """A baseline or balance table: raw differences, a test of means or a 2002 SUP-NSUP gap."""
+    text = _norm(str(caption or "") + " " + " ".join(str(cell) for cell in headers))
+    if not any(word in text for word in ("raw difference", "test of difference", "balance",
+                                         "baseline characteristic", "sup nsup", "supnsup",
+                                         "randomization check")):
+        return False
+    return not any(word in text for word in ("impact", "effect", "itt", "att", "regression"))
+
+
+def is_regression_table(caption: str, headers) -> bool:
+    """A regression table whose rows are terms (treatment, controls, year and cohort dummies)."""
+    text = _norm(str(caption or "") + " " + " ".join(str(cell) for cell in headers))
+    return any(word in text for word in ("regression", "determinant", "ols", "fixed effect", "random effect",
+                                         "probit", "logit", "tobit", "model 1", "model 2", "model 3",
+                                         "model 4", "model 5"))
+
+
+def is_p_value_header(header: str) -> bool:
+    return bool(_P_VALUE_HEADER.match(str(header or "")))
+
+
+def filter_programme_rows(rows):
+    """Keep only the rows whose label is a programme term in a regression table."""
+    return [row for row in rows
+            if is_programme_term(str(row.get("row_label") or row.get("outcome") or ""))]

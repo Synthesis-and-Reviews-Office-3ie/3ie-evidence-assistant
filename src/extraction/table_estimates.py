@@ -746,7 +746,7 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
                 arm_hint: str = "", n_hint: Optional[float] = None,
                 control_n: Optional[float] = None, arm_row: str = "",
                 table_index: Optional[int] = None, unit_index: Optional[int] = None) -> Estimate:
-    from src.extraction.table_structure import assign_roles, header_name, outcome_in_columns
+    from src.extraction.table_structure import assign_roles, derive_subgroup, header_name, outcome_in_columns
 
     est_cell = str(raw.get("estimate_cell") or "")
     # The address the model gave is accepted only when that cell actually holds the reported coefficient.
@@ -913,6 +913,7 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
     outcome, arm_value, estimation_method, subgroup_value = assign_roles(
         outcome, arm_value, row_label, header, panel, str(raw.get("subgroup") or ""),
         str(raw.get("arm") or ""))
+    subgroup_value = derive_subgroup(row_label, header, table_label, subgroup_value, outcome)
     return Estimate(
         table_label=table_label, page=page, table_index=table_index,
         outcome=outcome,
@@ -1176,6 +1177,13 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
             kind, result, has_estimate = _table_analysis(u)
             if _should_skip(kind, has_estimate):
                 return u, {"skipped": "descriptive table", "estimates": []}, None, kind
+            from src.extraction.table_rules import is_balance_table, is_before_after_table
+            from src.extraction.table_structure import parse_markdown_table
+
+            grid = parse_markdown_table(u["text"])
+            headers = grid.headers[-1] if grid.headers else []
+            if is_balance_table(u.get("caption"), headers) or is_before_after_table(headers):
+                return u, {"skipped": "not a programme effect", "estimates": []}, None, kind
             structure = _structure_hint(result, u["text"])
             view = ("one estimate column, whose header is the arm it belongs to: "
                     f"'{u['arm_hint']}'. Return one entry for every outcome row in this view, with "
@@ -1225,6 +1233,14 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
             views_of[u["index"]] = views_of.get(u["index"], 0) + 1
         is_results = bool(data.get("results_table"))
         raw = (data.get("estimates") or []) if is_results else []
+        if is_results:
+            from src.extraction.table_rules import filter_programme_rows, is_regression_table
+            from src.extraction.table_structure import parse_markdown_table
+
+            grid = parse_markdown_table(u["text"])
+            headers = grid.headers[-1] if grid.headers else []
+            if is_regression_table(u.get("caption"), headers):
+                raw = filter_programme_rows(raw)
         raw, non_outcome = _drop_non_outcome_rows(raw)
         rows = [to_estimate(r, label, u["page"], u["text"], u.get("arm_hint") or "", u.get("n_hint"), u.get("control_n"),
                         u.get("arm_row") or "", u.get("table_index"), u.get("unit_index"))

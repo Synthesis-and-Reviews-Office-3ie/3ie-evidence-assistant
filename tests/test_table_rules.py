@@ -106,3 +106,35 @@ def test_an_outcome_that_begins_with_average_is_not_a_summary_row():
     assert is_non_outcome_label("Average") is True
     assert is_non_outcome_label("Mean in pure control") is True
     assert is_non_outcome_label("Average treatment effect") is False
+
+
+def test_regression_terms_keep_only_the_programme():
+    from src.extraction.table_rules import is_programme_term
+
+    assert is_programme_term("SUP × Post")
+    assert is_programme_term("Treatment")
+    assert is_programme_term("TUP")
+    assert not is_programme_term("SUP 2002")
+    assert not is_programme_term("Year 2005")
+    assert not is_programme_term("Cohort 3")
+    assert not is_programme_term("House damaged")
+    assert not is_programme_term("Religious group")
+
+
+def test_before_after_and_balance_tables_are_recognised():
+    from src.extraction.table_rules import is_balance_table, is_before_after_table
+
+    assert is_before_after_table(["", "Baseline", "Endline"])
+    assert not is_before_after_table(["", "Baseline", "Impact"])
+    assert is_balance_table("Table 2: Sample", ["", "(1)", "(2)", "(3) Raw Differences"])
+    assert not is_balance_table("Table 2: Baseline characteristics and impacts", ["", "Baseline", "Impact"])
+
+
+def test_p_value_header_and_regression_table():
+    from src.extraction.table_rules import is_p_value_header, is_regression_table
+
+    assert is_p_value_header("P")
+    assert is_p_value_header("2006 P")
+    assert is_p_value_header("p-value")
+    assert not is_p_value_header("Predicted")
+    assert is_regression_table("Table 6: Determinants of income", ["", "Model 1", "Model 2"])
