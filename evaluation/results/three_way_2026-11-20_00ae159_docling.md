@@ -12,6 +12,19 @@ Before the backfill, at `5c20164`: coefficient 378/439, SE 339/409.
 After the backfill: coefficient 378/439, SE 339/409. Exact-name matches rose from 168 to 172; canonical
 and SE did not move.
 
+Cell-address recall: a key value counts only when a stored row's cell address is the cell that prints it
+in the table named by the key's `Source` (page, table number and label). The key has 439 coefficients
+and 409 SEs.
+
+- coefficient: 278/439 (63%) overall; **278/281 (99%)** where the named table is parsed and prints the
+  value. 146 key rows could not be matched to a parsed table, and 12 matched a table that does not
+  print the value.
+- SE: 243/409 (59%) overall; **243/261 (93%)** where the named table prints the value.
+
+The gap from canonical is table matching and value absence, not address errors: where the table is
+found and prints the value, 99% of coefficients and 93% of SEs sit in the printing cell. The measure is
+`evaluation/cell_recall.py`.
+
 ## Outcome-in-columns, held-out check
 
 30 random stored rows from the ten held-out documents (seed 20261120), each checked against the table on
@@ -28,9 +41,35 @@ its page before writing anything:
 - placeholder headers (`column 2`), periods (`12 months`, `last Mehr season`), fragments, and an arm
   after its ordinal (`(3) Full Package`) are refused.
 
-The canonical score did not move because the renamed rows were already in the key's category. The 61
-misses below are category-mapping cases, not layout cases: the value is stored under a name the category
-mapper does not connect to the key outcome.
+The canonical score did not move because the renamed rows were already in the key's category. Of the
+seven hand-checked misses, one is a layout case the rule missed; four are category or scope; two are
+abbreviations. The claim that no remaining miss is a layout case is wrong for one row.
+
+## The seven hand-checked misses after the backfill
+
+| # | Study | Key outcome | Value | Stored outcome now | Category now | Why it still does not count |
+| --- | --- | --- | --- | --- | --- | --- |
+| 0 | 121058356 | Tontine/AVEC savings (3 months, USD) | 0.72 | `Capital (Followup 1, 6 months after cash grants)` | other | Layout miss: the row label `Capital` is not in the role vocabulary, so the Tontine header was not used. The header was **not** refused by the numbered-arm rule; `_ARM_ROW` does not match `Tontine/AVEC`. |
+| 6 | 121058359 | Per capita income | 826.587 | `percapinc` | other | Outcomes in rows; the header is a time period. The abbreviation does not map to income. |
+| 14 | 121295641 | Assets | 839.076 | `Value of Livestock (USD)` | livestock | Outcomes in rows; the header is an arm. The key's Assets scope does not include livestock. |
+| 18 | 121326790 | Assets | 328 | `Total Value of Livestock (USD)` | livestock | Outcomes in rows; the header is a statistic. Assets vs livestock. |
+| 10 | 121295428 | Assets | 0.358 | `Total number of poultry owned by household` | livestock | The outcome is already the column header. Assets vs livestock. |
+| 19 | 121328167 | Consumption | -2324 | `(4) Cons.` | other | The outcome is already the column header; the abbreviation does not map to consumption. The arm is still the header. |
+| 34 | 121378216 | Assets | -0.123 | `Quantity of Egg-Laying Chickens` | livestock | The outcome is already the column header. Assets vs livestock. The arm is still the header. |
+
+Tally: one layout case the rule missed (row 0), four category or scope cases (rows 14, 18, 10, 34), and
+two abbreviation cases (rows 6, 19). The Tontine header is not an arm; the rule did not fire because
+`Capital` is not in the row-role vocabulary.
+
+## Undo record
+
+The 381-row backfill kept no undo log. The old arm cannot be recovered exactly from the store; for the
+rows the rule changed, the old outcome is their current arm, but the old arm is not recorded.
+`scripts/backfill_outcomes.py` now writes an undo log with the id and the old and new outcome and arm
+before any update, on a dry run too. A dry run on the ten held-out documents produced 198 records.
+
+The 61 misses below are the same counts as before the backfill. Most are category or scope cases, but
+the table above shows that one is a layout case the rule missed.
 
 ## 61 coefficient misses (439 minus 378)
 
