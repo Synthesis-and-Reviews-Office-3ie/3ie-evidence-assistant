@@ -745,6 +745,8 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
                 arm_hint: str = "", n_hint: Optional[float] = None,
                 control_n: Optional[float] = None, arm_row: str = "",
                 table_index: Optional[int] = None, unit_index: Optional[int] = None) -> Estimate:
+    from src.extraction.table_structure import header_name, outcome_in_columns
+
     est_cell = str(raw.get("estimate_cell") or "")
     # The address the model gave is accepted only when that cell actually holds the reported coefficient.
     cell_row = cell_column = None
@@ -895,11 +897,24 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
 
     grounded = bool(est_cell) and _norm(est_cell) in table_norm and (not se_cell or _norm(se_cell) in table_norm)
     notes = [] if grounded else ["cell not found verbatim in the table"]
+    outcome = str(raw.get("outcome") or "")
+    row_label = str(raw.get("row_label") or "")
+    header = arm_hint or str(raw.get("column_label") or "")
+    if arm_hint and outcome_in_columns(row_label or outcome, header):
+        # The table prints outcomes across the columns and treatments or regressors down the rows. The
+        # column header is the outcome; the row label is the arm or regressor, kept in its own field.
+        panel = re.search(r"panel\s+([a-z0-9]+)", str(table_label or ""), re.I)
+        outcome = header_name(header)
+        if panel:
+            outcome = f"Panel {panel.group(1)}: {outcome}"
+        arm_value = row_label or outcome
+    else:
+        arm_value = arm_row or str(raw.get("arm") or "") or arm_hint
     return Estimate(
         table_label=table_label, page=page, table_index=table_index,
-        outcome=str(raw.get("outcome") or ""),
-        arm=arm_row or str(raw.get("arm") or "") or arm_hint, subgroup=str(raw.get("subgroup") or ""),
-        row_label=str(raw.get("row_label") or ""), column_label=str(raw.get("column_label") or "") or arm_hint,
+        outcome=outcome,
+        arm=arm_value, subgroup=str(raw.get("subgroup") or ""),
+        row_label=row_label, column_label=str(raw.get("column_label") or "") or arm_hint,
         estimate_cell=est_cell, se_cell=se_cell, se_kind=kind, p_cell=str(raw.get("p_cell") or ""),
         effect_size=parse_number(est_cell), standard_error=se, t_stat=t, ci_low=lo, ci_high=hi,
         p_value=_p_value_for(raw.get("p_cell"), count_stars(est_cell)),

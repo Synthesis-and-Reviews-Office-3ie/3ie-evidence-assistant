@@ -233,6 +233,17 @@ def test_a_continuation_row_with_a_bracketed_p_value_is_data_not_a_header():
     assert "0.096" not in split[0]["text"]
 
 
+def test_outcome_in_columns_is_decided_by_the_row_role_and_header():
+    from src.extraction.table_structure import header_name, outcome_in_columns
+
+    assert outcome_in_columns("Received Input Package", "(2) GVAO (IHST)")
+    assert outcome_in_columns("Intensive Extension in Phase 1", "(9) Farm management plan")
+    assert not outcome_in_columns("Beds", "Treatment impact on consumer durables")
+    assert not outcome_in_columns("Control over earnings", "Capital (Full without Psychosocial)")
+    assert header_name("(2) GVAO (IHST)") == "GVAO (IHST)"
+    assert header_name("Farm management plan (9)") == "Farm management plan"
+
+
 def test_a_grouped_header_keeps_the_group_number():
     split = split_estimate_columns(GROUPED_TABLE)
     assert split[0]["header"] != split[1]["header"]

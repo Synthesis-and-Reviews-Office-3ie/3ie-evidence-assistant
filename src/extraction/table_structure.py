@@ -423,6 +423,26 @@ def subgroup_rows_layout(grid: TableGrid) -> bool:
 _ARM_ROW = re.compile(r"^\s*(treatment|treated|control|untreated|placebo|comparison|programme|program"
                         r"|intervention|arm|full|half|t\d+|sup|nsup)\b", re.I)
 
+# Rows that name a treatment or a regressor, for a table whose columns are outcomes. "control" is absent
+# on purpose: "Control over earnings" is an outcome, and a bare "control" cannot tell the two apart.
+_ROLE_ROW = re.compile(
+    r"^\s*(treatment|treated|programme|program|intervention|arm|full|half|t\d+|sup|nsup|"
+    r"received|intensive|extension|phase|one year|year\s*\d|waves?\b|round\b|follow[- ]?up|baseline|"
+    r"\b(19|20)\d{2}\b)", re.I)
+_ORDINAL = re.compile(r"^\s*\(\d+\)\s*[-–]?\s*|\s*\(\d+\)\s*$")
+
+
+def outcome_in_columns(row_label: str, header: str) -> bool:
+    """True when the row names a treatment or regressor and the column header names the outcome."""
+    label = str(row_label or "").strip()
+    head = str(header or "").strip()
+    return bool(label and head) and bool(_ROLE_ROW.match(label)) and not bool(_ARM_ROW.match(head))
+
+
+def header_name(text: str) -> str:
+    """A column header without the leading or trailing panel ordinal, such as "(2) GVAO" to "GVAO"."""
+    return _ORDINAL.sub("", str(text or "")).strip()
+
 
 _OBS_ROW = re.compile(r"^\s*(observations?|obs\.?|no\.? of observations|number of observations|n|"
                       r"sample size|n obs)\s*$", re.I)

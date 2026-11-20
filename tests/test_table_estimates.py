@@ -487,3 +487,18 @@ def test_finalise_does_not_take_an_error_from_the_column_to_the_left():
                     "Table 1", units[0]["page"], units[0]["text"], unit_index=units[0]["unit_index"])
     finalise_addresses([e], units)
     assert e.standard_error is None
+
+
+def test_an_outcome_in_columns_table_takes_the_header_as_the_outcome():
+    table = "| Received Input Package | (9) Farm management plan |\n| --- | --- |\n| Other row | 0.5*** (0.1) |"
+    e = to_estimate({"outcome": "Received Input Package", "row_label": "Received Input Package",
+                     "estimate_cell": "0.5***", "se_cell": "(0.1)"}, "t", 1, table,
+                    arm_hint="(9) Farm management plan", unit_index=3)
+    assert e.outcome == "Farm management plan" and e.arm == "Received Input Package"
+
+
+def test_an_arm_in_columns_table_keeps_the_row_as_the_outcome():
+    table = "| Treatment | Beds |\n| --- | --- |\n| Other | 0.5*** (0.1) |"
+    e = to_estimate({"outcome": "Beds", "row_label": "Beds", "estimate_cell": "0.5***",
+                     "se_cell": "(0.1)"}, "t", 1, table, arm_hint="Treatment", unit_index=3)
+    assert e.outcome == "Beds" and e.arm == "Treatment"
