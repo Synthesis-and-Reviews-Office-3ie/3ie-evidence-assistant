@@ -690,6 +690,17 @@ does not accept a stored `assets`. He made the call after reviewing the misses o
 documents, and it is the only such pair; no other category pair has been widened. It is implemented in
 `evaluation/outcome_taxonomy.py` (`DESCENDANTS`, `accepts`).
 
+### What counts as a programme effect (Lucas's decision, 20 November 2026)
+
+Lucas set these rules for which numbers in a results table are effects:
+
+- When a table shows both a plain treatment-minus-comparison difference at follow-up and a
+  difference-in-differences, store only the DiD. The follow-up differences are descriptive.
+- A change in the effect between rounds, such as "difference between impacts in 2005 and 2008", is kept
+  and labelled as a change over time, never as the main effect.
+- A standardised effect-size column is kept as an effect size, with the sign taken from the mean
+  difference.
+
 ### Arithmetic checks on every stored row (18 November 2026)
 
 A row's numbers constrain each other, so a row can be checked without going back to the page. `src/extraction/consistency.py`
