@@ -92,6 +92,17 @@ def test_garbled_table_text_is_detected():
     assert not looks_garbled("| Outcome | Coefficient | Standard error |\n| --- | --- | --- |")
 
 
+def test_mismapped_punctuation_glyphs_are_detected_as_garbled():
+    # Audit 2026-11-20, Emran 2014: parentheses, brackets and the minus came through as letters or
+    # symbols (ð.01Þ, ½.62, .71, minus as 2). Such a table must be read from the page image.
+    emran = ("| | DID | DIDM |\n| Per capita income | 1,126.69 | 1,067.81 |\n"
+             "| | ð110.72Þ*** | ð93.1Þ*** |\n| Cash savings ðdummyÞ | .83 ð.01Þ*** | .81 ð.01Þ*** |\n"
+             "| Food availability | .66 | .65 |\n| | ð.03Þ*** | ½.62, .71*** |\n")
+    assert looks_garbled(emran, min_chars=10)
+    assert looks_garbled("| a | ð .01Þ |\n| b | ð .02Þ |\n| c | ½.62, .71 |\n| d | ð .03Þ |")
+    assert not looks_garbled("| Outcome | Coef | SE |\n| Income | 1.23 | (0.45) |\n| Savings | .92 | (0.10) |")
+
+
 def test_a_units_note_in_parentheses_does_not_make_a_row_a_non_outcome():
     assert is_non_outcome_label("Per capita income (BDT constant price)") is False
     assert is_non_outcome_label("Consumption (mean per adult equivalent)") is False

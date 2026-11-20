@@ -20,9 +20,38 @@ from src.extraction.table_estimates import (count_stars, finalise_addresses, mer
     ("633.63", 633.63),
     ("", None),
     ("n.s.", None),
+    # Audit 2026-11-20, 121346575: the minus glyph survived as a replacement character or an inverted
+    # exclamation, and a spaced minus must fold even when the glyph was mangled.
+    ("\ufffd 0.004", -0.004),
+    ("¡ 0.071", -0.071),
+    ("¡0.071*", -0.071),
+    ("- 0.014", -0.014),
+    ("− 0.005", -0.005),
+    # Audit 2026-11-20, Emran 2014: a number printed as ".92" is 0.92, not 92.
+    (".92", 0.92),
+    (".10", 0.10),
+    ("- .30", -0.30),
+    # A range keeps its first number positive.
+    ("0.406 - 0.2", 0.406),
 ])
 def test_parse_number(text, value):
     assert parse_number(text) == value
+
+
+def test_a_mangled_minus_glyph_is_negative_at_the_printed_precision():
+    from src.extraction.table_estimates import _holds
+
+    assert _holds(-0.004, "\ufffd 0.004 (0.01)")
+    assert _holds(-0.014, "¡0.014 (0.03)")
+    assert _holds(-0.071, "¡0.071* (0.03)")
+    assert not _holds(0.004, "\ufffd 0.004 (0.01)")
+
+
+def test_a_leading_decimal_point_is_not_a_whole_number():
+    from src.extraction.table_estimates import _holds
+
+    assert _holds(0.92, ".92") and not _holds(92.0, ".92")
+    assert _holds(0.10, ".10") and not _holds(10.0, ".10")
 
 
 def test_stars_and_intervals():

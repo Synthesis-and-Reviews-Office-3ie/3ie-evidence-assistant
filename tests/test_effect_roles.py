@@ -6,10 +6,12 @@ from src.extraction.effect_roles import (
     BEFORE,
     CONTROL,
     DROP_ROLES,
+    EFFECT_PARTNERS,
     FIXED_EFFECT,
     NOT_AN_EFFECT,
     OUTCOME,
     PROGRAMME_EFFECT,
+    SUBGROUP,
     build_prompt,
     keep_effect,
     match_role,
@@ -38,6 +40,27 @@ def test_keep_effect_drops_when_an_axis_is_a_non_effect_role():
 
 def test_keep_effect_is_case_and_space_insensitive():
     assert not keep_effect(" Control_Or_Covariate ", OUTCOME)
+
+
+def test_a_subgroup_partners_the_effect_axis_like_outcome():
+    # Audit 2026-11-20: Jalal 2013 child age groups ("6-11 mo") were labelled not_an_effect, hiding
+    # three real difference-in-differences effects.
+    assert SUBGROUP not in DROP_ROLES and SUBGROUP in EFFECT_PARTNERS
+    assert keep_effect(SUBGROUP, PROGRAMME_EFFECT)
+    assert keep_effect(PROGRAMME_EFFECT, SUBGROUP)
+    roles = {"rows": {"6-11 mo": SUBGROUP, "12-23 mo": SUBGROUP},
+             "columns": {"Difference-in-differences": PROGRAMME_EFFECT}}
+    assert role_for_cell(roles, "6-11 mo", "Difference-in-differences") == \
+        (SUBGROUP, PROGRAMME_EFFECT, True)
+    assert match_role(roles["rows"], "6-11 mo") == SUBGROUP
+
+
+def test_the_prompt_names_subgroup_and_effect_size_columns():
+    from src.extraction.effect_roles import ROLE_PROMPT
+
+    assert "subgroup" in ROLE_PROMPT
+    assert "odds-ratio" in ROLE_PROMPT
+    assert "odds ratio" in ROLE_PROMPT or "odds-ratio" in ROLE_PROMPT
 
 
 def test_match_role_exact_then_containment_then_overlap():

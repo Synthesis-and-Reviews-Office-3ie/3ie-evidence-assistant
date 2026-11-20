@@ -416,3 +416,24 @@ def test_itt_is_an_arm_not_a_method():
 
     assert method_label("Treatment (ITT)") == ""
     assert is_role("Treatment (ITT)")
+
+
+def test_the_arm_is_not_stored_as_the_outcome():
+    # Audit 2026-11-20, Hossain 2017: the outcome was stored as "Treatment X 2009", the arm.
+    from src.extraction.table_structure import assign_roles
+
+    outcome, arm, method, subgroup = assign_roles(
+        "Treatment X 2009", "Treatment X 2009", "Consumption per capita", "Impact", "")
+    assert outcome == "Consumption per capita"
+    assert arm == "Treatment X 2009"
+
+
+def test_a_time_point_and_a_population_are_kept_in_the_subgroup():
+    # Audit 2026-11-20: Sulaiman 2015 "after 2 years" and Bandiera 2011 "other poor women" were lost.
+    from src.extraction.table_structure import derive_subgroup
+
+    assert "after 2 years" in derive_subgroup("", "Consumption after 2 years", "Impacts", "")
+    assert "after 2 years" in derive_subgroup("", "", "Panel A: after 2 years", "")
+    assert "year 7" in derive_subgroup("", "Wealth year 7", "", "")
+    assert "other poor women" in derive_subgroup("", "", "Table 6. Effect on other poor women", "")
+    assert "Spillover" in derive_subgroup("", "", "Spillovers to non-participant households", "")

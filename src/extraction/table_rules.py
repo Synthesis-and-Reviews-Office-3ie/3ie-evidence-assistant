@@ -55,6 +55,11 @@ _NON_OUTCOME = (
 _NON_OUTCOME_EXACT = {"n", "obs", "sd", "se", "r2", "r²"}
 # Font-mapping failures leave runs like "?????? a114 a116" where letters should be.
 _GARBLE_ARTIFACT = re.compile(r"[a-z]\d{2,3}")
+# A broken font mapping also turns punctuation into letterlike or symbol characters: paper 121498842
+# (Emran 2014) prints a standard error as "ð.01Þ" and a confidence interval as "½.62, .71", and its
+# minus sign comes through as the digit 2. A glyph that should be a bracket, a parenthesis or a minus,
+# sitting immediately before a number, marks the table.
+_GARBLE_GLYPH = re.compile(r"[\ufffd¡ðÞ½]\s*\.?\d")
 
 
 def looks_garbled(text: object, min_chars: int = 40) -> bool:
@@ -67,7 +72,8 @@ def looks_garbled(text: object, min_chars: int = 40) -> bool:
     value = str(text or "")
     if len(value) < min_chars:
         return False
-    return value.count("?") / len(value) > 0.03 or len(_GARBLE_ARTIFACT.findall(value)) >= 8
+    return (value.count("?") / len(value) > 0.03 or len(_GARBLE_ARTIFACT.findall(value)) >= 8
+            or len(_GARBLE_GLYPH.findall(value)) >= 4)
 
 
 def is_pipe_table(text: object, min_rows: int = 2) -> bool:

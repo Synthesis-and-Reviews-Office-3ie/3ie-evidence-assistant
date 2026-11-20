@@ -520,12 +520,26 @@ def assign_roles(outcome, arm, row_label, column_header, panel="", subgroup="", 
                 subgroup = from_outcome
                 outcome = str(row_label).strip()
     arm = fixed_arm(outcome, arm, row_label, column_header, panel)
+    # An arm copied into the outcome field is not an outcome. When the two are the same label, the outcome
+    # is the row label; a study that names its treatment "Treatment X 2009" must not store that as what it
+    # measured.
+    if row_label and outcome and arm and _role_norm(outcome) == _role_norm(arm) \
+            and _role_norm(row_label) != _role_norm(outcome):
+        outcome = str(row_label).strip()
     return outcome, arm, method, subgroup
 
 
 _PERIOD = re.compile(
     r"between\s+(?:19|20)\d{2}\s+and\s+(?:19|20)\d{2}|(?:19|20)\d{2}\s*[-–]\s*(?:19|20)\d{2}|"
     r"(?:in|during)\s+(?:19|20)\d{2}", re.I)
+# A time point printed as a panel or column heading ("after 2 years", "year 7", "endline 2").
+_TIME = re.compile(
+    r"after\s+\d+\s+(?:year|month|week)s?|\b(?:one|two|three|four|five|six|seven|eight|nine|ten|\d+)\s+"
+    r"years?\s+(?:later|after|in)\b|year\s+\d+|endline\s*\d*|midline|follow[- ]?up", re.I)
+# The population a spillover or secondary effect is estimated on, named in the title ("other poor women").
+_POPULATION = re.compile(
+    r"other\s+(?:poor|ultra[- ]?poor|non[- ]?poor)\s+(?:women|men|households|participants)|"
+    r"non[- ]?participant\s+(?:households|women|men)|spillover", re.I)
 _PANEL = re.compile(r"panel\s+[a-z0-9]+", re.I)
 _SHOCK = re.compile(r"house\s*damage|em\s*died|illness|flood|drought|shock|death", re.I)
 _PATHWAY = re.compile(r"pathway", re.I)
@@ -543,7 +557,7 @@ def derive_subgroup(row_label, column_header, caption, existing="", outcome="") 
         found.append(existing)
     for text in (row_label, column_header, caption, outcome):
         text = str(text or "")
-        for pattern in (_PERIOD, _PANEL, _SHOCK, _PATHWAY):
+        for pattern in (_PERIOD, _TIME, _POPULATION, _PANEL, _SHOCK, _PATHWAY):
             match = pattern.search(text)
             if match:
                 found.append(match.group(0).strip())

@@ -121,14 +121,24 @@ def _close(value: float, options: Sequence[float]) -> bool:
     return any(abs(value - other) <= max(0.006, abs(value) * 0.005) for other in options)
 
 
-_TOKEN = re.compile(r"[-−–]?\d[\d.,]*")
+_TOKEN = re.compile(r"[-−–]?\.?\d[\d.,]*")
+# Sign glyphs that some PDFs yield when the minus cannot be mapped: the replacement character and an
+# inverted exclamation. They are not range separators, so a glyph immediately before a digit is a minus.
+_GLYPH_MINUS = re.compile(r"[\u2212\u2013\u2014\u2012\u2010\u2011\u00ad\ufffd\u00a1]\s*(?=\d)")
 # A sign printed with a space after it ("- 0.406") is a negative number, not a range. Only at the start of
 # the cell, so "0.406 - 0.2" stays a range.
-_MINUS_SPACE = re.compile(r"^\s*([-−–])\s+(?=\d)")
+_MINUS_SPACE = re.compile(r"^\s*-\s+(?=\d)")
 
 
 def _unspace_minus(text: object) -> str:
-    return _MINUS_SPACE.sub(r"\1", str(text or ""))
+    """Fold a printed minus onto its number.
+
+    Two forms occur: a sign separated from the digits by a space ("- 0.406"), and a sign the parser could
+    not map, which surfaces as a replacement character or an inverted exclamation ("\ufffd 0.004", "¡0.071").
+    Only a glyph immediately before a digit is folded, so a range's separator ("0.406 - 0.2") is left alone.
+    """
+    folded = _GLYPH_MINUS.sub("-", str(text or ""))
+    return _MINUS_SPACE.sub("-", folded)
 
 
 def _printed_decimals(token: str) -> int:
@@ -180,7 +190,7 @@ def _holds(value, text: object, signed: bool = True) -> bool:
 
 def _count_number(text: object, value) -> int:
     """How many printed tokens in `text` equal `value` at their printed precision."""
-    return sum(1 for token in _TOKEN.findall(str(text or ""))
+    return sum(1 for token in _TOKEN.findall(_unspace_minus(text))
                if _holds(value, token, signed=False))
 
 
@@ -601,6 +611,18 @@ years)") and the column headers name outcomes ("Farm work", "Total labor hours",
 consumption"), then the row is the subgroup and the column is the outcome: put the column heading in
 outcome and the row label in subgroup. Those are heterogeneity results and they count as estimates.
 
+Labels carry qualifiers; keep them, and never move one field into another:
+- When the study has more than one treatment arm (for example "grants only" and "hybrid"), every estimate
+  keeps its own arm. Do not leave arm empty just because the arm is named in a panel heading or a column
+  group; carry it onto each estimate.
+- When a panel or sub-heading names a time point ("after 2 years", "endline 2", "year 7"), keep it in the
+  outcome label, so an estimate is not stored under another panel's timing.
+- When the table title names the population the effect is estimated on and it is not the whole sample
+  (for example "other poor women", a spillover group; "non-poor households"), put that population in
+  subgroup, so it is not stored as the main effect.
+- The outcome is what is measured. Never store the arm, the treatment name or an interaction term as the
+  outcome: if the outcome cell names only the arm ("Treatment X 2009"), the outcome is the row label.
+
 First decide: does this table report estimated effects of a programme or treatment, such as
 regression coefficients, differences between treatment and control, impact estimates or marginal
 effects? A before/after comparison without a comparison group is not a programme effect.
@@ -653,7 +675,7 @@ Return JSON only:
 # ----------------------------------------------------------------- number parsing
 
 _STARS = re.compile(r"\*+|†+|‡+")
-_NUM = re.compile(r"[-−–]?\s?\d[\d.,]*")
+_NUM = re.compile(r"[-−–]?\s?\.?\d[\d.,]*")
 
 
 def parse_number(text: str) -> Optional[float]:
@@ -785,12 +807,13 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
 
         grid = parse_markdown_table(table_text)
         if 1 <= row_number <= len(grid.body) and 1 <= column_number <= len(grid.body[row_number - 1]):
-            printed = str(grid.body[row_number - 1][column_number - 1])
+            printed = _unspace_minus(str(grid.body[row_number - 1][column_number - 1]))
+            est_cell = _unspace_minus(est_cell)
             # Match the token the model reported, sign included, so a dropped minus cannot pass and a cell
             # holding two numbers gives the one the model meant rather than the first.
             digits = re.sub(r"\D", "", est_cell)
             negative = est_cell.strip().startswith(("-", "\u2212", "\u2013"))
-            same_digits = [token for token in re.findall(r"[-−–]?\d[\d.,]*", printed)
+            same_digits = [token for token in _TOKEN.findall(printed)
                            if digits and re.sub(r"\D", "", token) == digits]
             # The printed token wins on the sign too: a copy that dropped a minus is a copy error, and the
             # cell itself is the evidence.
@@ -805,17 +828,17 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
                 # "(0.706) 1.109", gives the parameter of the coefficient immediately before it, not
                 # whichever cell the model happened to name.
                 after = printed[printed.find(matched) + len(matched):]
-                neighbour = re.match(r"\s*[*†‡]*\s*\(\s*(-?[\d.,]+)\s*\)", after)
+                neighbour = re.match(r"\s*[*†‡]*\s*\(\s*(-?\.?[\d.,]+)\s*\)", after)
                 cell_se = parse_number(neighbour.group(1)) if neighbour else None
-                interval = re.match(r"\s*[*†‡]*\s*\[\s*(-?[\d.,]+)\s*,\s*(-?[\d.,]+)\s*\]", after)
+                interval = re.match(r"\s*[*†‡]*\s*\[\s*(-?\.?[\d.,]+)\s*,\s*(-?\.?[\d.,]+)\s*\]", after)
                 cell_interval = (parse_number(interval.group(1)), parse_number(interval.group(2))) if interval else None
                 stripped = re.sub(r"\([^)]*\)|\[[^]]*\]", "", printed)
-                cell_numbers = len(re.findall(r"[-−–]?\d[\d.,]*", stripped))
+                cell_numbers = len(_TOKEN.findall(stripped))
                 # A number in parentheses before the coefficient belongs to the coefficient before it. When
                 # nothing follows the addressed coefficient, that preceding number is recorded so a model
                 # that names it as this row's error can be refused.
                 before = printed[:printed.find(matched)]
-                prior = re.findall(r"\(\s*(-?[\d.,]+)\s*\)", before)
+                prior = re.findall(r"\(\s*(-?\.?[\d.,]+)\s*\)", before)
                 cell_prior = parse_number(prior[-1]) if prior else None
     se_cell = str(raw.get("se_cell") or "")
     kind = str(raw.get("se_kind") or "").lower()

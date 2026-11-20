@@ -24,13 +24,18 @@ import httpx
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 OUTCOME = "outcome"
+SUBGROUP = "subgroup"
 PROGRAMME_EFFECT = "programme_effect"
 CONTROL = "control_or_covariate"
 FIXED_EFFECT = "fixed_effect_or_dummy"
 BEFORE = "comparison_before_programme"
 NOT_AN_EFFECT = "not_an_effect"
 
-ROLES = (OUTCOME, PROGRAMME_EFFECT, CONTROL, FIXED_EFFECT, BEFORE, NOT_AN_EFFECT)
+ROLES = (OUTCOME, SUBGROUP, PROGRAMME_EFFECT, CONTROL, FIXED_EFFECT, BEFORE, NOT_AN_EFFECT)
+
+# The axis that pairs with the programme effect to make a cell an effect. A subgroup is one: a row split
+# by age group, gender or region names who the effect is for, not something other than an effect.
+EFFECT_PARTNERS = frozenset({OUTCOME, SUBGROUP})
 
 # An axis named with one of these makes the cell a non-effect. The test fails open on anything else.
 DROP_ROLES = frozenset({CONTROL, FIXED_EFFECT, BEFORE, NOT_AN_EFFECT})
@@ -41,15 +46,21 @@ label and each column header.
 
 Roles:
 - outcome: the axis names what is being measured (consumption, income, enrollment, a test score).
+- subgroup: the axis names who the effect is for, or under what grouping it is estimated: an age group
+  ("6-11 mo"), a gender, a region, a wealth quintile, "non-poor households". A subgroup is part of the
+  effect, not a description, so it pairs with the programme effect exactly as outcome does. A row split by
+  an age group, a gender or a region is a subgroup, never not_an_effect.
 - programme_effect: the axis names the programme's effect, such as a treatment-versus-comparison
-  difference, a difference-in-differences, a coefficient on a treatment term, a marginal effect, an
-  effect size, or a change in the effect between rounds.
+  difference, a difference-in-differences, a coefficient on a treatment term, a marginal effect, or a
+  change in the effect between rounds. An effect-size column (a standardised mean difference, Cohen's d,
+  a Hedges' g) and an odds-ratio column are programme_effect: they report the size of the effect.
 - control_or_covariate: the axis names a control-group statistic, a baseline level, or a covariate that
   is held constant rather than the programme.
 - fixed_effect_or_dummy: the axis names a fixed effect or an indicator dummy used as a control.
 - comparison_before_programme: the axis names a comparison made before the programme began, between the
   groups as they already were.
-- not_an_effect: the axis is a statistic, a test, a count, a cost, a ratio or a descriptive figure.
+- not_an_effect: the axis is a statistic, a test, a count, a cost, a ratio that is not an effect size, or
+  a descriptive figure.
 
 Rules:
 - The columns of one table often name an estimation method (PSM, propensity score, kernel, nearest
@@ -58,13 +69,17 @@ Rules:
 - A mediation, pathway or indirect-effect estimate is a programme_effect.
 - A change in the effect between rounds ("difference between impacts in 2005 and 2008", "change in
   impact") is a programme_effect, labelled as a change over time.
-- A standardised effect-size column is a programme_effect; its sign follows the mean difference.
+- A standardised effect-size column (Cohen's d, Hedges' g, a standardised mean difference) is a
+  programme_effect; its sign follows the mean difference. An odds-ratio column is a programme_effect.
+- A subgroup row (an age group, a gender, a region, a wealth quintile) is a subgroup, not
+  not_an_effect, and pairs with the programme effect.
 - A period such as "between X and Y" or "X over Y" says when an effect was measured. It is a comparison
   before the programme only when both dates fall before the programme began.
 - Some tables have both a plain follow-up treatment-minus-comparison difference and a difference-in-
   differences. In those tables the follow-up difference is descriptive and the DiD is the programme
   effect; decide this row by row, because a row whose DiD cell is blank keeps its follow-up difference.
-- A cell is a programme effect only when one axis is outcome and the other is programme_effect.
+- A cell is a programme effect only when one axis is programme_effect and the other is outcome or
+  subgroup.
 
 Examples (from documents outside any audit sample):
 - 121058367: row "T1 x Poultry" is programme_effect; column "(1)" is outcome.
@@ -105,7 +120,10 @@ def match_role(roles: Dict[str, str], label: str) -> str:
 
 
 def keep_effect(row_role: str, column_role: str) -> bool:
-    """Fail open: a cell is not an effect only when an axis is explicitly a non-effect role."""
+    """Fail open: a cell is not an effect only when an axis is explicitly a non-effect role.
+
+    A subgroup partners the effect axis as outcome does, so a (subgroup, programme_effect) cell is kept.
+    """
     return str(row_role or "").strip().lower() not in DROP_ROLES and \
         str(column_role or "").strip().lower() not in DROP_ROLES
 
