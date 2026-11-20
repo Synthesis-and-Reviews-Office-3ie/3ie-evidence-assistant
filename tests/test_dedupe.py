@@ -1,6 +1,6 @@
 """The deterministic keeper for duplicate rows at one printed cell."""
 
-from evaluation.dedupe import keeper
+from evaluation.dedupe import combined_labels, keeper
 
 
 def test_keeper_prefers_the_row_with_a_standard_error():
@@ -22,3 +22,18 @@ def test_keeper_prefers_the_longer_outcome_and_then_the_lowest_id():
     rows = [{"id": "b", "standard_error": None, "treatment_arm": "arm", "outcome_name": "Same"},
             {"id": "a", "standard_error": None, "treatment_arm": "arm", "outcome_name": "Same"}]
     assert keeper(rows)["id"] == "a"
+
+
+def test_combined_labels_keeps_the_table_subject_and_the_subgroup():
+    assert combined_labels(["Delta Jobs", "Industry"]) == "Delta Jobs - Industry"
+
+
+def test_combined_labels_drops_a_label_contained_in_a_longer_one():
+    assert combined_labels(["% of households: With outstanding loan in kind",
+                            "With outstanding loan in kind"]) == \
+        "% of households: With outstanding loan in kind"
+
+
+def test_combined_labels_deduplicates_identical_labels():
+    assert combined_labels(["Same", "Same"]) == "Same"
+    assert combined_labels([]) == ""

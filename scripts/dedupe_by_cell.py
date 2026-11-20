@@ -26,7 +26,7 @@ import boto3  # noqa: E402
 import psycopg2  # noqa: E402
 from psycopg2.extras import execute_values  # noqa: E402
 
-from evaluation.dedupe import keeper  # noqa: E402
+from evaluation.dedupe import combined_labels, keeper, should_combine  # noqa: E402
 from evaluation.graduation_gt import PROJECT_ID, load_overrides  # noqa: E402
 from evaluation.outcome_gap_audit import mapped_and_all  # noqa: E402
 from evaluation.stored_rows import fetch_all  # noqa: E402
@@ -65,32 +65,47 @@ def main() -> int:
         groups[(row["doc_key"], row["unit_index"], row["cell_row"], row["cell_column"],
                 row.get("effect_size"))].append(row)
 
-    removed, by_doc = [], Counter()
+    removed, labels, by_doc = [], [], Counter()
     for group in groups.values():
         if len(group) < 2:
             continue
         keep = keeper(group)
+        if should_combine([row.get("outcome_name") for row in group]):
+            outcome = combined_labels([row.get("outcome_name") for row in group])
+            arm = combined_labels([row.get("treatment_arm") for row in group])
+            if outcome != keep.get("outcome_name") or arm != keep.get("treatment_arm"):
+                labels.append({"id": keep["id"], "outcome_name": outcome, "treatment_arm": arm})
         for row in group:
             if row["id"] == keep["id"]:
                 continue
             removed.append(row)
             by_doc[row["doc_key"][:12]] += 1
 
-    print(f"rows that would be removed: {len(removed)}")
+    print(f"rows that would be removed: {len(removed)}; labels combined: {len(labels)}")
     for name, count in by_doc.most_common(12):
         print(f"  {count:4d}  {name}")
     path = Path(args.undo_log)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text("".join(json.dumps(row, default=str) + "\n" for row in removed), encoding="utf-8")
-    print(f"undo log: {len(removed)} rows at {path}")
-    if args.write and removed:
+    path.write_text("".join(json.dumps({"kind": "remove", **row}, default=str) + "\n" for row in removed)
+                    + "".join(json.dumps({"kind": "label", **row}, default=str) + "\n" for row in labels),
+                    encoding="utf-8")
+    print(f"undo log: {len(removed)} removed and {len(labels)} label changes at {path}")
+    if args.write and (removed or labels):
         conn = psycopg2.connect(os.environ["SUPABASE_DB_URL"], connect_timeout=20)
         try:
             with conn, conn.cursor() as cur:
-                execute_values(cur, "DELETE FROM public.effect_estimates AS e USING (VALUES %s) AS v(id) "
-                                    "WHERE e.id = v.id::uuid",
-                               [(row["id"],) for row in removed], page_size=1000)
-            print(f"deleted {len(removed)} rows")
+                if labels:
+                    execute_values(cur, "UPDATE public.effect_estimates AS e "
+                                        "SET outcome_name = v.outcome_name, treatment_arm = v.treatment_arm "
+                                        "FROM (VALUES %s) AS v(id, outcome_name, treatment_arm) "
+                                        "WHERE e.id = v.id::uuid",
+                                   [(row["id"], row["outcome_name"], row["treatment_arm"]) for row in labels],
+                                   page_size=1000)
+                if removed:
+                    execute_values(cur, "DELETE FROM public.effect_estimates AS e USING (VALUES %s) AS v(id) "
+                                        "WHERE e.id = v.id::uuid",
+                                   [(row["id"],) for row in removed], page_size=1000)
+            print(f"deleted {len(removed)} rows; combined labels on {len(labels)}")
         finally:
             conn.close()
     return 0
