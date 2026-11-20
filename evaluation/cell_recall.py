@@ -41,10 +41,30 @@ PAGE = re.compile(r"page:\s*(\d+)", re.I)
 TABLE = re.compile(r"table:\s*(\d+)", re.I)
 LABEL = re.compile(r"table label:\s*(.+)", re.I)
 TABLE_IN_CAPTION = re.compile(r"table\s+([a-z]?\d+)", re.I)
+ROW = re.compile(r"row label:\s*([^;]+)", re.I)
+COL = re.compile(r"column(?: label)?:\s*([^;]+)", re.I)
 
 
 def _words(text):
     return {w for w in re.findall(r"[a-z0-9]+", str(text or "").lower()) if len(w) >= 4}
+
+
+def _agrees(grid, value, key_row, key_col):
+    """A cell that prints the value must also match the key's row label or column heading."""
+    if not key_row and not key_col:
+        return False
+    row_words, col_words = _words(key_row), _words(key_col)
+    for r, row in enumerate(grid.body):
+        for c, cell in enumerate(row):
+            if c == 0 or not _holds(value, cell):
+                continue
+            label = str(row[0])
+            header = grid.headers[-1][c] if grid.headers and c < len(grid.headers[-1]) else ""
+            if row_words and row_words & _words(label):
+                return True
+            if col_words and col_words & _words(header):
+                return True
+    return False
 
 
 def _label_matches(unit, label):
@@ -130,6 +150,9 @@ def measure(project: str = PROJECT_ID) -> Counter:
         page = int(page_match.group(1)) if page_match else None
         table_no = int(table_match.group(1)) if table_match else None
         label = label_match.group(1).strip() if label_match else ""
+        row_match, col_match = ROW.search(source), COL.search(source)
+        key_row = row_match.group(1).strip() if row_match else ""
+        key_col = col_match.group(1).strip() if col_match else ""
         study_units = [(doc, unit) for doc in all_docs.get(gt.get("sid"), [])
                        for unit in units_by_doc.get(doc, [])]
         candidates = [(doc, unit) for doc, unit in study_units
@@ -147,7 +170,8 @@ def measure(project: str = PROJECT_ID) -> Counter:
             words = _words(gt.get("Outcome name"))
             candidates = [(doc, unit) for doc, unit in study_units
                           if words & unit_words.get((doc, unit["unit_index"]), set())
-                          and wanted in unit_values.get((doc, unit["unit_index"]), set())]
+                          and wanted in unit_values.get((doc, unit["unit_index"]), set())
+                          and _agrees(parse_markdown_table(unit["text"]), value, key_row, key_col)]
             via = "value"
         if not candidates:
             counts["no_table"] += 1

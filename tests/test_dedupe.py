@@ -1,44 +1,24 @@
-"""Deduplication of extracted estimates (src/extraction/dedupe.py)."""
+"""The deterministic keeper for duplicate rows at one printed cell."""
 
-from src.extraction.dedupe import dedupe_estimates
-
-
-def row(outcome, arm="", subgroup="", effect=0.52, se=None, p=None, n=None, page=1):
-    return {"outcome": outcome, "arm": arm, "subgroup": subgroup, "effect_size": effect,
-            "standard_error": se, "t_stat": None, "ci_low": None, "ci_high": None,
-            "p_value": p, "sample_size": n, "page": page}
+from evaluation.dedupe import keeper
 
 
-def test_identical_rows_collapse():
-    kept, dropped = dedupe_estimates([row("Consumption"), row("Consumption")])
-    assert len(kept) == 1
-    assert dropped == 1
+def test_keeper_prefers_the_row_with_a_standard_error():
+    rows = [{"id": "a", "standard_error": None, "treatment_arm": "arm", "outcome_name": "Long outcome"},
+            {"id": "b", "standard_error": 0.1, "treatment_arm": "", "outcome_name": "Y"}]
+    assert keeper(rows)["id"] == "b"
 
 
-def test_a_numbering_prefix_does_not_make_a_new_row():
-    kept, dropped = dedupe_estimates([row("(1) Consumption"), row("Consumption"), row("Panel A: Consumption")])
-    assert len(kept) == 1
-    assert dropped == 2
+def test_keeper_prefers_an_arm_before_the_outcome_length():
+    rows = [{"id": "b", "standard_error": None, "treatment_arm": "", "outcome_name": "Long outcome"},
+            {"id": "a", "standard_error": None, "treatment_arm": "arm", "outcome_name": "Short"}]
+    assert keeper(rows)["id"] == "a"
 
 
-def test_gaps_are_filled_from_a_later_duplicate():
-    kept, _ = dedupe_estimates([row("Consumption", se=None), row("Consumption", se=0.12)])
-    assert kept[0]["standard_error"] == 0.12
-
-
-def test_distinct_arms_and_values_are_kept():
-    kept, dropped = dedupe_estimates([row("Consumption", arm="T1"), row("Consumption", arm="T2"),
-                                      row("Income", effect=0.9)])
-    assert len(kept) == 3
-    assert dropped == 0
-
-
-def test_same_value_on_different_outcomes_is_not_merged():
-    kept, _ = dedupe_estimates([row("Consumption"), row("Income")])
-    assert len(kept) == 2
-
-
-def test_two_different_standard_errors_are_not_merged():
-    kept, dropped = dedupe_estimates([row("Consumption", se=0.10), row("Consumption", se=0.20)])
-    assert len(kept) == 2
-    assert dropped == 0
+def test_keeper_prefers_the_longer_outcome_and_then_the_lowest_id():
+    rows = [{"id": "b", "standard_error": None, "treatment_arm": "arm", "outcome_name": "Long outcome"},
+            {"id": "a", "standard_error": None, "treatment_arm": "arm", "outcome_name": "Short"}]
+    assert keeper(rows)["id"] == "b"
+    rows = [{"id": "b", "standard_error": None, "treatment_arm": "arm", "outcome_name": "Same"},
+            {"id": "a", "standard_error": None, "treatment_arm": "arm", "outcome_name": "Same"}]
+    assert keeper(rows)["id"] == "a"
