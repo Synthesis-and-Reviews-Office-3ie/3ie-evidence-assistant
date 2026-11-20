@@ -103,6 +103,12 @@ def test_mismapped_punctuation_glyphs_are_detected_as_garbled():
     assert not looks_garbled("| Outcome | Coef | SE |\n| Income | 1.23 | (0.45) |\n| Savings | .92 | (0.10) |")
 
 
+def test_a_mangled_minus_marks_the_table_for_the_page_read():
+    # Audit 2026-11-20, 121346575: the minus glyph is lost to a replacement character or an inverted
+    # exclamation, so the text layer has no sign; the page image must be read.
+    assert looks_garbled("| a | \ufffd 0.004 | ¡0.071* | \ufffd 0.005 | ¡0.014 |", min_chars=10)
+
+
 def test_a_units_note_in_parentheses_does_not_make_a_row_a_non_outcome():
     assert is_non_outcome_label("Per capita income (BDT constant price)") is False
     assert is_non_outcome_label("Consumption (mean per adult equivalent)") is False

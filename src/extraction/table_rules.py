@@ -57,8 +57,9 @@ _NON_OUTCOME_EXACT = {"n", "obs", "sd", "se", "r2", "r²"}
 _GARBLE_ARTIFACT = re.compile(r"[a-z]\d{2,3}")
 # A broken font mapping also turns punctuation into letterlike or symbol characters: paper 121498842
 # (Emran 2014) prints a standard error as "ð.01Þ" and a confidence interval as "½.62, .71", and its
-# minus sign comes through as the digit 2. A glyph that should be a bracket, a parenthesis or a minus,
-# sitting immediately before a number, marks the table.
+# minus sign comes through as the digit 2. A mangled minus itself (a replacement character, an inverted
+# exclamation) also marks the table: the text layer has lost the sign, so the page image is the authority,
+# and 121346575's negative cells are only captured when the page is read.
 _GARBLE_GLYPH = re.compile(r"[\ufffd¡ðÞ½]\s*\.?\d")
 
 
