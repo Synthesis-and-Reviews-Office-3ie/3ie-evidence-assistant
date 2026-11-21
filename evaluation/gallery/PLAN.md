@@ -24,11 +24,10 @@ The instruction excludes any document used in an audit sample, the fresh ten, or
 literally, that removes 47 of the 49 mapped documents and leaves only `a99618599493` and `d6f0a637496f`,
 which makes a 25-35 entry gallery impossible from the mapped corpus.
 
-Working decision for the draft: exclude the dedicated held-out test documents (the fresh ten and the
-never-used set) and documents already audited at document level, and treat the 60-row row samples as
-row-level, not document-level, exclusions. This is recorded as an OPEN QUESTION for Lucas in index.json.
-If the strict reading is intended, the gallery must be built from a fresh document set, which needs a
-supply of PDFs.
+Confirmed by Lucas on 21 November. Exclude the fresh ten, the never-used set, and any document already
+audited at document level. A row-level sample drawn from the 49 does not exclude the document it came from,
+so the gallery may use the mapped documents except those three groups. Recorded in `index.json` as the
+exclusion policy, not as an open question.
 
 ## Entry JSON schema (one file per entry, plus index.json)
 
@@ -80,13 +79,17 @@ From the survey, the common combinations and the audit failures:
 Picture-matters entries (at least 5): mangled minus in the text layer; subgroups by indentation; a rotated
 table; SE on the row below; merged headers.
 
-## Open questions for Lucas (do not decide)
+## Resolved decisions (Lucas, 21 November 2026)
 
-- ITT vs TOT/LATE: store both, or only one?
-- IV first stage: store it, or only the second stage?
-- Bounds (Lee/Manski): store the bound endpoints, and which one?
-- Quantile effects: store each quantile, and how labelled?
-- Unadjusted vs adjusted estimates: store both, or the preferred specification only?
+- ITT and TOT/LATE: store both, with the estimand labelled; ITT is used first in synthesis.
+- IV first stage: store it, labelled as first stage; the effect flag hides it from the effect view.
+- Lee/Manski bounds: not CIs, do not replace them; store `bound_lower`, `bound_upper`, `bound_type` on the
+  main effect row, not as separate effects. Migration proposed, not applied until Lucas has seen it.
+- Adjusted vs unadjusted and quantile effects: store all, labelled with specification or quantile; mark
+  `preferred = true` where the paper states a preferred specification.
+- Scope: exclude the fresh ten and the never-used set and any document audited at document level; a
+  row-level sample from the 49 does not exclude that document. The three-arm test on the 16 never-used
+  documents is a fair comparison of arms but not a fresh test.
 
 ## Render and review
 

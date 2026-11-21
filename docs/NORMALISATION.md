@@ -928,3 +928,30 @@ Next, in order:
 3. Reproduce the 8WR `Formula Used` codes once their definitions are known.
 4. Resolve the two remaining real misses: they are key values that do not appear in the paper text, so check them against the paper rather than the extractor.
 
+## Estimand, bounds, specifications and quantiles (21 November 2026, Lucas)
+
+- ITT and TOT/LATE are both stored, with the estimand labelled. ITT is used first in synthesis.
+- The IV first stage is stored, labelled as a first stage. It is not a programme effect on an outcome, so
+  the effect role flag hides it from the effect view.
+- Lee/Manski bounds are not confidence intervals and do not replace them. They are stored on the main effect
+  row in `bound_lower`, `bound_upper` and `bound_type`, not as separate effects. This needs a schema change;
+  the migration is proposed in `supabase/migrations/` and is not applied until Lucas has seen it.
+- Adjusted and unadjusted estimates, and each quantile, are all stored and labelled with their specification
+  or quantile. The authors' preferred specification is marked `preferred = true` where the paper states it.
+
+## Scope for gallery and tests (21 November 2026)
+
+- The gallery excludes the fresh ten and the never-used set, and any document already audited at document
+  level. A row-level sample drawn from the 49 does not exclude the document it came from.
+- The three-arm test on the 16 never-used documents is a fair comparison of arms, but it is not a fresh
+  test: those documents have been used in an audit. New papers are the real test.
+
+## Stability of the reader (21 November 2026)
+
+Cell turnover of 5-20% between runs is not acceptable, because a re-extraction would show a user different
+results. The study card fixes it: the outcome label is the table's own row-header text, taken by code and
+only whitespace- and word-break-normalised, never re-written by the model; the model picks arm, time point,
+population and subgroup only from the card's lists or says "not on card"; the card decides once per document
+which tables hold results; and page-image rows carry a cell address like text rows. The target for both
+address and label turnover is under 2% on a repeated reading of Roy 2015 and Raza 2018.
+

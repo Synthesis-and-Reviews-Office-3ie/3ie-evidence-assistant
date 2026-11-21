@@ -29,7 +29,7 @@ load_dotenv(ROOT / ".env")
 
 from evaluation.graduation_gt import PROJECT_ID, load_overrides  # noqa: E402
 from evaluation.outcome_gap_audit import mapped_and_all  # noqa: E402
-from src.extraction.table_rules import looks_garbled  # noqa: E402
+from src.extraction.table_rules import RESULTS, classify_table, looks_garbled  # noqa: E402
 
 MODEL = "anthropic/claude-haiku-5.5"
 OPENROUTER = "https://openrouter.ai/api/v1/chat/completions"
@@ -56,11 +56,12 @@ LAYOUTS = [
     "split across pages", "rotated table", "text layer mangles the minus sign",
 ]
 
-PROMPT = """Classify one table from a development impact evaluation on three axes. Answer with the exact
-label strings given, as JSON with keys "method", "format", "layout". Each is a list of labels. Choose only
-labels from the lists. Always give at least one label for method and for format; use "other/unknown" when
-none fits, rather than an empty list. Give every layout label that is present; leave layout empty only when
-no feature applies.
+PROMPT = """Classify one results table from a development impact evaluation on three axes. Answer with the
+exact label strings given, as JSON with keys "method", "format", "layout", "reason".
+
+Never leave method or format empty. Choose the closest label even when imperfect; use "other/unknown" only
+when none fits, and then give a one-line "reason" saying what the table is. Give every layout label present;
+layout may be empty only when no feature applies.
 
 method (an evaluation method, one or two most specific, never empty):
 {methods}
@@ -75,7 +76,7 @@ Caption: {caption}
 Table:
 {table}
 
-Return JSON only: {{"method": ["..."], "format": ["..."], "layout": ["..."]}}"""
+Return JSON only: {{"method": ["..."], "format": ["..."], "layout": ["..."], "reason": ""}}"""
 
 
 def s3_client():
@@ -129,20 +130,43 @@ async def classify(client, table, sem):
             data = {}
     if not isinstance(data, dict):
         data = {}
-    return {"method": [x for x in (data.get("method") or []) if x in METHODS],
-            "format": [x for x in (data.get("format") or []) if x in FORMATS],
-            "layout": [x for x in (data.get("layout") or []) if x in LAYOUTS]}
+    method = [x for x in (data.get("method") or []) if x in METHODS]
+    fmt = [x for x in (data.get("format") or []) if x in FORMATS]
+    reason = str(data.get("reason") or "").strip()[:200]
+    if not method:
+        method = ["other/unknown"]
+    if not fmt:
+        fmt = ["other/unknown"]
+    return {"method": method, "format": fmt,
+            "layout": [x for x in (data.get("layout") or []) if x in LAYOUTS], "reason": reason}
 
 
 async def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--count-only", action="store_true")
     args = ap.parse_args()
     bucket = os.environ.get("R2_BUCKET_NAME", "devchat-pdfs")
     s3 = s3_client()
     keys = mapped_keys(s3, bucket)
     if args.limit:
         keys = keys[:args.limit]
+
+    # Only tables that hold results: those the results-table check accepts, or those on a page that already
+    # has stored estimates.
+    from supabase import create_client
+
+    sb = create_client(os.environ["SUPABASE_URL"].rstrip("/"), os.environ["SUPABASE_SERVICE_ROLE_KEY"])
+    stored_pages = set()
+    pos = 0
+    while True:
+        batch = (sb.table("effect_estimates").select("doc_key,page").eq("rag_project_id", PROJECT_ID)
+                 .eq("source", "tables_v1").range(pos, pos + 999).execute().data)
+        for r in batch:
+            stored_pages.add((r["doc_key"], r["page"]))
+        if len(batch) < 1000:
+            break
+        pos += 1000
 
     tables = []
     for key in keys:
@@ -152,8 +176,14 @@ async def main():
             continue
         for t in tables_of(body.get("content_list") or []):
             t["doc"] = key
+            if classify_table(t["caption"])[0] != RESULTS and (key, t["page"]) not in stored_pages:
+                continue
             tables.append(t)
-    print(f"{len(keys)} documents, {len(tables)} readable tables", flush=True)
+    print(f"{len(keys)} documents, {len(tables)} results tables", flush=True)
+    if args.count_only:
+        # Haiku at about 1.3k prompt and 0.1k completion tokens per table is about $0.00015 a call.
+        print(f"estimated cost: {len(tables)} x $0.00015 = ${len(tables) * 0.00015:.3f}")
+        return
 
     sem = asyncio.Semaphore(8)
     headers = {"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}"}
@@ -161,6 +191,13 @@ async def main():
         results = await asyncio.gather(*(classify(client, t, sem) for t in tables))
     for t, r in zip(tables, results):
         t.update(r)
+
+    # Hand-check on the two documents known to have several DiD tables.
+    for tag in ("Das_(2010)", "Siddiquee_(2016)"):
+        hits = [t for t in tables if tag.lower().replace("_", " ") in t["doc"].lower().replace("_", " ")]
+        print(f"\n--- sanity {tag}: {len(hits)} results tables ---")
+        for t in hits[:15]:
+            print(f"  p{t['page']} | {t['caption'][:46]} | {t['method']} | {t['format']}", flush=True)
 
     method_counts = Counter(m for t in tables for m in t["method"])
     format_counts = Counter(f for t in tables for f in t["format"])
@@ -175,7 +212,7 @@ async def main():
     (OUT_DIR / "survey.json").write_text(json.dumps(
         {"documents": len(keys), "tables": len(tables), "method": method_counts, "format": format_counts,
          "layout": layout_counts, "method_by_layout": {f"{m} | {l}": n for (m, l), n in pair.items()},
-         "rows": [{k: t[k] for k in ("doc", "page", "caption", "method", "format", "layout", "garbled_minus")}
+         "rows": [{k: t[k] for k in ("doc", "page", "caption", "method", "format", "layout", "reason", "garbled_minus")}
                   for t in tables]}, indent=1), encoding="utf-8")
     lines = [f"# Table survey, {len(tables)} tables across {len(keys)} mapped documents", "",
              "## Method", ""]
