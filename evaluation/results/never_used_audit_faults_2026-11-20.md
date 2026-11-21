@@ -49,3 +49,30 @@ Partly fixed. The effect-size rule now labels the odds-ratio column `programme_e
 no longer hides it. The row axis still reads `control_or_covariate` on some of these rows and the flag is
 false for them, and the document's text is badly parsed, with outcome cells holding runs of numbers
 (`- 0.71 - 0.45 - 0.31 ...`). The column role is fixed; the document needs a page read to settle the rest.
+
+## Run-to-run stability
+
+Three documents were each re-extracted twice with the current reader, and the stored cells compared by
+address (page, cell row, cell column).
+
+| Document | Run 1 cells | Run 2 cells | Turnover | Percent |
+| --- | --: | --: | --: | --: |
+| Roy 2015 | 133 | 153 | 32 | 20.1% |
+| Raza 2018 | 126 | 129 | 11 | 8.3% |
+| Emran 2014 | 10 | 10 | 0 | not informative |
+
+Emran 2014 is read from page images, and its rows carry no cell address, so every row shares one address
+and the comparison says nothing about it.
+
+The turnover is above the 2% line, so the cause was checked. A paired in-memory reading of Roy 2015 (two
+readings, nothing stored) gave an address turnover of 6.1% but a (page, outcome, value) turnover of 51.8%,
+and the differing keys are label text, not numbers: run 1 has `spend themoney she earns` where run 2 has
+`spend the money she earns`, both 0.105, and run 1 labels a row `Treatment impact on whether the main
+female works and Keeps all of the income earned` where run 2 has `Keeps all of the income earned`, both
+-0.077. The reader re-assembles the outcome label, and sometimes folds the arm into it, differently each
+run, and it sometimes judges the same table a results table in one run and not the other.
+
+So the churn is model-output variance, not the storage path: the numbers are largely stable, while the
+address and the label text move. For an audit, match rows by cell address, and treat 5–20% address churn as
+the reader's own variance. Two paired runs on one document do not bound it tightly.
+
