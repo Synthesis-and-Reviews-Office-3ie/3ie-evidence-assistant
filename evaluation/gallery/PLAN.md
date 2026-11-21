@@ -2,6 +2,12 @@
 
 Committed so the build does not depend on a single session's memory.
 
+## Handover (21 November 2026)
+
+The gallery moves to a Claude Code session. In this repository: the survey stays, no
+`evaluation/gallery/entries/` and no `scripts/render_gallery.py` are created here, and this file is the
+record of decisions. The study-card work, the stability fix and the re-measurement stay here.
+
 ## Survey result (49 mapped documents, 974 readable tables)
 
 Method: other/unknown 143, RCT (ITT/TOT/ANCOVA) 18, descriptive means with difference column 13,
