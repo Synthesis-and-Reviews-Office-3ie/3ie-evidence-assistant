@@ -128,7 +128,11 @@ async def classify(client, table, sem):
                     await asyncio.sleep(2 * (attempt + 1))
                     continue
                 r.raise_for_status()
-                text = r.json()["choices"][0]["message"]["content"] or "{}"
+                payload = r.json()
+                choices = payload.get("choices") or []
+                if not choices:
+                    raise ValueError("response carried no choices")
+                text = choices[0]["message"]["content"] or "{}"
                 m = re.search(r"\{.*\}", text, re.S)
                 data = json.loads(m.group(0)) if m else {}
                 break
