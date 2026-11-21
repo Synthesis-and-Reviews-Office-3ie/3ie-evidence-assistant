@@ -77,7 +77,7 @@ Caption: {caption}
 Table:
 {table}
 
-Return JSON only: {{"method": ["..."], "format": ["..."], "layout": ["..."], "reason": ""}}"""
+Answer directly with the JSON and no explanation: {{"method": ["..."], "format": ["..."], "layout": ["..."], "reason": ""}}"""
 
 
 def s3_client():
@@ -114,7 +114,7 @@ def tables_of(content):
 
 
 async def classify(client, table, sem):
-    body = {"model": MODEL, "temperature": 0, "max_tokens": 600,
+    body = {"model": MODEL, "temperature": 0, "max_tokens": 3000,
             "response_format": {"type": "json_object"},
             "messages": [{"role": "user", "content": PROMPT.format(
                 methods="\n".join("- " + m for m in METHODS), formats="\n".join("- " + f for f in FORMATS),
@@ -198,7 +198,7 @@ async def main():
         print(f"estimated cost: {len(tables)} x $0.00015 = ${len(tables) * 0.00015:.3f}")
         return
 
-    sem = asyncio.Semaphore(2)
+    sem = asyncio.Semaphore(3)
     headers = {"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}"}
     async with httpx.AsyncClient(timeout=180, headers=headers) as client:
         results = await asyncio.gather(*(classify(client, t, sem) for t in tables))
