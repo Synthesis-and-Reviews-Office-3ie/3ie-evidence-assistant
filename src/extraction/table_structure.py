@@ -550,24 +550,48 @@ def derive_subgroup(row_label, column_header, caption, existing="", outcome="") 
 
     The model's subgroup is kept first, then any such qualifier found in the row label, column header,
     caption or the (possibly swapped) outcome is appended, without repeating an identical one.
+
+    A row carries one time point. When the row label, its column or its outcome names one, that is the
+    row's own: a time on the model's subgroup that names a different point belongs to another panel and is
+    dropped, so "Programme effect after 2 years" is not stored as "after 2 years - after 4 years".
     """
+    texts = [str(t or "") for t in (row_label, column_header, outcome, caption)]
+    row_time, row_time_key = "", ""
+    for text in texts:
+        match = _TIME.search(text)
+        if match:
+            row_time, row_time_key = match.group(0).strip(), _role_norm(match.group(0))
+            break
     found = []
-    existing = str(existing or "").strip()
-    if existing:
-        found.append(existing)
-    for text in (row_label, column_header, caption, outcome):
-        text = str(text or "")
-        for pattern in (_PERIOD, _TIME, _POPULATION, _PANEL, _SHOCK, _PATHWAY):
+    for item in str(existing or "").split(" - "):
+        item = item.strip()
+        if not item:
+            continue
+        match = _TIME.search(item)
+        if match and row_time_key and _role_norm(match.group(0)) != row_time_key:
+            continue
+        found.append(item)
+    if row_time and all(_role_norm(item) != row_time_key for item in found):
+        found.append(row_time)
+    for text in texts:
+        for pattern in (_PERIOD, _POPULATION, _PANEL, _SHOCK, _PATHWAY):
             match = pattern.search(text)
             if match:
                 found.append(match.group(0).strip())
     out = []
     keys = set()
+    own = _role_norm(f"{row_label} {outcome}")
     for item in found:
         key = _role_norm(item)
-        if item and key not in keys:
-            out.append(item)
-            keys.add(key)
+        if not item or key in keys:
+            continue
+        # Drop a period the row's own label already carries inside it: "Measured economy in 2005" does not
+        # also need "in 2005" appended (audit 2026-11-20, the stray "in 2005"). A label that IS the
+        # qualifier ("between 2002 and 2004", "House damage"), or the row's own time point, is left alone.
+        if key != row_time_key and key in own and key != _role_norm(outcome) and key != _role_norm(row_label):
+            continue
+        out.append(item)
+        keys.add(key)
     return " - ".join(out)
 
 

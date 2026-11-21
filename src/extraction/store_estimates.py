@@ -305,6 +305,7 @@ async def extract_and_store(
                         from src.extraction.page_vision import (
                             auto_vision_pages,
                             extract_pages,
+                            label_vision_roles,
                             page_count,
                             vision_pages,
                         )
@@ -321,6 +322,11 @@ async def extract_and_store(
                                 vout = await extract_pages(
                                     pdf, pages, model, os.environ["OPENROUTER_API_KEY"],
                                     project_id, doc, client=vclient)
+                                # The page-read rows carry no roles from the text path, so label them from
+                                # the same page image, or the flag would be blind on odd-PDF documents.
+                                if vout["rows"]:
+                                    await label_vision_roles(vout["rows"], vout.get("images") or {}, model,
+                                                             os.environ["OPENROUTER_API_KEY"], client=vclient)
                                 rows.extend(vout["rows"])
                                 totals["vision_pages"] += len(vout["pages"])
                                 totals["vision_rows"] += len(vout["rows"])

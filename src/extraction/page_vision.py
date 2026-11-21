@@ -420,6 +420,7 @@ async def extract_pages(pdf_bytes: bytes, pages: Sequence[int], model: str, api_
     client = client or httpx.AsyncClient(base_url="https://openrouter.ai/api/v1", timeout=300, headers={"Authorization": f"Bearer {api_key}"})
     rows: List[Dict[str, Any]] = []
     records = []
+    images: Dict[int, str] = {}
     try:
         for page in pages:
             try:
@@ -438,6 +439,8 @@ async def extract_pages(pdf_bytes: bytes, pages: Sequence[int], model: str, api_
                 data = json.loads(match.group(0)) if match else {}
                 page_rows = build_rows(project_id, doc, page, data, model)
                 rows.extend(page_rows)
+                if page_rows:
+                    images[page] = data_url
                 records.append({"page": page, "results_table": bool(data.get("results_table")),
                                 "estimates": len(page_rows)})
             except Exception as e:
@@ -445,4 +448,46 @@ async def extract_pages(pdf_bytes: bytes, pages: Sequence[int], model: str, api_
     finally:
         if own_client:
             await client.aclose()
-    return {"rows": rows, "pages": records}
+    return {"rows": rows, "pages": records, "images": images}
+
+
+async def label_vision_roles(rows: List[Dict[str, Any]], images: Dict[int, str], model: str,
+                             api_key: str, client=None) -> List[Dict[str, Any]]:
+    """Give the page-read rows the same two-axis role flag as the text rows, reading the page image.
+
+    The vision reader returns structured estimates, not a table, so the roles are labelled from the page
+    image with the row and arm labels the vision reader found. A page whose roles cannot be read keeps
+    every row on the open default.
+    """
+    import httpx
+
+    from src.extraction.effect_roles import build_prompt, keep_effect, match_role, parse_roles
+    from src.extraction.table_estimates import _chat, _parse_json
+
+    by_page: Dict[Any, List[Dict[str, Any]]] = {}
+    for row in rows:
+        by_page.setdefault(row.get("page"), []).append(row)
+    if not by_page:
+        return rows
+
+    own_client = client is None
+    client = client or httpx.AsyncClient(base_url="https://openrouter.ai/api/v1", timeout=300,
+                                         headers={"Authorization": f"Bearer {api_key}"})
+    try:
+        for page, page_rows in by_page.items():
+            row_labels = sorted({str(r.get("outcome_name") or "") for r in page_rows if r.get("outcome_name")})
+            columns = sorted({str(r.get("treatment_arm") or "") for r in page_rows if r.get("treatment_arm")})
+            try:
+                content = build_prompt("", row_labels[:40], columns[:20], "", page_image=images.get(page))
+                roles = parse_roles(_parse_json(await _chat(client, model, content)))
+            except Exception:
+                roles = {"rows": {}, "columns": {}}
+            for row in page_rows:
+                row_role = match_role(roles.get("rows") or {}, row.get("outcome_name") or "")
+                column_role = match_role(roles.get("columns") or {}, row.get("treatment_arm") or "")
+                row["row_role"], row["column_role"] = row_role, column_role
+                row["keep_effect"] = keep_effect(row_role, column_role)
+    finally:
+        if own_client:
+            await client.aclose()
+    return rows

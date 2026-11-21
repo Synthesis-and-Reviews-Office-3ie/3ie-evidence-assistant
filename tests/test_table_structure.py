@@ -437,3 +437,16 @@ def test_a_time_point_and_a_population_are_kept_in_the_subgroup():
     assert "year 7" in derive_subgroup("", "Wealth year 7", "", "")
     assert "other poor women" in derive_subgroup("", "", "Table 6. Effect on other poor women", "")
     assert "Spillover" in derive_subgroup("", "", "Spillovers to non-participant households", "")
+
+
+def test_each_row_keeps_only_its_own_time_point():
+    # Audit 2026-11-20, Sulaiman 2015: the model merged the two panels' times into one subgroup.
+    from src.extraction.table_structure import derive_subgroup
+
+    merged = "after 2 years - after 4 years"
+    assert derive_subgroup("Programme effect after 2 years", "Primary school age - Boys - (1)",
+                           "Table 2 Average effect on school enrolment", merged,
+                           "Primary school age - Boys - (1)") == "after 2 years"
+    assert derive_subgroup("Programme effect after 4 years", "Secondary school age - Boys - (3)",
+                           "Table 2 Average effect on school enrolment", merged,
+                           "Secondary school age - Boys - (3)") == "after 4 years"

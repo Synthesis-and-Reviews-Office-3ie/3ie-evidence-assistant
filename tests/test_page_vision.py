@@ -22,6 +22,39 @@ from src.extraction.page_vision import (
 DOC = {"id": "doc-1", "filename": "paper.pdf"}
 
 
+def test_page_read_rows_get_the_role_flag(monkeypatch):
+    # Audit 2026-11-20: rows read from the page image carried no roles, so the flag was blind on
+    # odd-PDF documents (Emran 2014, 121346575). The role step now runs on them too.
+    import src.extraction.table_estimates as module
+    from src.extraction.page_vision import label_vision_roles
+
+    async def fake_chat(client, model, content):
+        assert isinstance(content, list) and content[1]["type"] == "image_url"  # the page image is sent
+        return json.dumps({"rows": {"Consumption": "outcome", "Control mean": "control_or_covariate"},
+                           "columns": {"Programme": "programme_effect"}})
+
+    monkeypatch.setattr(module, "_chat", fake_chat)
+    rows = [{"page": 3, "outcome_name": "Consumption", "treatment_arm": "Programme"},
+            {"page": 3, "outcome_name": "Control mean", "treatment_arm": "Programme"}]
+    out = asyncio.run(label_vision_roles(rows, {3: "data:image/png;base64,AAAA"}, "m", "k"))
+    assert out[0]["row_role"] == "outcome" and out[0]["column_role"] == "programme_effect"
+    assert out[0]["keep_effect"] is True
+    assert out[1]["keep_effect"] is False
+
+
+def test_page_read_rows_keep_open_when_the_page_image_is_absent(monkeypatch):
+    import src.extraction.table_estimates as module
+    from src.extraction.page_vision import label_vision_roles
+
+    async def fake_chat(client, model, content):
+        assert isinstance(content, str)  # no image, so a plain prompt
+        return "{}"
+
+    monkeypatch.setattr(module, "_chat", fake_chat)
+    out = asyncio.run(label_vision_roles([{"page": 4, "outcome_name": "X", "treatment_arm": "Y"}], {}, "m", "k"))
+    assert out[0]["keep_effect"] is True
+
+
 def test_image_pages_are_one_based_deduplicated_and_sorted():
     content = [
         {"type": "image", "page_idx": "6", "text": "FIGURE 1"},
