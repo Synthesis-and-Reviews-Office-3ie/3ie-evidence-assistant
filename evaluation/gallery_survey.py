@@ -34,6 +34,7 @@ from src.extraction.table_rules import RESULTS, classify_table, looks_garbled  #
 MODEL = "anthropic/claude-haiku-5.5"
 OPENROUTER = "https://openrouter.ai/api/v1/chat/completions"
 OUT_DIR = ROOT / "evaluation" / "gallery"
+FAILED = {"n": 0}
 
 METHODS = [
     "RCT (ITT, TOT/LATE, ANCOVA)", "DiD and triple differences", "event study", "panel fixed effects",
@@ -121,11 +122,11 @@ async def classify(client, table, sem):
                 caption=table["caption"], table=table["text"])}]}
     async with sem:
         data = {}
-        for attempt in range(5):
+        for attempt in range(8):
             try:
                 r = await client.post(OPENROUTER, json=body)
                 if r.status_code == 429 or r.status_code >= 500:
-                    await asyncio.sleep(2 * (attempt + 1))
+                    await asyncio.sleep(3 * (attempt + 1))
                     continue
                 r.raise_for_status()
                 payload = r.json()
@@ -140,6 +141,8 @@ async def classify(client, table, sem):
                 await asyncio.sleep(1 * (attempt + 1))
     if not isinstance(data, dict):
         data = {}
+    if not data:
+        FAILED["n"] += 1
     method = [x for x in (data.get("method") or []) if x in METHODS]
     fmt = [x for x in (data.get("format") or []) if x in FORMATS]
     reason = str(data.get("reason") or "").strip()[:200]
@@ -195,7 +198,7 @@ async def main():
         print(f"estimated cost: {len(tables)} x $0.00015 = ${len(tables) * 0.00015:.3f}")
         return
 
-    sem = asyncio.Semaphore(4)
+    sem = asyncio.Semaphore(2)
     headers = {"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}"}
     async with httpx.AsyncClient(timeout=180, headers=headers) as client:
         results = await asyncio.gather(*(classify(client, t, sem) for t in tables))
@@ -230,7 +233,8 @@ async def main():
     lines += ["", "## Effect format", ""] + [f"- {f}: {n}" for f, n in format_counts.most_common()]
     lines += ["", "## Layout", ""] + [f"- {l}: {n}" for l, n in layout_counts.most_common()]
     (OUT_DIR / "survey.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
-    print(json.dumps({"method": method_counts.most_common(6), "format": format_counts.most_common(6),
+    print(json.dumps({"failed_calls": FAILED["n"], "method": method_counts.most_common(6),
+                      "format": format_counts.most_common(6),
                       "layout": layout_counts.most_common(8)}, indent=1))
 
 
