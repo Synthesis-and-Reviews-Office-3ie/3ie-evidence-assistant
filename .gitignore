@@ -131,4 +131,7 @@ evaluation/results/usage_study/*/*
 .kilo/worktrees/
 .kilo/agent-manager.json
 !evaluation/key_errata.json
+# Gallery entries are the reader's few-shot examples; images stay out.
+!evaluation/gallery/*.json
+!evaluation/gallery/*.md
 !evaluation/study_documents.json
