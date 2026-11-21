@@ -113,21 +113,27 @@ def tables_of(content):
 
 
 async def classify(client, table, sem):
-    body = {"model": MODEL, "temperature": 0, "max_tokens": 400,
+    body = {"model": MODEL, "temperature": 0, "max_tokens": 600,
             "response_format": {"type": "json_object"},
             "messages": [{"role": "user", "content": PROMPT.format(
                 methods="\n".join("- " + m for m in METHODS), formats="\n".join("- " + f for f in FORMATS),
                 layouts="\n".join("- " + l for l in LAYOUTS),
                 caption=table["caption"], table=table["text"])}]}
     async with sem:
-        try:
-            r = await client.post(OPENROUTER, json=body)
-            r.raise_for_status()
-            text = r.json()["choices"][0]["message"]["content"] or "{}"
-            m = re.search(r"\{.*\}", text, re.S)
-            data = json.loads(m.group(0)) if m else {}
-        except Exception:
-            data = {}
+        data = {}
+        for attempt in range(5):
+            try:
+                r = await client.post(OPENROUTER, json=body)
+                if r.status_code == 429 or r.status_code >= 500:
+                    await asyncio.sleep(2 * (attempt + 1))
+                    continue
+                r.raise_for_status()
+                text = r.json()["choices"][0]["message"]["content"] or "{}"
+                m = re.search(r"\{.*\}", text, re.S)
+                data = json.loads(m.group(0)) if m else {}
+                break
+            except Exception:
+                await asyncio.sleep(1 * (attempt + 1))
     if not isinstance(data, dict):
         data = {}
     method = [x for x in (data.get("method") or []) if x in METHODS]
@@ -185,7 +191,7 @@ async def main():
         print(f"estimated cost: {len(tables)} x $0.00015 = ${len(tables) * 0.00015:.3f}")
         return
 
-    sem = asyncio.Semaphore(8)
+    sem = asyncio.Semaphore(4)
     headers = {"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}"}
     async with httpx.AsyncClient(timeout=180, headers=headers) as client:
         results = await asyncio.gather(*(classify(client, t, sem) for t in tables))
