@@ -1,0 +1,69 @@
+{
+  "id": "qe-means-difference-only-burchi2018-ta4",
+  "status": "draft",
+  "checked_against_page": true,
+  "source": {
+    "doc_key": "61ddcec5e910",
+    "pdf": "121294984.pdf",
+    "page": 67,
+    "table_label": "Table A4",
+    "bbox_points": [
+      75,
+      72,
+      506,
+      730
+    ],
+    "render_rotation": 0
+  },
+  "tags": {
+    "method": [
+      "cluster RCT",
+      "follow-up comparison of means, no regression"
+    ],
+    "format": [
+      "group means",
+      "difference in means",
+      "p-value"
+    ],
+    "layout": [
+      "outcomes in rows",
+      "overall, treatment and control means in columns",
+      "difference column labelled (2-3)",
+      "p-value column",
+      "gridded table, no SEs"
+    ],
+    "picture_matters": "The text layer reads this table correctly; the picture matters for one check only: the last row prints a difference of 1.127 although its means (8.692 - 9.819) give -1.127."
+  },
+  "snippet": "Table A4: Differences in means - outcome variables (follow-up 2017)\n                                 (1) Overall  (2) 6 pilot  (3) 24 control  Difference   p-value\n                                 sample       clusters     clusters        in means\n                                 (mean)       (mean)       (mean)          (2-3)\nFinancial literacy index          10.172       10.427       10.049          0.377      0.00\nSaving uptake (1/0)               0.473        0.648        0.389           0.260      0.00\nAmount of savings (MWK)           6,834        9,560        5,528           4,032      0.00\nLoan uptake (1/0)                 0.291        0.410        0.234           0.176      0.00\n...\nPaid work (1/0)                   0.168        0.133        0.185          -0.052      0.07\nNumber of working hours           7.51         4.89         8.79           -3.88       0.10\n...\nPer capita total consumption (MWK) (annual) 139,381 154,799 131,923       22,876      0.00\nPoor household (1/0)              0.749        0.687        0.764          -0.077      0.02\nDrought impact (1/0)              1.347        1.340        1.351          -0.011      0.86\nDrought recovery (1/0)            0.762        0.811        0.737           0.074      0.05\nNumber of months needed for drought recovery 9.422 8.692 9.819            1.127      0.00\nSource: Authors",
+  "context_needed": "COMSIP economic-empowerment pilot for Social Cash Transfer Programme households in Malawi. Cluster RCT: 6 treatment clusters drawn at random from 20 clusters in Mwanza district and split 2-2-2 across lump-sum plus training, lump-sum only and training-only; the control group is the other 14 Mwanza clusters plus 10 clusters drawn at random from neighbouring Neno district (pp. 22-23). Table A4 pools the three arms ('6 pilot clusters') against all 24 control clusters at the 2017 follow-up. The paper's impact estimates for the same outcomes are regressions with baseline controls and clustered SEs, overall and by arm, in Tables 5-18 (pp. 32-48), e.g. saving uptake 0.263 (0.0761) in Table 6 (p. 34) against the 0.260 difference here. The text cites Table A4 as a difference in means and then points to the regression (p. 33).",
+  "stored_rows": [],
+  "not_stored": [
+    {
+      "cell": "Difference in means (2-3), all 32 rows (0.377, 0.260, 4,032, 0.176, 1,731, 0.051, 1,657, 680, -0.052, -3.88, 0.29, 7,872, 5,945, 0.358, 0.114, 0.244, 0.068, 52.90, 35.34, 3.61, 5,109, 2,584, 1,835, 13,987, -0.006, -0.067, 8,699, 22,876, -0.077, -0.011, 0.074, 1.127)",
+      "reason": "plain endline difference in means; the paper gives regression estimates of the same outcomes in Tables 5-18, so this column is not stored. It would be stored, labelled 'unadjusted difference in means', only if it were the paper's only estimate for an outcome (Decided by Lucas, 22 Nov 2026)"
+    },
+    {
+      "cell": "(1) Overall sample (mean)",
+      "reason": "pooled sample mean, not an effect"
+    },
+    {
+      "cell": "(2) 6 pilot clusters (mean)",
+      "reason": "treatment-group mean, not an effect"
+    },
+    {
+      "cell": "(3) 24 control clusters (mean)",
+      "reason": "control-group mean, not an effect"
+    },
+    {
+      "cell": "p-value column",
+      "reason": "test statistic, not an effect"
+    }
+  ],
+  "rule": "A table of treatment and control means with a difference column is not stored when the paper estimates the same outcomes by regression elsewhere. Means and p-values are never stored. The column would be stored, labelled 'unadjusted difference in means', only where it is the paper's only estimate.",
+  "resolved_questions": [
+    {
+      "question": "RCT follow-up difference in means without regression or controls: should the 'Difference in means (2-3)' column be stored as a programme effect (for example effect_type 'unadjusted difference in means', no SE, with the p-value dropped), or left unstored because the same outcomes have regression estimates in Tables 5-18? If stored, two cells need a decision: 'Number of months needed for drought recovery' prints +1.127 although the means give -1.127 (store as printed, or recomputed from the means?), and 'Drought impact (1/0)' has means above 1, so its label or scale is wrong. The design adds one more doubt: 10 of the 24 control clusters come from another district (Neno), so the comparison is not purely within the randomised Mwanza sample.",
+      "resolution": "Decided by Lucas, 22 Nov 2026: not stored when regression estimates of the same outcomes exist; stored, labelled, only if it is the only estimate."
+    }
+  ]
+}

@@ -1,0 +1,168 @@
+{
+  "id": "rct-heterogeneity-interaction-leight2025-t4",
+  "status": "draft",
+  "checked_against_page": true,
+  "source": {
+    "doc_key": "b5a18f177248",
+    "pdf": "121297660.pdf",
+    "page": 33,
+    "table_label": "Table 4",
+    "bbox_points": [
+      65,
+      205,
+      542,
+      583
+    ],
+    "render_rotation": 0
+  },
+  "tags": {
+    "method": [
+      "RCT (ITT)",
+      "heterogeneity by treatment x baseline-subgroup interaction"
+    ],
+    "format": [
+      "coefficient",
+      "level (2017 PPP $ per person per day)"
+    ],
+    "layout": [
+      "one outcome, several specification columns",
+      "treatment main effect, treatment x subgroup interaction and subgroup dummy in the same column",
+      "column (4) enters all three interactions jointly",
+      "SE in parentheses below",
+      "stars on the coefficient",
+      "Observations row"
+    ]
+  },
+  "snippet": "Table 4: Heterogeneous effects\n                                    (1)       (2)       (3)       (4)\n                                         Per capita consumption\nUPG                                 0.625***  0.680***  0.703***  0.493***\n                                    (0.054)   (0.062)   (0.092)   (0.090)\nUPG X Household under 5 members     0.369***                      0.296**\n                                    (0.130)                       (0.133)\nHousehold under 5 members           1.229***                      1.178***\n                                    (0.110)                       (0.113)\nUPG X Dependency ratio under 2.5              0.367***            0.240**\n                                              (0.127)             (0.120)\nDependency ratio under 2.5                    0.491***            0.168*\n                                              (0.104)             (0.099)\nUPG X Low baseline assets                               0.171     0.126\n                                                        (0.116)   (0.106)\nLow baseline assets                                     -0.181*   -0.143\n                                                        (0.101)   (0.093)\nObservations                        3964      3964      3964      3964\nNotes: This table reports heterogeneous effects for the primary outcome of per capita daily consumption with respect to baseline covariates identified using the generalized random forest method. We define three binary variables using cutoffs derived from the 25th percentile of the baseline distribution: household size under five members, a dependency ratio (...) under one, and baseline asset value below the 25th percentile or $74. ...",
+  "context_needed": "Somalia (Baidoa), Ultra-Poor Graduation (UPG) programme for displaced households; Leight, Hirvonen, Karachiwalla and Rakshit (IFPRI DP 02356, 2025). Household-level RCT; UPG = assignment to the programme (ITT); specification (PDF p. 13) adds strata fixed effects and the baseline outcome where measured. Outcome: household per capita daily consumption in 2017 PPP dollars (PDF p. 12). N = 3,964 matches the consumption column of Table 2 (PDF p. 30), i.e. the second follow-up, 28 months after baseline (PDF p. 11). Interpretation (PDF p. 22): the subgroup dummies equal one for households below the 25th percentile at baseline, so the UPG coefficient is the effect for the omitted group (households of 5 or more members; dependency ratio 2.5 or above; baseline assets not low), and each UPG X term is how much larger the effect is in the flagged group. In column (4) the UPG coefficient is the effect for households in the omitted group on all three dimensions at once.",
+  "stored_rows": [
+    {
+      "outcome": "Per capita daily consumption (2017 PPP $)",
+      "arm": "UPG (ITT)",
+      "time_point": "second follow-up (28 months after baseline)",
+      "subgroup_or_population": "households with 5 or more members",
+      "value": 0.625,
+      "se": 0.054,
+      "effect_type": "main",
+      "specification": "column (1): interaction with household under 5 members"
+    },
+    {
+      "outcome": "Per capita daily consumption (2017 PPP $)",
+      "arm": "UPG (ITT)",
+      "time_point": "second follow-up (28 months after baseline)",
+      "subgroup_or_population": "households under 5 members minus households with 5 or more members",
+      "value": 0.369,
+      "se": 0.13,
+      "effect_type": "difference in effect between subgroups",
+      "specification": "column (1): interaction with household under 5 members",
+      "note": "UPG X Household under 5 members"
+    },
+    {
+      "outcome": "Per capita daily consumption (2017 PPP $)",
+      "arm": "UPG (ITT)",
+      "time_point": "second follow-up (28 months after baseline)",
+      "subgroup_or_population": "households with dependency ratio not under 2.5",
+      "value": 0.68,
+      "se": 0.062,
+      "effect_type": "main",
+      "specification": "column (2): interaction with dependency ratio under 2.5",
+      "note": "cut-off printed as 2.5 in the table but 'under one' in the notes; the text (p. 22) also says 2.5"
+    },
+    {
+      "outcome": "Per capita daily consumption (2017 PPP $)",
+      "arm": "UPG (ITT)",
+      "time_point": "second follow-up (28 months after baseline)",
+      "subgroup_or_population": "dependency ratio under 2.5 minus dependency ratio 2.5 or above",
+      "value": 0.367,
+      "se": 0.127,
+      "effect_type": "difference in effect between subgroups",
+      "specification": "column (2): interaction with dependency ratio under 2.5",
+      "note": "UPG X Dependency ratio under 2.5"
+    },
+    {
+      "outcome": "Per capita daily consumption (2017 PPP $)",
+      "arm": "UPG (ITT)",
+      "time_point": "second follow-up (28 months after baseline)",
+      "subgroup_or_population": "households with baseline assets at or above the 25th percentile ($74)",
+      "value": 0.703,
+      "se": 0.092,
+      "effect_type": "main",
+      "specification": "column (3): interaction with low baseline assets"
+    },
+    {
+      "outcome": "Per capita daily consumption (2017 PPP $)",
+      "arm": "UPG (ITT)",
+      "time_point": "second follow-up (28 months after baseline)",
+      "subgroup_or_population": "low baseline assets (below $74) minus not low",
+      "value": 0.171,
+      "se": 0.116,
+      "effect_type": "difference in effect between subgroups",
+      "specification": "column (3): interaction with low baseline assets",
+      "note": "UPG X Low baseline assets"
+    },
+    {
+      "outcome": "Per capita daily consumption (2017 PPP $)",
+      "arm": "UPG (ITT)",
+      "time_point": "second follow-up (28 months after baseline)",
+      "subgroup_or_population": "households with 5 or more members, dependency ratio 2.5 or above and baseline assets not low",
+      "value": 0.493,
+      "se": 0.09,
+      "effect_type": "main",
+      "specification": "column (4): all three interactions jointly"
+    },
+    {
+      "outcome": "Per capita daily consumption (2017 PPP $)",
+      "arm": "UPG (ITT)",
+      "time_point": "second follow-up (28 months after baseline)",
+      "subgroup_or_population": "households under 5 members minus households with 5 or more members (holding the other two traits fixed)",
+      "value": 0.296,
+      "se": 0.133,
+      "effect_type": "difference in effect between subgroups",
+      "specification": "column (4): all three interactions jointly",
+      "note": "UPG X Household under 5 members"
+    },
+    {
+      "outcome": "Per capita daily consumption (2017 PPP $)",
+      "arm": "UPG (ITT)",
+      "time_point": "second follow-up (28 months after baseline)",
+      "subgroup_or_population": "dependency ratio under 2.5 minus dependency ratio 2.5 or above (holding the other two traits fixed)",
+      "value": 0.24,
+      "se": 0.12,
+      "effect_type": "difference in effect between subgroups",
+      "specification": "column (4): all three interactions jointly",
+      "note": "UPG X Dependency ratio under 2.5"
+    },
+    {
+      "outcome": "Per capita daily consumption (2017 PPP $)",
+      "arm": "UPG (ITT)",
+      "time_point": "second follow-up (28 months after baseline)",
+      "subgroup_or_population": "low baseline assets minus not low (holding the other two traits fixed)",
+      "value": 0.126,
+      "se": 0.106,
+      "effect_type": "difference in effect between subgroups",
+      "specification": "column (4): all three interactions jointly",
+      "note": "UPG X Low baseline assets"
+    }
+  ],
+  "not_stored": [
+    {
+      "cell": "Household under 5 members (1.229, 1.178), Dependency ratio under 2.5 (0.491, 0.168), Low baseline assets (-0.181, -0.143), with their SEs",
+      "reason": "coefficients on the subgroup dummies: differences between subgroups in the control group, not programme effects"
+    },
+    {
+      "cell": "Observations (3964 in every column)",
+      "reason": "sample size"
+    },
+    {
+      "cell": "Effect for the flagged subgroups (e.g. UPG + UPG X Household under 5 members = 0.625 + 0.369)",
+      "reason": "not printed; never computed from the table"
+    }
+  ],
+  "rule": "In a treatment x subgroup regression, the treatment coefficient is the effect for the omitted subgroup (stored with that subgroup named), the interaction is the difference in effect between the two subgroups (stored as such, never as an effect for the flagged group), and the subgroup dummy is a covariate (not stored). With several interactions in one column, the omitted group is the one that is omitted on every dimension.",
+  "resolved_questions": [
+    {
+      "question": "The interaction terms are stored here as 'difference in effect between subgroups', following the instruction for this pattern, but the stored-rows rules only name 'change in effect between rounds'. Confirm the effect_type name, and whether the summed effect for the flagged subgroup (not printed) should ever be derived.",
+      "resolution": "Reviewer convention, 22 Nov 2026: 'difference in effect between subgroups' is the effect_type for interaction terms. The summed effect for the flagged subgroup is never computed by the reader."
+    }
+  ]
+}

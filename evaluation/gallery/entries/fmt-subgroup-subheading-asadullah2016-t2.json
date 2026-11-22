@@ -1,0 +1,505 @@
+{
+  "id": "fmt-subgroup-subheading-asadullah2016-t2",
+  "status": "draft",
+  "checked_against_page": true,
+  "source": {
+    "doc_key": "1aaf7f99fc9e",
+    "pdf": "121295691.pdf",
+    "page": 8,
+    "table_label": "Table 2, DD columns",
+    "bbox_points": [
+      58,
+      48,
+      343,
+      290
+    ],
+    "render_rotation": 0
+  },
+  "tags": {
+    "method": [
+      "quasi-experimental panel",
+      "difference-in-differences",
+      "DD-PSM (not in crop)"
+    ],
+    "format": [
+      "coefficient",
+      "stars only, no SE printed"
+    ],
+    "layout": [
+      "subgroups as italic sub-headings (Female, Male) with outcome rows under each",
+      "rounds as columns (interaction terms T2005*SUP, T2008*SUP, T2011*SUP)",
+      "two method blocks side by side (DD, DD-PSM)",
+      "crop keeps the DD block only"
+    ],
+    "picture_matters": "The text layer prints the sub-heading 'Female' on the same line as the first row's numbers (34.7*** 25.6*** 2.6 ...) and 'Male' beside 1.7* 1.3 -0.1, so every outcome label is shifted one row against its values and the last row's numbers (HH chores, Unemployed) are left without a label. Which subgroup and which occupation each number belongs to can only be read from the picture."
+  },
+  "snippet": "Table 2. Difference-in-difference (DD) and DD-PSM estimates of the impact of the TUP programme on primary occupation of the working aged individuals (15-60 years).\n                        DD\n                        T2005*SUP (short-run impact, 2005-2002)  T2008*SUP (medium-run impact, 2008-2002)  T2011*SUP (long-run impact, 2011-2002)\nFemale\n  Farm-self employment   34.7***   25.6***   2.6\n  Day labour            -12.2***  -14.1***  -9.3***\n  Nonfarm salaried        0.1       0.2     -0.1\n  Nonfarm self            1.7**    -0.8     -0.6\n  Begging                -1.6***   -1.4**   -1.1*\n  Servant                -7.4***   -7.5***  -5.3***\n  Unemployed              0.0      -0.5     -0.5\n  HH chores             -14.0***   -0.8     13.4***\nMale\n  Farm-self employment    1.7*      1.3     -0.1\n  Day labour             -8.8***   -9.1***  -6.7***\n  Nonfarm salaried        0.7       0.0      0.0\n  Nonfarm self            5.6***    6.0***   3.0\n  Begging                -0.5      -0.5     -0.2\n  Servant                -0.2      -0.2     -0.6*\n  Unemployed              1.2***    1.2***   1.1**\nNote: See Table 1.",
+  "context_needed": "BRAC CFPR-TUP, Bangladesh; four-round household panel (2002 baseline, 2005, 2008, 2011). Equation 1 (PDF pp. 5-6): the coefficients on T2005*SUP, T2008*SUP and T2011*SUP are the double-difference programme effects in the short, medium and long run, comparing selected ultra-poor (SUP) households with control households. Table 1 notes (PDF p. 7) say other parameters are not reported and DD-PSM applies DD to the matched sample. The unit is not stated; the outcomes are shares of working-age individuals in each primary occupation, so values read as percentage points.",
+  "stored_rows": [
+    {
+      "outcome": "Primary occupation: Farm self-employment",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2005 (short run, change 2002-2005)",
+      "subgroup_or_population": "working-age women (15-60) in sample households",
+      "value": 34.7,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Farm self-employment",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2008 (medium run, change 2002-2008)",
+      "subgroup_or_population": "working-age women (15-60) in sample households",
+      "value": 25.6,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Farm self-employment",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2011 (long run, change 2002-2011)",
+      "subgroup_or_population": "working-age women (15-60) in sample households",
+      "value": 2.6,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Day labour",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2005 (short run, change 2002-2005)",
+      "subgroup_or_population": "working-age women (15-60) in sample households",
+      "value": -12.2,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Day labour",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2008 (medium run, change 2002-2008)",
+      "subgroup_or_population": "working-age women (15-60) in sample households",
+      "value": -14.1,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Day labour",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2011 (long run, change 2002-2011)",
+      "subgroup_or_population": "working-age women (15-60) in sample households",
+      "value": -9.3,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Nonfarm salaried",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2005 (short run, change 2002-2005)",
+      "subgroup_or_population": "working-age women (15-60) in sample households",
+      "value": 0.1,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Nonfarm salaried",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2008 (medium run, change 2002-2008)",
+      "subgroup_or_population": "working-age women (15-60) in sample households",
+      "value": 0.2,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Nonfarm salaried",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2011 (long run, change 2002-2011)",
+      "subgroup_or_population": "working-age women (15-60) in sample households",
+      "value": -0.1,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Nonfarm self-employment",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2005 (short run, change 2002-2005)",
+      "subgroup_or_population": "working-age women (15-60) in sample households",
+      "value": 1.7,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Nonfarm self-employment",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2008 (medium run, change 2002-2008)",
+      "subgroup_or_population": "working-age women (15-60) in sample households",
+      "value": -0.8,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Nonfarm self-employment",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2011 (long run, change 2002-2011)",
+      "subgroup_or_population": "working-age women (15-60) in sample households",
+      "value": -0.6,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Begging",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2005 (short run, change 2002-2005)",
+      "subgroup_or_population": "working-age women (15-60) in sample households",
+      "value": -1.6,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Begging",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2008 (medium run, change 2002-2008)",
+      "subgroup_or_population": "working-age women (15-60) in sample households",
+      "value": -1.4,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Begging",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2011 (long run, change 2002-2011)",
+      "subgroup_or_population": "working-age women (15-60) in sample households",
+      "value": -1.1,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Servant",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2005 (short run, change 2002-2005)",
+      "subgroup_or_population": "working-age women (15-60) in sample households",
+      "value": -7.4,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Servant",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2008 (medium run, change 2002-2008)",
+      "subgroup_or_population": "working-age women (15-60) in sample households",
+      "value": -7.5,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Servant",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2011 (long run, change 2002-2011)",
+      "subgroup_or_population": "working-age women (15-60) in sample households",
+      "value": -5.3,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Unemployed",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2005 (short run, change 2002-2005)",
+      "subgroup_or_population": "working-age women (15-60) in sample households",
+      "value": 0.0,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Unemployed",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2008 (medium run, change 2002-2008)",
+      "subgroup_or_population": "working-age women (15-60) in sample households",
+      "value": -0.5,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Unemployed",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2011 (long run, change 2002-2011)",
+      "subgroup_or_population": "working-age women (15-60) in sample households",
+      "value": -0.5,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Household chores",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2005 (short run, change 2002-2005)",
+      "subgroup_or_population": "working-age women (15-60) in sample households",
+      "value": -14.0,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Household chores",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2008 (medium run, change 2002-2008)",
+      "subgroup_or_population": "working-age women (15-60) in sample households",
+      "value": -0.8,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Household chores",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2011 (long run, change 2002-2011)",
+      "subgroup_or_population": "working-age women (15-60) in sample households",
+      "value": 13.4,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Farm self-employment",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2005 (short run, change 2002-2005)",
+      "subgroup_or_population": "working-age men (15-60) in sample households",
+      "value": 1.7,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Farm self-employment",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2008 (medium run, change 2002-2008)",
+      "subgroup_or_population": "working-age men (15-60) in sample households",
+      "value": 1.3,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Farm self-employment",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2011 (long run, change 2002-2011)",
+      "subgroup_or_population": "working-age men (15-60) in sample households",
+      "value": -0.1,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Day labour",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2005 (short run, change 2002-2005)",
+      "subgroup_or_population": "working-age men (15-60) in sample households",
+      "value": -8.8,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Day labour",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2008 (medium run, change 2002-2008)",
+      "subgroup_or_population": "working-age men (15-60) in sample households",
+      "value": -9.1,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Day labour",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2011 (long run, change 2002-2011)",
+      "subgroup_or_population": "working-age men (15-60) in sample households",
+      "value": -6.7,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Nonfarm salaried",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2005 (short run, change 2002-2005)",
+      "subgroup_or_population": "working-age men (15-60) in sample households",
+      "value": 0.7,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Nonfarm salaried",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2008 (medium run, change 2002-2008)",
+      "subgroup_or_population": "working-age men (15-60) in sample households",
+      "value": 0.0,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Nonfarm salaried",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2011 (long run, change 2002-2011)",
+      "subgroup_or_population": "working-age men (15-60) in sample households",
+      "value": 0.0,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Nonfarm self-employment",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2005 (short run, change 2002-2005)",
+      "subgroup_or_population": "working-age men (15-60) in sample households",
+      "value": 5.6,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Nonfarm self-employment",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2008 (medium run, change 2002-2008)",
+      "subgroup_or_population": "working-age men (15-60) in sample households",
+      "value": 6.0,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Nonfarm self-employment",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2011 (long run, change 2002-2011)",
+      "subgroup_or_population": "working-age men (15-60) in sample households",
+      "value": 3.0,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Begging",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2005 (short run, change 2002-2005)",
+      "subgroup_or_population": "working-age men (15-60) in sample households",
+      "value": -0.5,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Begging",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2008 (medium run, change 2002-2008)",
+      "subgroup_or_population": "working-age men (15-60) in sample households",
+      "value": -0.5,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Begging",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2011 (long run, change 2002-2011)",
+      "subgroup_or_population": "working-age men (15-60) in sample households",
+      "value": -0.2,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Servant",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2005 (short run, change 2002-2005)",
+      "subgroup_or_population": "working-age men (15-60) in sample households",
+      "value": -0.2,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Servant",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2008 (medium run, change 2002-2008)",
+      "subgroup_or_population": "working-age men (15-60) in sample households",
+      "value": -0.2,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Servant",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2011 (long run, change 2002-2011)",
+      "subgroup_or_population": "working-age men (15-60) in sample households",
+      "value": -0.6,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Unemployed",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2005 (short run, change 2002-2005)",
+      "subgroup_or_population": "working-age men (15-60) in sample households",
+      "value": 1.2,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Unemployed",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2008 (medium run, change 2002-2008)",
+      "subgroup_or_population": "working-age men (15-60) in sample households",
+      "value": 1.2,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    },
+    {
+      "outcome": "Primary occupation: Unemployed",
+      "arm": "TUP programme (DD, selected ultra-poor vs control households)",
+      "time_point": "2011 (long run, change 2002-2011)",
+      "subgroup_or_population": "working-age men (15-60) in sample households",
+      "value": 1.1,
+      "se": null,
+      "effect_type": "main",
+      "specification": "DD (Equation 1)"
+    }
+  ],
+  "not_stored": [
+    {
+      "cell": "DD-PSM block (three columns to the right, same rows)",
+      "reason": "not in this crop; same subgroups and outcomes, stored the same way with specification 'DD-PSM'"
+    },
+    {
+      "cell": "Sub-headings 'Female' and 'Male'",
+      "reason": "labels, not rows: they set subgroup_or_population for the rows beneath them"
+    },
+    {
+      "cell": "Other parameters of Equation 1 (time dummies, SUP dummy, constant)",
+      "reason": "not reported in the table; never stored"
+    }
+  ],
+  "rule": "An italic sub-heading with no numbers (Female, Male) is a subgroup, not an outcome: carry it into subgroup_or_population for every row beneath it until the next sub-heading, and take the outcome from the row label. Each interaction column (T2005*SUP, ...) is a round, so it goes in time_point."
+}

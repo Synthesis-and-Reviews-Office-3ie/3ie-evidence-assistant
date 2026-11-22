@@ -1,0 +1,283 @@
+{
+  "id": "rct-arms-by-round-rows-chowdhury2016-t5",
+  "status": "draft",
+  "checked_against_page": true,
+  "source": {
+    "doc_key": "1464d3d16709",
+    "pdf": "121475285.pdf",
+    "page": 14,
+    "table_label": "Table 5",
+    "bbox_points": [
+      140,
+      120,
+      468,
+      505
+    ],
+    "render_rotation": 0
+  },
+  "tags": {
+    "method": [
+      "RCT (ITT)",
+      "ANCOVA (baseline value of the outcome)",
+      "several treatment arms",
+      "several rounds as arm x year interactions"
+    ],
+    "format": [
+      "coefficient",
+      "share (proportion points)"
+    ],
+    "layout": [
+      "arm x round interactions down the rows (CSH*2014, CSH*2015, TUP*2014, TUP*2015), outcomes across columns",
+      "placebo row that looks like an effect (CSH*2014)",
+      "year-effect rows with stars that look like effects (2014, 2015)",
+      "baseline-control rows (Bsln2013, Bsln_NAN)",
+      "control-mean row at the top",
+      "arm-difference rows without SE",
+      "SE in parentheses below",
+      "F-stat and N rows"
+    ],
+    "picture_matters": "The text layer shifts the Savings column down one row (0.45, the control mean, lands on the CSH*2014 line, 0.03 on TUP*2014, 0.22 on TUP*2015, 0.43 on 2014), misplaces values in LandCult, drops every star, and turns the subscripted labels beta_2014^TUP - beta^CSH into '2T0U14P - CSH'. Row-to-value pairing must come from the picture."
+  },
+  "snippet": "Table 5: Average treatment effects by group-year on percentage of households reporting any savings or land access\n% > 0        Savings   Food Sav  LandCult  LandOwn\nCTL mean      0.45      0.82      0.82      0.90\nCSH*2014     -0.06      0.00     -0.04     -0.01\n             (0.06)    (0.04)    (0.04)    (0.04)\nCSH*2015      0.03      0.02      0.05      0.02\n             (0.05)    (0.04)    (0.04)    (0.04)\nTUP*2014      0.22***  -0.02     -0.03     -0.00\n             (0.04)    (0.03)    (0.03)    (0.03)\nTUP*2015      0.21***  -0.03      0.01     -0.01\n             (0.04)    (0.03)    (0.03)    (0.03)\n2014          0.43***   1.00***   0.83***   0.82***\n             (0.04)    (0.02)    (0.06)    (0.05)\n2015          0.39***   0.82***   0.77***   0.84***\n             (0.04)    (0.02)    (0.05)    (0.05)\nBsln2013      0.05                0.05      0.07\n             (0.04)              (0.05)    (0.04)\nBsln_NAN      0.08*               0.05      0.05\n             (0.04)              (0.06)    (0.05)\nbeta_2014^TUP - beta^CSH   0.19  -0.04  -0.07  -0.02\nbeta_2015^TUP - beta^CSH   0.18  -0.05  -0.03  -0.03\nF-stat        8.83     15.60      0.79      0.76\nN          1259.00    870.00   1231.00   1251.00",
+  "context_needed": "South Sudan (Yei County), BRAC Targeting the Ultra-Poor pilot; Chowdhury, Collins, Ligon and Munshi (2016). Women from a 2013 census were randomised into TUP (productive asset transfer of about $240, training, food transfers), UCT (cash of the same total value, $350-$410) and control (PDF p. 4). Baseline 2013; midline June 2014; endline mid-2015. Specification (PDF p. 5): outcome on year effects, arm x year interactions and the 2013 value of the outcome. Because conflict delayed the cash, it was paid only after the June 2014 survey, so TUP*2014 is the effect 3-6 months after the asset transfers, TUP*2015 the effect at 15-18 months, CSH*2015 the effect about 12 months after the cash, and CSH*2014 is a placebo (a second baseline for the cash group). Outcomes are shares of households with a positive value (header '% > 0').",
+  "stored_rows": [
+    {
+      "outcome": "Household reports any cash savings (share, Savings)",
+      "arm": "UCT (cash transfer) (ITT)",
+      "time_point": "2015 endline (about 12 months after cash transfers)",
+      "subgroup_or_population": "eligible poor women's households, Yei County",
+      "value": 0.03,
+      "se": 0.05,
+      "effect_type": "main",
+      "specification": "ANCOVA (baseline value of the outcome), year effects"
+    },
+    {
+      "outcome": "Household reports any food savings (share, Food Sav)",
+      "arm": "UCT (cash transfer) (ITT)",
+      "time_point": "2015 endline (about 12 months after cash transfers)",
+      "subgroup_or_population": "eligible poor women's households, Yei County",
+      "value": 0.02,
+      "se": 0.04,
+      "effect_type": "main",
+      "specification": "year effects; no baseline value for this outcome (Bsln2013 cell blank; footnote 5, p. 13: food savings not measured at baseline)"
+    },
+    {
+      "outcome": "Household cultivates any land (share, LandCult)",
+      "arm": "UCT (cash transfer) (ITT)",
+      "time_point": "2015 endline (about 12 months after cash transfers)",
+      "subgroup_or_population": "eligible poor women's households, Yei County",
+      "value": 0.05,
+      "se": 0.04,
+      "effect_type": "main",
+      "specification": "ANCOVA (baseline value of the outcome), year effects"
+    },
+    {
+      "outcome": "Household owns any land (share, LandOwn)",
+      "arm": "UCT (cash transfer) (ITT)",
+      "time_point": "2015 endline (about 12 months after cash transfers)",
+      "subgroup_or_population": "eligible poor women's households, Yei County",
+      "value": 0.02,
+      "se": 0.04,
+      "effect_type": "main",
+      "specification": "ANCOVA (baseline value of the outcome), year effects"
+    },
+    {
+      "outcome": "Household reports any cash savings (share, Savings)",
+      "arm": "TUP (asset transfer + training) (ITT)",
+      "time_point": "2014 midline (3-6 months after asset transfers)",
+      "subgroup_or_population": "eligible poor women's households, Yei County",
+      "value": 0.22,
+      "se": 0.04,
+      "effect_type": "main",
+      "specification": "ANCOVA (baseline value of the outcome), year effects"
+    },
+    {
+      "outcome": "Household reports any food savings (share, Food Sav)",
+      "arm": "TUP (asset transfer + training) (ITT)",
+      "time_point": "2014 midline (3-6 months after asset transfers)",
+      "subgroup_or_population": "eligible poor women's households, Yei County",
+      "value": -0.02,
+      "se": 0.03,
+      "effect_type": "main",
+      "specification": "year effects; no baseline value for this outcome (Bsln2013 cell blank; footnote 5, p. 13: food savings not measured at baseline)"
+    },
+    {
+      "outcome": "Household cultivates any land (share, LandCult)",
+      "arm": "TUP (asset transfer + training) (ITT)",
+      "time_point": "2014 midline (3-6 months after asset transfers)",
+      "subgroup_or_population": "eligible poor women's households, Yei County",
+      "value": -0.03,
+      "se": 0.03,
+      "effect_type": "main",
+      "specification": "ANCOVA (baseline value of the outcome), year effects"
+    },
+    {
+      "outcome": "Household owns any land (share, LandOwn)",
+      "arm": "TUP (asset transfer + training) (ITT)",
+      "time_point": "2014 midline (3-6 months after asset transfers)",
+      "subgroup_or_population": "eligible poor women's households, Yei County",
+      "value": 0.0,
+      "se": 0.03,
+      "effect_type": "main",
+      "specification": "ANCOVA (baseline value of the outcome), year effects",
+      "note": "printed as -0.00"
+    },
+    {
+      "outcome": "Household reports any cash savings (share, Savings)",
+      "arm": "TUP (asset transfer + training) (ITT)",
+      "time_point": "2015 endline (15-18 months after asset transfers)",
+      "subgroup_or_population": "eligible poor women's households, Yei County",
+      "value": 0.21,
+      "se": 0.04,
+      "effect_type": "main",
+      "specification": "ANCOVA (baseline value of the outcome), year effects"
+    },
+    {
+      "outcome": "Household reports any food savings (share, Food Sav)",
+      "arm": "TUP (asset transfer + training) (ITT)",
+      "time_point": "2015 endline (15-18 months after asset transfers)",
+      "subgroup_or_population": "eligible poor women's households, Yei County",
+      "value": -0.03,
+      "se": 0.03,
+      "effect_type": "main",
+      "specification": "year effects; no baseline value for this outcome (Bsln2013 cell blank; footnote 5, p. 13: food savings not measured at baseline)"
+    },
+    {
+      "outcome": "Household cultivates any land (share, LandCult)",
+      "arm": "TUP (asset transfer + training) (ITT)",
+      "time_point": "2015 endline (15-18 months after asset transfers)",
+      "subgroup_or_population": "eligible poor women's households, Yei County",
+      "value": 0.01,
+      "se": 0.03,
+      "effect_type": "main",
+      "specification": "ANCOVA (baseline value of the outcome), year effects"
+    },
+    {
+      "outcome": "Household owns any land (share, LandOwn)",
+      "arm": "TUP (asset transfer + training) (ITT)",
+      "time_point": "2015 endline (15-18 months after asset transfers)",
+      "subgroup_or_population": "eligible poor women's households, Yei County",
+      "value": -0.01,
+      "se": 0.03,
+      "effect_type": "main",
+      "specification": "ANCOVA (baseline value of the outcome), year effects"
+    },
+    {
+      "outcome": "Household reports any cash savings (share, Savings)",
+      "arm": "TUP vs UCT (TUP effect in this round minus the UCT effect)",
+      "time_point": "2014 midline (3-6 months after asset transfers)",
+      "subgroup_or_population": "eligible poor women's households, Yei County",
+      "value": 0.19,
+      "se": null,
+      "effect_type": "difference between arms",
+      "specification": "ANCOVA (baseline value of the outcome), year effects",
+      "note": "Printed without an SE. The text tests beta_TUP,t minus beta_Cash,2015, so the cash term is taken to be the 2015 cash effect."
+    },
+    {
+      "outcome": "Household reports any food savings (share, Food Sav)",
+      "arm": "TUP vs UCT (TUP effect in this round minus the UCT effect)",
+      "time_point": "2014 midline (3-6 months after asset transfers)",
+      "subgroup_or_population": "eligible poor women's households, Yei County",
+      "value": -0.04,
+      "se": null,
+      "effect_type": "difference between arms",
+      "specification": "year effects; no baseline value for this outcome (Bsln2013 cell blank; footnote 5, p. 13: food savings not measured at baseline)",
+      "note": "Printed without an SE. The text tests beta_TUP,t minus beta_Cash,2015, so the cash term is taken to be the 2015 cash effect."
+    },
+    {
+      "outcome": "Household cultivates any land (share, LandCult)",
+      "arm": "TUP vs UCT (TUP effect in this round minus the UCT effect)",
+      "time_point": "2014 midline (3-6 months after asset transfers)",
+      "subgroup_or_population": "eligible poor women's households, Yei County",
+      "value": -0.07,
+      "se": null,
+      "effect_type": "difference between arms",
+      "specification": "ANCOVA (baseline value of the outcome), year effects",
+      "note": "Printed without an SE. The text tests beta_TUP,t minus beta_Cash,2015, so the cash term is taken to be the 2015 cash effect."
+    },
+    {
+      "outcome": "Household owns any land (share, LandOwn)",
+      "arm": "TUP vs UCT (TUP effect in this round minus the UCT effect)",
+      "time_point": "2014 midline (3-6 months after asset transfers)",
+      "subgroup_or_population": "eligible poor women's households, Yei County",
+      "value": -0.02,
+      "se": null,
+      "effect_type": "difference between arms",
+      "specification": "ANCOVA (baseline value of the outcome), year effects",
+      "note": "Printed without an SE. The text tests beta_TUP,t minus beta_Cash,2015, so the cash term is taken to be the 2015 cash effect."
+    },
+    {
+      "outcome": "Household reports any cash savings (share, Savings)",
+      "arm": "TUP vs UCT (TUP effect in this round minus the UCT effect)",
+      "time_point": "2015 endline (15-18 months after asset transfers)",
+      "subgroup_or_population": "eligible poor women's households, Yei County",
+      "value": 0.18,
+      "se": null,
+      "effect_type": "difference between arms",
+      "specification": "ANCOVA (baseline value of the outcome), year effects",
+      "note": "Printed without an SE. The text tests beta_TUP,t minus beta_Cash,2015, so the cash term is taken to be the 2015 cash effect."
+    },
+    {
+      "outcome": "Household reports any food savings (share, Food Sav)",
+      "arm": "TUP vs UCT (TUP effect in this round minus the UCT effect)",
+      "time_point": "2015 endline (15-18 months after asset transfers)",
+      "subgroup_or_population": "eligible poor women's households, Yei County",
+      "value": -0.05,
+      "se": null,
+      "effect_type": "difference between arms",
+      "specification": "year effects; no baseline value for this outcome (Bsln2013 cell blank; footnote 5, p. 13: food savings not measured at baseline)",
+      "note": "Printed without an SE. The text tests beta_TUP,t minus beta_Cash,2015, so the cash term is taken to be the 2015 cash effect."
+    },
+    {
+      "outcome": "Household cultivates any land (share, LandCult)",
+      "arm": "TUP vs UCT (TUP effect in this round minus the UCT effect)",
+      "time_point": "2015 endline (15-18 months after asset transfers)",
+      "subgroup_or_population": "eligible poor women's households, Yei County",
+      "value": -0.03,
+      "se": null,
+      "effect_type": "difference between arms",
+      "specification": "ANCOVA (baseline value of the outcome), year effects",
+      "note": "Printed without an SE. The text tests beta_TUP,t minus beta_Cash,2015, so the cash term is taken to be the 2015 cash effect."
+    },
+    {
+      "outcome": "Household owns any land (share, LandOwn)",
+      "arm": "TUP vs UCT (TUP effect in this round minus the UCT effect)",
+      "time_point": "2015 endline (15-18 months after asset transfers)",
+      "subgroup_or_population": "eligible poor women's households, Yei County",
+      "value": -0.03,
+      "se": null,
+      "effect_type": "difference between arms",
+      "specification": "ANCOVA (baseline value of the outcome), year effects",
+      "note": "Printed without an SE. The text tests beta_TUP,t minus beta_Cash,2015, so the cash term is taken to be the 2015 cash effect."
+    }
+  ],
+  "not_stored": [
+    {
+      "cell": "CSH*2014 (-0.06, 0.00, -0.04, -0.01 with SEs)",
+      "reason": "pre-programme gap: the cash had not yet been paid at the 2014 survey, and the authors call this interaction a placebo (PDF p. 5)"
+    },
+    {
+      "cell": "2014 and 2015 rows (0.43***, 1.00***, ... with SEs)",
+      "reason": "year effects (round intercepts), not programme effects, despite their stars"
+    },
+    {
+      "cell": "Bsln2013 and Bsln_NAN rows",
+      "reason": "coefficients on the baseline value of the outcome and on the missing-baseline dummy: covariates"
+    },
+    {
+      "cell": "CTL mean (0.45, 0.82, 0.82, 0.90)",
+      "reason": "control-group mean"
+    },
+    {
+      "cell": "F-stat, N",
+      "reason": "test statistic and sample size"
+    }
+  ],
+  "rule": "When arms and rounds run down the rows as arm x year interactions, each interaction is one stored effect with the arm in arm and the round in time_point. Not every interaction is an effect: an arm whose transfers came after a round gives a placebo for that round, and the bare year rows are intercepts. Their stars do not make them effects. A row that contrasts two programme arms (for example T3 minus T2) is stored with effect_type 'difference between arms', naming both arms in arm.",
+  "resolved_questions": [
+    {
+      "question": "The beta^TUP - beta^CSH rows are differences between the asset-transfer arm and the cash arm, printed without an SE; the CSH term is presumably the 2015 cash effect (the text tests beta_TUP,t - beta_Cash,2015), but the table label does not say so. Same question as for other arm-difference rows: store (with what effect_type), or leave out?",
+      "resolution": "Decided by Lucas, 22 Nov 2026: store the beta_TUP - beta_CSH rows, labelled 'difference between arms'."
+    }
+  ]
+}

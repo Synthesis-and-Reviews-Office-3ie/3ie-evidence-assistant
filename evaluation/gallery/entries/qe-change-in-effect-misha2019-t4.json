@@ -1,0 +1,77 @@
+{
+  "id": "qe-change-in-effect-misha2019-t4",
+  "status": "draft",
+  "checked_against_page": true,
+  "source": {
+    "doc_key": "4a1f5e7f9586",
+    "pdf": "Bangladesh - all BRAC programs/BRAC programs (40)/Misha (2019).pdf",
+    "page": 46,
+    "table_label": "Table 4, primary-outcomes block",
+    "bbox_points": [60, 66, 522, 258],
+    "render_rotation": 0
+  },
+  "tags": {
+    "method": ["DiD regression with inverse-propensity weights (doubly robust)", "panel, four rounds"],
+    "format": ["coefficient (ATT)", "change in effect between rounds"],
+    "layout": [
+      "rounds in columns, each against a different base year",
+      "column headers name the two years compared (D1(2005-2002) ... D5(2011-2008))",
+      "outcomes in rows under bold group labels",
+      "variable codes as row labels",
+      "stars only, no SEs printed",
+      "'Primary outcomes' / 'Secondary outcomes' divider rows"
+    ],
+    "picture_matters": "The text layer interleaves the group labels, the 'Primary/Secondary outcomes' dividers and the numbers, so most rows get the wrong numbers (the first numeric line, 1.466 ... -0.529, is printed beside 'goatsheep_a', and the D5 column drifts up by one or two rows). Row-to-value pairing must come from the picture."
+  },
+  "snippet": "Table 4: Effects of the CFPR program across different time periods\nVariables        D1(2005-2002) D2(2008-2002) D3(2011-2002) D4(2008-2005) D5 (2011-2008)\n                                     Primary outcomes\nLivestock and nursery\ncowbull_a          1.466***     0.936***      0.392***     -0.529***     -0.537***\ngoatsheep_a        0.387***     0.289***      0.023        -0.095**      -0.252***\nduckhen_a          0.453***     1.630***      0.389***      1.187***     -1.214***\nbigtree_a          0.014        0.289*        0.032         0.285**      -0.242\nFinancial Participation\ncsav               0.619***     0.559***      0.374***     -0.061***     -0.176***\nformalloan         0.324***     0.227***      0.132***     -0.098***     -0.098***\ninformalloan      -0.114***    -0.109**      -0.083***     -0.013        -0.027\n                                     Secondary outcomes\n[percapinc ... invited: not in this crop]\nNOTES: RESULTS OBTAINED BY LINEAR REGRESSION WITH INVERSE PROPENSITY WEIGHING. * P<0.1; ** P<0.05; *** P<0.01.",
+  "context_needed": "BRAC's CFPR (Targeting the Ultra Poor) phase I, Bangladesh. Treated = ultra-poor households selected into the programme; controls = households identified as poor in the community wealth ranking but not selected (p. 13). Panel rounds 2002 (baseline), 2005, 2008 and 2011. Estimator: regression of the change in the outcome on treatment, weighted by inverse propensity scores; estimand ATT (pp. 16-17). The text on p. 17 explains the columns: 2005, 2008 and 2011 are each compared with 2002 to give short-, medium- and long-term effects (D1-D3), 'and thereafter we compare 2008 with 2005 and 2011 with 2008 to quantify the incremental effects' (D4, D5). So D4 and D5 are changes in the effect between rounds, not effects since baseline; the numbers agree (cowbull_a: D1 1.466 + D4 -0.529 = 0.937, against D2 0.936). Variable definitions are in Table 1 (p. 42): counts of animals or trees, and 0/1 indicators for savings and loans.",
+  "stored_rows": [
+    {"outcome": "cowbull_a (number of cows/bulls)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2005 vs 2002 baseline (D1, short term)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": 1.466, "se": null, "effect_type": "main"},
+    {"outcome": "cowbull_a (number of cows/bulls)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2008 vs 2002 baseline (D2, medium term)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": 0.936, "se": null, "effect_type": "main"},
+    {"outcome": "cowbull_a (number of cows/bulls)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2011 vs 2002 baseline (D3, long term)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": 0.392, "se": null, "effect_type": "main"},
+    {"outcome": "cowbull_a (number of cows/bulls)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2008 vs 2005 (D4)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": -0.529, "se": null, "effect_type": "change in effect between rounds"},
+    {"outcome": "cowbull_a (number of cows/bulls)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2011 vs 2008 (D5)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": -0.537, "se": null, "effect_type": "change in effect between rounds"},
+
+    {"outcome": "goatsheep_a (number of goats/sheep)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2005 vs 2002 baseline (D1, short term)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": 0.387, "se": null, "effect_type": "main"},
+    {"outcome": "goatsheep_a (number of goats/sheep)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2008 vs 2002 baseline (D2, medium term)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": 0.289, "se": null, "effect_type": "main"},
+    {"outcome": "goatsheep_a (number of goats/sheep)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2011 vs 2002 baseline (D3, long term)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": 0.023, "se": null, "effect_type": "main"},
+    {"outcome": "goatsheep_a (number of goats/sheep)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2008 vs 2005 (D4)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": -0.095, "se": null, "effect_type": "change in effect between rounds"},
+    {"outcome": "goatsheep_a (number of goats/sheep)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2011 vs 2008 (D5)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": -0.252, "se": null, "effect_type": "change in effect between rounds"},
+
+    {"outcome": "duckhen_a (number of poultry)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2005 vs 2002 baseline (D1, short term)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": 0.453, "se": null, "effect_type": "main"},
+    {"outcome": "duckhen_a (number of poultry)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2008 vs 2002 baseline (D2, medium term)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": 1.630, "se": null, "effect_type": "main"},
+    {"outcome": "duckhen_a (number of poultry)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2011 vs 2002 baseline (D3, long term)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": 0.389, "se": null, "effect_type": "main"},
+    {"outcome": "duckhen_a (number of poultry)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2008 vs 2005 (D4)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": 1.187, "se": null, "effect_type": "change in effect between rounds"},
+    {"outcome": "duckhen_a (number of poultry)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2011 vs 2008 (D5)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": -1.214, "se": null, "effect_type": "change in effect between rounds"},
+
+    {"outcome": "bigtree_a (number of big trees)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2005 vs 2002 baseline (D1, short term)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": 0.014, "se": null, "effect_type": "main"},
+    {"outcome": "bigtree_a (number of big trees)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2008 vs 2002 baseline (D2, medium term)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": 0.289, "se": null, "effect_type": "main"},
+    {"outcome": "bigtree_a (number of big trees)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2011 vs 2002 baseline (D3, long term)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": 0.032, "se": null, "effect_type": "main"},
+    {"outcome": "bigtree_a (number of big trees)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2008 vs 2005 (D4)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": 0.285, "se": null, "effect_type": "change in effect between rounds"},
+    {"outcome": "bigtree_a (number of big trees)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2011 vs 2008 (D5)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": -0.242, "se": null, "effect_type": "change in effect between rounds"},
+
+    {"outcome": "csav (has cash savings, 1/0)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2005 vs 2002 baseline (D1, short term)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": 0.619, "se": null, "effect_type": "main"},
+    {"outcome": "csav (has cash savings, 1/0)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2008 vs 2002 baseline (D2, medium term)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": 0.559, "se": null, "effect_type": "main"},
+    {"outcome": "csav (has cash savings, 1/0)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2011 vs 2002 baseline (D3, long term)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": 0.374, "se": null, "effect_type": "main"},
+    {"outcome": "csav (has cash savings, 1/0)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2008 vs 2005 (D4)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": -0.061, "se": null, "effect_type": "change in effect between rounds"},
+    {"outcome": "csav (has cash savings, 1/0)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2011 vs 2008 (D5)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": -0.176, "se": null, "effect_type": "change in effect between rounds"},
+
+    {"outcome": "formalloan (has formal loans from NGOs, 1/0)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2005 vs 2002 baseline (D1, short term)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": 0.324, "se": null, "effect_type": "main"},
+    {"outcome": "formalloan (has formal loans from NGOs, 1/0)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2008 vs 2002 baseline (D2, medium term)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": 0.227, "se": null, "effect_type": "main"},
+    {"outcome": "formalloan (has formal loans from NGOs, 1/0)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2011 vs 2002 baseline (D3, long term)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": 0.132, "se": null, "effect_type": "main"},
+    {"outcome": "formalloan (has formal loans from NGOs, 1/0)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2008 vs 2005 (D4)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": -0.098, "se": null, "effect_type": "change in effect between rounds"},
+    {"outcome": "formalloan (has formal loans from NGOs, 1/0)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2011 vs 2008 (D5)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": -0.098, "se": null, "effect_type": "change in effect between rounds"},
+
+    {"outcome": "informalloan (has informal loans from money lenders, 1/0)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2005 vs 2002 baseline (D1, short term)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": -0.114, "se": null, "effect_type": "main"},
+    {"outcome": "informalloan (has informal loans from money lenders, 1/0)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2008 vs 2002 baseline (D2, medium term)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": -0.109, "se": null, "effect_type": "main"},
+    {"outcome": "informalloan (has informal loans from money lenders, 1/0)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2011 vs 2002 baseline (D3, long term)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": -0.083, "se": null, "effect_type": "main"},
+    {"outcome": "informalloan (has informal loans from money lenders, 1/0)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2008 vs 2005 (D4)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": -0.013, "se": null, "effect_type": "change in effect between rounds"},
+    {"outcome": "informalloan (has informal loans from money lenders, 1/0)", "arm": "CFPR programme (ATT, IPW-weighted DiD)", "time_point": "2011 vs 2008 (D5)", "subgroup_or_population": "ultra-poor households, CFPR phase I", "value": -0.027, "se": null, "effect_type": "change in effect between rounds"}
+  ],
+  "not_stored": [
+    {"cell": "Group labels (Livestock and nursery, Financial Participation) and the 'Primary outcomes' divider", "reason": "headings, not values; the group is implied by the outcome"},
+    {"cell": "Secondary outcomes block (percapinc, emp_entrepreneur, emp_begging_maid, emp_daylabourer, owl_h, owl_c, rickvan_a, rooftin, radiotv_a, twicemeal, invited)", "reason": "not in this crop; same five columns, read the same way (D1-D3 main, D4-D5 change in effect between rounds)"},
+    {"cell": "Significance stars", "reason": "no SEs, t-statistics or p-values are printed, so se stays null; stars are not stored"}
+  ],
+  "rule": "When columns compare a later round with an earlier follow-up round rather than with baseline (here 2008 vs 2005 and 2011 vs 2008, the paper's 'incremental effects'), store them as 'change in effect between rounds' with both years in time_point, never as the main effect. The columns against baseline are the main effects, one row per round."
+}

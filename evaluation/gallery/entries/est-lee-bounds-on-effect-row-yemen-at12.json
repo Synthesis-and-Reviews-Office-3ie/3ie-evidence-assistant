@@ -1,0 +1,403 @@
+{
+  "id": "est-lee-bounds-on-effect-row-yemen-at12",
+  "status": "draft",
+  "checked_against_page": true,
+  "source": {
+    "doc_key": "9aa551090ac0",
+    "pdf": "121058369 appendix.pdf",
+    "page": 12,
+    "table_label": "Appendix Table 12",
+    "bbox_points": [
+      48,
+      50,
+      550,
+      396
+    ],
+    "render_rotation": 0
+  },
+  "tags": {
+    "method": [
+      "RCT (ITT)",
+      "attrition bounds (Lee; imputation at +/-0.1 SD and +/-0.25 SD)"
+    ],
+    "format": [
+      "coefficient",
+      "bounds"
+    ],
+    "layout": [
+      "point estimate in the middle column, lower bounds to its left, upper bounds to its right",
+      "SE in parentheses below every estimate and every bound",
+      "spanner headers 'Lower Bounds' / 'Upper Bounds'",
+      "N column",
+      "stars only for significance"
+    ],
+    "picture_matters": "The text layer scrambles this table: after the first row, the row labels come out as one block and the numbers follow separately, and the SEs of columns 5-7 are split onto their own line apart from the SEs of columns 1-4. The pairing of each bound with its row and column must be read from the picture."
+  },
+  "snippet": "Appendix Table 12. Adjusted Bounds for Treatment Effects on Key Welfare Outcomes\n                     Lower Bounds              Unadjusted Treatment   Upper Bounds\n                     (1)Lee  (2)0.25 SD (3)0.1 SD  Effect Estimate (4)  (5)0.1 SD (6)0.25 SD (7)Lee  (8)Obs.\nTotal asset value (PPP$)               110.94 220.27*** 259.03*** 290.15*** 310.72*** 349.48*** 341.73*** 874\n                                       (84.37) (58.19) (57.99) (66.97) (58.02) (58.24) (74.61)\nMonthly consumption per capita (PPP$)  -15.56*** -7.44* -4.54 -2.22 -0.67 2.23 0.94 874\n                                       (6.01) (4.19) (4.17) (4.8) (4.17) (4.19) (5.45)\nMonthly consumption per household (PPP$) -73.57* -21.09 -2.10 9.32 23.22 42.21 34.93 874\n...\nDebt index (z-score)                   -0.20*** -0.10** -0.07 -0.05 -0.03 0.00 0.54*** 874\n                                       (0.06) (0.05) (0.05) (0.05) (0.05) (0.05) (0.11)\nNotes: Repeats analysis from Table 2 with bounds. See text for details.",
+  "context_needed": "This is the online appendix of 121058369 (the Yemen graduation evaluation; Appendix Table 1 refers to the Social Welfare Fund stipend). The main paper, which holds Table 2 and the description of the arm, the endline round and the estimand, is not among the 49 documents. Column 4 repeats the Table 2 estimate: one programme arm against control, at endline, all sampled households. Units are as in the row labels (PPP$, z-scores, a 1-10 scale). The bounding methods are described only in the main paper ('See text for details'); the column headers say only Lee, 0.25 SD and 0.1 SD. Arm and estimand labels here are inferred from the appendix (treatment-status regressions, Appendix Table 2) and should be confirmed against the main paper.",
+  "stored_rows": [
+    {
+      "outcome": "Total asset value (PPP$)",
+      "arm": "Programme (ITT)",
+      "time_point": "endline",
+      "subgroup_or_population": "all households",
+      "value": 290.15,
+      "se": 66.97,
+      "effect_type": "main",
+      "bound_lower": 110.94,
+      "bound_upper": 341.73,
+      "bound_type": "Lee",
+      "bound_lower_se": 84.37,
+      "bound_upper_se": 74.61,
+      "other_bounds": [
+        {
+          "bound_type": "0.25 SD imputation",
+          "lower": 220.27,
+          "lower_se": 58.19,
+          "upper": 349.48,
+          "upper_se": 58.24
+        },
+        {
+          "bound_type": "0.1 SD imputation",
+          "lower": 259.03,
+          "lower_se": 57.99,
+          "upper": 310.72,
+          "upper_se": 58.02
+        }
+      ],
+      "specification": "unadjusted treatment effect estimate (column 4 header)"
+    },
+    {
+      "outcome": "Monthly consumption per capita (PPP$)",
+      "arm": "Programme (ITT)",
+      "time_point": "endline",
+      "subgroup_or_population": "all households",
+      "value": -2.22,
+      "se": 4.8,
+      "effect_type": "main",
+      "bound_lower": -15.56,
+      "bound_upper": 0.94,
+      "bound_type": "Lee",
+      "bound_lower_se": 6.01,
+      "bound_upper_se": 5.45,
+      "other_bounds": [
+        {
+          "bound_type": "0.25 SD imputation",
+          "lower": -7.44,
+          "lower_se": 4.19,
+          "upper": 2.23,
+          "upper_se": 4.19
+        },
+        {
+          "bound_type": "0.1 SD imputation",
+          "lower": -4.54,
+          "lower_se": 4.17,
+          "upper": -0.67,
+          "upper_se": 4.17
+        }
+      ],
+      "specification": "unadjusted treatment effect estimate (column 4 header)"
+    },
+    {
+      "outcome": "Monthly consumption per household (PPP$)",
+      "arm": "Programme (ITT)",
+      "time_point": "endline",
+      "subgroup_or_population": "all households",
+      "value": 9.32,
+      "se": 32.07,
+      "effect_type": "main",
+      "bound_lower": -73.57,
+      "bound_upper": 34.93,
+      "bound_type": "Lee",
+      "bound_lower_se": 41.77,
+      "bound_upper_se": 36.15,
+      "other_bounds": [
+        {
+          "bound_type": "0.25 SD imputation",
+          "lower": -21.09,
+          "lower_se": 27.97,
+          "upper": 42.21,
+          "upper_se": 28.02
+        },
+        {
+          "bound_type": "0.1 SD imputation",
+          "lower": -2.1,
+          "lower_se": 27.88,
+          "upper": 23.22,
+          "upper_se": 27.9
+        }
+      ],
+      "specification": "unadjusted treatment effect estimate (column 4 header)"
+    },
+    {
+      "outcome": "Total income, past 12m (PPP$)",
+      "arm": "Programme (ITT)",
+      "time_point": "endline",
+      "subgroup_or_population": "all households",
+      "value": -29.08,
+      "se": 342.9,
+      "effect_type": "main",
+      "bound_lower": -679.2,
+      "bound_upper": 271.97,
+      "bound_type": "Lee",
+      "bound_lower_se": 505.07,
+      "bound_upper_se": 350.95,
+      "other_bounds": [
+        {
+          "bound_type": "0.25 SD imputation",
+          "lower": -280.48,
+          "lower_se": 289.59,
+          "upper": 485.25,
+          "upper_se": 290.52
+        },
+        {
+          "bound_type": "0.1 SD imputation",
+          "lower": -50.76,
+          "lower_se": 288.67,
+          "upper": 255.53,
+          "upper_se": 289.05
+        }
+      ],
+      "specification": "unadjusted treatment effect estimate (column 4 header)"
+    },
+    {
+      "outcome": "Livestock income, past 12m (PPP$)",
+      "arm": "Programme (ITT)",
+      "time_point": "endline",
+      "subgroup_or_population": "all households",
+      "value": -20.09,
+      "se": 34.53,
+      "effect_type": "main",
+      "bound_lower": -73.59,
+      "bound_upper": 44.12,
+      "bound_type": "Lee",
+      "bound_lower_se": 37.69,
+      "bound_upper_se": 36.99,
+      "other_bounds": [
+        {
+          "bound_type": "0.25 SD imputation",
+          "lower": -51.19,
+          "lower_se": 30.16,
+          "upper": 14.79,
+          "upper_se": 30.18
+        },
+        {
+          "bound_type": "0.1 SD imputation",
+          "lower": -31.4,
+          "lower_se": 30.06,
+          "upper": -5.0,
+          "upper_se": 30.06
+        }
+      ],
+      "specification": "unadjusted treatment effect estimate (column 4 header)"
+    },
+    {
+      "outcome": "Non-livestock income, past 12m (PPP$)",
+      "arm": "Programme (ITT)",
+      "time_point": "endline",
+      "subgroup_or_population": "all households",
+      "value": 42.79,
+      "se": 338.43,
+      "effect_type": "main",
+      "bound_lower": -580.94,
+      "bound_upper": 325.16,
+      "bound_type": "Lee",
+      "bound_lower_se": 478.76,
+      "bound_upper_se": 343.77,
+      "other_bounds": [
+        {
+          "bound_type": "0.25 SD imputation",
+          "lower": -200.52,
+          "lower_se": 285.95,
+          "upper": 556.39,
+          "upper_se": 286.87
+        },
+        {
+          "bound_type": "0.1 SD imputation",
+          "lower": 26.56,
+          "lower_se": 285.05,
+          "upper": 329.32,
+          "upper_se": 285.42
+        }
+      ],
+      "specification": "unadjusted treatment effect estimate (column 4 header)"
+    },
+    {
+      "outcome": "Food security index (z-score)",
+      "arm": "Programme (ITT)",
+      "time_point": "endline",
+      "subgroup_or_population": "all households",
+      "value": 0.04,
+      "se": 0.07,
+      "effect_type": "main",
+      "bound_lower": 0.02,
+      "bound_upper": 0.18,
+      "bound_type": "Lee",
+      "bound_lower_se": 0.08,
+      "bound_upper_se": 0.08,
+      "other_bounds": [
+        {
+          "bound_type": "0.25 SD imputation",
+          "lower": -0.02,
+          "lower_se": 0.06,
+          "upper": 0.11,
+          "upper_se": 0.06
+        },
+        {
+          "bound_type": "0.1 SD imputation",
+          "lower": 0.02,
+          "lower_se": 0.06,
+          "upper": 0.07,
+          "upper_se": 0.06
+        }
+      ],
+      "specification": "unadjusted treatment effect estimate (column 4 header)"
+    },
+    {
+      "outcome": "Savings index (z-score)",
+      "arm": "Programme (ITT)",
+      "time_point": "endline",
+      "subgroup_or_population": "all households",
+      "value": 0.44,
+      "se": 0.12,
+      "effect_type": "main",
+      "bound_lower": -0.06,
+      "bound_upper": 0.41,
+      "bound_type": "Lee",
+      "note": "As printed, the Lee upper bound (0.41) is below the point estimate (0.44). Stored as printed.",
+      "bound_lower_se": 0.12,
+      "bound_upper_se": 0.12,
+      "other_bounds": [
+        {
+          "bound_type": "0.25 SD imputation",
+          "lower": 0.34,
+          "lower_se": 0.11,
+          "upper": 0.54,
+          "upper_se": 0.11
+        },
+        {
+          "bound_type": "0.1 SD imputation",
+          "lower": 0.4,
+          "lower_se": 0.11,
+          "upper": 0.48,
+          "upper_se": 0.11
+        }
+      ],
+      "specification": "unadjusted treatment effect estimate (column 4 header)"
+    },
+    {
+      "outcome": "Perceived economic status (1-10)",
+      "arm": "Programme (ITT)",
+      "time_point": "endline",
+      "subgroup_or_population": "all households",
+      "value": -0.04,
+      "se": 0.14,
+      "effect_type": "main",
+      "bound_lower": -0.21,
+      "bound_upper": 0.08,
+      "bound_type": "Lee",
+      "bound_lower_se": 0.18,
+      "bound_upper_se": 0.16,
+      "other_bounds": [
+        {
+          "bound_type": "0.25 SD imputation",
+          "lower": -0.19,
+          "lower_se": 0.12,
+          "upper": 0.11,
+          "upper_se": 0.12
+        },
+        {
+          "bound_type": "0.1 SD imputation",
+          "lower": -0.1,
+          "lower_se": 0.12,
+          "upper": 0.02,
+          "upper_se": 0.12
+        }
+      ],
+      "specification": "unadjusted treatment effect estimate (column 4 header)"
+    },
+    {
+      "outcome": "Housing index (z-score)",
+      "arm": "Programme (ITT)",
+      "time_point": "endline",
+      "subgroup_or_population": "all households",
+      "value": 0.11,
+      "se": 0.06,
+      "effect_type": "main",
+      "bound_lower": 0.01,
+      "bound_upper": 0.23,
+      "bound_type": "Lee",
+      "bound_lower_se": 0.09,
+      "bound_upper_se": 0.08,
+      "other_bounds": [
+        {
+          "bound_type": "0.25 SD imputation",
+          "lower": 0.06,
+          "lower_se": 0.06,
+          "upper": 0.19,
+          "upper_se": 0.06
+        },
+        {
+          "bound_type": "0.1 SD imputation",
+          "lower": 0.1,
+          "lower_se": 0.06,
+          "upper": 0.15,
+          "upper_se": 0.06
+        }
+      ],
+      "specification": "unadjusted treatment effect estimate (column 4 header)"
+    },
+    {
+      "outcome": "Debt index (z-score)",
+      "arm": "Programme (ITT)",
+      "time_point": "endline",
+      "subgroup_or_population": "all households",
+      "value": -0.05,
+      "se": 0.05,
+      "effect_type": "main",
+      "bound_lower": -0.2,
+      "bound_upper": 0.54,
+      "bound_type": "Lee",
+      "bound_lower_se": 0.06,
+      "bound_upper_se": 0.11,
+      "other_bounds": [
+        {
+          "bound_type": "0.25 SD imputation",
+          "lower": -0.1,
+          "lower_se": 0.05,
+          "upper": 0.0,
+          "upper_se": 0.05
+        },
+        {
+          "bound_type": "0.1 SD imputation",
+          "lower": -0.07,
+          "lower_se": 0.05,
+          "upper": -0.03,
+          "upper_se": 0.05
+        }
+      ],
+      "specification": "unadjusted treatment effect estimate (column 4 header)"
+    }
+  ],
+  "not_stored": [
+    {
+      "cell": "Columns (1) and (7) as separate rows (Lee lower and upper bounds, with their SEs)",
+      "reason": "bounds are not separate effects; the bound values go on the column (4) row as bound_lower / bound_upper. The SEs of the bounds have no field and are not stored."
+    },
+    {
+      "cell": "Column (8) Obs. (874, 847, 864)",
+      "reason": "sample size, not an effect"
+    },
+    {
+      "cell": "Significance stars on the bounds",
+      "reason": "significance markers, not effects"
+    }
+  ],
+  "rule": "When a table prints a point estimate flanked by lower and upper bounds, store one row per outcome with the point estimate as the value and the bounds on that same row (bound_lower, bound_upper, bound_type). Never store a bound as its own effect row, and never treat bounds as a confidence interval.",
+  "resolved_questions": [
+    {
+      "question": "The table prints three bound pairs per outcome (Lee, 0.1 SD, 0.25 SD), each with its own SE. The schema holds one pair (bound_lower / bound_upper / bound_type), so only the Lee pair is stored. Should the imputation bounds be kept (e.g. a list of bound pairs per row), and should bound SEs be stored? Also: for the savings index the printed Lee upper bound (0.41) lies below the point estimate (0.44); it is stored as printed.",
+      "resolution": "Reviewer convention, 22 Nov 2026: the Lee pair goes in bound_lower/bound_upper with their SEs; other bound pairs go in 'other_bounds' (type, lower, upper, SEs) on the same row. The savings upper bound below the estimate is stored as printed."
+    }
+  ]
+}

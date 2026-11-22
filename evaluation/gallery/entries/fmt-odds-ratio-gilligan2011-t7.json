@@ -1,0 +1,169 @@
+{
+  "id": "fmt-odds-ratio-gilligan2011-t7",
+  "status": "draft",
+  "checked_against_page": true,
+  "source": {
+    "doc_key": "63bcc2c07899",
+    "pdf": "121305126.pdf",
+    "page": 62,
+    "table_label": "Table 7",
+    "bbox_points": [
+      65,
+      280,
+      547,
+      490
+    ],
+    "render_rotation": 0
+  },
+  "tags": {
+    "method": [
+      "quasi-experiment (exogenous programme disruption)",
+      "matching + regression",
+      "logistic regression"
+    ],
+    "format": [
+      "odds ratio",
+      "logit coefficient beside OR",
+      "s.e. and p-value columns side by side"
+    ],
+    "layout": [
+      "three specification blocks side by side",
+      "four sub-columns per block (coef., OR, s.e., p-val.)",
+      "outcomes as rows",
+      "N row with one value per imputed dataset"
+    ],
+    "picture_matters": "The text layer prints the 'No adjustment' values of outcome i (-0.06 0.94 0.29 0.83) on the header line, detached from their row label and from the other two blocks, so pairing values to outcome and block must come from the picture."
+  },
+  "snippet": "Table 7: Estimates from logistic regressions on political attitudes outcomes\n                     No adjustment            Matching & regression     Matching, regression, & het. exposure adjustment\nOutcome              coef.  OR  s.e. p-val.   coef.  OR  s.e. p-val.    coef.  OR  s.e. p-val.\ni. \"Life better as civilian than combatant\"            -0.06 0.94 0.29 0.83   -0.72 0.49 0.51 0.17   -1.36 0.26 0.96 0.17\nii. \"Very satisfied with peace accords\"                 0.05 1.05 0.23 0.83   -0.02 0.99 0.39 0.97   -0.03 0.97 0.74 0.97\niii. \"Government should have more time to solve problems\" 0.19 1.21 0.35 0.60   0.74 2.11 0.68 0.29   1.41 4.08 1.29 0.29\nN from imputed datasets   371, 371, 371, 371, 371   177, 177, 181, 178, 177   177, 177, 181, 178, 177\nStandard errors computed with clustering at commune level. Regressions on matched data include the covariates in Table 4. ... \"OR\" refers to odds ratio.",
+  "context_needed": "The regressor is residence in the Africare region, where access to the Burundi ex-combatant reintegration programme was disrupted (pp. 16-17, Appendix B pp. 50-52); the comparison is non-Africare ex-combatants with uninterrupted access. So the printed coefficient and OR are the effect of NOT having the programme; the authors read OR 0.49-0.26 as 51-74% lower odds among Africare respondents (p. 27). 'Matching & regression' is the reduced form, presented as a lower bound; the 'het. exposure adjustment' scales it by the 0.53 disruption rate and is presented as an upper bound (pp. 17, 52). 'No adjustment' is the raw, unmatched comparison (N 371). Outcomes are binary indicators defined on pp. 27-28.",
+  "stored_rows": [
+    {
+      "outcome": "Life better as civilian than combatant (=1)",
+      "arm": "Programme access vs disrupted access (odds ratio flipped from the printed disrupted-vs-access ratio)",
+      "time_point": "2007 survey (cross-section)",
+      "subgroup_or_population": "demobilised ex-combatants",
+      "value": 1.064,
+      "se": null,
+      "effect_type": "odds ratio",
+      "specification": "No adjustment (raw data, full sample)",
+      "note": "Printed OR 0.94 is disrupted access vs access; stored as its reciprocal. Logit coefficient -0.06 (s.e. 0.29) is the same effect on the log-odds scale; the printed s.e. belongs to the coefficient, not the OR. Value as printed: the indicator is disrupted access, so OR < 1 means lower odds without the programme."
+    },
+    {
+      "outcome": "Life better as civilian than combatant (=1)",
+      "arm": "Programme access vs disrupted access (odds ratio flipped from the printed disrupted-vs-access ratio)",
+      "time_point": "2007 survey (cross-section)",
+      "subgroup_or_population": "demobilised ex-combatants",
+      "value": 2.041,
+      "se": null,
+      "effect_type": "odds ratio",
+      "specification": "Matching & regression (reduced form; authors' lower bound)",
+      "note": "Printed OR 0.49 is disrupted access vs access; stored as its reciprocal. Logit coefficient -0.72 (s.e. 0.51) is the same effect on the log-odds scale; the printed s.e. belongs to the coefficient, not the OR. Value as printed: the indicator is disrupted access, so OR < 1 means lower odds without the programme."
+    },
+    {
+      "outcome": "Life better as civilian than combatant (=1)",
+      "arm": "Programme access vs disrupted access (odds ratio flipped from the printed disrupted-vs-access ratio)",
+      "time_point": "2007 survey (cross-section)",
+      "subgroup_or_population": "demobilised ex-combatants",
+      "value": 3.846,
+      "se": null,
+      "effect_type": "odds ratio",
+      "specification": "Matching, regression & heterogeneous-exposure adjustment (scaled; authors' upper bound)",
+      "note": "Printed OR 0.26 is disrupted access vs access; stored as its reciprocal. Logit coefficient -1.36 (s.e. 0.96) is the same effect on the log-odds scale; the printed s.e. belongs to the coefficient, not the OR. Value as printed: the indicator is disrupted access, so OR < 1 means lower odds without the programme."
+    },
+    {
+      "outcome": "Very satisfied with peace accords (=1)",
+      "arm": "Programme access vs disrupted access (odds ratio flipped from the printed disrupted-vs-access ratio)",
+      "time_point": "2007 survey (cross-section)",
+      "subgroup_or_population": "demobilised ex-combatants",
+      "value": 0.952,
+      "se": null,
+      "effect_type": "odds ratio",
+      "specification": "No adjustment (raw data, full sample)",
+      "note": "Printed OR 1.05 is disrupted access vs access; stored as its reciprocal. Logit coefficient 0.05 (s.e. 0.23) is the same effect on the log-odds scale; the printed s.e. belongs to the coefficient, not the OR. Value as printed: the indicator is disrupted access, so OR < 1 means lower odds without the programme."
+    },
+    {
+      "outcome": "Very satisfied with peace accords (=1)",
+      "arm": "Programme access vs disrupted access (odds ratio flipped from the printed disrupted-vs-access ratio)",
+      "time_point": "2007 survey (cross-section)",
+      "subgroup_or_population": "demobilised ex-combatants",
+      "value": 1.01,
+      "se": null,
+      "effect_type": "odds ratio",
+      "specification": "Matching & regression (reduced form; authors' lower bound)",
+      "note": "Printed OR 0.99 is disrupted access vs access; stored as its reciprocal. Logit coefficient -0.02 (s.e. 0.39) is the same effect on the log-odds scale; the printed s.e. belongs to the coefficient, not the OR. Value as printed: the indicator is disrupted access, so OR < 1 means lower odds without the programme."
+    },
+    {
+      "outcome": "Very satisfied with peace accords (=1)",
+      "arm": "Programme access vs disrupted access (odds ratio flipped from the printed disrupted-vs-access ratio)",
+      "time_point": "2007 survey (cross-section)",
+      "subgroup_or_population": "demobilised ex-combatants",
+      "value": 1.031,
+      "se": null,
+      "effect_type": "odds ratio",
+      "specification": "Matching, regression & heterogeneous-exposure adjustment (scaled; authors' upper bound)",
+      "note": "Printed OR 0.97 is disrupted access vs access; stored as its reciprocal. Logit coefficient -0.03 (s.e. 0.74) is the same effect on the log-odds scale; the printed s.e. belongs to the coefficient, not the OR. Value as printed: the indicator is disrupted access, so OR < 1 means lower odds without the programme."
+    },
+    {
+      "outcome": "Government should have more time to solve problems (=1)",
+      "arm": "Programme access vs disrupted access (odds ratio flipped from the printed disrupted-vs-access ratio)",
+      "time_point": "2007 survey (cross-section)",
+      "subgroup_or_population": "demobilised ex-combatants",
+      "value": 0.826,
+      "se": null,
+      "effect_type": "odds ratio",
+      "specification": "No adjustment (raw data, full sample)",
+      "note": "Printed OR 1.21 is disrupted access vs access; stored as its reciprocal. Logit coefficient 0.19 (s.e. 0.35) is the same effect on the log-odds scale; the printed s.e. belongs to the coefficient, not the OR. Value as printed: the indicator is disrupted access, so OR < 1 means lower odds without the programme."
+    },
+    {
+      "outcome": "Government should have more time to solve problems (=1)",
+      "arm": "Programme access vs disrupted access (odds ratio flipped from the printed disrupted-vs-access ratio)",
+      "time_point": "2007 survey (cross-section)",
+      "subgroup_or_population": "demobilised ex-combatants",
+      "value": 0.474,
+      "se": null,
+      "effect_type": "odds ratio",
+      "specification": "Matching & regression (reduced form; authors' lower bound)",
+      "note": "Printed OR 2.11 is disrupted access vs access; stored as its reciprocal. Logit coefficient 0.74 (s.e. 0.68) is the same effect on the log-odds scale; the printed s.e. belongs to the coefficient, not the OR. Value as printed: the indicator is disrupted access, so OR < 1 means lower odds without the programme."
+    },
+    {
+      "outcome": "Government should have more time to solve problems (=1)",
+      "arm": "Programme access vs disrupted access (odds ratio flipped from the printed disrupted-vs-access ratio)",
+      "time_point": "2007 survey (cross-section)",
+      "subgroup_or_population": "demobilised ex-combatants",
+      "value": 0.245,
+      "se": null,
+      "effect_type": "odds ratio",
+      "specification": "Matching, regression & heterogeneous-exposure adjustment (scaled; authors' upper bound)",
+      "note": "Printed OR 4.08 is disrupted access vs access; stored as its reciprocal. Logit coefficient 1.41 (s.e. 1.29) is the same effect on the log-odds scale; the printed s.e. belongs to the coefficient, not the OR. Value as printed: the indicator is disrupted access, so OR < 1 means lower odds without the programme."
+    }
+  ],
+  "not_stored": [
+    {
+      "cell": "coef. columns (-0.06, -0.72, -1.36, ...)",
+      "reason": "the same effect on the log-odds scale as the OR beside it; kept in each row's note, not stored as a second row"
+    },
+    {
+      "cell": "s.e. columns",
+      "reason": "standard error of the logit coefficient, not of the OR; kept in each row's note"
+    },
+    {
+      "cell": "p-val. columns",
+      "reason": "p-values, not effects"
+    },
+    {
+      "cell": "N from imputed datasets (371 ...; 177, 177, 181, 178, 177)",
+      "reason": "sample sizes"
+    },
+    {
+      "cell": "Covariates in Table 4 (not displayed)",
+      "reason": "control coefficients, not shown and never stored"
+    }
+  ],
+  "rule": "When a table prints a logit coefficient and its odds ratio side by side, store one row per outcome and specification with effect_type 'odds ratio' and the OR as printed; the s.e. column belongs to the coefficient, not the OR. Read which group the indicator codes before reading the direction of the effect. When the regressor is the comparison condition (here disrupted access), store the ratio in the programme-vs-comparison direction: the reciprocal of the printed OR, with the printed value in note.",
+  "resolved_questions": [
+    {
+      "question": "(1) Direction: the regressor is disrupted access, so the printed OR is comparison-over-programme. The reversed-convention rule says flip the sign of a difference, but for a ratio the flip is the reciprocal (e.g. 0.49 -> 2.04), which the rules do not settle; rows keep the value as printed and say so in the note. (2) The authors call the matching-and-regression and the exposure-adjusted estimates the lower and upper bounds of the effect. These are not Lee/Manski bounds; rows store them as two specifications rather than as bound_lower/bound_upper on one row.",
+      "resolution": "Decided by Lucas, 22 Nov 2026: flip ratios to the programme-vs-comparison direction (reciprocal), keeping the printed value in note."
+    }
+  ]
+}

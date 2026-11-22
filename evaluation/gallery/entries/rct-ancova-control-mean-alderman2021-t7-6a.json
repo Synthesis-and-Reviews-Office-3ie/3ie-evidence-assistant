@@ -1,0 +1,253 @@
+{
+  "id": "rct-ancova-control-mean-alderman2021-t7-6a",
+  "status": "draft",
+  "checked_against_page": true,
+  "source": {
+    "doc_key": "1f44cd8c70b8",
+    "pdf": "121058367.pdf",
+    "page": 103,
+    "table_label": "Table 7.6a",
+    "bbox_points": [
+      48,
+      52,
+      742,
+      422
+    ],
+    "render_rotation": 0
+  },
+  "tags": {
+    "method": [
+      "RCT (ITT)",
+      "ANCOVA (controls for baseline value of the outcome)",
+      "several treatment arms"
+    ],
+    "format": [
+      "coefficient",
+      "inverse hyperbolic sine of the outcome",
+      "binary outcome (share)"
+    ],
+    "layout": [
+      "landscape page",
+      "arms down the rows (T1, T2, T3), outcomes across columns",
+      "SE in parentheses below, FDR q-value in brackets below that",
+      "test-of-equality rows where the parentheses hold p-values, not SEs",
+      "control-mean and N rows",
+      "stars on the coefficient"
+    ],
+    "picture_matters": "The parentheses change meaning inside the table: under T1-T3 they are standard errors, under 'Test: T1 = T2' etc. they are p-values (notes). The text layer also shifts the header words of columns (3) and (4) into wide gaps, so column-to-outcome pairing needs the picture."
+  },
+  "snippet": "Table 7.6a: Income from livestock production and crop cultivation\n            (1) Net income from sales of livestock products (eggs, milk, dairy, honey) in past 12 months  (2) Revenue from all livestock sales in past 12 months  (3) Costs associated with livestock production (feed, medicine, outside labor)  (4) Net income from livestock sales (sales of animals minus production costs)  (5) Household earned any revenue from crops cultivated in last Mehr season  (6) Revenue earned from crops cultivated in last Mehr season\nT1     0.274**   0.690**   0.051     0.733*    -0.029    -0.255\n       (0.117)   (0.278)   (0.219)   (0.389)   (0.030)   (0.265)\n       [0.082]   [0.082]   [0.974]   [0.163]   [0.540]   [0.540]\nT2     0.330***  0.683**   0.436**   0.661*    -0.026    -0.220\n       (0.120)   (0.270)   (0.221)   (0.385)   (0.031)   (0.266)\n       [0.049]   [0.049]   [0.132]   [0.159]   [0.410]   [0.410]\nT3     0.273**   0.051     0.124     -0.000    -0.057*   -0.498*\n       (0.126)   (0.280)   (0.198)   (0.377)   (0.032)   (0.280)\n       [0.205]   [0.977]   [0.707]   [0.999]   [0.205]   [0.205]\nTest: T1 = T2  (0.651) [0.980] ...\nTest: T2 = T3  (0.666) [0.666] ...\nTest: T1 = T3  (0.995) [0.995] ...\nMean of control (T4)  0.833  4.887  3.168  2.877  0.325  2.766\nN      3,794  3,804  3,802  3,802  3,804  3,804\nNote: ... Inverse hyperbolic sine transformation has been applied to all outcome variables presented in the table. Standard errors (in parentheses below treatment effects in panels 1 and 2) are clustered at the kebele level. All models control for woreda-level fixed effects and the baseline value of the outcome if the respective data was collected. P-values on t-tests of equality of treatment effects across arms are presented in parentheses in panel 3. False Discovery Rate corrected q-values are reported in brackets ...",
+  "context_needed": "Ethiopia, SPIR graduation programme layered on PSNP4, endline survey February-April 2021 (about three years after the 2018 baseline). Arms (PDF p. 29): T1 = L* + N* (enhanced livelihoods + enhanced nutrition), T2 = L* + N, T3 = L + N*, control T4 = PSNP only; each arm is compared with T4. Estimand ITT; ANCOVA controlling for the baseline value of the outcome where measured (PDF p. 35 and table notes). Population: full endline household sample. Units: the notes say every outcome is inverse-hyperbolic-sine transformed, but the text (PDF p. 75) says only the continuous income and net-income measures are, so column (5), a yes/no outcome with control mean 0.325, reads as a share.",
+  "stored_rows": [
+    {
+      "outcome": "Net income from sales of livestock products (eggs, milk, dairy, honey) in past 12 months (IHS)",
+      "arm": "T1: L* + N* (ITT)",
+      "time_point": "endline (2021)",
+      "subgroup_or_population": "full sample",
+      "value": 0.274,
+      "se": 0.117,
+      "effect_type": "main",
+      "specification": "ANCOVA, woreda fixed effects"
+    },
+    {
+      "outcome": "Net income from sales of livestock products (eggs, milk, dairy, honey) in past 12 months (IHS)",
+      "arm": "T2: L* + N (ITT)",
+      "time_point": "endline (2021)",
+      "subgroup_or_population": "full sample",
+      "value": 0.33,
+      "se": 0.12,
+      "effect_type": "main",
+      "specification": "ANCOVA, woreda fixed effects"
+    },
+    {
+      "outcome": "Net income from sales of livestock products (eggs, milk, dairy, honey) in past 12 months (IHS)",
+      "arm": "T3: L + N* (ITT)",
+      "time_point": "endline (2021)",
+      "subgroup_or_population": "full sample",
+      "value": 0.273,
+      "se": 0.126,
+      "effect_type": "main",
+      "specification": "ANCOVA, woreda fixed effects"
+    },
+    {
+      "outcome": "Revenue from all livestock sales in past 12 months (IHS)",
+      "arm": "T1: L* + N* (ITT)",
+      "time_point": "endline (2021)",
+      "subgroup_or_population": "full sample",
+      "value": 0.69,
+      "se": 0.278,
+      "effect_type": "main",
+      "specification": "ANCOVA, woreda fixed effects"
+    },
+    {
+      "outcome": "Revenue from all livestock sales in past 12 months (IHS)",
+      "arm": "T2: L* + N (ITT)",
+      "time_point": "endline (2021)",
+      "subgroup_or_population": "full sample",
+      "value": 0.683,
+      "se": 0.27,
+      "effect_type": "main",
+      "specification": "ANCOVA, woreda fixed effects"
+    },
+    {
+      "outcome": "Revenue from all livestock sales in past 12 months (IHS)",
+      "arm": "T3: L + N* (ITT)",
+      "time_point": "endline (2021)",
+      "subgroup_or_population": "full sample",
+      "value": 0.051,
+      "se": 0.28,
+      "effect_type": "main",
+      "specification": "ANCOVA, woreda fixed effects"
+    },
+    {
+      "outcome": "Costs associated with livestock production (feed, medicine, outside labor) (IHS)",
+      "arm": "T1: L* + N* (ITT)",
+      "time_point": "endline (2021)",
+      "subgroup_or_population": "full sample",
+      "value": 0.051,
+      "se": 0.219,
+      "effect_type": "main",
+      "specification": "ANCOVA, woreda fixed effects"
+    },
+    {
+      "outcome": "Costs associated with livestock production (feed, medicine, outside labor) (IHS)",
+      "arm": "T2: L* + N (ITT)",
+      "time_point": "endline (2021)",
+      "subgroup_or_population": "full sample",
+      "value": 0.436,
+      "se": 0.221,
+      "effect_type": "main",
+      "specification": "ANCOVA, woreda fixed effects"
+    },
+    {
+      "outcome": "Costs associated with livestock production (feed, medicine, outside labor) (IHS)",
+      "arm": "T3: L + N* (ITT)",
+      "time_point": "endline (2021)",
+      "subgroup_or_population": "full sample",
+      "value": 0.124,
+      "se": 0.198,
+      "effect_type": "main",
+      "specification": "ANCOVA, woreda fixed effects"
+    },
+    {
+      "outcome": "Net income from livestock sales (sales of animals minus production costs) (IHS)",
+      "arm": "T1: L* + N* (ITT)",
+      "time_point": "endline (2021)",
+      "subgroup_or_population": "full sample",
+      "value": 0.733,
+      "se": 0.389,
+      "effect_type": "main",
+      "specification": "ANCOVA, woreda fixed effects"
+    },
+    {
+      "outcome": "Net income from livestock sales (sales of animals minus production costs) (IHS)",
+      "arm": "T2: L* + N (ITT)",
+      "time_point": "endline (2021)",
+      "subgroup_or_population": "full sample",
+      "value": 0.661,
+      "se": 0.385,
+      "effect_type": "main",
+      "specification": "ANCOVA, woreda fixed effects"
+    },
+    {
+      "outcome": "Net income from livestock sales (sales of animals minus production costs) (IHS)",
+      "arm": "T3: L + N* (ITT)",
+      "time_point": "endline (2021)",
+      "subgroup_or_population": "full sample",
+      "value": 0.0,
+      "se": 0.377,
+      "effect_type": "main",
+      "specification": "ANCOVA, woreda fixed effects",
+      "note": "printed as -0.000"
+    },
+    {
+      "outcome": "Household earned any revenue from crops cultivated in last Mehr season",
+      "arm": "T1: L* + N* (ITT)",
+      "time_point": "endline (2021)",
+      "subgroup_or_population": "full sample",
+      "value": -0.029,
+      "se": 0.03,
+      "effect_type": "main",
+      "specification": "ANCOVA, woreda fixed effects"
+    },
+    {
+      "outcome": "Household earned any revenue from crops cultivated in last Mehr season",
+      "arm": "T2: L* + N (ITT)",
+      "time_point": "endline (2021)",
+      "subgroup_or_population": "full sample",
+      "value": -0.026,
+      "se": 0.031,
+      "effect_type": "main",
+      "specification": "ANCOVA, woreda fixed effects"
+    },
+    {
+      "outcome": "Household earned any revenue from crops cultivated in last Mehr season",
+      "arm": "T3: L + N* (ITT)",
+      "time_point": "endline (2021)",
+      "subgroup_or_population": "full sample",
+      "value": -0.057,
+      "se": 0.032,
+      "effect_type": "main",
+      "specification": "ANCOVA, woreda fixed effects"
+    },
+    {
+      "outcome": "Revenue earned from crops cultivated in last Mehr season (IHS)",
+      "arm": "T1: L* + N* (ITT)",
+      "time_point": "endline (2021)",
+      "subgroup_or_population": "full sample",
+      "value": -0.255,
+      "se": 0.265,
+      "effect_type": "main",
+      "specification": "ANCOVA, woreda fixed effects"
+    },
+    {
+      "outcome": "Revenue earned from crops cultivated in last Mehr season (IHS)",
+      "arm": "T2: L* + N (ITT)",
+      "time_point": "endline (2021)",
+      "subgroup_or_population": "full sample",
+      "value": -0.22,
+      "se": 0.266,
+      "effect_type": "main",
+      "specification": "ANCOVA, woreda fixed effects"
+    },
+    {
+      "outcome": "Revenue earned from crops cultivated in last Mehr season (IHS)",
+      "arm": "T3: L + N* (ITT)",
+      "time_point": "endline (2021)",
+      "subgroup_or_population": "full sample",
+      "value": -0.498,
+      "se": 0.28,
+      "effect_type": "main",
+      "specification": "ANCOVA, woreda fixed effects"
+    }
+  ],
+  "not_stored": [
+    {
+      "cell": "Bracketed values under each coefficient ([0.082], [0.049], ...)",
+      "reason": "FDR-corrected q-values, not effects or SEs"
+    },
+    {
+      "cell": "Test: T1 = T2, Test: T2 = T3, Test: T1 = T3 rows: values in parentheses ((0.651), (0.022), ...) and brackets",
+      "reason": "p-values and q-values of tests of equality between arms; here the parentheses are p-values, not standard errors"
+    },
+    {
+      "cell": "Mean of control (T4) (0.833, 4.887, 3.168, 2.877, 0.325, 2.766)",
+      "reason": "control-group mean, not an effect"
+    },
+    {
+      "cell": "N (3,794 ... 3,804)",
+      "reason": "sample size"
+    },
+    {
+      "cell": "Semi-elasticities quoted in the text (about 30 and 90 percent, PDF p. 75)",
+      "reason": "not printed in this table; computed in the text from the coefficients"
+    }
+  ],
+  "rule": "ANCOVA tables are read like any ITT table: one row per arm and outcome, each arm against the pure control (T4), with the specification noted. The control-mean row and the test-of-equality rows are never stored. The meaning of parentheses can change within a table, so check the notes before reading a bracketed number as an SE.",
+  "resolved_questions": [
+    {
+      "question": "Units of column (5): the table notes say the inverse hyperbolic sine was applied to every outcome, but the text (PDF p. 75) says only continuous income measures were transformed, and column (5) is a yes/no outcome. This entry labels columns (1)-(4) and (6) '(IHS)' and leaves column (5) as a plain share. Confirm that reading.",
+      "resolution": "Reviewer convention, 22 Nov 2026: the units follow the table note (IHS for continuous outcomes) and column (5) stays a share; the conflict between note and text is recorded in context_needed."
+    }
+  ]
+}

@@ -1,0 +1,225 @@
+{
+  "id": "est-logit-marginal-effects-malawi-t6",
+  "status": "draft",
+  "checked_against_page": true,
+  "source": {
+    "doc_key": "61ddcec5e910",
+    "pdf": "121294984.pdf",
+    "page": 34,
+    "table_label": "Table 6",
+    "bbox_points": [
+      74,
+      72,
+      520,
+      320
+    ],
+    "render_rotation": 0
+  },
+  "tags": {
+    "method": [
+      "cluster RCT (ITT)",
+      "logit marginal effects for binary outcomes",
+      "linear regression for amounts"
+    ],
+    "format": [
+      "marginal effect",
+      "coefficient"
+    ],
+    "layout": [
+      "outcomes as columns, each outcome twice: pooled project (odd columns) and separate arms (even columns)",
+      "arms as rows",
+      "SE in parentheses below",
+      "stars",
+      "covariates estimated but not printed",
+      "Observations row"
+    ],
+    "picture_matters": "The text layer interleaves the columns: Project and arm estimates from different columns land on the same text line (e.g. '0.263*** (0.0335)' mixes column 1's estimate with column 2's SE), so which arm and which outcome each number belongs to must be read from the picture."
+  },
+  "snippet": "Table 6: Project impact on saving and loans\n                 (1)Saving  (2)Saving  (3)Amount  (4)Amount  (5)Loan   (6)Loan   (7)Amount (8)Amount\n                 uptake     uptake     savings    savings    uptake    uptake    loan      loan\n                 (yes/no)   (yes/no)   (MWK)      (MWK)      (yes/no)  (yes/no)  (MWK)     (MWK)\nProject          0.263***              4,408***              0.186**             2,018**\n                 (0.0761)              (1,369)               (0.0724)            (863.4)\nLump-sum plus training  0.339***       5,237***              0.171***            3,005***\n                        (0.0335)       (971.4)               (0.0527)            (516.8)\nLump-sum only           0.0159         909.3                 -0.0635             -610.2\n                        (0.0684)       (2,026)               (0.0730)            (518.8)\nTraining-only           0.444***       6,899***              0.354***            3,503***\n                        (0.0498)       (959.8)               (0.0125)            (400.6)\nObservations     786  786  784  784  786  786  786  786\nNotes: ... The specifications include standard control variables from the baseline survey ... (see Table 4 ...). We have applied the logit model for binary outcome variables and show the marginal effects. Standard errors are clustered at the district cluster level.",
+  "context_needed": "Burchi and Strupat (DIE), Tingathe Economic Empowerment Pilot (EEP), Malawi: a cluster-randomised trial among Social Cash Transfer beneficiary households with three components (lump-sum plus training, lump-sum only, training only) against control (PDF page 22). 'Project' is the pooled effect of any component (equation 1); the three arm rows come from a separate regression with one dummy per component (equation 2). Assignment is by cluster, so these are intent-to-treat estimates. Round: the single follow-up survey, June-July 2017 (PDF page 22). The table note says binary outcomes are logit marginal effects; the amount columns are linear regressions (Section 3, PDF page 24: logit or Poisson only for binary or count outcomes). Units: probability (yes/no columns) and Malawian kwacha.",
+  "stored_rows": [
+    {
+      "outcome": "Saving uptake (yes/no)",
+      "arm": "Project, all three components pooled (ITT)",
+      "time_point": "follow-up (June-July 2017)",
+      "subgroup_or_population": "Social Cash Transfer beneficiary households (Tingathe EEP sample)",
+      "value": 0.263,
+      "se": 0.0761,
+      "effect_type": "main",
+      "specification": "logit, marginal effect, baseline controls",
+      "note": "Marginal effect of a logit (table note), i.e. a change in probability: 0.263 = 26.3 percentage points."
+    },
+    {
+      "outcome": "Saving uptake (yes/no)",
+      "arm": "Lump-sum plus training (ITT)",
+      "time_point": "follow-up (June-July 2017)",
+      "subgroup_or_population": "Social Cash Transfer beneficiary households (Tingathe EEP sample)",
+      "value": 0.339,
+      "se": 0.0335,
+      "effect_type": "main",
+      "specification": "logit, marginal effect, baseline controls",
+      "note": "Marginal effect of a logit (table note), i.e. a change in probability: 0.263 = 26.3 percentage points."
+    },
+    {
+      "outcome": "Saving uptake (yes/no)",
+      "arm": "Lump-sum only (ITT)",
+      "time_point": "follow-up (June-July 2017)",
+      "subgroup_or_population": "Social Cash Transfer beneficiary households (Tingathe EEP sample)",
+      "value": 0.0159,
+      "se": 0.0684,
+      "effect_type": "main",
+      "specification": "logit, marginal effect, baseline controls",
+      "note": "Marginal effect of a logit (table note), i.e. a change in probability: 0.263 = 26.3 percentage points."
+    },
+    {
+      "outcome": "Saving uptake (yes/no)",
+      "arm": "Training-only (ITT)",
+      "time_point": "follow-up (June-July 2017)",
+      "subgroup_or_population": "Social Cash Transfer beneficiary households (Tingathe EEP sample)",
+      "value": 0.444,
+      "se": 0.0498,
+      "effect_type": "main",
+      "specification": "logit, marginal effect, baseline controls",
+      "note": "Marginal effect of a logit (table note), i.e. a change in probability: 0.263 = 26.3 percentage points."
+    },
+    {
+      "outcome": "Amount savings (MWK)",
+      "arm": "Project, all three components pooled (ITT)",
+      "time_point": "follow-up (June-July 2017)",
+      "subgroup_or_population": "Social Cash Transfer beneficiary households (Tingathe EEP sample)",
+      "value": 4408,
+      "se": 1369,
+      "effect_type": "main",
+      "specification": "linear regression, baseline controls"
+    },
+    {
+      "outcome": "Amount savings (MWK)",
+      "arm": "Lump-sum plus training (ITT)",
+      "time_point": "follow-up (June-July 2017)",
+      "subgroup_or_population": "Social Cash Transfer beneficiary households (Tingathe EEP sample)",
+      "value": 5237,
+      "se": 971.4,
+      "effect_type": "main",
+      "specification": "linear regression, baseline controls"
+    },
+    {
+      "outcome": "Amount savings (MWK)",
+      "arm": "Lump-sum only (ITT)",
+      "time_point": "follow-up (June-July 2017)",
+      "subgroup_or_population": "Social Cash Transfer beneficiary households (Tingathe EEP sample)",
+      "value": 909.3,
+      "se": 2026,
+      "effect_type": "main",
+      "specification": "linear regression, baseline controls"
+    },
+    {
+      "outcome": "Amount savings (MWK)",
+      "arm": "Training-only (ITT)",
+      "time_point": "follow-up (June-July 2017)",
+      "subgroup_or_population": "Social Cash Transfer beneficiary households (Tingathe EEP sample)",
+      "value": 6899,
+      "se": 959.8,
+      "effect_type": "main",
+      "specification": "linear regression, baseline controls"
+    },
+    {
+      "outcome": "Loan uptake (yes/no)",
+      "arm": "Project, all three components pooled (ITT)",
+      "time_point": "follow-up (June-July 2017)",
+      "subgroup_or_population": "Social Cash Transfer beneficiary households (Tingathe EEP sample)",
+      "value": 0.186,
+      "se": 0.0724,
+      "effect_type": "main",
+      "specification": "logit, marginal effect, baseline controls",
+      "note": "Marginal effect of a logit (table note), i.e. a change in probability: 0.263 = 26.3 percentage points."
+    },
+    {
+      "outcome": "Loan uptake (yes/no)",
+      "arm": "Lump-sum plus training (ITT)",
+      "time_point": "follow-up (June-July 2017)",
+      "subgroup_or_population": "Social Cash Transfer beneficiary households (Tingathe EEP sample)",
+      "value": 0.171,
+      "se": 0.0527,
+      "effect_type": "main",
+      "specification": "logit, marginal effect, baseline controls",
+      "note": "Marginal effect of a logit (table note), i.e. a change in probability: 0.263 = 26.3 percentage points."
+    },
+    {
+      "outcome": "Loan uptake (yes/no)",
+      "arm": "Lump-sum only (ITT)",
+      "time_point": "follow-up (June-July 2017)",
+      "subgroup_or_population": "Social Cash Transfer beneficiary households (Tingathe EEP sample)",
+      "value": -0.0635,
+      "se": 0.073,
+      "effect_type": "main",
+      "specification": "logit, marginal effect, baseline controls",
+      "note": "Marginal effect of a logit (table note), i.e. a change in probability: 0.263 = 26.3 percentage points."
+    },
+    {
+      "outcome": "Loan uptake (yes/no)",
+      "arm": "Training-only (ITT)",
+      "time_point": "follow-up (June-July 2017)",
+      "subgroup_or_population": "Social Cash Transfer beneficiary households (Tingathe EEP sample)",
+      "value": 0.354,
+      "se": 0.0125,
+      "effect_type": "main",
+      "specification": "logit, marginal effect, baseline controls",
+      "note": "Marginal effect of a logit (table note), i.e. a change in probability: 0.263 = 26.3 percentage points."
+    },
+    {
+      "outcome": "Amount loan (MWK)",
+      "arm": "Project, all three components pooled (ITT)",
+      "time_point": "follow-up (June-July 2017)",
+      "subgroup_or_population": "Social Cash Transfer beneficiary households (Tingathe EEP sample)",
+      "value": 2018,
+      "se": 863.4,
+      "effect_type": "main",
+      "specification": "linear regression, baseline controls"
+    },
+    {
+      "outcome": "Amount loan (MWK)",
+      "arm": "Lump-sum plus training (ITT)",
+      "time_point": "follow-up (June-July 2017)",
+      "subgroup_or_population": "Social Cash Transfer beneficiary households (Tingathe EEP sample)",
+      "value": 3005,
+      "se": 516.8,
+      "effect_type": "main",
+      "specification": "linear regression, baseline controls"
+    },
+    {
+      "outcome": "Amount loan (MWK)",
+      "arm": "Lump-sum only (ITT)",
+      "time_point": "follow-up (June-July 2017)",
+      "subgroup_or_population": "Social Cash Transfer beneficiary households (Tingathe EEP sample)",
+      "value": -610.2,
+      "se": 518.8,
+      "effect_type": "main",
+      "specification": "linear regression, baseline controls"
+    },
+    {
+      "outcome": "Amount loan (MWK)",
+      "arm": "Training-only (ITT)",
+      "time_point": "follow-up (June-July 2017)",
+      "subgroup_or_population": "Social Cash Transfer beneficiary households (Tingathe EEP sample)",
+      "value": 3503,
+      "se": 400.6,
+      "effect_type": "main",
+      "specification": "linear regression, baseline controls"
+    }
+  ],
+  "not_stored": [
+    {
+      "cell": "Control variables from the baseline survey (listed in Table 4)",
+      "reason": "covariate coefficients; estimated but not printed. If a table printed their marginal effects they would not be stored either"
+    },
+    {
+      "cell": "Observations row (786, 784)",
+      "reason": "sample size, not an effect"
+    },
+    {
+      "cell": "Blank cells (e.g. column 1 for the arm rows, column 2 for Project)",
+      "reason": "no estimate: each outcome is run once pooled and once by arm, in different columns"
+    }
+  ],
+  "rule": "In a logit or probit of an outcome on treatment, the printed marginal effect of the treatment dummy is the programme effect: store it as a change in probability with specification naming the model, and never store covariate coefficients or marginal effects. A probit of treatment or of attrition on baseline characteristics (a participation, balance or attrition model) is not an outcome model and gives no stored rows."
+}

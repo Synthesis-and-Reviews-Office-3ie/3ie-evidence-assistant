@@ -1,0 +1,326 @@
+{
+  "id": "est-quantile-effects-zambia-swl-t7",
+  "status": "draft",
+  "checked_against_page": true,
+  "source": {
+    "doc_key": "29beca310349",
+    "pdf": "121327437.pdf",
+    "page": 24,
+    "table_label": "Table 7, Panel A",
+    "bbox_points": [
+      138,
+      142,
+      474,
+      368
+    ],
+    "render_rotation": 0
+  },
+  "tags": {
+    "method": [
+      "RCT (ITT)",
+      "quantile regression"
+    ],
+    "format": [
+      "coefficient"
+    ],
+    "layout": [
+      "quantiles as columns (10th to 90th)",
+      "SE in parentheses below",
+      "Panel A/B stacks by round",
+      "no stars",
+      "no control-mean or N rows inside the panel"
+    ],
+    "picture_matters": "The text layer lists all row labels of both panels first and then the numbers as one block, so it looks as if 'Total consumption' were a column header beside the quantile labels and Panel B labels sit among Panel A numbers. Which number belongs to which outcome and quantile can only be read from the picture."
+  },
+  "snippet": "Table 7: Quantile Regressions - Full Package\n                      (1)10th (2)25th (3)50th (4)75th (5)90th\nPanel A: 12-month impacts\nTotal consumption     0.140   0.190   0.233   0.265   0.328\n                     (0.035) (0.036) (0.059) (0.084) (0.137)\nFood security         0.551   0.512   0.427  -0.000  -0.000\n                     (0.124) (0.132) (0.098) (0.056) (0.020)\nAssets                0.173   0.242   0.359   0.546   0.298\n                     (0.033) (0.044) (0.069) (0.111) (0.107)\nSavings               0.000   0.000   0.409   0.702   0.982\n                     (0.014) (0.012) (0.034) (0.055) (0.137)\nAggregate income      0.031   0.069   0.141   0.223   0.349\n                     (0.014) (0.020) (0.040) (0.060) (0.261)\nPsyc. well-being      0.383   0.366   0.372   0.274   0.201\n                     (0.090) (0.093) (0.070) (0.067) (0.079)\nPanel B: 38-month impacts ... (same layout)\nNote: Sample comprises 3,782 women for all 12-month regressions ... strata dummies ... Standard errors are clustered at the community level.",
+  "context_needed": "Zambia Supporting Women's Livelihoods (SWL). The title names the arm: the Full Package bundle against control (the financial-capital arm's quantile results are in Appendix Table B14). Estimates are intent-to-treat (PDF page 9: 'we report intent-to-treat (ITT) estimates of each program bundle'). Population: the sampled women (3,782 at 12 months, per the table note below Panel B). The six outcomes are the standardised main outcomes of Table 2 (PDF page 12; control mean 0, s.d. 1), so coefficients are in control-group standard deviations. The panel header gives the round: 12 months.",
+  "stored_rows": [
+    {
+      "outcome": "Total consumption",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.10",
+      "value": 0.14,
+      "se": 0.035,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Total consumption",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.25",
+      "value": 0.19,
+      "se": 0.036,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Total consumption",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.50",
+      "value": 0.233,
+      "se": 0.059,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Total consumption",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.75",
+      "value": 0.265,
+      "se": 0.084,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Total consumption",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.90",
+      "value": 0.328,
+      "se": 0.137,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Food security",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.10",
+      "value": 0.551,
+      "se": 0.124,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Food security",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.25",
+      "value": 0.512,
+      "se": 0.132,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Food security",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.50",
+      "value": 0.427,
+      "se": 0.098,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Food security",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.75",
+      "value": 0.0,
+      "se": 0.056,
+      "effect_type": "main",
+      "note": "Printed as -0.000: a quantile effect of zero to three decimals, stored as 0."
+    },
+    {
+      "outcome": "Food security",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.90",
+      "value": 0.0,
+      "se": 0.02,
+      "effect_type": "main",
+      "note": "Printed as -0.000: a quantile effect of zero to three decimals, stored as 0."
+    },
+    {
+      "outcome": "Assets",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.10",
+      "value": 0.173,
+      "se": 0.033,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Assets",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.25",
+      "value": 0.242,
+      "se": 0.044,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Assets",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.50",
+      "value": 0.359,
+      "se": 0.069,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Assets",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.75",
+      "value": 0.546,
+      "se": 0.111,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Assets",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.90",
+      "value": 0.298,
+      "se": 0.107,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Savings",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.10",
+      "value": 0.0,
+      "se": 0.014,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Savings",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.25",
+      "value": 0.0,
+      "se": 0.012,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Savings",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.50",
+      "value": 0.409,
+      "se": 0.034,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Savings",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.75",
+      "value": 0.702,
+      "se": 0.055,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Savings",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.90",
+      "value": 0.982,
+      "se": 0.137,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Aggregate income",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.10",
+      "value": 0.031,
+      "se": 0.014,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Aggregate income",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.25",
+      "value": 0.069,
+      "se": 0.02,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Aggregate income",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.50",
+      "value": 0.141,
+      "se": 0.04,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Aggregate income",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.75",
+      "value": 0.223,
+      "se": 0.06,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Aggregate income",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.90",
+      "value": 0.349,
+      "se": 0.261,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Psyc. well-being",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.10",
+      "value": 0.383,
+      "se": 0.09,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Psyc. well-being",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.25",
+      "value": 0.366,
+      "se": 0.093,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Psyc. well-being",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.50",
+      "value": 0.372,
+      "se": 0.07,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Psyc. well-being",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.75",
+      "value": 0.274,
+      "se": 0.067,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Psyc. well-being",
+      "arm": "Full package (ITT)",
+      "time_point": "12 months",
+      "subgroup_or_population": "quantile 0.90",
+      "value": 0.201,
+      "se": 0.079,
+      "effect_type": "main"
+    }
+  ],
+  "not_stored": [
+    {
+      "cell": "Panel B: 38-month impacts (same six outcomes, five quantiles)",
+      "reason": "not in this crop; read the same way with time_point '38 months'"
+    },
+    {
+      "cell": "Column numbers (1)-(5)",
+      "reason": "labels only; the quantile is read from the header (10th, 25th ...) and stored in subgroup_or_population"
+    },
+    {
+      "cell": "Table note: sample sizes (3,782 / 3,748 women), strata dummies, baseline lagged controls, consumption-support control",
+      "reason": "sample sizes and covariates, not effects"
+    }
+  ],
+  "rule": "A quantile treatment effect table gives one stored row per outcome and per quantile; the quantile goes in subgroup_or_population as 'quantile 0.25', never into the outcome name. Printed zeros (0.000, -0.000) are real estimates (typically where the outcome is bunched at one value) and are stored as 0, not skipped."
+}

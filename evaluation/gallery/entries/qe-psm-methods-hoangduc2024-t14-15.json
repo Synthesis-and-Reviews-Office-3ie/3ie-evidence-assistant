@@ -1,0 +1,47 @@
+{
+  "id": "qe-psm-methods-hoangduc2024-t14-15",
+  "status": "draft",
+  "checked_against_page": true,
+  "source": {
+    "doc_key": "6e10e8679862",
+    "pdf": "121294873.pdf",
+    "page": 28,
+    "table_label": "Tables 14 and 15 (Appendix 1)",
+    "bbox_points": [44, 80, 396, 482],
+    "render_rotation": 0
+  },
+  "tags": {
+    "method": ["selection on observables", "regression adjustment (RA)", "nearest-neighbour matching", "propensity-score matching", "fractional probit / probit"],
+    "format": ["coefficient (ATET)"],
+    "layout": [
+      "one estimator per column",
+      "SE in parentheses below",
+      "two stacked tables on one page (same treatment, two outcomes)",
+      "Yes/No rows for outcome and treatment covariates",
+      "potential-outcome mean row filled only in the RA column",
+      "outcome-mean and sensitivity-breakdown rows"
+    ],
+    "picture_matters": "The text layer scatters the columns: the PS-Match and Fractional probit estimates float above the 'ATET Human support' label, and the Yes/No, Observations, Outcome mean and Sensitivity breakdown values are shifted down and across by one column, so estimator-to-value pairing must come from the picture."
+  },
+  "snippet": "Table 14  Effect of human support on MPI, other estimators\n                      (1) RA      (2) NN-Match  (3) PS-Match  (4) Fractional probit\nATET Human support    -0.038***   -0.044***     -0.049***     -0.046***\n                      (0.007)     (0.011)       (0.011)       (0.007)\nPotential outcome mean\nHuman support (0)     0.332*** (0.007)\nOutcome covariates    Yes  No  No  Yes\nTreatment covariates  No  Yes  Yes  Yes\nObservations          1197 1197 1197 1197\nOutcome mean          0.328 0.328 0.328 0.328\nSensitivity breakdown 0.138 0.138 0.138 0.138\n\nTable 15  Effect of human support on being multidimensionally poor, other estimators\n                      (1) RA      (2) NN-Match  (3) PS-Match  (4) Probit\nATET Human support    -0.085**    -0.122**      -0.134***     -0.174***\n                      (0.034)     (0.052)       (0.049)       (0.040)\nPotential outcome mean\nHuman support (0)     0.474*** (0.029)\nOutcome covariates    Yes  No  No  Yes\nTreatment covariates  No  Yes  Yes  Yes\nObservations          1197 ...  Outcome mean 0.496 ...  Sensitivity breakdown 0.081 ...\nRobust standard errors in parentheses. * p<0.10, ** p<0.05, *** p<0.01",
+  "context_needed": "Cross-sectional survey of 1,538 poor, mainly ethnic-minority households in Ha Giang province, Vietnam (abstract, p. 1; study area p. 10). The human-support sample has 1,197 households: 410 received governmental human-capacity support and 787 received no support (p. 20). Estimand: ATET. MPI is a multidimensional poverty index from 0 to 1 (lower is better), and 'multidimensionally poor' is a 0/1 indicator for MPI at or above 1/3 (p. 20). The authors' main estimator is IPWRA (Table 6, p. 20: -0.039 (0.008) on MPI and -0.093 (0.042) on being poor). Tables 14 and 15 report the robustness estimators listed on p. 17, so none of these columns is the preferred one. Column (4) is a fractional probit for the MPI share and a plain probit for the 0/1 outcome: it is an outcome model, not a participation model.",
+  "stored_rows": [
+    {"outcome": "Multidimensional poverty index (MPI)", "arm": "Human support (ATET)", "time_point": "cross-sectional survey", "subgroup_or_population": "poor households, Ha Giang province", "value": -0.038, "se": 0.007, "effect_type": "main", "specification": "regression adjustment (RA); outcome covariates, no treatment covariates"},
+    {"outcome": "Multidimensional poverty index (MPI)", "arm": "Human support (ATET)", "time_point": "cross-sectional survey", "subgroup_or_population": "poor households, Ha Giang province", "value": -0.044, "se": 0.011, "effect_type": "main", "specification": "nearest-neighbour matching (NN-Match); treatment covariates only"},
+    {"outcome": "Multidimensional poverty index (MPI)", "arm": "Human support (ATET)", "time_point": "cross-sectional survey", "subgroup_or_population": "poor households, Ha Giang province", "value": -0.049, "se": 0.011, "effect_type": "main", "specification": "propensity-score matching (PS-Match); treatment covariates only"},
+    {"outcome": "Multidimensional poverty index (MPI)", "arm": "Human support (ATET)", "time_point": "cross-sectional survey", "subgroup_or_population": "poor households, Ha Giang province", "value": -0.046, "se": 0.007, "effect_type": "main", "specification": "fractional probit; outcome and treatment covariates"},
+    {"outcome": "Multidimensionally poor (MPI >= 1/3)", "arm": "Human support (ATET)", "time_point": "cross-sectional survey", "subgroup_or_population": "poor households, Ha Giang province", "value": -0.085, "se": 0.034, "effect_type": "main", "specification": "regression adjustment (RA); outcome covariates, no treatment covariates"},
+    {"outcome": "Multidimensionally poor (MPI >= 1/3)", "arm": "Human support (ATET)", "time_point": "cross-sectional survey", "subgroup_or_population": "poor households, Ha Giang province", "value": -0.122, "se": 0.052, "effect_type": "main", "specification": "nearest-neighbour matching (NN-Match); treatment covariates only"},
+    {"outcome": "Multidimensionally poor (MPI >= 1/3)", "arm": "Human support (ATET)", "time_point": "cross-sectional survey", "subgroup_or_population": "poor households, Ha Giang province", "value": -0.134, "se": 0.049, "effect_type": "main", "specification": "propensity-score matching (PS-Match); treatment covariates only"},
+    {"outcome": "Multidimensionally poor (MPI >= 1/3)", "arm": "Human support (ATET)", "time_point": "cross-sectional survey", "subgroup_or_population": "poor households, Ha Giang province", "value": -0.174, "se": 0.040, "effect_type": "main", "specification": "probit; outcome and treatment covariates"}
+  ],
+  "not_stored": [
+    {"cell": "Potential outcome mean, Human support (0): 0.332*** (0.007) in Table 14 and 0.474*** (0.029) in Table 15", "reason": "estimated untreated potential-outcome mean (a counterfactual level, like a control mean), not an effect; its stars test the mean against zero"},
+    {"cell": "Outcome covariates / Treatment covariates (Yes/No rows)", "reason": "specification indicators; they are carried into the 'specification' label of each stored row, not stored as values"},
+    {"cell": "Observations (1197 in every column)", "reason": "sample size"},
+    {"cell": "Outcome mean (0.328 in Table 14, 0.496 in Table 15)", "reason": "sample mean of the outcome, not an effect"},
+    {"cell": "Sensitivity breakdown (0.138 in Table 14, 0.081 in Table 15)", "reason": "sensitivity statistic (breakdown value of the c-dependence analysis of Masten et al., p. 17), not an effect"},
+    {"cell": "Main IPWRA estimates (Table 6, p. 20) and living-support Tables 16-17 (p. 29)", "reason": "not in this crop; read the same way, with IPWRA marked preferred"}
+  ],
+  "rule": "When one effect is estimated by several matching or weighting estimators side by side, store one row per estimator and put the estimator (and its covariate set) in 'specification'. Potential-outcome means, covariate Yes/No rows, outcome means and sensitivity breakdowns are never effects. Mark 'preferred' only on the estimator the authors call main, which here sits in another table (IPWRA, Table 6)."
+}

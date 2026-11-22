@@ -134,4 +134,8 @@ evaluation/results/usage_study/*/*
 # Gallery entries are the reader's few-shot examples; images stay out.
 !evaluation/gallery/*.json
 !evaluation/gallery/*.md
+!evaluation/gallery/entries/*.json
+# Crops of published pages and the review page are re-made by scripts/render_gallery.py.
+evaluation/gallery/images/
+evaluation/gallery/review.html
 !evaluation/study_documents.json

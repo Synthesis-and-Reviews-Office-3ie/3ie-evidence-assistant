@@ -1,0 +1,422 @@
+{
+  "id": "fmt-spillover-noneligible-bandiera2017-t8",
+  "status": "draft",
+  "checked_against_page": true,
+  "source": {
+    "doc_key": "67e5321c3a99",
+    "pdf": "Bangladesh - all BRAC programs/BRAC programs (40)/Bandiera (2017).pdf",
+    "page": 44,
+    "table_label": "Table VIII, Panels A and B (page 854)",
+    "bbox_points": [
+      64,
+      78,
+      322,
+      584
+    ],
+    "render_rotation": 90
+  },
+  "tags": {
+    "method": [
+      "cluster RCT (ITT)",
+      "DiD specification (treatment x wave)",
+      "spillover / indirect treatment effect"
+    ],
+    "format": [
+      "coefficient",
+      "percent change vs control mean"
+    ],
+    "layout": [
+      "rotated table",
+      "population named only in the title",
+      "Panel A pooled / Panel B by wealth class",
+      "SE in parentheses below",
+      "% change, R-squared and N rows",
+      "table continues on the next page"
+    ],
+    "picture_matters": "The page is printed sideways. In the text layer the Panel A '% change' row is split: -2%, -0.1%, -0.4% and -28% sit on an unlabelled line, while the line labelled '4-year impact: % change' mixes 8%, 8%, 5% and 23% with the R-squared values (0.041, 0.038, ...), and the 'Adjusted R-squared' label sits beside the N values. Which cell is a % change and which an R-squared can only be read from the picture."
+  },
+  "snippet": "TABLE VIII  INDIRECT TREATMENT EFFECTS ON CONSUMPTION, HOUSEHOLD AND FINANCIAL ASSETS OF NONELIGIBLE HOUSEHOLDS\n        Poverty and consumption            Financial assets                    Productive assets\n        (1) Below poverty line (2) Consumption expenditure (per adult equivalent) (3) Value of household assets (4) Household cash savings (5) Household receives loans (6) Household gives loans (7) Value of land owned (8) Value of other business assets\nPanel A: Pooled\n  Program impact after 4 years  -0.011 -0.46 33.22 3.69 -0.002 -0.013 626.14 63.55**\n                                (0.05) (29.90) (28.60) (6.03) (0.04) (0.01) (1,182.80) (29.35)\n  4-year impact: % change       -2% -0.1% 8% 8% -0.4% -28% 5% 23%\n  Adjusted R-squared            0.041 0.038 0.017 0.007 0.055 0.029 0.024 0.018\n  Number of observations (clusters) 46,046 45,440 48,200 48,217 48,891 48,891 48,201 48,201 (40)\nPanel B: By wealth class\n  Program impact on near-poor after 4 years  -0.015 5.31 11.13 2.52 0.007 -0.003 -32.18 29.35**\n                                (0.04) (24.31) (17.51) (4.05) (0.05) (0.01) (282.52) (14.43)\n  Program impact on middle classes after 4 years  -0.030 11.17 53.72* 5.54 -0.003 -0.024 51.16 97.23***\n                                (0.05) (36.57) (31.80) (8.06) (0.04) (0.02) (1,425.75) (34.01)\n  Program impact on upper classes after 4 years  0.011 -27.06 55.03 6.34 -0.054 -0.031 -566.68 63.75\n                                (0.05) (47.32) (101.20) (21.97) (0.04) (.02) (3775.98) (118.79)",
+  "context_needed": "Population comes only from the title and the notes on the next page (PDF p. 45): 'Sample: noneligible households', i.e. households in BRAC treatment and control villages that were not eligible for the ultra-poor programme; the coefficient is the DiD indirect treatment effect (ITE) on the treatment-village x 4-year-wave interaction. Panel B lets the effect vary by wealth class (near-poor, middle, upper) among non-eligibles. Monetary values are 2007 PPP US$. The direct effects on eligible ultra-poor women are in other tables (e.g. Table III) and must not be mixed with these rows.",
+  "stored_rows": [
+    {
+      "outcome": "Below poverty line",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "non-eligible households in treatment villages",
+      "value": -0.011,
+      "se": 0.05,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Below poverty line",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "non-eligible households in treatment villages",
+      "value": -2,
+      "se": null,
+      "effect_type": "percent change vs control mean"
+    },
+    {
+      "outcome": "Consumption expenditure (per adult equivalent)",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "non-eligible households in treatment villages",
+      "value": -0.46,
+      "se": 29.9,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Consumption expenditure (per adult equivalent)",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "non-eligible households in treatment villages",
+      "value": -0.1,
+      "se": null,
+      "effect_type": "percent change vs control mean"
+    },
+    {
+      "outcome": "Value of household assets",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "non-eligible households in treatment villages",
+      "value": 33.22,
+      "se": 28.6,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Value of household assets",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "non-eligible households in treatment villages",
+      "value": 8,
+      "se": null,
+      "effect_type": "percent change vs control mean"
+    },
+    {
+      "outcome": "Household cash savings",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "non-eligible households in treatment villages",
+      "value": 3.69,
+      "se": 6.03,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Household cash savings",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "non-eligible households in treatment villages",
+      "value": 8,
+      "se": null,
+      "effect_type": "percent change vs control mean"
+    },
+    {
+      "outcome": "Household receives loans",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "non-eligible households in treatment villages",
+      "value": -0.002,
+      "se": 0.04,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Household receives loans",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "non-eligible households in treatment villages",
+      "value": -0.4,
+      "se": null,
+      "effect_type": "percent change vs control mean"
+    },
+    {
+      "outcome": "Household gives loans",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "non-eligible households in treatment villages",
+      "value": -0.013,
+      "se": 0.01,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Household gives loans",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "non-eligible households in treatment villages",
+      "value": -28,
+      "se": null,
+      "effect_type": "percent change vs control mean"
+    },
+    {
+      "outcome": "Value of land owned",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "non-eligible households in treatment villages",
+      "value": 626.14,
+      "se": 1182.8,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Value of land owned",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "non-eligible households in treatment villages",
+      "value": 5,
+      "se": null,
+      "effect_type": "percent change vs control mean"
+    },
+    {
+      "outcome": "Value of other business assets",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "non-eligible households in treatment villages",
+      "value": 63.55,
+      "se": 29.35,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Value of other business assets",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "non-eligible households in treatment villages",
+      "value": 23,
+      "se": null,
+      "effect_type": "percent change vs control mean"
+    },
+    {
+      "outcome": "Below poverty line",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "near-poor non-eligible households in treatment villages",
+      "value": -0.015,
+      "se": 0.04,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Consumption expenditure (per adult equivalent)",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "near-poor non-eligible households in treatment villages",
+      "value": 5.31,
+      "se": 24.31,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Value of household assets",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "near-poor non-eligible households in treatment villages",
+      "value": 11.13,
+      "se": 17.51,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Household cash savings",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "near-poor non-eligible households in treatment villages",
+      "value": 2.52,
+      "se": 4.05,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Household receives loans",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "near-poor non-eligible households in treatment villages",
+      "value": 0.007,
+      "se": 0.05,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Household gives loans",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "near-poor non-eligible households in treatment villages",
+      "value": -0.003,
+      "se": 0.01,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Value of land owned",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "near-poor non-eligible households in treatment villages",
+      "value": -32.18,
+      "se": 282.52,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Value of other business assets",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "near-poor non-eligible households in treatment villages",
+      "value": 29.35,
+      "se": 14.43,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Below poverty line",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "middle classes non-eligible households in treatment villages",
+      "value": -0.03,
+      "se": 0.05,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Consumption expenditure (per adult equivalent)",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "middle classes non-eligible households in treatment villages",
+      "value": 11.17,
+      "se": 36.57,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Value of household assets",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "middle classes non-eligible households in treatment villages",
+      "value": 53.72,
+      "se": 31.8,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Household cash savings",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "middle classes non-eligible households in treatment villages",
+      "value": 5.54,
+      "se": 8.06,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Household receives loans",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "middle classes non-eligible households in treatment villages",
+      "value": -0.003,
+      "se": 0.04,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Household gives loans",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "middle classes non-eligible households in treatment villages",
+      "value": -0.024,
+      "se": 0.02,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Value of land owned",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "middle classes non-eligible households in treatment villages",
+      "value": 51.16,
+      "se": 1425.75,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Value of other business assets",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "middle classes non-eligible households in treatment villages",
+      "value": 97.23,
+      "se": 34.01,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Below poverty line",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "upper classes non-eligible households in treatment villages",
+      "value": 0.011,
+      "se": 0.05,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Consumption expenditure (per adult equivalent)",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "upper classes non-eligible households in treatment villages",
+      "value": -27.06,
+      "se": 47.32,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Value of household assets",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "upper classes non-eligible households in treatment villages",
+      "value": 55.03,
+      "se": 101.2,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Household cash savings",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "upper classes non-eligible households in treatment villages",
+      "value": 6.34,
+      "se": 21.97,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Household receives loans",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "upper classes non-eligible households in treatment villages",
+      "value": -0.054,
+      "se": 0.04,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Household gives loans",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "upper classes non-eligible households in treatment villages",
+      "value": -0.031,
+      "se": 0.02,
+      "effect_type": "main",
+      "note": "SE printed as '(.02)'."
+    },
+    {
+      "outcome": "Value of land owned",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "upper classes non-eligible households in treatment villages",
+      "value": -566.68,
+      "se": 3775.98,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Value of other business assets",
+      "arm": "Programme (ITT, indirect effect)",
+      "time_point": "after 4 years",
+      "subgroup_or_population": "upper classes non-eligible households in treatment villages",
+      "value": 63.75,
+      "se": 118.79,
+      "effect_type": "main"
+    }
+  ],
+  "not_stored": [
+    {
+      "cell": "Adjusted R-squared row",
+      "reason": "model statistic"
+    },
+    {
+      "cell": "Number of observations (clusters)",
+      "reason": "sample sizes"
+    },
+    {
+      "cell": "Panel B % change rows and Panel B R-squared/N (continued on PDF p. 45)",
+      "reason": "not in this crop; read the same way as Panel A, as percent change vs control mean for each wealth class"
+    },
+    {
+      "cell": "Constant, treatment-village dummy, wave dummies, subdistrict fixed effects (described in notes, not shown)",
+      "reason": "covariates and fixed effects, never stored"
+    }
+  ],
+  "rule": "When the title or notes say the sample is non-eligible households, every effect in the table is a spillover: put that population in subgroup_or_population ('non-eligible households in treatment villages'), never the programme's target group, so these rows are not read as the main effect. Wealth-class rows stay spillovers, with the class added to the population."
+}

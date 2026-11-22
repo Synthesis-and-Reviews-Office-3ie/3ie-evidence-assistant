@@ -1,0 +1,127 @@
+{
+  "id": "fmt-sd-index-beside-raw-premand2025-t2",
+  "status": "draft",
+  "checked_against_page": true,
+  "source": {
+    "doc_key": "c90cc7f6a768",
+    "pdf": "121499003.pdf",
+    "page": 37,
+    "table_label": "Table 2",
+    "bbox_points": [
+      112,
+      50,
+      680,
+      255
+    ],
+    "render_rotation": 0
+  },
+  "tags": {
+    "method": [
+      "cluster RCT (ITT)",
+      "ANCOVA (baseline outcome control)"
+    ],
+    "format": [
+      "coefficient in raw units",
+      "standardised index (control-SD units) in the last column",
+      "randomisation-inference t-statistic row"
+    ],
+    "layout": [
+      "one treatment row, outcomes as columns",
+      "SE in parentheses below",
+      "column-group headers (Consumption, Food Security)",
+      "Observations, control mean and permutation t-test rows below",
+      "landscape page (PDF /Rotate set; render at 0)"
+    ],
+    "picture_matters": "The page is landscape and the text layer stacks the column headers and the statistic rows into one block: 'Treatment', 'Observations', 'Control mean' and 'Permutation T-test' are listed together on the left, with numbers spread over unrelated lines (e.g. '0.122' beside the header, SE '(0.231)' above N '1766'), so which number is the effect, the SE, N or the control mean must come from the picture."
+  },
+  "snippet": "Table 2: Direct impacts on household welfare\n             Consumption                                             Food Security\n             (1) Total Daily  (2) Daily Food  (3) Daily Non-Food  (4) Food Security  (5) Dietary Diversity  (6) Food Consumption  (7) Composite\n             Consumption      Consumption     Consumption         (reversed FIES)    Score (HDDS)           Score (FCS)           Z-Score Index\n             (FCFA, ad. equiv.) x3\nTreatment     54.193***  37.805***  14.211   -0.184   0.122   2.098   0.168*\n             (19.209)   (12.956)   (9.482)  (0.231)  (0.093)  (1.898)  (0.085)\nObservations  1741  1741  1766  1766  1766  1766  1766\nControl mean  394.38  299.70  94.69  2.09  6.43  34.36  0.00\nPermutation T-test  3.18***  3.01***  2.55**  -0.71  1.36  1.01  2.06*\nNotes: ... OLS estimates that include controls for region fixed effects and, where possible, baseline outcomes. Robust standard errors ... clustered at the village level. ... All indices are standardized with respect to the control group in that survey round. Components in columns (2) to (6) are used to construct the Composite Z-Score Index (7).",
+  "context_needed": "Treatment = cash transfer recipient households randomly assigned to the economic inclusion intervention in the 57 treatment villages, compared with cash transfer recipients in the 31 control villages (specification (1), PDF p. 13); estimand ITT on assignment. Follow-up survey March-April 2021, about 18 months after the cash grants (PDF p. 12). Standardised versions of columns (2)-(6) are in Table A2 (PDF p. 52); the text (PDF p. 16) quotes 0.16 SD for food consumption from there, which is not in this table.",
+  "stored_rows": [
+    {
+      "outcome": "Total daily consumption (FCFA per adult equivalent)",
+      "arm": "Economic inclusion programme (ITT)",
+      "time_point": "follow-up, about 18 months after the cash grants",
+      "subgroup_or_population": "cash transfer recipient households (participants vs recipients in control villages)",
+      "value": 54.193,
+      "se": 19.209,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Daily food consumption (FCFA per adult equivalent)",
+      "arm": "Economic inclusion programme (ITT)",
+      "time_point": "follow-up, about 18 months after the cash grants",
+      "subgroup_or_population": "cash transfer recipient households (participants vs recipients in control villages)",
+      "value": 37.805,
+      "se": 12.956,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Daily non-food consumption (FCFA per adult equivalent)",
+      "arm": "Economic inclusion programme (ITT)",
+      "time_point": "follow-up, about 18 months after the cash grants",
+      "subgroup_or_population": "cash transfer recipient households (participants vs recipients in control villages)",
+      "value": 14.211,
+      "se": 9.482,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Food security (reversed FIES)",
+      "arm": "Economic inclusion programme (ITT)",
+      "time_point": "follow-up, about 18 months after the cash grants",
+      "subgroup_or_population": "cash transfer recipient households (participants vs recipients in control villages)",
+      "value": -0.184,
+      "se": 0.231,
+      "effect_type": "main",
+      "note": "Reverse-coded FIES: higher = more food secure. Value as printed."
+    },
+    {
+      "outcome": "Dietary diversity score (HDDS)",
+      "arm": "Economic inclusion programme (ITT)",
+      "time_point": "follow-up, about 18 months after the cash grants",
+      "subgroup_or_population": "cash transfer recipient households (participants vs recipients in control villages)",
+      "value": 0.122,
+      "se": 0.093,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Food consumption score (FCS)",
+      "arm": "Economic inclusion programme (ITT)",
+      "time_point": "follow-up, about 18 months after the cash grants",
+      "subgroup_or_population": "cash transfer recipient households (participants vs recipients in control villages)",
+      "value": 2.098,
+      "se": 1.898,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Composite welfare z-score index (control SD units)",
+      "arm": "Economic inclusion programme (ITT)",
+      "time_point": "follow-up, about 18 months after the cash grants",
+      "subgroup_or_population": "cash transfer recipient households (participants vs recipients in control villages)",
+      "value": 0.168,
+      "se": 0.085,
+      "effect_type": "main",
+      "note": "Index standardised to the control group in that round (control mean 0.00), so the coefficient is in control-SD units. Built from columns (2) to (6). Convention (set by the reviewer, 21 Nov 2026): an outcome that is itself a z-score index is stored as effect_type 'main' with the unit in the outcome label. 'standardised effect size' is kept for a column that converts a raw effect into SD units, such as 'Effect SD of CG'."
+    }
+  ],
+  "not_stored": [
+    {
+      "cell": "Observations (1741, 1741, 1766, ...)",
+      "reason": "sample sizes"
+    },
+    {
+      "cell": "Control mean (394.38, 299.70, 94.69, 2.09, 6.43, 34.36, 0.00)",
+      "reason": "control-group means, not effects"
+    },
+    {
+      "cell": "Permutation T-test (3.18, 3.01, 2.55, -0.71, 1.36, 1.01, 2.06)",
+      "reason": "randomisation-inference t-statistics for the same estimates, not effects"
+    },
+    {
+      "cell": "Region fixed effects and baseline-outcome controls (not displayed)",
+      "reason": "covariates, never stored"
+    }
+  ],
+  "rule": "When raw-unit outcomes and a standardised index sit side by side, store every column as its own row: raw columns as 'main' in their printed units, the index column as 'main' with its control-SD unit in the outcome label with its sign as printed. The control mean of 0.00 under the index is the tell that it is standardised; it is not itself stored.",
+  "resolved_question": "Convention: the coefficient on a z-score index (control-SD units) is stored here as effect_type 'standardised effect size' because the authors standardise the outcome; the rules name 'standardised effect sizes printed by authors' but do not say whether an effect on an author-built index counts. Confirm, or relabel index rows as 'main' with SD units in the outcome.",
+  "resolution": "Convention (set by the reviewer, 21 Nov 2026): an outcome that is itself a z-score index is stored as effect_type 'main' with the unit in the outcome label. 'standardised effect size' is kept for a column that converts a raw effect into SD units, such as 'Effect SD of CG'."
+}

@@ -1,0 +1,142 @@
+{
+  "id": "fmt-pct-control-mean-bedoya2023-t7",
+  "status": "draft",
+  "checked_against_page": true,
+  "source": {
+    "doc_key": "3db5b3cfc6ec",
+    "pdf": "121326790.pdf",
+    "page": 29,
+    "table_label": "Table 7",
+    "bbox_points": [
+      80,
+      195,
+      535,
+      590
+    ],
+    "render_rotation": 0
+  },
+  "tags": {
+    "method": [
+      "RCT (ITT)"
+    ],
+    "format": [
+      "coefficient",
+      "percent change vs control mean",
+      "index in control-SD units"
+    ],
+    "layout": [
+      "one column per statistic (control mean, level, p-value, % control mean, N)",
+      "outcomes as rows",
+      "SE in parentheses below",
+      "naive p-values in brackets in their own column",
+      "indented index components under a bold index row",
+      "blank % cell for the index"
+    ],
+    "picture_matters": "The text layer shifts values against the row labels: it prints 'PW is Depressed' beside the life-satisfaction numbers (6.436, 0.353) and moves the -0.063 and 0.056 estimates down beside 'School Enrollment', and it detaches the % column from its rows. Pairing of label, level and % must come from the picture."
+  },
+  "snippet": "Table 7  Impacts on Psychological Well-Being and Education\n                                       Control Mean (SD)  Level (SE)   p-value  % Control Mean  N\n                                       (1)                (2)          (3)      (4)             (5)\nPW Psychological Well-being Index (3 items)  0.000 (1.000)   0.220*** (0.085)  [0.010]          645\n   PW is Very Happy or Quite Happy           0.776 (0.330)   0.042 (0.028)     [0.130]   5%     645\n   PW Life Satisfaction Rating (1-10)        6.436 (2.865)   0.353 (0.238)     [0.137]   5%     637\n   PW is Depressed (7-CESD >= 8)             0.869 (0.338)   -0.063* (0.033)   [0.061]  -7%     616\nSchool Enrollment (Children Ages 6 to 18 Years) 0.562 (0.496) 0.056* (0.030)  [0.061]  10%     2,094\nNotes. ... Column (2) reports the treatment estimates in levels ... Column (4) reports the treatment estimates as a percentage of the control mean, except for indices. ... The psychological well-being index is an index of the three previous measures, normalized ... PW = primary woman.",
+  "context_needed": "Single arm: the TUP 'big push' package for ultra-poor women in Afghanistan, estimand ITT (PDF p. 19, equation (1)). Time point: the endline, five years after the asset transfer, shortly before August 2021 (PDF p. 5, footnote 2). PW = primary woman; school enrolment is measured on children aged 6-18 (table notes). Normalised versions of the three components are in Online Appendix Table A9, not in this table.",
+  "stored_rows": [
+    {
+      "outcome": "Psychological well-being index (3 items) (z-score, control SD units)",
+      "arm": "Programme (ITT)",
+      "time_point": "endline (5 years after asset transfer)",
+      "subgroup_or_population": "primary woman, ultra-poor households",
+      "value": 0.22,
+      "se": 0.085,
+      "effect_type": "main",
+      "note": "Index normalised to the control SD (control mean 0.000, SD 1.000); the coefficient is in SD units. No % of control mean is printed for indices. Convention (set by the reviewer, 21 Nov 2026): an outcome that is itself a z-score index is stored as effect_type 'main' with the unit in the outcome label. 'standardised effect size' is kept for a column that converts a raw effect into SD units, such as 'Effect SD of CG'."
+    },
+    {
+      "outcome": "Is very happy or quite happy",
+      "arm": "Programme (ITT)",
+      "time_point": "endline (5 years after asset transfer)",
+      "subgroup_or_population": "primary woman, ultra-poor households",
+      "value": 0.042,
+      "se": 0.028,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Is very happy or quite happy",
+      "arm": "Programme (ITT)",
+      "time_point": "endline (5 years after asset transfer)",
+      "subgroup_or_population": "primary woman, ultra-poor households",
+      "value": 5,
+      "se": null,
+      "effect_type": "percent change vs control mean"
+    },
+    {
+      "outcome": "Life satisfaction rating (1-10)",
+      "arm": "Programme (ITT)",
+      "time_point": "endline (5 years after asset transfer)",
+      "subgroup_or_population": "primary woman, ultra-poor households",
+      "value": 0.353,
+      "se": 0.238,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Life satisfaction rating (1-10)",
+      "arm": "Programme (ITT)",
+      "time_point": "endline (5 years after asset transfer)",
+      "subgroup_or_population": "primary woman, ultra-poor households",
+      "value": 5,
+      "se": null,
+      "effect_type": "percent change vs control mean"
+    },
+    {
+      "outcome": "Is depressed (7-item CES-D >= 8)",
+      "arm": "Programme (ITT)",
+      "time_point": "endline (5 years after asset transfer)",
+      "subgroup_or_population": "primary woman, ultra-poor households",
+      "value": -0.063,
+      "se": 0.033,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Is depressed (7-item CES-D >= 8)",
+      "arm": "Programme (ITT)",
+      "time_point": "endline (5 years after asset transfer)",
+      "subgroup_or_population": "primary woman, ultra-poor households",
+      "value": -7,
+      "se": null,
+      "effect_type": "percent change vs control mean"
+    },
+    {
+      "outcome": "School enrolment",
+      "arm": "Programme (ITT)",
+      "time_point": "endline (5 years after asset transfer)",
+      "subgroup_or_population": "children aged 6 to 18 in ultra-poor households",
+      "value": 0.056,
+      "se": 0.03,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "School enrolment",
+      "arm": "Programme (ITT)",
+      "time_point": "endline (5 years after asset transfer)",
+      "subgroup_or_population": "children aged 6 to 18 in ultra-poor households",
+      "value": 10,
+      "se": null,
+      "effect_type": "percent change vs control mean"
+    }
+  ],
+  "not_stored": [
+    {
+      "cell": "Column (1) Control Mean (SD)",
+      "reason": "control-group means and standard deviations, not effects"
+    },
+    {
+      "cell": "Column (3) p-value [0.010], [0.130], ...",
+      "reason": "p-values"
+    },
+    {
+      "cell": "Column (5) N (645, 645, 637, 616, 2,094)",
+      "reason": "sample sizes"
+    },
+    {
+      "cell": "Column (4) for the index row (blank)",
+      "reason": "nothing printed: the authors give no % of control mean for indices, and none is computed"
+    }
+  ],
+  "rule": "A '% Control Mean' column is a second effect for the same outcome: store it as its own row with effect_type 'percent change vs control mean' and the value in percent (5, not 0.05), never as a level, and keep its sign (-7%). Indented rows here are components of the index above them, so each is its own outcome, not a subgroup."
+}

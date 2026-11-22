@@ -1,0 +1,53 @@
+{
+  "id": "qe-participation-probit-asadullah2016-ta4",
+  "status": "draft",
+  "checked_against_page": true,
+  "source": {
+    "doc_key": "1aaf7f99fc9e",
+    "pdf": "121295691.pdf",
+    "page": 15,
+    "table_label": "Table A4",
+    "bbox_points": [55, 402, 555, 650],
+    "render_rotation": 0
+  },
+  "tags": {
+    "method": ["propensity-score matching (first-stage participation model)", "DiD with matching (DD-PSM)"],
+    "format": ["probit coefficient", "z-value", "p-value"],
+    "layout": [
+      "covariates in rows",
+      "coefficient, z-value and p-value in columns",
+      "constant, N and pseudo R2 at the bottom",
+      "appendix table sharing a page with Table A3"
+    ],
+    "picture_matters": "The text layer shifts the coefficient column against the row labels: 'Household size' is left without a number and from there on each coefficient sits next to the label above or below it, while the p-value column drifts the other way. Only the picture pairs rows with numbers."
+  },
+  "snippet": "Table A4. Probit regression of determinants of TUP programme participation using full sample (dependent variable 1 if treatment household; 0 otherwise).\n                                                     Coefficient  z-Value  p-Value\nFemale-headed household (yes = 1; no = 0)              0.345       6.00    0.001\nHousehold size                                         0.097       5.72    0.003\nAmount of own land (decimal)                          -0.019      -6.60    0.001\nReceived government benefit (yes = 1; no = 0)         -0.528      -2.85    0.004\nHave outstanding loan (yes = 1; no = 0)               -0.280      -6.12    0.00\n...\nOwned cow/bull (yes = 1; no = 0)                      -0.545      -6.11    0.001\n...\nImproved economic status in last 1 year                0.217       3.37    0.001\nConstant                                              -0.019      -0.23    0.815\nNo. of observations                                    4038\nPseudo R2                                              0.09",
+  "context_needed": "BRAC's Targeting the Ultra Poor (TUP/CFPR) programme in Bangladesh, household panel 2002-2011 (2,098 treatment and 1,940 control households, Table A3 notes, same page). The impact estimates are in Tables 1-5 (DD and DD-PSM, pp. 7-11). Section III (p. 6) says the PSM first step is 'a probit model using baseline (2002) data' and points to Table A4 for it. The dependent variable is programme participation, so every coefficient describes who joined, not what the programme did.",
+  "stored_rows": [],
+  "not_stored": [
+    {"cell": "Female-headed household 0.345 (z 6.00, p 0.001)", "reason": "covariate coefficient in the participation (propensity-score) model, not a programme effect"},
+    {"cell": "Household size 0.097 (5.72, 0.003)", "reason": "participation-model covariate"},
+    {"cell": "Amount of own land (decimal) -0.019 (-6.60, 0.001)", "reason": "participation-model covariate"},
+    {"cell": "Received government benefit -0.528 (-2.85, 0.004)", "reason": "participation-model covariate"},
+    {"cell": "Have outstanding loan -0.280 (-6.12, 0.00)", "reason": "participation-model covariate"},
+    {"cell": "Main occupation of the main female member is housemaid or begging -0.102 (-1.02, 0.309)", "reason": "participation-model covariate"},
+    {"cell": "No. of active female member 0.150 (3.02, 0.003)", "reason": "participation-model covariate"},
+    {"cell": "No. of active male member -0.256 (-5.54, 0.003)", "reason": "participation-model covariate"},
+    {"cell": "Owned cow/bull -0.545 (-6.11, 0.001)", "reason": "participation-model covariate measured at baseline; it looks like an outcome (livestock), but here it predicts selection, so it is not an effect on livestock"},
+    {"cell": "Owned goat/sheep -0.040 (-0.50, 0.618)", "reason": "participation-model covariate (baseline)"},
+    {"cell": "Owned hen/duck -0.185 (-4.20, 0.00)", "reason": "participation-model covariate (baseline)"},
+    {"cell": "Owned rickshaw/van -0.484 (-3.35, 0.001)", "reason": "participation-model covariate (baseline)"},
+    {"cell": "Owned radio -0.301 (-1.62, 0.106)", "reason": "participation-model covariate (baseline)"},
+    {"cell": "Owned ornaments -0.061 (-0.27, 0.786)", "reason": "participation-model covariate (baseline)"},
+    {"cell": "Owned shop -0.521 (-0.97, 0.333)", "reason": "participation-model covariate (baseline)"},
+    {"cell": "Main house roof made of straw 0.194 (4.53, 0.001)", "reason": "participation-model covariate (baseline)"},
+    {"cell": "Average schooling of the household members (years) -0.038 (-7.45, 0.002)", "reason": "participation-model covariate"},
+    {"cell": "Faced any incidence/crisis -0.084 (-1.99, 0.047)", "reason": "participation-model covariate"},
+    {"cell": "Improved economic status in last 1 year 0.217 (3.37, 0.001)", "reason": "participation-model covariate"},
+    {"cell": "Constant -0.019 (-0.23, 0.815)", "reason": "constant"},
+    {"cell": "No. of observations 4038; Pseudo R2 0.09", "reason": "sample size and model fit statistic"},
+    {"cell": "z-Value and p-Value columns", "reason": "test statistics; not stored even for an effect"},
+    {"cell": "Table A3 (continued), upper half of the page", "reason": "not in this crop; year-by-year treatment and control means and their differences, a descriptive table"}
+  ],
+  "rule": "A probit or logit of who joins the programme (the first step of propensity-score matching) has covariates as rows and no programme term: nothing in it is stored, even rows named like outcomes such as livestock owned, because they are baseline predictors of selection."
+}

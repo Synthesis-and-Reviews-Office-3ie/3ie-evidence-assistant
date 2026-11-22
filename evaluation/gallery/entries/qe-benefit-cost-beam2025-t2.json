@@ -1,0 +1,244 @@
+{
+  "id": "qe-benefit-cost-beam2025-t2",
+  "status": "draft",
+  "checked_against_page": true,
+  "source": {
+    "doc_key": "792bc37d6275",
+    "pdf": "122182715.pdf",
+    "page": 25,
+    "table_label": "Table 2",
+    "bbox_points": [
+      66,
+      236,
+      545,
+      558
+    ],
+    "render_rotation": 0
+  },
+  "tags": {
+    "method": [
+      "RCT",
+      "benefit-cost analysis"
+    ],
+    "format": [
+      "costs in 2024 PPP dollars",
+      "benefits in 2024 PPP dollars",
+      "benefit-cost ratio",
+      "95% CI in square brackets"
+    ],
+    "layout": [
+      "sites and arms in two header rows (Uganda, Philippines, Bangladesh x coaching arm)",
+      "Panel A costs / Panel B benefits / Panel C ratios",
+      "persistence scenarios as indented sub-rows (100%, 90%, 80%)",
+      "dollar signs on every cell"
+    ],
+    "picture_matters": "The text layer drops the Panel B and Panel C row structure: in 'Total benefits at persistence of ...' the labels 100%, 90%, 80% are printed one line below their numbers, so the 100% label sits beside the 90% totals ($7,553 ...) and the 80% label beside nothing. The scenario-to-value pairing must come from the picture."
+  },
+  "snippet": "Table 2: Site-level benefit-cost analysis\n                       Uganda             Philippines        Bangladesh\n                       Individual Group   Individual Group   Individual Group  Ind. Light\nPanel A: Estimated Program Costs\nCost per household at year 1                 $9,079  $8,099  $1,901 $1,392 $3,531 $2,866 $2,486\nCost per household discounted (5% per year)  $10,060 $8,974  $2,107 $1,543 $5,014 $4,070 $3,530\nPanel B: Estimated Program Benefits\nMonthly consumption per adult equiv  $27 [$22,$32]  $30 [$24,$36]  $18 [$6,$30]  $19 [$8,$29]  $20 [$10,$30]  $15 [$7,$23]  $10 [$2,$17]\nAnnual total household consumption   $1,348 [$1,080,$1,616] $1,512 ... $291 [$52,$530]\nTotal benefits at persistence of ... 100% $24,336 $27,284 $15,544 $15,948 $11,199 $8,315 $5,254\n                                      90% $7,553 ...   80% $4,056 ...\nPanel C: Cost Benefit Ratios\nBenefit-cost ratio at persistence of ... 100% 2.9 [2.3,3.4] 3.6 [2.9,4.3] 7.4 [2.5,12.4] 10.4 [4.7,16.1] 3.1 [1.6,4.6] 2.8 [1.3,4.3] 2.1 [0.4,3.7]\n                                          90% 1.2 ... 1.0 [0.2,1.9]\n                                          80% 0.8 ... 0.8 [0.1,1.5]\nNotes: All values converted to 2024 PPP. Calculations based on a social discount rate of 5%. ... 95% confidence intervals for program impacts in square brackets.",
+  "context_needed": "Three RCTs of graduation programmes comparing group and individual coaching in Uganda, the Philippines and Bangladesh (Bangladesh also has a lighter individual arm). The programme effects themselves are in Table 1 (p. 21): ITT effects on the index of primary outcomes, monthly consumption per adult equivalent, food security, well-being, assets and income, at year 3 (Uganda, Philippines) and year 6 (Bangladesh), in 2024 PPP. Table 2 takes the consumption effect from Table 1, rounds it to whole dollars (Uganda individual $27 = 27.061; Bangladesh light $10 = 9.588), scales it to annual household consumption and projects it under persistence assumptions to compare with costs.",
+  "stored_rows": [
+    {
+      "outcome": "Monthly consumption per adult equivalent (2024 PPP $)",
+      "arm": "Individual coaching (ITT)",
+      "time_point": "year 3",
+      "subgroup_or_population": "ultra-poor households, Uganda",
+      "value": 27,
+      "se": null,
+      "ci_lower": 22,
+      "ci_upper": 32,
+      "effect_type": "main",
+      "specification": "rounded copy used in the cost-benefit table",
+      "linked_to": "Table 1, p. 21: the same consumption ITT effect, unrounded"
+    },
+    {
+      "outcome": "Monthly consumption per adult equivalent (2024 PPP $)",
+      "arm": "Group coaching (ITT)",
+      "time_point": "year 3",
+      "subgroup_or_population": "ultra-poor households, Uganda",
+      "value": 30,
+      "se": null,
+      "ci_lower": 24,
+      "ci_upper": 36,
+      "effect_type": "main",
+      "specification": "rounded copy used in the cost-benefit table",
+      "linked_to": "Table 1, p. 21: the same consumption ITT effect, unrounded"
+    },
+    {
+      "outcome": "Monthly consumption per adult equivalent (2024 PPP $)",
+      "arm": "Individual coaching (ITT)",
+      "time_point": "year 3",
+      "subgroup_or_population": "ultra-poor households, Philippines",
+      "value": 18,
+      "se": null,
+      "ci_lower": 6,
+      "ci_upper": 30,
+      "effect_type": "main",
+      "specification": "rounded copy used in the cost-benefit table",
+      "linked_to": "Table 1, p. 21: the same consumption ITT effect, unrounded"
+    },
+    {
+      "outcome": "Monthly consumption per adult equivalent (2024 PPP $)",
+      "arm": "Group coaching (ITT)",
+      "time_point": "year 3",
+      "subgroup_or_population": "ultra-poor households, Philippines",
+      "value": 19,
+      "se": null,
+      "ci_lower": 8,
+      "ci_upper": 29,
+      "effect_type": "main",
+      "specification": "rounded copy used in the cost-benefit table",
+      "linked_to": "Table 1, p. 21: the same consumption ITT effect, unrounded"
+    },
+    {
+      "outcome": "Monthly consumption per adult equivalent (2024 PPP $)",
+      "arm": "Individual coaching (ITT)",
+      "time_point": "year 6",
+      "subgroup_or_population": "ultra-poor households, Bangladesh",
+      "value": 20,
+      "se": null,
+      "ci_lower": 10,
+      "ci_upper": 30,
+      "effect_type": "main",
+      "specification": "rounded copy used in the cost-benefit table",
+      "linked_to": "Table 1, p. 21: the same consumption ITT effect, unrounded"
+    },
+    {
+      "outcome": "Monthly consumption per adult equivalent (2024 PPP $)",
+      "arm": "Group coaching (ITT)",
+      "time_point": "year 6",
+      "subgroup_or_population": "ultra-poor households, Bangladesh",
+      "value": 15,
+      "se": null,
+      "ci_lower": 7,
+      "ci_upper": 23,
+      "effect_type": "main",
+      "specification": "rounded copy used in the cost-benefit table",
+      "linked_to": "Table 1, p. 21: the same consumption ITT effect, unrounded"
+    },
+    {
+      "outcome": "Monthly consumption per adult equivalent (2024 PPP $)",
+      "arm": "Individual light coaching (ITT)",
+      "time_point": "year 6",
+      "subgroup_or_population": "ultra-poor households, Bangladesh",
+      "value": 10,
+      "se": null,
+      "ci_lower": 2,
+      "ci_upper": 17,
+      "effect_type": "main",
+      "specification": "rounded copy used in the cost-benefit table",
+      "linked_to": "Table 1, p. 21: the same consumption ITT effect, unrounded"
+    },
+    {
+      "outcome": "Annual total household consumption (2024 PPP $)",
+      "arm": "Individual coaching (ITT)",
+      "time_point": "year 3",
+      "subgroup_or_population": "ultra-poor households, Uganda",
+      "value": 1348,
+      "se": null,
+      "ci_lower": 1080,
+      "ci_upper": 1616,
+      "effect_type": "main",
+      "specification": "the Table 1 consumption effect rescaled to annual household totals",
+      "linked_to": "Table 1, p. 21: the same consumption ITT effect, per adult equivalent per month"
+    },
+    {
+      "outcome": "Annual total household consumption (2024 PPP $)",
+      "arm": "Group coaching (ITT)",
+      "time_point": "year 3",
+      "subgroup_or_population": "ultra-poor households, Uganda",
+      "value": 1512,
+      "se": null,
+      "ci_lower": 1212,
+      "ci_upper": 1811,
+      "effect_type": "main",
+      "specification": "the Table 1 consumption effect rescaled to annual household totals",
+      "linked_to": "Table 1, p. 21: the same consumption ITT effect, per adult equivalent per month"
+    },
+    {
+      "outcome": "Annual total household consumption (2024 PPP $)",
+      "arm": "Individual coaching (ITT)",
+      "time_point": "year 3",
+      "subgroup_or_population": "ultra-poor households, Philippines",
+      "value": 861,
+      "se": null,
+      "ci_lower": 287,
+      "ci_upper": 1435,
+      "effect_type": "main",
+      "specification": "the Table 1 consumption effect rescaled to annual household totals",
+      "linked_to": "Table 1, p. 21: the same consumption ITT effect, per adult equivalent per month"
+    },
+    {
+      "outcome": "Annual total household consumption (2024 PPP $)",
+      "arm": "Group coaching (ITT)",
+      "time_point": "year 3",
+      "subgroup_or_population": "ultra-poor households, Philippines",
+      "value": 884,
+      "se": null,
+      "ci_lower": 400,
+      "ci_upper": 1367,
+      "effect_type": "main",
+      "specification": "the Table 1 consumption effect rescaled to annual household totals",
+      "linked_to": "Table 1, p. 21: the same consumption ITT effect, per adult equivalent per month"
+    },
+    {
+      "outcome": "Annual total household consumption (2024 PPP $)",
+      "arm": "Individual coaching (ITT)",
+      "time_point": "year 6",
+      "subgroup_or_population": "ultra-poor households, Bangladesh",
+      "value": 620,
+      "se": null,
+      "ci_lower": 317,
+      "ci_upper": 924,
+      "effect_type": "main",
+      "specification": "the Table 1 consumption effect rescaled to annual household totals",
+      "linked_to": "Table 1, p. 21: the same consumption ITT effect, per adult equivalent per month"
+    },
+    {
+      "outcome": "Annual total household consumption (2024 PPP $)",
+      "arm": "Group coaching (ITT)",
+      "time_point": "year 6",
+      "subgroup_or_population": "ultra-poor households, Bangladesh",
+      "value": 461,
+      "se": null,
+      "ci_lower": 218,
+      "ci_upper": 703,
+      "effect_type": "main",
+      "specification": "the Table 1 consumption effect rescaled to annual household totals",
+      "linked_to": "Table 1, p. 21: the same consumption ITT effect, per adult equivalent per month"
+    },
+    {
+      "outcome": "Annual total household consumption (2024 PPP $)",
+      "arm": "Individual light coaching (ITT)",
+      "time_point": "year 6",
+      "subgroup_or_population": "ultra-poor households, Bangladesh",
+      "value": 291,
+      "se": null,
+      "ci_lower": 52,
+      "ci_upper": 530,
+      "effect_type": "main",
+      "specification": "the Table 1 consumption effect rescaled to annual household totals",
+      "linked_to": "Table 1, p. 21: the same consumption ITT effect, per adult equivalent per month"
+    }
+  ],
+  "not_stored": [
+    {
+      "cell": "Panel A: Cost per household at year 1; Cost per household discounted (5% per year)",
+      "reason": "programme costs, not effects"
+    },
+    {
+      "cell": "Panel B: Total benefits at persistence of 100% / 90% / 80%",
+      "reason": "projected discounted benefits under assumed persistence, a model calculation rather than an estimated effect"
+    },
+    {
+      "cell": "Panel C: Benefit-cost ratio at persistence of 100% / 90% / 80%, with CIs",
+      "reason": "cost ratios, never stored"
+    }
+  ],
+  "rule": "Costs, projected benefits under persistence assumptions and benefit-cost ratios are never stored. Rows that repeat or rescale an effect reported in another table are stored again, labelled, and linked to that table with linked_to.",
+  "resolved_questions": [
+    {
+      "question": "Panel B 'Monthly consumption per adult equiv' repeats the Table 1 consumption ITT effects rounded to whole dollars, and 'Annual total household consumption' rescales the same effects to annual household totals with their own 95% CIs. Is a rescaled copy of an effect that is already stored from another table ever stored (for example as a second unit of the same effect), or always left out as a duplicate? This entry leaves both rows out.",
+      "resolution": "Decided by Lucas, 22 Nov 2026: store the repeated and rescaled effects in both places, linked."
+    }
+  ]
+}

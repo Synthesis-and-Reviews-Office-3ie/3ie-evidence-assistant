@@ -1,0 +1,201 @@
+{
+  "id": "fmt-minus-detached-banerjee-ghana-t8",
+  "status": "draft",
+  "checked_against_page": true,
+  "source": {
+    "doc_key": "c905701e6922",
+    "pdf": "121058368.pdf",
+    "page": 35,
+    "table_label": "Table 8",
+    "bbox_points": [
+      85,
+      290,
+      525,
+      552
+    ],
+    "render_rotation": 0
+  },
+  "tags": {
+    "method": [
+      "cluster RCT (ITT)"
+    ],
+    "format": [
+      "coefficient",
+      "SE in parentheses below"
+    ],
+    "layout": [
+      "one panel per arm (Any GUP, Asset Only), each with its own header",
+      "two rounds as column blocks (Endline, Followup)",
+      "Observations, R-squared, control mean and baseline mean rows",
+      "letter-spaced Excel-style font"
+    ],
+    "picture_matters": "The text layer detaches every minus sign from its number ('- 0.64', '- 0.06', '- 0.14', '- 0.45'), so a reader that splits on spaces reads +0.64 and a stray '-'. It also moves the Asset Only endline SEs (2.48) (2.01) (0.91) (0.055) onto the line with the follow-up N (1482 ...), and puts the follow-up SEs above them. The sign and the SE pairing must be taken from the picture, where '-0.64' is printed as one token directly above '(2.48)'."
+  },
+  "snippet": "Table 8: Effects on per capita consumption\nAny GUP\n              Endline                                            Followup\n              (1) Total  (2) Food  (3) Nonfood  (4) Durable good   (5) Total  (6) Food  (7) Nonfood  (8) Durable good\n              consumption per capita, month (each)\nAny GUP       2.82**   2.18**   0.44     0.05      3.22***  2.41***  0.55    0.03\n              (1.42)   (1.04)   (0.76)   (0.037)   (1.19)   (0.81)   (0.66)  (0.04)\nObservations  2525 2525 2525 2525   2434 2434 2438 2442\nR-squared     0.19 0.18 0.10 0.07   0.16 0.16 0.08 0.10\nControl mean  40.8 30.1 10.3 0.34   30.40 20.00 8.63 0.34\nBaseline mean 54.4 44.90 9.5 0.47   54.40 44.90 9.50 0.47\nAsset Only\nAsset Only    -0.64    -0.06    -0.64    -0.03     -0.14    -0.45    0.54    0.02\n              (2.48)   (2.01)   (0.91)   (0.055)   (2.18)   (1.57)   (0.86)  (0.07)\nObservations  1528 1528 1528 1528   1482 1482 1486 1491\nR-squared     0.04 0.04 0.04 0.03   0.06 0.06 0.05 0.05\nControl mean  38.10 27.80 8.95 0.32   32.40 21.60 8.53 0.36\nNote: 1. All values reported in 2014 USD, Purchasing Power Parity (PPP) terms 2. Column (1) is the sum of columns (2) through (4).",
+  "context_needed": "Ghana Graduation from Ultra Poverty evaluation (Banerjee and Karlan). 'Any GUP' pools the GUP sub-arms with and without the savings component; 'Asset Only' households received goats with no coaching or support, compared with their own control group (PDF pp. 13-14, design chart PDF p. 25). Results are ITT (PDF p. 35, text above the table). Endline was conducted immediately after the two-year programme and the follow-up about one year later (PDF p. 8). Units: 2014 PPP US$ per capita per month.",
+  "stored_rows": [
+    {
+      "outcome": "Total consumption per capita per month (2014 PPP US$)",
+      "arm": "Any GUP (ITT)",
+      "time_point": "endline (immediately after the two-year programme)",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 2.82,
+      "se": 1.42,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Food consumption per capita per month (2014 PPP US$)",
+      "arm": "Any GUP (ITT)",
+      "time_point": "endline (immediately after the two-year programme)",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 2.18,
+      "se": 1.04,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Nonfood consumption per capita per month (2014 PPP US$)",
+      "arm": "Any GUP (ITT)",
+      "time_point": "endline (immediately after the two-year programme)",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 0.44,
+      "se": 0.76,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Durable good expenditure per capita per month (2014 PPP US$)",
+      "arm": "Any GUP (ITT)",
+      "time_point": "endline (immediately after the two-year programme)",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 0.05,
+      "se": 0.037,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Total consumption per capita per month (2014 PPP US$)",
+      "arm": "Any GUP (ITT)",
+      "time_point": "follow-up (about one year after endline)",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 3.22,
+      "se": 1.19,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Food consumption per capita per month (2014 PPP US$)",
+      "arm": "Any GUP (ITT)",
+      "time_point": "follow-up (about one year after endline)",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 2.41,
+      "se": 0.81,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Nonfood consumption per capita per month (2014 PPP US$)",
+      "arm": "Any GUP (ITT)",
+      "time_point": "follow-up (about one year after endline)",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 0.55,
+      "se": 0.66,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Durable good expenditure per capita per month (2014 PPP US$)",
+      "arm": "Any GUP (ITT)",
+      "time_point": "follow-up (about one year after endline)",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 0.03,
+      "se": 0.04,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Total consumption per capita per month (2014 PPP US$)",
+      "arm": "Asset only (ITT)",
+      "time_point": "endline (immediately after the two-year programme)",
+      "subgroup_or_population": "ultra-poor households",
+      "value": -0.64,
+      "se": 2.48,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Food consumption per capita per month (2014 PPP US$)",
+      "arm": "Asset only (ITT)",
+      "time_point": "endline (immediately after the two-year programme)",
+      "subgroup_or_population": "ultra-poor households",
+      "value": -0.06,
+      "se": 2.01,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Nonfood consumption per capita per month (2014 PPP US$)",
+      "arm": "Asset only (ITT)",
+      "time_point": "endline (immediately after the two-year programme)",
+      "subgroup_or_population": "ultra-poor households",
+      "value": -0.64,
+      "se": 0.91,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Durable good expenditure per capita per month (2014 PPP US$)",
+      "arm": "Asset only (ITT)",
+      "time_point": "endline (immediately after the two-year programme)",
+      "subgroup_or_population": "ultra-poor households",
+      "value": -0.03,
+      "se": 0.055,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Total consumption per capita per month (2014 PPP US$)",
+      "arm": "Asset only (ITT)",
+      "time_point": "follow-up (about one year after endline)",
+      "subgroup_or_population": "ultra-poor households",
+      "value": -0.14,
+      "se": 2.18,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Food consumption per capita per month (2014 PPP US$)",
+      "arm": "Asset only (ITT)",
+      "time_point": "follow-up (about one year after endline)",
+      "subgroup_or_population": "ultra-poor households",
+      "value": -0.45,
+      "se": 1.57,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Nonfood consumption per capita per month (2014 PPP US$)",
+      "arm": "Asset only (ITT)",
+      "time_point": "follow-up (about one year after endline)",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 0.54,
+      "se": 0.86,
+      "effect_type": "main"
+    },
+    {
+      "outcome": "Durable good expenditure per capita per month (2014 PPP US$)",
+      "arm": "Asset only (ITT)",
+      "time_point": "follow-up (about one year after endline)",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 0.02,
+      "se": 0.07,
+      "effect_type": "main"
+    }
+  ],
+  "not_stored": [
+    {
+      "cell": "Observations rows",
+      "reason": "sample sizes"
+    },
+    {
+      "cell": "R-squared rows",
+      "reason": "model statistics"
+    },
+    {
+      "cell": "Control mean rows",
+      "reason": "control-group means, not effects"
+    },
+    {
+      "cell": "Baseline mean row (Any GUP panel)",
+      "reason": "baseline (pre-programme) means, not effects"
+    }
+  ],
+  "rule": "A minus sign separated from its number in the text layer ('- 0.64') still belongs to it: take the sign from the picture and store -0.64. Each arm panel and each round block gives its own rows; the panel label sets the arm and the Endline/Followup header sets the time point."
+}

@@ -1,0 +1,395 @@
+{
+  "id": "rct-itt-and-tot-stars-only-escobal2016-t4-2",
+  "status": "draft",
+  "checked_against_page": true,
+  "source": {
+    "doc_key": "27cf2157fc9d",
+    "pdf": "122182711 Spanish.pdf",
+    "page": 75,
+    "table_label": "Tabla 4.2",
+    "bbox_points": [
+      50,
+      80,
+      395,
+      485
+    ],
+    "render_rotation": 0
+  },
+  "tags": {
+    "method": [
+      "cluster RCT (population centres)",
+      "ITT by difference in differences",
+      "TOT/ATET by IV (assignment as instrument)"
+    ],
+    "format": [
+      "coefficient",
+      "level (soles per year)",
+      "index"
+    ],
+    "layout": [
+      "two estimand columns (ITT, TOT) for the same outcome rows",
+      "stars only for significance (no SE, t or p printed)",
+      "decimal comma (786,3)",
+      "numbered outcome hierarchy (1, 1.1, 1.2, ...)",
+      "second block of index rows under a sub-heading",
+      "Spanish-language table"
+    ],
+    "picture_matters": "Two traps. (1) The English machine-translated edition of this book (doc 6ee1e2e3e24e, p. 75) re-flows the row labels so that labels and numbers no longer line up ('Independent agricultural income 1.2.' sits on the 470.3 row) and moves stars off their numbers; use the Spanish original. (2) The values use decimal commas, so '786,3' is 786.3, not 7863, and '-0,0129' is -0.0129."
+  },
+  "snippet": "Tabla 4.2  Impactos de la intervención sobre los ingresos\n                                                   Intención del tratamiento   Impacto del\n                                                   (diferencias en diferencias) tratamiento\nIngresos totales del hogar (S/.)                        786,3 *        910,5 *\n1. Ingresos independientes agropecuarios (productos y subproductos)  746,2 **  864,0 **\n   1.1. Ingresos agrícolas independientes              470,3 **       544,5 **\n   1.2. Ingresos pecuarios independientes              268,6 **       311,1 **\n   1.3. Ingresos independientes por subproductos agrícolas y pecuarios  7,2  8,4\n2. Ingresos independientes por otras actividades primarias (actividad forestal, pesca, otros)  66,7  77,2\n3. Ingresos independientes por servicios, comercio, artesanías, otros  201,0 *  232,7 *\n4. Ingresos por trabajo dependiente                   -273,3 ***     -316,5 ***\n   4.1. Ingresos por trabajo asalariado agrícola       -239,7 **      -277,6 **\n   4.2. Ingresos por trabajo asalariado no agrícola    -33,6          -38,9\n5. Ingresos por alquileres, transferencias, otros (no incluye Juntos)  59,3  68,7\n6. Ingresos por transferencias de Juntos              -13,5          -15,7\nÍndice de Herfindahl de diversificación de ingresos (1 = diversificación completa, 0 = concentración):\nDesagregando el ingreso en 17 rubros                  -0,0024        -0,0028\nDesagregando el ingreso en 9 grupos                   -0,0032        -0,0037\nDesagregando el ingreso en 6 grandes grupos           -0,0129 *      -0,0149 *\nNota: *** p<0,01, ** p<0,05, * p<0,1, ~ p<0,15.\nLos ingresos nominales han sido deflactados temporal (IPC, base 2009) y espacialmente (Enaho 2014) ... Los ingresos están en soles de Lima Metropolitana del 2014.",
+  "context_needed": "Peru, Haku Wiñay pilot (Escobal and Ponce, eds., GRADE 2016). Design: population centres randomly assigned to treatment in 2013 or to control (treated in 2016); baseline February 2013, follow-up August-September 2015. Column 1, 'Intención del tratamiento', is the ITT, estimated as a difference in differences after entropy balancing. Column 2, 'Impacto del tratamiento', is the effect on households that actually took part (ATET, i.e. TOT), estimated by IV with assignment of the population centre as the instrument (method: Spanish PDF pp. 49-52); 86% of households in treated centres took part (explained on p. 76, the page after the table). Units: income in 2014 Lima Metropolitan soles per year (p. 76 calls the 786,3 'soles anuales'); Herfindahl rows are index points (1 = full diversification).",
+  "stored_rows": [
+    {
+      "outcome": "Ingresos totales del hogar (S/.) [total household income]",
+      "arm": "Haku Wiñay (ITT)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": 786.3,
+      "se": null,
+      "effect_type": "main",
+      "specification": "difference in differences on entropy-balanced sample",
+      "stars": "*"
+    },
+    {
+      "outcome": "1. Ingresos independientes agropecuarios (productos y subproductos) [self-employed farm income]",
+      "arm": "Haku Wiñay (ITT)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": 746.2,
+      "se": null,
+      "effect_type": "main",
+      "specification": "difference in differences on entropy-balanced sample",
+      "stars": "**"
+    },
+    {
+      "outcome": "1.1. Ingresos agrícolas independientes [self-employed crop income]",
+      "arm": "Haku Wiñay (ITT)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": 470.3,
+      "se": null,
+      "effect_type": "main",
+      "specification": "difference in differences on entropy-balanced sample",
+      "stars": "**"
+    },
+    {
+      "outcome": "1.2. Ingresos pecuarios independientes [self-employed livestock income]",
+      "arm": "Haku Wiñay (ITT)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": 268.6,
+      "se": null,
+      "effect_type": "main",
+      "specification": "difference in differences on entropy-balanced sample",
+      "stars": "**"
+    },
+    {
+      "outcome": "1.3. Ingresos independientes por subproductos agrícolas y pecuarios [farm by-products income]",
+      "arm": "Haku Wiñay (ITT)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": 7.2,
+      "se": null,
+      "effect_type": "main",
+      "specification": "difference in differences on entropy-balanced sample",
+      "stars": null
+    },
+    {
+      "outcome": "2. Ingresos independientes por otras actividades primarias (actividad forestal, pesca, otros) [other primary activities]",
+      "arm": "Haku Wiñay (ITT)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": 66.7,
+      "se": null,
+      "effect_type": "main",
+      "specification": "difference in differences on entropy-balanced sample",
+      "stars": null
+    },
+    {
+      "outcome": "3. Ingresos independientes por servicios, comercio, artesanías, otros [services, trade, crafts]",
+      "arm": "Haku Wiñay (ITT)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": 201.0,
+      "se": null,
+      "effect_type": "main",
+      "specification": "difference in differences on entropy-balanced sample",
+      "stars": "*"
+    },
+    {
+      "outcome": "4. Ingresos por trabajo dependiente [wage income]",
+      "arm": "Haku Wiñay (ITT)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": -273.3,
+      "se": null,
+      "effect_type": "main",
+      "specification": "difference in differences on entropy-balanced sample",
+      "stars": "***"
+    },
+    {
+      "outcome": "4.1. Ingresos por trabajo asalariado agrícola [agricultural wage income]",
+      "arm": "Haku Wiñay (ITT)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": -239.7,
+      "se": null,
+      "effect_type": "main",
+      "specification": "difference in differences on entropy-balanced sample",
+      "stars": "**"
+    },
+    {
+      "outcome": "4.2. Ingresos por trabajo asalariado no agrícola [non-agricultural wage income]",
+      "arm": "Haku Wiñay (ITT)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": -33.6,
+      "se": null,
+      "effect_type": "main",
+      "specification": "difference in differences on entropy-balanced sample",
+      "stars": null
+    },
+    {
+      "outcome": "5. Ingresos por alquileres, transferencias, otros (no incluye Juntos) [rents, transfers, other, excluding Juntos]",
+      "arm": "Haku Wiñay (ITT)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": 59.3,
+      "se": null,
+      "effect_type": "main",
+      "specification": "difference in differences on entropy-balanced sample",
+      "stars": null
+    },
+    {
+      "outcome": "6. Ingresos por transferencias de Juntos [Juntos transfers]",
+      "arm": "Haku Wiñay (ITT)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": -13.5,
+      "se": null,
+      "effect_type": "main",
+      "specification": "difference in differences on entropy-balanced sample",
+      "stars": null
+    },
+    {
+      "outcome": "Índice de Herfindahl de diversificación de ingresos, desagregando el ingreso en 17 rubros [Herfindahl diversification index, 17 categories]",
+      "arm": "Haku Wiñay (ITT)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": -0.0024,
+      "se": null,
+      "effect_type": "main",
+      "specification": "difference in differences on entropy-balanced sample",
+      "stars": null
+    },
+    {
+      "outcome": "Índice de Herfindahl de diversificación de ingresos, desagregando el ingreso en 9 grupos [Herfindahl diversification index, 9 groups]",
+      "arm": "Haku Wiñay (ITT)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": -0.0032,
+      "se": null,
+      "effect_type": "main",
+      "specification": "difference in differences on entropy-balanced sample",
+      "stars": null
+    },
+    {
+      "outcome": "Índice de Herfindahl de diversificación de ingresos, desagregando el ingreso en 6 grandes grupos [Herfindahl diversification index, 6 major groups]",
+      "arm": "Haku Wiñay (ITT)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": -0.0129,
+      "se": null,
+      "effect_type": "main",
+      "specification": "difference in differences on entropy-balanced sample",
+      "stars": "*"
+    },
+    {
+      "outcome": "Ingresos totales del hogar (S/.) [total household income]",
+      "arm": "Haku Wiñay (TOT/ATET)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": 910.5,
+      "se": null,
+      "effect_type": "main",
+      "specification": "instrumental variables: random assignment of population centre as instrument for participation",
+      "stars": "*"
+    },
+    {
+      "outcome": "1. Ingresos independientes agropecuarios (productos y subproductos) [self-employed farm income]",
+      "arm": "Haku Wiñay (TOT/ATET)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": 864.0,
+      "se": null,
+      "effect_type": "main",
+      "specification": "instrumental variables: random assignment of population centre as instrument for participation",
+      "stars": "**"
+    },
+    {
+      "outcome": "1.1. Ingresos agrícolas independientes [self-employed crop income]",
+      "arm": "Haku Wiñay (TOT/ATET)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": 544.5,
+      "se": null,
+      "effect_type": "main",
+      "specification": "instrumental variables: random assignment of population centre as instrument for participation",
+      "stars": "**"
+    },
+    {
+      "outcome": "1.2. Ingresos pecuarios independientes [self-employed livestock income]",
+      "arm": "Haku Wiñay (TOT/ATET)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": 311.1,
+      "se": null,
+      "effect_type": "main",
+      "specification": "instrumental variables: random assignment of population centre as instrument for participation",
+      "stars": "**"
+    },
+    {
+      "outcome": "1.3. Ingresos independientes por subproductos agrícolas y pecuarios [farm by-products income]",
+      "arm": "Haku Wiñay (TOT/ATET)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": 8.4,
+      "se": null,
+      "effect_type": "main",
+      "specification": "instrumental variables: random assignment of population centre as instrument for participation",
+      "stars": null
+    },
+    {
+      "outcome": "2. Ingresos independientes por otras actividades primarias (actividad forestal, pesca, otros) [other primary activities]",
+      "arm": "Haku Wiñay (TOT/ATET)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": 77.2,
+      "se": null,
+      "effect_type": "main",
+      "specification": "instrumental variables: random assignment of population centre as instrument for participation",
+      "stars": null
+    },
+    {
+      "outcome": "3. Ingresos independientes por servicios, comercio, artesanías, otros [services, trade, crafts]",
+      "arm": "Haku Wiñay (TOT/ATET)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": 232.7,
+      "se": null,
+      "effect_type": "main",
+      "specification": "instrumental variables: random assignment of population centre as instrument for participation",
+      "stars": "*"
+    },
+    {
+      "outcome": "4. Ingresos por trabajo dependiente [wage income]",
+      "arm": "Haku Wiñay (TOT/ATET)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": -316.5,
+      "se": null,
+      "effect_type": "main",
+      "specification": "instrumental variables: random assignment of population centre as instrument for participation",
+      "stars": "***"
+    },
+    {
+      "outcome": "4.1. Ingresos por trabajo asalariado agrícola [agricultural wage income]",
+      "arm": "Haku Wiñay (TOT/ATET)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": -277.6,
+      "se": null,
+      "effect_type": "main",
+      "specification": "instrumental variables: random assignment of population centre as instrument for participation",
+      "stars": "**"
+    },
+    {
+      "outcome": "4.2. Ingresos por trabajo asalariado no agrícola [non-agricultural wage income]",
+      "arm": "Haku Wiñay (TOT/ATET)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": -38.9,
+      "se": null,
+      "effect_type": "main",
+      "specification": "instrumental variables: random assignment of population centre as instrument for participation",
+      "stars": null
+    },
+    {
+      "outcome": "5. Ingresos por alquileres, transferencias, otros (no incluye Juntos) [rents, transfers, other, excluding Juntos]",
+      "arm": "Haku Wiñay (TOT/ATET)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": 68.7,
+      "se": null,
+      "effect_type": "main",
+      "specification": "instrumental variables: random assignment of population centre as instrument for participation",
+      "stars": null
+    },
+    {
+      "outcome": "6. Ingresos por transferencias de Juntos [Juntos transfers]",
+      "arm": "Haku Wiñay (TOT/ATET)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": -15.7,
+      "se": null,
+      "effect_type": "main",
+      "specification": "instrumental variables: random assignment of population centre as instrument for participation",
+      "stars": null
+    },
+    {
+      "outcome": "Índice de Herfindahl de diversificación de ingresos, desagregando el ingreso en 17 rubros [Herfindahl diversification index, 17 categories]",
+      "arm": "Haku Wiñay (TOT/ATET)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": -0.0028,
+      "se": null,
+      "effect_type": "main",
+      "specification": "instrumental variables: random assignment of population centre as instrument for participation",
+      "stars": null
+    },
+    {
+      "outcome": "Índice de Herfindahl de diversificación de ingresos, desagregando el ingreso en 9 grupos [Herfindahl diversification index, 9 groups]",
+      "arm": "Haku Wiñay (TOT/ATET)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": -0.0037,
+      "se": null,
+      "effect_type": "main",
+      "specification": "instrumental variables: random assignment of population centre as instrument for participation",
+      "stars": null
+    },
+    {
+      "outcome": "Índice de Herfindahl de diversificación de ingresos, desagregando el ingreso en 6 grandes grupos [Herfindahl diversification index, 6 major groups]",
+      "arm": "Haku Wiñay (TOT/ATET)",
+      "time_point": "follow-up Aug-Sep 2015 (baseline Feb 2013)",
+      "subgroup_or_population": "households in pilot population centres",
+      "value": -0.0149,
+      "se": null,
+      "effect_type": "main",
+      "specification": "instrumental variables: random assignment of population centre as instrument for participation",
+      "stars": "*"
+    }
+  ],
+  "not_stored": [
+    {
+      "cell": "Significance legend 'Nota: *** p<0,01, ** p<0,05, * p<0,1, ~ p<0,15'",
+      "reason": "p-value thresholds, not effects; the star level of each cell is kept in its note"
+    },
+    {
+      "cell": "Sub-heading 'Índice de Herfindahl de diversificación de ingresos (1 = diversificación completa, 0 = concentración):'",
+      "reason": "heading with no numbers; its three rows are stored with the heading folded into the outcome name"
+    },
+    {
+      "cell": "7,8% income increase quoted in the text on p. 76",
+      "reason": "not printed in this table; a percentage computed in the text"
+    }
+  ],
+  "rule": "When ITT and TOT/ATET are printed side by side for the same outcomes, store both, each with its estimand in arm; the TOT column header may not say 'TOT' (here 'Impacto del tratamiento'), so the estimand comes from the text. With stars only, se stays null and nothing is invented. Read decimal commas as decimal points.",
+  "significance_legend": "*** p<0.01, ** p<0.05, * p<0.1, ~ p<0.15",
+  "resolved_questions": [
+    {
+      "question": "The table prints no SE, t or p-value, only stars. The row fields have no place for significance, so this entry keeps the star level in note. Should stars-only significance get its own field (for example 'stars': '**' with the legend), or stay in note?",
+      "resolution": "Reviewer convention, 22 Nov 2026: stars go in a 'stars' field on the row, with the table's legend in 'significance_legend'. Stars are recorded only when no SE, t or p is printed."
+    }
+  ]
+}

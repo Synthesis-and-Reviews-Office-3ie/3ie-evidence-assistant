@@ -1,0 +1,166 @@
+{
+  "id": "est-iv-late-second-stage-paraguay-sof-t5",
+  "status": "draft",
+  "checked_against_page": true,
+  "source": {
+    "doc_key": "ed8331ab9500",
+    "pdf": "121058364.pdf",
+    "page": 20,
+    "table_label": "Table 5",
+    "bbox_points": [
+      82,
+      458,
+      530,
+      722
+    ],
+    "render_rotation": 0
+  },
+  "tags": {
+    "method": [
+      "RCT with imperfect compliance, IV / 2SLS (LATE)",
+      "non-experimental before-after 'results evaluation' (RE) beside it"
+    ],
+    "format": [
+      "coefficient",
+      "standardised effect size",
+      "decimal comma"
+    ],
+    "layout": [
+      "two column groups under spanners: IV (Effect, Effect SD of CG) and RE (Change, Change SD of BL)",
+      "SE in brackets below the estimate only",
+      "shaded blank spacer rows between outcomes",
+      "stars",
+      "one Observations row with different N per group"
+    ],
+    "picture_matters": "The text layer breaks this table apart: from 'Poverty by PPI' down, the RE values (-0,175***, 0,20***, -0,36***, 0,47***) and the RE N (854) drift into the wrong rows, and the IV SEs separate from their estimates. Decimal commas must also be read as decimal points (-0,09 = -0.09)."
+  },
+  "snippet": "Table 5: Effects of SOF on poverty, according to IV and RE\n                                   IV                       RE\nVariables                          Effect   Effect SD of CG  Change    Change SD of BL\nPoverty measured by the poverty line  -0,09*  -0,22*         0,05**    0,16**\n                                   (0,05)                    (0,02)\nExtreme poverty measured by poverty line 0,09  0,22          -0,05**   -0,16**\n                                   (0,05)                    (0,02)\nPoverty by PPI                     0,04     0,19             0,04      -0,08\n                                   (0,03)                    (0,03)\nExtreme poverty by PPI             0,04     0,20             -0,175*** -0,36***\n                                   (0,02)                    (0,02)\nPoverty measured by MPI            0,04     0,21             0,20***   0,47***\n                                   (0,03)                    (0,02)\nObservations                       1005                      854\nStandard errors in brackets, ***p<0.01, ** p<0.05 * p<0.1",
+  "context_needed": "Maldonado et al. (2019), Documentos CEDE: Sembrando Oportunidades Familia por Familia (SOF), a graduation pilot in Paraguay. The RCT assignment was not followed in full, so the impact evaluation is IV: the original randomisation variable instruments receipt of the programme, giving a local average treatment effect (PDF pages 13-14). The first stage (probability of receiving SOF given assignment) is described but never printed as a table; the text gives only participation of 70% when assigned to treatment against 40% in control (PDF page 13). The IV compares all treated groups (full SOF, extended pilot, PRODERS) with pure controls, 1,005 endline households, endline October 2017. 'Effect SD of CG' scales the IV effect by the control group's standard deviation. 'RE' (results evaluation) is a baseline-to-endline change for treated households only, which the authors call non-experimental (PDF page 14). Outcomes are shares of households (poverty headcounts).",
+  "stored_rows": [
+    {
+      "outcome": "Poverty measured by the poverty line",
+      "arm": "SOF programme (LATE: IV, original random assignment instrumenting receipt)",
+      "time_point": "endline (October 2017)",
+      "subgroup_or_population": "households in the IV sample (all 1,005 endline households)",
+      "value": -0.09,
+      "se": 0.05,
+      "effect_type": "main",
+      "note": "Printed with a decimal comma; a share of households, so the value is in proportion points."
+    },
+    {
+      "outcome": "Extreme poverty measured by poverty line",
+      "arm": "SOF programme (LATE: IV, original random assignment instrumenting receipt)",
+      "time_point": "endline (October 2017)",
+      "subgroup_or_population": "households in the IV sample (all 1,005 endline households)",
+      "value": 0.09,
+      "se": 0.05,
+      "effect_type": "main",
+      "note": "Printed with a decimal comma; a share of households, so the value is in proportion points."
+    },
+    {
+      "outcome": "Poverty by PPI",
+      "arm": "SOF programme (LATE: IV, original random assignment instrumenting receipt)",
+      "time_point": "endline (October 2017)",
+      "subgroup_or_population": "households in the IV sample (all 1,005 endline households)",
+      "value": 0.04,
+      "se": 0.03,
+      "effect_type": "main",
+      "note": "Printed with a decimal comma; a share of households, so the value is in proportion points."
+    },
+    {
+      "outcome": "Extreme poverty by PPI",
+      "arm": "SOF programme (LATE: IV, original random assignment instrumenting receipt)",
+      "time_point": "endline (October 2017)",
+      "subgroup_or_population": "households in the IV sample (all 1,005 endline households)",
+      "value": 0.04,
+      "se": 0.02,
+      "effect_type": "main",
+      "note": "Printed with a decimal comma; a share of households, so the value is in proportion points."
+    },
+    {
+      "outcome": "Poverty measured by MPI",
+      "arm": "SOF programme (LATE: IV, original random assignment instrumenting receipt)",
+      "time_point": "endline (October 2017)",
+      "subgroup_or_population": "households in the IV sample (all 1,005 endline households)",
+      "value": 0.04,
+      "se": 0.03,
+      "effect_type": "main",
+      "note": "Printed with a decimal comma; a share of households, so the value is in proportion points."
+    },
+    {
+      "outcome": "Poverty measured by the poverty line",
+      "arm": "SOF programme (LATE: IV, original random assignment instrumenting receipt)",
+      "time_point": "endline (October 2017)",
+      "subgroup_or_population": "households in the IV sample (all 1,005 endline households)",
+      "value": -0.22,
+      "se": null,
+      "effect_type": "standardised effect size",
+      "note": "'Effect SD of CG': the IV effect divided by the control group's standard deviation, printed signed."
+    },
+    {
+      "outcome": "Extreme poverty measured by poverty line",
+      "arm": "SOF programme (LATE: IV, original random assignment instrumenting receipt)",
+      "time_point": "endline (October 2017)",
+      "subgroup_or_population": "households in the IV sample (all 1,005 endline households)",
+      "value": 0.22,
+      "se": null,
+      "effect_type": "standardised effect size",
+      "note": "'Effect SD of CG': the IV effect divided by the control group's standard deviation, printed signed."
+    },
+    {
+      "outcome": "Poverty by PPI",
+      "arm": "SOF programme (LATE: IV, original random assignment instrumenting receipt)",
+      "time_point": "endline (October 2017)",
+      "subgroup_or_population": "households in the IV sample (all 1,005 endline households)",
+      "value": 0.19,
+      "se": null,
+      "effect_type": "standardised effect size",
+      "note": "'Effect SD of CG': the IV effect divided by the control group's standard deviation, printed signed."
+    },
+    {
+      "outcome": "Extreme poverty by PPI",
+      "arm": "SOF programme (LATE: IV, original random assignment instrumenting receipt)",
+      "time_point": "endline (October 2017)",
+      "subgroup_or_population": "households in the IV sample (all 1,005 endline households)",
+      "value": 0.2,
+      "se": null,
+      "effect_type": "standardised effect size",
+      "note": "'Effect SD of CG': the IV effect divided by the control group's standard deviation, printed signed."
+    },
+    {
+      "outcome": "Poverty measured by MPI",
+      "arm": "SOF programme (LATE: IV, original random assignment instrumenting receipt)",
+      "time_point": "endline (October 2017)",
+      "subgroup_or_population": "households in the IV sample (all 1,005 endline households)",
+      "value": 0.21,
+      "se": null,
+      "effect_type": "standardised effect size",
+      "note": "'Effect SD of CG': the IV effect divided by the control group's standard deviation, printed signed."
+    }
+  ],
+  "not_stored": [
+    {
+      "cell": "RE 'Change' column (0,05**, -0,05**, 0,04, -0,175***, 0,20***) with SEs",
+      "reason": "before-after change among treated households only, with no comparison group: not a programme effect (Decided by Lucas, 22 Nov 2026)"
+    },
+    {
+      "cell": "RE 'Change SD of BL' column (0,16**, -0,16**, -0,08, -0,36***, 0,47***)",
+      "reason": "before-after change among treated households only, with no comparison group: not a programme effect (Decided by Lucas, 22 Nov 2026)"
+    },
+    {
+      "cell": "Observations (1005 for IV, 854 for RE)",
+      "reason": "sample size, not an effect"
+    },
+    {
+      "cell": "First stage",
+      "reason": "not printed in this table or elsewhere; nothing to store. When a first stage is printed (coefficient of assignment on take-up), it is stored with effect_type 'first stage'."
+    }
+  ],
+  "rule": "An IV / 2SLS effect of receiving the programme is stored as the effect, with the estimand (LATE or TOT) named in arm. Its standardised version ('Effect SD of CG') is a second row with effect_type 'standardised effect size'. A first stage is stored only if printed, with effect_type 'first stage'. Read decimal commas as decimal points.",
+  "resolved_questions": [
+    {
+      "question": "(1) The RE columns are a pre-post change among treated households only. The rules settle DiD versus a follow-up difference, but not a single-group before-after change printed beside the IV effect. They are left unstored here; confirm. (2) The IV 'treated' group pools three different interventions (full SOF, extended pilot, PRODERS), so the arm label says 'SOF programme' only loosely (the authors note the effect may be underestimated for that reason, PDF page 13). (3) As printed, 'Poverty by PPI' has an RE change of 0,04 but a scaled change of -0,08 (opposite signs); unstored, but worth knowing if RE is ever stored.",
+      "resolution": "Decided by Lucas, 22 Nov 2026: a treated-only before-after change is never stored."
+    }
+  ]
+}

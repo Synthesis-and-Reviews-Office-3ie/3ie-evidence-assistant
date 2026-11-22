@@ -1,0 +1,49 @@
+{
+  "id": "qe-did-vs-followup-diff-islam2014-t2-3",
+  "status": "draft",
+  "checked_against_page": true,
+  "source": {
+    "doc_key": "493a2bec10d3",
+    "pdf": "121336027.pdf",
+    "page": 4,
+    "table_label": "Tables 2 and 3",
+    "bbox_points": [30, 330, 556, 754],
+    "render_rotation": 0
+  },
+  "tags": {
+    "method": ["DiD with kernel propensity-score matching"],
+    "format": ["difference in index points"],
+    "layout": [
+      "three rows per block: baseline gap, follow-up difference, DiD",
+      "DiD row in bold",
+      "SE in parentheses below",
+      "outcomes in columns",
+      "robustness blocks stacked with italic block labels",
+      "parameter row (theta, alpha) above one block"
+    ],
+    "picture_matters": "In the text layer the three rows of Table 2 lose their labels: the 2002 and 2005 'TUP1-TUP2' labels and 'Difference-in-Difference' sit above a stack of six unlabelled numbers, so which number is the baseline gap, the follow-up difference or the DiD can only be read from the picture (the DiD row is the bold one)."
+  },
+  "snippet": "Table 2  The effect of TUP from difference-in-difference with matching estimator.\nVariable                   Year  Poverty gap  Squared gap  Cubic gap\nTUP1-TUP2                  2002   0.0171       0.0195       0.0208\n                                 (0.0032)     (0.0032)     (0.0033)\nTUP1-TUP2                  2005  -0.1685      -0.1668      -0.1655\n                                 (0.0047)     (0.0047)     (0.0048)\nDifference-in-Difference         -0.1856      -0.1864      -0.1864\n                                 (0.0057)     (0.0058)     (0.0058)\n\nTable 3  Robustness tests.\nVariable                   Year  Poverty gap  Squared poverty gap  Cubic poverty gap\nDifferent weights\nTUP1-TUP2                  2002   0.0224 (0.0042)  0.0271 (0.0043)  0.0294 (0.0045)\nTUP1-TUP2                  2005  -0.1304 (0.0046) -0.1292 (0.0047) -0.1266 (0.0047)\nDifference-in-Difference         -0.1528 (0.0059) -0.1526 (0.0063) -0.1560 (0.0065)\nDifferent poverty threshold\nTUP1-TUP2                  2002   0.0142 (0.0028)  0.0169 (0.0030)  0.0186 (0.0032)\nTUP1-TUP2                  2005  -0.1424 (0.0043) -0.1519 (0.0045) -0.1567 (0.0047)\nDifference-in-Difference         -0.1567 (0.0052) -0.1689 (0.0055) -0.1753 (0.0057)\nBourguignon-Chakravarty          theta=2, alpha=4   theta=2, alpha=3   theta=3, alpha=5\nTUP1-TUP2                  2002   0.0262 (0.0042)  0.0239 (0.0039)  0.02619 (0.0040)\nTUP1-TUP2                  2005  -0.1716 (0.0049) -0.1779 (0.0050) -0.1719 (0.0050)\nDifference-in-Difference         -0.1979 (0.0065) -0.2019 (0.0064) -0.1980 (0.0064)\nStandard errors in parenthesis. TUP1 is the treatment group and TUP2 is the comparison group. ... The negative value indicates that the poverty measure has decreased.",
+  "context_needed": "BRAC Targeting the Ultra Poor (TUP) programme, Rangpur, Kurigram and Nilphamari districts, Bangladesh. TUP1 = 1,997 households that qualified under BRAC's criteria and received the programme; TUP2 = 1,667 households that qualified but were not treated (p. 3). Rounds: 2002 (baseline) and 2005 (follow-up). Outcomes are multidimensional poverty measures built from normalised shortfalls (Eq. 1, p. 2): poverty gap (alpha=1), squared gap (alpha=2), cubic gap (alpha=3); the Bourguignon-Chakravarty block uses Eq. 2 with the theta and alpha printed above each column. Values are index points (0-1 scale); negative means poverty fell. Estimator: DiD with kernel propensity-score matching (Epanechnikov kernel, psmatch2; p. 3), estimand ATT. Table 2 is the main result (the highlights on p. 1 quote it as an 18-point fall); Table 3 holds robustness checks with changed weights, thresholds and index family.",
+  "stored_rows": [
+    {"outcome": "Multidimensional poverty gap (alpha=1)", "arm": "TUP (ATT, DiD with kernel matching)", "time_point": "2005 vs 2002 baseline", "subgroup_or_population": "ultra-poor households qualifying for TUP", "value": -0.1856, "se": 0.0057, "effect_type": "main", "specification": "main: equal weights, standard thresholds", "preferred": true},
+    {"outcome": "Multidimensional squared poverty gap (alpha=2)", "arm": "TUP (ATT, DiD with kernel matching)", "time_point": "2005 vs 2002 baseline", "subgroup_or_population": "ultra-poor households qualifying for TUP", "value": -0.1864, "se": 0.0058, "effect_type": "main", "specification": "main: equal weights, standard thresholds", "preferred": true},
+    {"outcome": "Multidimensional cubic poverty gap (alpha=3)", "arm": "TUP (ATT, DiD with kernel matching)", "time_point": "2005 vs 2002 baseline", "subgroup_or_population": "ultra-poor households qualifying for TUP", "value": -0.1864, "se": 0.0058, "effect_type": "main", "specification": "main: equal weights, standard thresholds", "preferred": true},
+    {"outcome": "Multidimensional poverty gap (alpha=1)", "arm": "TUP (ATT, DiD with kernel matching)", "time_point": "2005 vs 2002 baseline", "subgroup_or_population": "ultra-poor households qualifying for TUP", "value": -0.1528, "se": 0.0059, "effect_type": "main", "specification": "robustness: different dimension weights"},
+    {"outcome": "Multidimensional squared poverty gap (alpha=2)", "arm": "TUP (ATT, DiD with kernel matching)", "time_point": "2005 vs 2002 baseline", "subgroup_or_population": "ultra-poor households qualifying for TUP", "value": -0.1526, "se": 0.0063, "effect_type": "main", "specification": "robustness: different dimension weights"},
+    {"outcome": "Multidimensional cubic poverty gap (alpha=3)", "arm": "TUP (ATT, DiD with kernel matching)", "time_point": "2005 vs 2002 baseline", "subgroup_or_population": "ultra-poor households qualifying for TUP", "value": -0.1560, "se": 0.0065, "effect_type": "main", "specification": "robustness: different dimension weights"},
+    {"outcome": "Multidimensional poverty gap (alpha=1)", "arm": "TUP (ATT, DiD with kernel matching)", "time_point": "2005 vs 2002 baseline", "subgroup_or_population": "ultra-poor households qualifying for TUP", "value": -0.1567, "se": 0.0052, "effect_type": "main", "specification": "robustness: different poverty thresholds"},
+    {"outcome": "Multidimensional squared poverty gap (alpha=2)", "arm": "TUP (ATT, DiD with kernel matching)", "time_point": "2005 vs 2002 baseline", "subgroup_or_population": "ultra-poor households qualifying for TUP", "value": -0.1689, "se": 0.0055, "effect_type": "main", "specification": "robustness: different poverty thresholds"},
+    {"outcome": "Multidimensional cubic poverty gap (alpha=3)", "arm": "TUP (ATT, DiD with kernel matching)", "time_point": "2005 vs 2002 baseline", "subgroup_or_population": "ultra-poor households qualifying for TUP", "value": -0.1753, "se": 0.0057, "effect_type": "main", "specification": "robustness: different poverty thresholds"},
+    {"outcome": "Bourguignon-Chakravarty multidimensional poverty (theta=2, alpha=4)", "arm": "TUP (ATT, DiD with kernel matching)", "time_point": "2005 vs 2002 baseline", "subgroup_or_population": "ultra-poor households qualifying for TUP", "value": -0.1979, "se": 0.0065, "effect_type": "main", "specification": "robustness: Bourguignon-Chakravarty index"},
+    {"outcome": "Bourguignon-Chakravarty multidimensional poverty (theta=2, alpha=3)", "arm": "TUP (ATT, DiD with kernel matching)", "time_point": "2005 vs 2002 baseline", "subgroup_or_population": "ultra-poor households qualifying for TUP", "value": -0.2019, "se": 0.0064, "effect_type": "main", "specification": "robustness: Bourguignon-Chakravarty index"},
+    {"outcome": "Bourguignon-Chakravarty multidimensional poverty (theta=3, alpha=5)", "arm": "TUP (ATT, DiD with kernel matching)", "time_point": "2005 vs 2002 baseline", "subgroup_or_population": "ultra-poor households qualifying for TUP", "value": -0.1980, "se": 0.0064, "effect_type": "main", "specification": "robustness: Bourguignon-Chakravarty index"}
+  ],
+  "not_stored": [
+    {"cell": "TUP1-TUP2, 2002 rows (Table 2: 0.0171, 0.0195, 0.0208; Table 3: 0.0224 ... 0.02619)", "reason": "baseline (pre-programme) gap between treated and comparison groups, not an effect"},
+    {"cell": "TUP1-TUP2, 2005 rows (Table 2: -0.1685, -0.1668, -0.1655; Table 3: -0.1304 ... -0.1719)", "reason": "plain follow-up difference between groups; the same table gives the DiD for the same outcome, so only the DiD is stored"},
+    {"cell": "theta = 2, alpha = 4 / theta = 2, alpha = 3 / theta = 3, alpha = 5", "reason": "index parameters, not values; they are carried into the outcome name of the Bourguignon-Chakravarty rows"},
+    {"cell": "Table 1 (top of the page) and Table A.1 (p. 5)", "reason": "not in this crop; Table 1 is descriptive (means and SDs of shortfalls), Table A.1 is an income-only version of Table 2 read the same way"}
+  ],
+  "rule": "When a block shows the baseline gap, the follow-up difference and the difference-in-differences for the same outcome, store only the DiD row; the baseline gap and the follow-up difference are descriptive. Robustness blocks of DiDs are stored too, labelled in 'specification', with 'preferred' on the main table."
+}

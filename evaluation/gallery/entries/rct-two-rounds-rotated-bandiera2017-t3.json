@@ -1,0 +1,63 @@
+{
+  "id": "rct-two-rounds-rotated-bandiera2017-t3",
+  "status": "draft",
+  "checked_against_page": true,
+  "source": {
+    "doc_key": "67e5321c3a99",
+    "pdf": "Bangladesh - all BRAC programs/BRAC programs (40)/Bandiera (2017).pdf",
+    "page": 24,
+    "table_label": "Table III, Panel A",
+    "bbox_points": [80, 78, 310, 584],
+    "render_rotation": 90
+  },
+  "tags": {
+    "method": ["RCT (ITT)", "DiD specification (treatment x wave)"],
+    "format": ["coefficient", "percent change vs control mean"],
+    "layout": [
+      "rotated table",
+      "several rounds",
+      "SE in brackets below",
+      "two header rows (activity over Hours/Days)",
+      "Panel A/B stacks",
+      "control-mean and N rows",
+      "p-value row for equality of effects",
+      "stars only for significance"
+    ],
+    "picture_matters": "The page is printed sideways. The text layer drifts the 'after 4 years' days value (171.6) into the wrong line and splits the row labels from their numbers, so row-to-value pairing must come from the picture."
+  },
+  "snippet": "TABLE III  TREATMENT EFFECTS ON THE LABOR SUPPLY AND EARNINGS OF ULTRA-POOR WOMEN\n            Livestock      Agriculture     Maid           All activities\n            (1)Hours (2)Days (3)Hours (4)Days (5)Hours (6)Days (7)Hours (8)Days\nPanel A: Labor supply\nProgram impact after 2 years  488*** 205.5*** -42.3 -3.54 -57.4 -8.45 341*** 72.4***\n                              (30.7) (11.1) (53.0) (7.02) (42.9) (5.88) (67.9) (10.0)\nProgram impact after 4 years  415*** 171.6*** -46.2 -4.77 -117** -16.77*** 206*** 61.1***\n                              (38.9) (10.9) (42.7) (5.43) (45.0) (5.82) (73.0) (12.5)\nControl mean at 4-year follow-up 191.00 94.76 278.14 35.40 447.05 63.97 1,217.00 277.40\n4-year impact: % change  217% 181% -17% -13.5% -26% -26% 17% 22%\n2-year impact = 4-year impact [p-value]  0.111 0.023 0.930 0.831 0.125 0.125 0.080 0.179\nAdjusted R-squared ... Number of ultra-poor women 6,732 ... Number of observations 20,196 (clusters) (40)\nNotes. ... Intent-to-treat estimates ... difference-in-difference specification ... coefficients shown are those on the treatment-survey wave interaction terms.",
+  "context_needed": "Arm and population come from the title and notes: one programme arm (BRAC ultra-poor asset and skills transfer), population ultra-poor women, estimand ITT. The unit is hours or days per year.",
+  "stored_rows": [
+    {"outcome": "Livestock, hours worked per year", "arm": "Programme (ITT)", "time_point": "after 2 years", "subgroup_or_population": "ultra-poor women", "value": 488, "se": 30.7, "effect_type": "main"},
+    {"outcome": "Livestock, hours worked per year", "arm": "Programme (ITT)", "time_point": "after 4 years", "subgroup_or_population": "ultra-poor women", "value": 415, "se": 38.9, "effect_type": "main"},
+    {"outcome": "Livestock, days worked per year", "arm": "Programme (ITT)", "time_point": "after 2 years", "subgroup_or_population": "ultra-poor women", "value": 205.5, "se": 11.1, "effect_type": "main"},
+    {"outcome": "Livestock, days worked per year", "arm": "Programme (ITT)", "time_point": "after 4 years", "subgroup_or_population": "ultra-poor women", "value": 171.6, "se": 10.9, "effect_type": "main"},
+    {"outcome": "Agriculture, hours worked per year", "arm": "Programme (ITT)", "time_point": "after 2 years", "subgroup_or_population": "ultra-poor women", "value": -42.3, "se": 53.0, "effect_type": "main"},
+    {"outcome": "Agriculture, hours worked per year", "arm": "Programme (ITT)", "time_point": "after 4 years", "subgroup_or_population": "ultra-poor women", "value": -46.2, "se": 42.7, "effect_type": "main"},
+    {"outcome": "Agriculture, days worked per year", "arm": "Programme (ITT)", "time_point": "after 2 years", "subgroup_or_population": "ultra-poor women", "value": -3.54, "se": 7.02, "effect_type": "main"},
+    {"outcome": "Agriculture, days worked per year", "arm": "Programme (ITT)", "time_point": "after 4 years", "subgroup_or_population": "ultra-poor women", "value": -4.77, "se": 5.43, "effect_type": "main"},
+    {"outcome": "Maid work, hours per year", "arm": "Programme (ITT)", "time_point": "after 2 years", "subgroup_or_population": "ultra-poor women", "value": -57.4, "se": 42.9, "effect_type": "main"},
+    {"outcome": "Maid work, hours per year", "arm": "Programme (ITT)", "time_point": "after 4 years", "subgroup_or_population": "ultra-poor women", "value": -117, "se": 45.0, "effect_type": "main"},
+    {"outcome": "Maid work, days per year", "arm": "Programme (ITT)", "time_point": "after 2 years", "subgroup_or_population": "ultra-poor women", "value": -8.45, "se": 5.88, "effect_type": "main"},
+    {"outcome": "Maid work, days per year", "arm": "Programme (ITT)", "time_point": "after 4 years", "subgroup_or_population": "ultra-poor women", "value": -16.77, "se": 5.82, "effect_type": "main"},
+    {"outcome": "All activities, hours worked per year", "arm": "Programme (ITT)", "time_point": "after 2 years", "subgroup_or_population": "ultra-poor women", "value": 341, "se": 67.9, "effect_type": "main"},
+    {"outcome": "All activities, hours worked per year", "arm": "Programme (ITT)", "time_point": "after 4 years", "subgroup_or_population": "ultra-poor women", "value": 206, "se": 73.0, "effect_type": "main"},
+    {"outcome": "All activities, days worked per year", "arm": "Programme (ITT)", "time_point": "after 2 years", "subgroup_or_population": "ultra-poor women", "value": 72.4, "se": 10.0, "effect_type": "main"},
+    {"outcome": "All activities, days worked per year", "arm": "Programme (ITT)", "time_point": "after 4 years", "subgroup_or_population": "ultra-poor women", "value": 61.1, "se": 12.5, "effect_type": "main"},
+    {"outcome": "Livestock, hours worked per year", "arm": "Programme (ITT)", "time_point": "after 4 years", "subgroup_or_population": "ultra-poor women", "value": 217, "se": null, "effect_type": "percent change vs control mean"},
+    {"outcome": "Livestock, days worked per year", "arm": "Programme (ITT)", "time_point": "after 4 years", "subgroup_or_population": "ultra-poor women", "value": 181, "se": null, "effect_type": "percent change vs control mean"},
+    {"outcome": "Agriculture, hours worked per year", "arm": "Programme (ITT)", "time_point": "after 4 years", "subgroup_or_population": "ultra-poor women", "value": -17, "se": null, "effect_type": "percent change vs control mean"},
+    {"outcome": "Agriculture, days worked per year", "arm": "Programme (ITT)", "time_point": "after 4 years", "subgroup_or_population": "ultra-poor women", "value": -13.5, "se": null, "effect_type": "percent change vs control mean"},
+    {"outcome": "Maid work, hours per year", "arm": "Programme (ITT)", "time_point": "after 4 years", "subgroup_or_population": "ultra-poor women", "value": -26, "se": null, "effect_type": "percent change vs control mean"},
+    {"outcome": "Maid work, days per year", "arm": "Programme (ITT)", "time_point": "after 4 years", "subgroup_or_population": "ultra-poor women", "value": -26, "se": null, "effect_type": "percent change vs control mean"},
+    {"outcome": "All activities, hours worked per year", "arm": "Programme (ITT)", "time_point": "after 4 years", "subgroup_or_population": "ultra-poor women", "value": 17, "se": null, "effect_type": "percent change vs control mean"},
+    {"outcome": "All activities, days worked per year", "arm": "Programme (ITT)", "time_point": "after 4 years", "subgroup_or_population": "ultra-poor women", "value": 22, "se": null, "effect_type": "percent change vs control mean"}
+  ],
+  "not_stored": [
+    {"cell": "Control mean at 4-year follow-up (191.00, 94.76, ...)", "reason": "control-group mean, not an effect"},
+    {"cell": "2-year impact = 4-year impact [p-value] (0.111, 0.023, ...)", "reason": "test statistic (p-value of equality of the two effects), not an effect"},
+    {"cell": "Adjusted R-squared, Number of ultra-poor women, Number of observations, (clusters)", "reason": "model statistics and sample sizes, not effects"},
+    {"cell": "Panel B: Earnings (page 25)", "reason": "not in this crop; Panel B continues on the next page and is read the same way"}
+  ],
+  "rule": "One row per outcome column and per round: the round goes in time_point, never folded into the outcome. Values and SEs are paired from the picture, not from the text layer. The '% change' row is stored as a percent change of the control mean on the 4-year effect, never as a level."
+}

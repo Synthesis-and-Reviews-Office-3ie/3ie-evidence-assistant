@@ -1,0 +1,366 @@
+{
+  "id": "est-adjusted-unadjusted-ethiopia-spir-ta3",
+  "status": "draft",
+  "checked_against_page": true,
+  "source": {
+    "doc_key": "076ec917aab5",
+    "pdf": "121378172 Gilligan (2024).pdf",
+    "page": 82,
+    "table_label": "Table A3 (rows 1a-5b; continues on page 83)",
+    "bbox_points": [
+      68,
+      70,
+      498,
+      680
+    ],
+    "render_rotation": 0
+  },
+  "tags": {
+    "method": [
+      "cluster RCT (ITT)",
+      "ANCOVA",
+      "with and without covariates"
+    ],
+    "format": [
+      "coefficient",
+      "SE column",
+      "p-value column"
+    ],
+    "layout": [
+      "long format: one line per arm contrast",
+      "outcome x specification as shaded block headers (1a unconditional / 1b conditional)",
+      "arm contrasts written as differences (T2-T1, T3-T1, T3-T2)",
+      "SE, p-value and N in their own columns",
+      "table runs over two pages"
+    ]
+  },
+  "snippet": "Table A3. Unconditional and conditional treatment effect estimates, nutrition indicators\nArm    Coefficient  Standard error  p-value  N\n1a) Caregiver's nutrition knowledge score, unconditional estimates (ANCOVA)\nT2-T1  0.276  0.113  0.015  2,231\nT3-T1  0.410  0.106  0.000  2,231\nT3-T2  0.135  0.095  0.158  2,231\n1b) Caregiver's nutrition knowledge score, conditional estimates (ANCOVA)\nT2-T1  0.280  0.088  0.002  2,231\nT3-T1  0.426  0.090  0.000  2,231\nT3-T2  0.146  0.075  0.052  2,231\n2a) % of children consuming a diet of minimum diversity, unconditional estimates\nT2-T1  1.60  2.30  0.487  2,233\n...\n5b) Mean height for age Z-score, conditional estimates\nT2-T1  -0.006  0.061  0.921  2,226\nT3-T1  0.091  0.060  0.128  2,226\nT3-T2  0.097  0.057  0.089  2,226\n6a) % of children stunted, unconditional estimates\nT2-T1  0.75  2.71  0.78  2,226\n[continues on page 83]\nNote (page 83): Conditional regression estimates control for household size at baseline, primary female's age and education level at baseline, index child's sex and age and strata fixed effects. When a baseline value is available, both the unconditional and conditional estimate is based on the ANCOVA method.",
+  "context_needed": "SPIR-II midline report (Gilligan et al. 2024), Amhara and Oromia, Ethiopia. Arms (PDF page 7 and Table 2.1): T1 = control, PSNP transfers only; T2 = SPIR-II programming plus nurturing care groups; T3 = T2 plus maternal cash transfers to pregnant and lactating women. Randomised by kebele; estimates are intent-to-treat by assignment. Round: midline. Units: knowledge score points (row 1), percentage points (rows 2-4), HAZ z-score (row 5). The definition of 'conditional' is in the table note on page 83. The running header says 'Baseline Survey Report' but this is the midline report.",
+  "stored_rows": [
+    {
+      "outcome": "Caregiver's nutrition knowledge score",
+      "arm": "T2: SPIR-II + nurturing care groups vs T1 control (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "caregivers of index children",
+      "value": 0.276,
+      "se": 0.113,
+      "effect_type": "main",
+      "specification": "unconditional (ANCOVA)"
+    },
+    {
+      "outcome": "Caregiver's nutrition knowledge score",
+      "arm": "T3: SPIR-II + nurturing care groups + maternal cash transfers vs T1 control (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "caregivers of index children",
+      "value": 0.41,
+      "se": 0.106,
+      "effect_type": "main",
+      "specification": "unconditional (ANCOVA)"
+    },
+    {
+      "outcome": "Caregiver's nutrition knowledge score",
+      "arm": "T3 vs T2: maternal cash transfers on top of SPIR-II + nurturing care groups (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "caregivers of index children",
+      "value": 0.135,
+      "se": 0.095,
+      "effect_type": "difference between arms",
+      "specification": "unconditional (ANCOVA)"
+    },
+    {
+      "outcome": "Caregiver's nutrition knowledge score",
+      "arm": "T2: SPIR-II + nurturing care groups vs T1 control (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "caregivers of index children",
+      "value": 0.28,
+      "se": 0.088,
+      "effect_type": "main",
+      "specification": "conditional (ANCOVA, with controls)"
+    },
+    {
+      "outcome": "Caregiver's nutrition knowledge score",
+      "arm": "T3: SPIR-II + nurturing care groups + maternal cash transfers vs T1 control (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "caregivers of index children",
+      "value": 0.426,
+      "se": 0.09,
+      "effect_type": "main",
+      "specification": "conditional (ANCOVA, with controls)"
+    },
+    {
+      "outcome": "Caregiver's nutrition knowledge score",
+      "arm": "T3 vs T2: maternal cash transfers on top of SPIR-II + nurturing care groups (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "caregivers of index children",
+      "value": 0.146,
+      "se": 0.075,
+      "effect_type": "difference between arms",
+      "specification": "conditional (ANCOVA, with controls)"
+    },
+    {
+      "outcome": "% of children consuming a diet of minimum diversity",
+      "arm": "T2: SPIR-II + nurturing care groups vs T1 control (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "children 6-23 months",
+      "value": 1.6,
+      "se": 2.3,
+      "effect_type": "main",
+      "specification": "unconditional"
+    },
+    {
+      "outcome": "% of children consuming a diet of minimum diversity",
+      "arm": "T3: SPIR-II + nurturing care groups + maternal cash transfers vs T1 control (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "children 6-23 months",
+      "value": 16.54,
+      "se": 2.95,
+      "effect_type": "main",
+      "specification": "unconditional"
+    },
+    {
+      "outcome": "% of children consuming a diet of minimum diversity",
+      "arm": "T3 vs T2: maternal cash transfers on top of SPIR-II + nurturing care groups (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "children 6-23 months",
+      "value": 14.94,
+      "se": 2.97,
+      "effect_type": "difference between arms",
+      "specification": "unconditional"
+    },
+    {
+      "outcome": "% of children consuming a diet of minimum diversity",
+      "arm": "T2: SPIR-II + nurturing care groups vs T1 control (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "children 6-23 months",
+      "value": -0.4,
+      "se": 1.9,
+      "effect_type": "main",
+      "specification": "conditional (with controls)"
+    },
+    {
+      "outcome": "% of children consuming a diet of minimum diversity",
+      "arm": "T3: SPIR-II + nurturing care groups + maternal cash transfers vs T1 control (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "children 6-23 months",
+      "value": 14.42,
+      "se": 2.16,
+      "effect_type": "main",
+      "specification": "conditional (with controls)"
+    },
+    {
+      "outcome": "% of children consuming a diet of minimum diversity",
+      "arm": "T3 vs T2: maternal cash transfers on top of SPIR-II + nurturing care groups (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "children 6-23 months",
+      "value": 14.82,
+      "se": 2.31,
+      "effect_type": "difference between arms",
+      "specification": "conditional (with controls)"
+    },
+    {
+      "outcome": "% of children receiving a diet of minimum meal frequency",
+      "arm": "T2: SPIR-II + nurturing care groups vs T1 control (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "children 6-23 months",
+      "value": 2.69,
+      "se": 3.08,
+      "effect_type": "main",
+      "specification": "unconditional"
+    },
+    {
+      "outcome": "% of children receiving a diet of minimum meal frequency",
+      "arm": "T3: SPIR-II + nurturing care groups + maternal cash transfers vs T1 control (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "children 6-23 months",
+      "value": 9.38,
+      "se": 3.06,
+      "effect_type": "main",
+      "specification": "unconditional"
+    },
+    {
+      "outcome": "% of children receiving a diet of minimum meal frequency",
+      "arm": "T3 vs T2: maternal cash transfers on top of SPIR-II + nurturing care groups (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "children 6-23 months",
+      "value": 6.69,
+      "se": 2.94,
+      "effect_type": "difference between arms",
+      "specification": "unconditional"
+    },
+    {
+      "outcome": "% of children receiving a diet of minimum meal frequency",
+      "arm": "T2: SPIR-II + nurturing care groups vs T1 control (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "children 6-23 months",
+      "value": 1.85,
+      "se": 2.52,
+      "effect_type": "main",
+      "specification": "conditional (with controls)"
+    },
+    {
+      "outcome": "% of children receiving a diet of minimum meal frequency",
+      "arm": "T3: SPIR-II + nurturing care groups + maternal cash transfers vs T1 control (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "children 6-23 months",
+      "value": 7.56,
+      "se": 2.22,
+      "effect_type": "main",
+      "specification": "conditional (with controls)"
+    },
+    {
+      "outcome": "% of children receiving a diet of minimum meal frequency",
+      "arm": "T3 vs T2: maternal cash transfers on top of SPIR-II + nurturing care groups (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "children 6-23 months",
+      "value": 5.71,
+      "se": 2.41,
+      "effect_type": "difference between arms",
+      "specification": "conditional (with controls)"
+    },
+    {
+      "outcome": "% of children receiving a diet of minimum acceptable diet",
+      "arm": "T2: SPIR-II + nurturing care groups vs T1 control (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "children 6-23 months",
+      "value": 2.09,
+      "se": 1.92,
+      "effect_type": "main",
+      "specification": "unconditional"
+    },
+    {
+      "outcome": "% of children receiving a diet of minimum acceptable diet",
+      "arm": "T3: SPIR-II + nurturing care groups + maternal cash transfers vs T1 control (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "children 6-23 months",
+      "value": 13.19,
+      "se": 2.48,
+      "effect_type": "main",
+      "specification": "unconditional"
+    },
+    {
+      "outcome": "% of children receiving a diet of minimum acceptable diet",
+      "arm": "T3 vs T2: maternal cash transfers on top of SPIR-II + nurturing care groups (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "children 6-23 months",
+      "value": 11.1,
+      "se": 2.58,
+      "effect_type": "difference between arms",
+      "specification": "unconditional"
+    },
+    {
+      "outcome": "% of children receiving a diet of minimum acceptable diet",
+      "arm": "T2: SPIR-II + nurturing care groups vs T1 control (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "children 6-23 months",
+      "value": 0.79,
+      "se": 1.59,
+      "effect_type": "main",
+      "specification": "conditional (with controls)"
+    },
+    {
+      "outcome": "% of children receiving a diet of minimum acceptable diet",
+      "arm": "T3: SPIR-II + nurturing care groups + maternal cash transfers vs T1 control (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "children 6-23 months",
+      "value": 11.38,
+      "se": 1.8,
+      "effect_type": "main",
+      "specification": "conditional (with controls)"
+    },
+    {
+      "outcome": "% of children receiving a diet of minimum acceptable diet",
+      "arm": "T3 vs T2: maternal cash transfers on top of SPIR-II + nurturing care groups (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "children 6-23 months",
+      "value": 10.59,
+      "se": 2.07,
+      "effect_type": "difference between arms",
+      "specification": "conditional (with controls)"
+    },
+    {
+      "outcome": "Mean height for age Z-score",
+      "arm": "T2: SPIR-II + nurturing care groups vs T1 control (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "children 6-23 months",
+      "value": -0.018,
+      "se": 0.075,
+      "effect_type": "main",
+      "specification": "unconditional"
+    },
+    {
+      "outcome": "Mean height for age Z-score",
+      "arm": "T3: SPIR-II + nurturing care groups + maternal cash transfers vs T1 control (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "children 6-23 months",
+      "value": 0.022,
+      "se": 0.073,
+      "effect_type": "main",
+      "specification": "unconditional"
+    },
+    {
+      "outcome": "Mean height for age Z-score",
+      "arm": "T3 vs T2: maternal cash transfers on top of SPIR-II + nurturing care groups (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "children 6-23 months",
+      "value": 0.039,
+      "se": 0.075,
+      "effect_type": "difference between arms",
+      "specification": "unconditional"
+    },
+    {
+      "outcome": "Mean height for age Z-score",
+      "arm": "T2: SPIR-II + nurturing care groups vs T1 control (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "children 6-23 months",
+      "value": -0.006,
+      "se": 0.061,
+      "effect_type": "main",
+      "specification": "conditional (with controls)"
+    },
+    {
+      "outcome": "Mean height for age Z-score",
+      "arm": "T3: SPIR-II + nurturing care groups + maternal cash transfers vs T1 control (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "children 6-23 months",
+      "value": 0.091,
+      "se": 0.06,
+      "effect_type": "main",
+      "specification": "conditional (with controls)"
+    },
+    {
+      "outcome": "Mean height for age Z-score",
+      "arm": "T3 vs T2: maternal cash transfers on top of SPIR-II + nurturing care groups (ITT)",
+      "time_point": "midline",
+      "subgroup_or_population": "children 6-23 months",
+      "value": 0.097,
+      "se": 0.057,
+      "effect_type": "difference between arms",
+      "specification": "conditional (with controls)"
+    }
+  ],
+  "not_stored": [
+    {
+      "cell": "p-value column",
+      "reason": "test statistic, not an effect"
+    },
+    {
+      "cell": "N column (2,231 / 2,233 / 2,221 / 2,226)",
+      "reason": "sample size, not an effect"
+    },
+    {
+      "cell": "Row 6a T2-T1 (0.75, 2.71) at the foot of page 82, and rows 6a-8b on page 83",
+      "reason": "not in this crop; the table continues on page 83 and is read the same way (stunting, WHZ, wasting)"
+    }
+  ],
+  "rule": "When a table shows the same outcome with and without controls (unconditional / conditional, unadjusted / adjusted), store both, one row each, and name the version in specification. Mark preferred: true only when the authors say which one is their main estimate. Arm contrasts printed as 'T2-T1' go into arm as a named comparison, never into the outcome. A row that contrasts two programme arms (for example T3 minus T2) is stored with effect_type 'difference between arms', naming both arms in arm.",
+  "resolved_questions": [
+    {
+      "question": "Are arm-versus-arm contrasts (T3-T2) wanted?",
+      "resolution": "Decided by Lucas, 22 Nov 2026: yes, stored with effect_type 'difference between arms'."
+    },
+    {
+      "question": "(1) The authors never call either specification preferred: the report's figures show the unconditional estimates and the text says the conditional ones are 'similar', so no row carries preferred: true. (3) Rows 2-5 do not say '(ANCOVA)' in their headers; the note says ANCOVA is used whenever a baseline value exists, so the specification labels leave it out for those rows.",
+      "resolution": "Reviewer convention, 22 Nov 2026: no row is marked preferred because the authors do not name one. Specification labels follow the block headers."
+    }
+  ]
+}

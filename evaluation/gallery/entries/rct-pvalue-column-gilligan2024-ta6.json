@@ -1,0 +1,251 @@
+{
+  "id": "rct-pvalue-column-gilligan2024-ta6",
+  "status": "draft",
+  "checked_against_page": true,
+  "source": {
+    "doc_key": "076ec917aab5",
+    "pdf": "121378172 Gilligan (2024).pdf",
+    "page": 95,
+    "table_label": "Table A6",
+    "bbox_points": [
+      68,
+      68,
+      540,
+      542
+    ],
+    "render_rotation": 0
+  },
+  "tags": {
+    "method": [
+      "cluster RCT (ITT)",
+      "ANCOVA (controls for baseline value of the outcome)",
+      "several treatment arms",
+      "active comparison arm (T1 = PSNP only)"
+    ],
+    "format": [
+      "coefficient",
+      "score",
+      "level (USD PPP per person per day)",
+      "percentage points"
+    ],
+    "layout": [
+      "long format: one row per arm, columns Coefficient / Standard error / p-value / N",
+      "p-values in their own column (no stars)",
+      "outcome and specification in shaded block headers spanning the row",
+      "unconditional and conditional blocks for the same outcome",
+      "arm-difference row (T3-T2) in every block",
+      "duplicated block header (poverty, 'conditional' twice)"
+    ]
+  },
+  "snippet": "Table A6. Treatment effects on key livelihood outcomes, disaggregated treatment arms\nArm    Coefficient  Standard error  p-value  N\nFood consumption score (FCS, raw score), unconditional estimates (ANCOVA)\nT2     0.50   0.92   0.59   2,954\nT3     7.93   1.23   0.00   2,954\nT3-T2  7.44   1.22   0.00   2,954\nFood consumption score (FCS, raw score), conditional estimates (ANCOVA)\nT2     0.25   0.82   0.76   2,954\nT3     8.24   0.92   0.00   2,954\nT3-T2  7.99   0.96   0.00   2,954\nDaily per-capita consumption-expenditure, unconditional estimates (ANCOVA)\nT2     0.05   0.04   0.22   2,954\nT3     0.13   0.05   0.02   2,954\nT3-T2  0.08   0.05   0.14   2,954\nDaily per-capita consumption-expenditure, conditional estimates (ANCOVA)\nT2     0.01   0.03   0.82   2,954\nT3     0.12   0.03   0.00   2,954\nT3-T2  0.11   0.03   0.00   2,954\nPrevalence of extreme poverty, conditional estimates (ANCOVA) *\nT2     -2.28  2.33   0.33   17,041\nT3     -5.85  2.80   0.04   17,041\nT3-T2  -3.57  2.93   0.23   17,041\nPrevalence of extreme poverty, conditional estimates (ANCOVA) *\nT2     0.13   1.79   0.94   17,041\nT3     -5.61  1.91   0.00   17,041\nT3-T2  -5.74  1.99   0.00   17,041\nNote: Conditional regression estimates control for household size at baseline, primary female's age and education level at baseline, and strata fixed effects. Standard errors in all regressions are clustered at the level of treatment (kebele). The coefficients represent the difference relative to T1 arm.\n* The unit of analysis in poverty headcount and depth of poverty indicators is an individual, not household. ... household size as the frequency weight.",
+  "context_needed": "Ethiopia, SPIR II resilience food security activity on top of PSNP; IMPEL midline report (Gilligan, Hirvonen, Leight and Tesfaye, February 2024); midline survey August-November 2023. Arms (Table 2.1, PDF p. 15; Table A7 headers): T1 = PSNP only (the comparison arm, called the control in the text, PDF p. 21), T2 = SPIR II livelihoods package + nurturing care groups, T3 = T2 + maternal cash transfers of $20 a month. Every T2 and T3 row is a difference from T1 (notes). Method: ANCOVA, with and without baseline household controls (PDF p. 21). Units: FCS raw score points; consumption in 2011 USD PPP per person per day; extreme poverty in percentage points of individuals below the $1.90 line, weighted by household size. The pooled (T2+T3 vs T1) versions of the same outcomes are in Table A4 (PDF p. 84).",
+  "stored_rows": [
+    {
+      "outcome": "Food consumption score (FCS, raw score)",
+      "arm": "T2: SPIR II + nurturing care groups, vs T1 PSNP only (ITT)",
+      "time_point": "midline (Aug-Nov 2023)",
+      "subgroup_or_population": "study households",
+      "value": 0.5,
+      "se": 0.92,
+      "effect_type": "main",
+      "specification": "unconditional (ANCOVA)"
+    },
+    {
+      "outcome": "Food consumption score (FCS, raw score)",
+      "arm": "T3: SPIR II + nurturing care groups + maternal cash transfers, vs T1 PSNP only (ITT)",
+      "time_point": "midline (Aug-Nov 2023)",
+      "subgroup_or_population": "study households",
+      "value": 7.93,
+      "se": 1.23,
+      "effect_type": "main",
+      "specification": "unconditional (ANCOVA)"
+    },
+    {
+      "outcome": "Food consumption score (FCS, raw score)",
+      "arm": "T2: SPIR II + nurturing care groups, vs T1 PSNP only (ITT)",
+      "time_point": "midline (Aug-Nov 2023)",
+      "subgroup_or_population": "study households",
+      "value": 0.25,
+      "se": 0.82,
+      "effect_type": "main",
+      "specification": "conditional on baseline household controls (ANCOVA)"
+    },
+    {
+      "outcome": "Food consumption score (FCS, raw score)",
+      "arm": "T3: SPIR II + nurturing care groups + maternal cash transfers, vs T1 PSNP only (ITT)",
+      "time_point": "midline (Aug-Nov 2023)",
+      "subgroup_or_population": "study households",
+      "value": 8.24,
+      "se": 0.92,
+      "effect_type": "main",
+      "specification": "conditional on baseline household controls (ANCOVA)"
+    },
+    {
+      "outcome": "Daily per-capita consumption-expenditure (2011 USD PPP)",
+      "arm": "T2: SPIR II + nurturing care groups, vs T1 PSNP only (ITT)",
+      "time_point": "midline (Aug-Nov 2023)",
+      "subgroup_or_population": "study households",
+      "value": 0.05,
+      "se": 0.04,
+      "effect_type": "main",
+      "specification": "unconditional (ANCOVA)"
+    },
+    {
+      "outcome": "Daily per-capita consumption-expenditure (2011 USD PPP)",
+      "arm": "T3: SPIR II + nurturing care groups + maternal cash transfers, vs T1 PSNP only (ITT)",
+      "time_point": "midline (Aug-Nov 2023)",
+      "subgroup_or_population": "study households",
+      "value": 0.13,
+      "se": 0.05,
+      "effect_type": "main",
+      "specification": "unconditional (ANCOVA)"
+    },
+    {
+      "outcome": "Daily per-capita consumption-expenditure (2011 USD PPP)",
+      "arm": "T2: SPIR II + nurturing care groups, vs T1 PSNP only (ITT)",
+      "time_point": "midline (Aug-Nov 2023)",
+      "subgroup_or_population": "study households",
+      "value": 0.01,
+      "se": 0.03,
+      "effect_type": "main",
+      "specification": "conditional on baseline household controls (ANCOVA)"
+    },
+    {
+      "outcome": "Daily per-capita consumption-expenditure (2011 USD PPP)",
+      "arm": "T3: SPIR II + nurturing care groups + maternal cash transfers, vs T1 PSNP only (ITT)",
+      "time_point": "midline (Aug-Nov 2023)",
+      "subgroup_or_population": "study households",
+      "value": 0.12,
+      "se": 0.03,
+      "effect_type": "main",
+      "specification": "conditional on baseline household controls (ANCOVA)"
+    },
+    {
+      "outcome": "Prevalence of extreme poverty (% of individuals below $1.90 PPP)",
+      "arm": "T2: SPIR II + nurturing care groups, vs T1 PSNP only (ITT)",
+      "time_point": "midline (Aug-Nov 2023)",
+      "subgroup_or_population": "individuals in study households (weighted by household size)",
+      "value": -2.28,
+      "se": 2.33,
+      "effect_type": "main",
+      "specification": "printed as 'conditional estimates (ANCOVA)'; first of two blocks with this label",
+      "note": "the label repeats the next block's; see open_question"
+    },
+    {
+      "outcome": "Prevalence of extreme poverty (% of individuals below $1.90 PPP)",
+      "arm": "T3: SPIR II + nurturing care groups + maternal cash transfers, vs T1 PSNP only (ITT)",
+      "time_point": "midline (Aug-Nov 2023)",
+      "subgroup_or_population": "individuals in study households (weighted by household size)",
+      "value": -5.85,
+      "se": 2.8,
+      "effect_type": "main",
+      "specification": "printed as 'conditional estimates (ANCOVA)'; first of two blocks with this label",
+      "note": "the label repeats the next block's; see open_question"
+    },
+    {
+      "outcome": "Prevalence of extreme poverty (% of individuals below $1.90 PPP)",
+      "arm": "T2: SPIR II + nurturing care groups, vs T1 PSNP only (ITT)",
+      "time_point": "midline (Aug-Nov 2023)",
+      "subgroup_or_population": "individuals in study households (weighted by household size)",
+      "value": 0.13,
+      "se": 1.79,
+      "effect_type": "main",
+      "specification": "printed as 'conditional estimates (ANCOVA)'; second of two blocks with this label",
+      "note": "the label repeats the previous block's; see open_question"
+    },
+    {
+      "outcome": "Prevalence of extreme poverty (% of individuals below $1.90 PPP)",
+      "arm": "T3: SPIR II + nurturing care groups + maternal cash transfers, vs T1 PSNP only (ITT)",
+      "time_point": "midline (Aug-Nov 2023)",
+      "subgroup_or_population": "individuals in study households (weighted by household size)",
+      "value": -5.61,
+      "se": 1.91,
+      "effect_type": "main",
+      "specification": "printed as 'conditional estimates (ANCOVA)'; second of two blocks with this label",
+      "note": "the label repeats the previous block's; see open_question"
+    },
+    {
+      "outcome": "Food consumption score (FCS, raw score)",
+      "arm": "T3 vs T2: maternal cash transfer on top of SPIR II + nurturing care groups (ITT)",
+      "time_point": "midline (Aug-Nov 2023)",
+      "subgroup_or_population": "study households",
+      "value": 7.44,
+      "se": 1.22,
+      "effect_type": "difference between arms",
+      "specification": "unconditional (ANCOVA)"
+    },
+    {
+      "outcome": "Food consumption score (FCS, raw score)",
+      "arm": "T3 vs T2: maternal cash transfer on top of SPIR II + nurturing care groups (ITT)",
+      "time_point": "midline (Aug-Nov 2023)",
+      "subgroup_or_population": "study households",
+      "value": 7.99,
+      "se": 0.96,
+      "effect_type": "difference between arms",
+      "specification": "conditional on baseline household controls (ANCOVA)"
+    },
+    {
+      "outcome": "Daily per-capita consumption-expenditure (2011 USD PPP)",
+      "arm": "T3 vs T2: maternal cash transfer on top of SPIR II + nurturing care groups (ITT)",
+      "time_point": "midline (Aug-Nov 2023)",
+      "subgroup_or_population": "study households",
+      "value": 0.08,
+      "se": 0.05,
+      "effect_type": "difference between arms",
+      "specification": "unconditional (ANCOVA)"
+    },
+    {
+      "outcome": "Daily per-capita consumption-expenditure (2011 USD PPP)",
+      "arm": "T3 vs T2: maternal cash transfer on top of SPIR II + nurturing care groups (ITT)",
+      "time_point": "midline (Aug-Nov 2023)",
+      "subgroup_or_population": "study households",
+      "value": 0.11,
+      "se": 0.03,
+      "effect_type": "difference between arms",
+      "specification": "conditional on baseline household controls (ANCOVA)"
+    },
+    {
+      "outcome": "Prevalence of extreme poverty (% of individuals below $1.90 PPP)",
+      "arm": "T3 vs T2: maternal cash transfer on top of SPIR II + nurturing care groups (ITT)",
+      "time_point": "midline (Aug-Nov 2023)",
+      "subgroup_or_population": "individuals in study households (weighted by household size)",
+      "value": -3.57,
+      "se": 2.93,
+      "effect_type": "difference between arms",
+      "specification": "printed as 'conditional estimates (ANCOVA)'; first of two blocks with this label",
+      "note": "the label repeats the next block's; see open_question"
+    },
+    {
+      "outcome": "Prevalence of extreme poverty (% of individuals below $1.90 PPP)",
+      "arm": "T3 vs T2: maternal cash transfer on top of SPIR II + nurturing care groups (ITT)",
+      "time_point": "midline (Aug-Nov 2023)",
+      "subgroup_or_population": "individuals in study households (weighted by household size)",
+      "value": -5.74,
+      "se": 1.99,
+      "effect_type": "difference between arms",
+      "specification": "printed as 'conditional estimates (ANCOVA)'; second of two blocks with this label",
+      "note": "the label repeats the previous block's; see open_question"
+    }
+  ],
+  "not_stored": [
+    {
+      "cell": "p-value column (0.59, 0.00, 0.00, ...)",
+      "reason": "p-values, not effects; they sit in their own column, so the Coefficient column alone carries the effect"
+    },
+    {
+      "cell": "N column (2,954; 17,041)",
+      "reason": "sample size"
+    }
+  ],
+  "rule": "In a long-format table with a p-value column, store only the Coefficient and Standard error columns; the p-value and N columns are never stored. Each shaded header sets the outcome and specification for the arm rows beneath it, and the arm label must carry the comparison arm when it is an active programme (here T1, PSNP only), not a pure control. A row that contrasts two programme arms (for example T3 minus T2) is stored with effect_type 'difference between arms', naming both arms in arm.",
+  "resolved_questions": [
+    {
+      "question": "(1) The two poverty blocks carry the same header, 'conditional estimates (ANCOVA)'. The pooled Table A4 (PDF pp. 84-85) has an unconditional (-4.07) and a conditional (-2.83) poverty estimate, and the first block here averages to about -4.07, so the first block is probably the unconditional one, but the table does not say so. This entry keeps both labels as printed. Should the specification be relabelled from that evidence, or left as printed? (2) Should the T3-T2 rows (difference between two programme arms) be stored, and with what effect_type?",
+      "resolution": "Decided by Lucas, 22 Nov 2026: store the T3-T2 rows, labelled 'difference between arms'."
+    },
+    {
+      "question": "(1) The two poverty blocks carry the same header, 'conditional estimates (ANCOVA)'. The pooled Table A4 (PDF pp. 84-85) has an unconditional (-4.07) and a conditional (-2.83) poverty estimate, and the first block here averages to about -4.07, so the first block is probably the unconditional one, but the table does not say so. This entry keeps both labels as printed. Should the specification be relabelled from that evidence, or left as printed?",
+      "resolution": "Reviewer convention, 22 Nov 2026: both poverty blocks keep the label as printed, with the evidence from Table A4 noted in specification. The reader never relabels a specification from another table."
+    }
+  ]
+}

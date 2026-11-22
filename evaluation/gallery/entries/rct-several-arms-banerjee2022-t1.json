@@ -1,0 +1,314 @@
+{
+  "id": "rct-several-arms-banerjee2022-t1",
+  "status": "draft",
+  "checked_against_page": true,
+  "source": {
+    "doc_key": "7fe6b0bbcef3",
+    "pdf": "121328483 Banerjee (2022).pdf",
+    "page": 18,
+    "table_label": "Table 1, Panel A",
+    "bbox_points": [
+      45,
+      78,
+      580,
+      397
+    ],
+    "render_rotation": 0
+  },
+  "tags": {
+    "method": [
+      "RCT (ITT)",
+      "ANCOVA (controls for baseline value of the outcome)",
+      "several treatment arms"
+    ],
+    "format": [
+      "coefficient",
+      "index"
+    ],
+    "layout": [
+      "several arms stacked down the rows, arm name printed once per block",
+      "statistic name in a second label column (itt / se / p-val / q-val / bsl p-val)",
+      "SE in parentheses on its own labelled row",
+      "stars attached to p-values and q-values, not to the coefficient",
+      "difference-between-arms block (diff)",
+      "pooled-arm row (any GUP)",
+      "Panel A/B stack (Panel B not in this crop)"
+    ],
+    "picture_matters": "The text layer loses the arm-block structure: it lists the arm names (SOUP, GUP no sav., GUP sav., GUP sav. - SOUP, any GUP) in one column and then pours the numbers out of order, interleaving Panel A and Panel B values, so which itt/se pair belongs to which arm can only be read from the picture."
+  },
+  "snippet": "Table 1: Two-Year Effects of GUP, SOUP, and Asset Only on Household-Level Economic Indices\n                         (1) asset value index (2) consumption index (3) financial inclusion index (4) food security index (5) income index\nPANEL A: GUP vs. SOUP\nSOUP          itt        0.112     0.138     0.497     0.056     0.064\n              se        (0.068)   (0.043)   (0.093)   (0.043)   (0.050)\n              p-val      0.097*    0.001***  0.000***  0.185     0.200\n              q-val      0.163     0.007***  0.001***  0.285     0.286\n              bsl p-val  0.051*    0.993     0.555     0.098*(+) 0.277\nGUP no sav.   itt        0.228     0.141     0.172     0.104     0.138\n              se        (0.072)   (0.051)   (0.098)   (0.049)   (0.054)\n              p-val ... q-val ... bsl p-val ...\nGUP sav.      itt        0.110     0.084     1.247    -0.017     0.206\n              se        (0.066)   (0.050)   (0.142)   (0.047)   (0.056)\n              p-val ... q-val ... bsl p-val ...\nGUP sav. - SOUP diff    -0.002    -0.054     0.750    -0.073     0.142\n              se        (0.085)   (0.061)   (0.169)   (0.058)   (0.070)\n              p-val ... bsl p-val ...\nany GUP       itt        0.168     0.112     0.714     0.043     0.172\n              se        (0.059)   (0.044)   (0.099)   (0.042)   (0.047)\n              p-val ... bsl p-val ...\n              obs        3801      3707      3708      3708      3800\n[Notes, below Panel B:] Estimates from OLS regressions of household-level economic indices at year two (averaging over two-year outcome and midline outcomes that were collected at least one year after treatment start) on treatments. The omitted group is control households in all villages. The regression in Panel A excludes the asset only villages and includes controls for re-randomization variables and the baseline value of the outcome. ... Indices are centered around baseline values.",
+  "context_needed": "Ghana (Northern Region), ultra-poor households; Banerjee, Karlan, Osei, Trachtman and Udry. Arm names come from the design section (PDF pp. 6-7): 'GUP sav.' = full graduation programme with savings collection; 'GUP no sav.' = graduation programme without the savings component; 'SOUP' = Savings Out of Ultra-Poverty, savings account and deposit collection only; 'any GUP' = both GUP arms pooled. Comparison group for every 'itt' row: control households in all villages (table notes). Time point: year two, averaging the two-year survey and midlines held at least one year after treatment start (notes). Panel A specification controls for the baseline value of the outcome (ANCOVA) and re-randomisation variables. Outcomes are indices centred on baseline values (appendix for definitions).",
+  "stored_rows": [
+    {
+      "outcome": "Asset value index",
+      "arm": "SOUP (savings only) (ITT)",
+      "time_point": "year two",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 0.112,
+      "se": 0.068,
+      "effect_type": "main",
+      "specification": "Panel A: controls for baseline outcome and re-randomisation variables"
+    },
+    {
+      "outcome": "Consumption index",
+      "arm": "SOUP (savings only) (ITT)",
+      "time_point": "year two",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 0.138,
+      "se": 0.043,
+      "effect_type": "main",
+      "specification": "Panel A: controls for baseline outcome and re-randomisation variables"
+    },
+    {
+      "outcome": "Financial inclusion index",
+      "arm": "SOUP (savings only) (ITT)",
+      "time_point": "year two",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 0.497,
+      "se": 0.093,
+      "effect_type": "main",
+      "specification": "Panel A: controls for baseline outcome and re-randomisation variables"
+    },
+    {
+      "outcome": "Food security index",
+      "arm": "SOUP (savings only) (ITT)",
+      "time_point": "year two",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 0.056,
+      "se": 0.043,
+      "effect_type": "main",
+      "specification": "Panel A: controls for baseline outcome and re-randomisation variables"
+    },
+    {
+      "outcome": "Income index",
+      "arm": "SOUP (savings only) (ITT)",
+      "time_point": "year two",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 0.064,
+      "se": 0.05,
+      "effect_type": "main",
+      "specification": "Panel A: controls for baseline outcome and re-randomisation variables"
+    },
+    {
+      "outcome": "Asset value index",
+      "arm": "GUP without savings (ITT)",
+      "time_point": "year two",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 0.228,
+      "se": 0.072,
+      "effect_type": "main",
+      "specification": "Panel A: controls for baseline outcome and re-randomisation variables"
+    },
+    {
+      "outcome": "Consumption index",
+      "arm": "GUP without savings (ITT)",
+      "time_point": "year two",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 0.141,
+      "se": 0.051,
+      "effect_type": "main",
+      "specification": "Panel A: controls for baseline outcome and re-randomisation variables"
+    },
+    {
+      "outcome": "Financial inclusion index",
+      "arm": "GUP without savings (ITT)",
+      "time_point": "year two",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 0.172,
+      "se": 0.098,
+      "effect_type": "main",
+      "specification": "Panel A: controls for baseline outcome and re-randomisation variables"
+    },
+    {
+      "outcome": "Food security index",
+      "arm": "GUP without savings (ITT)",
+      "time_point": "year two",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 0.104,
+      "se": 0.049,
+      "effect_type": "main",
+      "specification": "Panel A: controls for baseline outcome and re-randomisation variables"
+    },
+    {
+      "outcome": "Income index",
+      "arm": "GUP without savings (ITT)",
+      "time_point": "year two",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 0.138,
+      "se": 0.054,
+      "effect_type": "main",
+      "specification": "Panel A: controls for baseline outcome and re-randomisation variables"
+    },
+    {
+      "outcome": "Asset value index",
+      "arm": "GUP with savings (ITT)",
+      "time_point": "year two",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 0.11,
+      "se": 0.066,
+      "effect_type": "main",
+      "specification": "Panel A: controls for baseline outcome and re-randomisation variables"
+    },
+    {
+      "outcome": "Consumption index",
+      "arm": "GUP with savings (ITT)",
+      "time_point": "year two",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 0.084,
+      "se": 0.05,
+      "effect_type": "main",
+      "specification": "Panel A: controls for baseline outcome and re-randomisation variables"
+    },
+    {
+      "outcome": "Financial inclusion index",
+      "arm": "GUP with savings (ITT)",
+      "time_point": "year two",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 1.247,
+      "se": 0.142,
+      "effect_type": "main",
+      "specification": "Panel A: controls for baseline outcome and re-randomisation variables"
+    },
+    {
+      "outcome": "Food security index",
+      "arm": "GUP with savings (ITT)",
+      "time_point": "year two",
+      "subgroup_or_population": "ultra-poor households",
+      "value": -0.017,
+      "se": 0.047,
+      "effect_type": "main",
+      "specification": "Panel A: controls for baseline outcome and re-randomisation variables"
+    },
+    {
+      "outcome": "Income index",
+      "arm": "GUP with savings (ITT)",
+      "time_point": "year two",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 0.206,
+      "se": 0.056,
+      "effect_type": "main",
+      "specification": "Panel A: controls for baseline outcome and re-randomisation variables"
+    },
+    {
+      "outcome": "Asset value index",
+      "arm": "Any GUP, both GUP arms pooled (ITT)",
+      "time_point": "year two",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 0.168,
+      "se": 0.059,
+      "effect_type": "main",
+      "specification": "Panel A: controls for baseline outcome and re-randomisation variables"
+    },
+    {
+      "outcome": "Consumption index",
+      "arm": "Any GUP, both GUP arms pooled (ITT)",
+      "time_point": "year two",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 0.112,
+      "se": 0.044,
+      "effect_type": "main",
+      "specification": "Panel A: controls for baseline outcome and re-randomisation variables"
+    },
+    {
+      "outcome": "Financial inclusion index",
+      "arm": "Any GUP, both GUP arms pooled (ITT)",
+      "time_point": "year two",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 0.714,
+      "se": 0.099,
+      "effect_type": "main",
+      "specification": "Panel A: controls for baseline outcome and re-randomisation variables"
+    },
+    {
+      "outcome": "Food security index",
+      "arm": "Any GUP, both GUP arms pooled (ITT)",
+      "time_point": "year two",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 0.043,
+      "se": 0.042,
+      "effect_type": "main",
+      "specification": "Panel A: controls for baseline outcome and re-randomisation variables"
+    },
+    {
+      "outcome": "Income index",
+      "arm": "Any GUP, both GUP arms pooled (ITT)",
+      "time_point": "year two",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 0.172,
+      "se": 0.047,
+      "effect_type": "main",
+      "specification": "Panel A: controls for baseline outcome and re-randomisation variables"
+    },
+    {
+      "outcome": "Asset value index",
+      "arm": "GUP with savings vs SOUP (difference between the two arms, ITT)",
+      "time_point": "year two",
+      "subgroup_or_population": "ultra-poor households",
+      "value": -0.002,
+      "se": 0.085,
+      "effect_type": "difference between arms",
+      "specification": "Panel A: controls for baseline outcome and re-randomisation variables"
+    },
+    {
+      "outcome": "Consumption index",
+      "arm": "GUP with savings vs SOUP (difference between the two arms, ITT)",
+      "time_point": "year two",
+      "subgroup_or_population": "ultra-poor households",
+      "value": -0.054,
+      "se": 0.061,
+      "effect_type": "difference between arms",
+      "specification": "Panel A: controls for baseline outcome and re-randomisation variables"
+    },
+    {
+      "outcome": "Financial inclusion index",
+      "arm": "GUP with savings vs SOUP (difference between the two arms, ITT)",
+      "time_point": "year two",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 0.75,
+      "se": 0.169,
+      "effect_type": "difference between arms",
+      "specification": "Panel A: controls for baseline outcome and re-randomisation variables"
+    },
+    {
+      "outcome": "Food security index",
+      "arm": "GUP with savings vs SOUP (difference between the two arms, ITT)",
+      "time_point": "year two",
+      "subgroup_or_population": "ultra-poor households",
+      "value": -0.073,
+      "se": 0.058,
+      "effect_type": "difference between arms",
+      "specification": "Panel A: controls for baseline outcome and re-randomisation variables"
+    },
+    {
+      "outcome": "Income index",
+      "arm": "GUP with savings vs SOUP (difference between the two arms, ITT)",
+      "time_point": "year two",
+      "subgroup_or_population": "ultra-poor households",
+      "value": 0.142,
+      "se": 0.07,
+      "effect_type": "difference between arms",
+      "specification": "Panel A: controls for baseline outcome and re-randomisation variables"
+    }
+  ],
+  "not_stored": [
+    {
+      "cell": "p-val, q-val and bsl p-val rows under every arm (with their stars)",
+      "reason": "p-values and multiple-testing q-values, not effects; the stars belong to these rows"
+    },
+    {
+      "cell": "obs (3801, 3707, 3708, 3708, 3800)",
+      "reason": "sample size"
+    },
+    {
+      "cell": "Panel B: GUP vs. Asset Only (asset itt, itt with controls, GUP no sav. - asset diff)",
+      "reason": "not in this crop; Panel B is a different specification (no baseline controls, asset-only villages added) and is read the same way"
+    }
+  ],
+  "rule": "One row per arm and outcome: the arm name printed once at the top of each block applies to every itt/se pair beneath it, and goes in arm, never in outcome. A pooled 'any' arm is stored as its own arm; stars printed on p-value rows are not effects and the p-value rows are not stored. A row that contrasts two programme arms (for example T3 minus T2) is stored with effect_type 'difference between arms', naming both arms in arm.",
+  "resolved_questions": [
+    {
+      "question": "The 'GUP sav. - SOUP' diff rows are the estimated difference between two randomised programme arms (full graduation with savings minus savings only), with their own SEs. The rules store each arm's effect against control and the change in effect between rounds, but say nothing about a contrast between arms. Should such a row be stored (and with what effect_type and arm label, e.g. 'GUP with savings vs SOUP'), or treated as a test of equality between arms and left out?",
+      "resolution": "Decided by Lucas, 22 Nov 2026: store arm-vs-arm contrasts, labelled 'difference between arms'."
+    }
+  ]
+}
