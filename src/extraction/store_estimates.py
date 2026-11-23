@@ -320,8 +320,9 @@ async def extract_and_store(
                         return await asyncio.to_thread(page_data_url, pdf, page) if pdf else None
 
                     context_mode = os.environ.get("READER_CONTEXT", "full")
-                    card = _load_card(s3, bucket, project_id, name, ROOT) if context_mode != "off" else None
-                    gallery = GALLERY if context_mode != "off" else None
+                    # full = card + gallery; gallery = reader D (gallery only, no card); off = neither.
+                    card = _load_card(s3, bucket, project_id, name, ROOT) if context_mode in ("full", "card") else None
+                    gallery = GALLERY if context_mode in ("full", "gallery") else None
                     out = await extract_document(content, model, os.environ["OPENROUTER_API_KEY"],
                                                  page_image=page_image, read_roles=True,
                                                  card=card, gallery_entries=gallery)
