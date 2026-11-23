@@ -125,7 +125,7 @@ def _close(value: float, options: Sequence[float]) -> bool:
 _TOKEN = re.compile(r"[-−–]?\.?\d[\d.,]*")
 # Sign glyphs that some PDFs yield when the minus cannot be mapped: the replacement character and an
 # inverted exclamation. They are not range separators, so a glyph immediately before a digit is a minus.
-_GLYPH_MINUS = re.compile(r"[\u2212\u2013\u2014\u2012\u2010\u2011\u00ad\ufffd\u00a1]\s*(?=\d)")
+_GLYPH_MINUS = re.compile(r"[\u0000\u2212\u2013\u2014\u2012\u2010\u2011\u00ad\ufffd\u00a1]\s*(?=\d)")
 # A sign printed with a space after it ("- 0.406") is a negative number, not a range. Only at the start of
 # the cell, so "0.406 - 0.2" stays a range.
 _MINUS_SPACE = re.compile(r"^\s*-\s+(?=\d)")
@@ -617,8 +617,9 @@ INFERRED STRUCTURE (from the headers, notes and arithmetic; may be empty or wron
 
 VIEW: {view}
 
-CARD (the paper's own definitions; arm, time point, population and subgroup must come from these lists,
-or be "not on card"; never flip a sign except as a convention here says):
+CARD (what the paper says about its arms, rounds, populations and sign conventions. These are a hint: prefer
+a value from these lists when one fits, otherwise keep the table's own printed text. Never write "not on
+card" in place of a printed qualifier, and never flip a sign except as a convention here says):
 {card}
 
 WORKED EXAMPLES (real tables with the correct answer; follow their rule):
@@ -661,6 +662,16 @@ If it is a results table, list every estimate of a treatment effect on an outcom
 - arm: the treatment or comparison the estimate refers to (e.g. "Full graduation package",
   "TUP vs control"); "" if there is only one
 - subgroup: the subgroup if the estimate is for one (e.g. "Women", "Bangladesh"); "" otherwise
+- time_point: the round or period the estimate is for, as printed (e.g. "2005", "after 2 years"); "" if none
+- population: the group the estimate is for when the table title names one other than the whole sample
+  (e.g. "other poor women"); "" otherwise
+- effect_type: one of "main", "difference between arms", "change in effect between rounds", "percent change
+  vs control mean", "odds ratio", "standardised effect size", "first stage", "difference in effect between
+  subgroups". A row labelled "impact as % of ... mean" or "% of control mean" is "percent change vs control
+  mean"; an odds-ratio column is "odds ratio"; a standardised effect-size column is "standardised effect size".
+- specification: the column or model specification (e.g. "D4", "with controls"); "" if none
+- estimand: "ITT", "TOT", "LATE" or "ATE" when the table names one; "" otherwise
+- quantile: the quantile when the table reports quantile effects; "" otherwise
 - role: for every estimate, one of "programme_term" (the row estimates the programme), "control",
   "fixed_effect" or "baseline_gap" (the row is not the programme effect), or "not_applicable" when the
   table is not a regression or the row is not a term. The reader keeps a programme_term row and drops the
@@ -790,6 +801,12 @@ class Estimate:
     n_control: Optional[int]
     grounded: bool
     estimation_method: str = ""
+    time_point: str = ""
+    population: str = ""
+    effect_type: str = "main"
+    specification: str = ""
+    estimand: str = ""
+    quantile: str = ""
     row_role: str = ""
     column_role: str = ""
     keep_effect: bool = True
@@ -1019,10 +1036,23 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
         str(raw.get("arm") or ""))
     existing_subgroup = " - ".join(x for x in (subgroup_value, heading_hint) if x)
     subgroup_value = derive_subgroup(row_label, header, table_label, existing_subgroup, outcome)
+    time_point_value = str(raw.get("time_point") or "")
+    population_value = str(raw.get("population") or "")
+    effect_type_value = str(raw.get("effect_type") or "main")
+    specification_value = str(raw.get("specification") or "")
+    estimand_value = str(raw.get("estimand") or "")
+    quantile_value = str(raw.get("quantile") or "")
+    # Rahman 2023: a row labelled "impact as % of [the] nonparticipant mean" reports a percent change, not a
+    # level. The label decides, so a model that says "main" is corrected.
+    percent_blob = f"{outcome} {row_label} {header} {arm_value}".lower()
+    if re.search(r"impact as % of|%\s*of\s+(?:the\s+)?(?:non-?participant|control|comparison)\s+mean", percent_blob):
+        effect_type_value = "percent change vs control mean"
     return Estimate(
         table_label=table_label, page=page, table_index=table_index,
         outcome=outcome,
         arm=arm_value, subgroup=subgroup_value, estimation_method=estimation_method,
+        time_point=time_point_value, population=population_value, effect_type=effect_type_value,
+        specification=specification_value, estimand=estimand_value, quantile=quantile_value,
         row_label=row_label, column_label=str(raw.get("column_label") or "") or arm_hint,
         estimate_cell=est_cell, se_cell=se_cell, se_kind=kind, p_cell=str(raw.get("p_cell") or ""),
         effect_size=parse_number(est_cell), standard_error=se, t_stat=t, ci_low=lo, ci_high=hi,
@@ -1463,16 +1493,9 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
         rows = [to_estimate(r, label, u["page"], u["text"], u.get("arm_hint") or "", u.get("n_hint"), u.get("control_n"),
                         u.get("arm_row") or "", u.get("table_index"), u.get("unit_index"))
                 for r in raw if isinstance(r, dict)]
-        if card:
-            arms = [a for a in card.get("arms") or []] + [card.get("comparison_group") or ""]
+        if card and card_flag:
             for estimate in rows:
-                # An arm the card does not list is not a finding about this programme: mark it, do not
-                # store it as free text.
-                if estimate.arm and arms and not on_card(estimate.arm, [a for a in arms if a]):
-                    estimate.notes.append(f"arm not on card: {estimate.arm[:40]}")
-                    estimate.arm = "not on card"
-                if card_flag:
-                    estimate.notes.append("card_disagreement")
+                estimate.notes.append("card_disagreement")
         for estimate in rows:
             estimate.source_cell = locate_source_cell(u["text"], _merge_outcome(estimate.row_label),
                                                        _merge_outcome(estimate.column_label),

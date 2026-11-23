@@ -31,6 +31,9 @@ from src.extraction.table_estimates import (count_stars, finalise_addresses, mer
     (".92", 0.92),
     (".10", 0.10),
     ("- .30", -0.30),
+    # Audit 2026-11-23, Ara 2016: the minus is a NUL byte before the digits (\x0010.22 and \x000.06).
+    ("\x0010.22", -10.22),
+    ("\x000.06", -0.06),
     # A range keeps its first number positive.
     ("0.406 - 0.2", 0.406),
 ])
@@ -668,3 +671,20 @@ def test_the_after_two_years_row_keeps_its_own_header():
                     "Table 2", 9, table)
     assert e.outcome == "Consumption"
     assert "after 2 years" in f"{e.arm} {e.subgroup} {e.row_label}"
+
+
+def test_an_impact_as_percent_of_mean_row_is_percent_change():
+    # Rahman 2023: "impact as % of nonparticipant mean" is a percent change, not a level.
+    table = "| Row | Coef |\n| --- | --- |\n| Impact as % of nonparticipant mean | 83.72*** |\n"
+    e = to_estimate({"estimate_cell": "83.72***", "row_number": 1, "column_number": 2,
+                     "row_label": "Impact as % of nonparticipant mean", "outcome_row": 3, "outcome_column": 1},
+                    "Table", 10, table)
+    assert e.effect_type == "percent change vs control mean"
+
+
+def test_a_plain_effect_defaults_to_main():
+    table = "| Outcome | Coef |\n| --- | --- |\n| Income | 1.2*** |\n"
+    e = to_estimate({"estimate_cell": "1.2***", "row_number": 1, "column_number": 2,
+                     "row_label": "Income", "outcome_row": 3, "outcome_column": 1},
+                    "Table", 3, table)
+    assert e.effect_type == "main"

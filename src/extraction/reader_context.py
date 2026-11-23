@@ -118,9 +118,12 @@ def card_block(card: Optional[Dict[str, Any]]) -> str:
     rounds = [r for r in rounds if r]
     pops = [p for p in card.get("populations") or [] if p]
     conventions = [c.get("convention") if isinstance(c, dict) else c for c in card.get("sign_conventions") or []]
-    lines = ["Arms (use one of these, or 'not on card'):", "; ".join(arms) or "(none)",
-             "Time points (use one of these, or 'not on card'):", "; ".join(rounds) or "(none)",
-             "Populations (use one of these, or 'not on card'):", "; ".join(pops) or "(none)",
+    lines = ["Arms in the paper (prefer one when it fits; otherwise keep the table's own text):",
+             "; ".join(arms) or "(none)",
+             "Time points in the paper (prefer one when it fits; otherwise keep the table's own text):",
+             "; ".join(rounds) or "(none)",
+             "Populations in the paper (prefer one when it fits; otherwise keep the table's own text):",
+             "; ".join(pops) or "(none)",
              "Sign conventions (do not flip a sign except as these say):",
              "; ".join(str(c) for c in conventions if c) or "(none)"]
     return "\n".join(lines)
@@ -139,16 +142,8 @@ def on_card(value: str, options: List[str]) -> bool:
 
 
 def validate_labels(row: Dict[str, Any], card: Optional[Dict[str, Any]]) -> List[str]:
-    """Replace a label the card does not carry with 'not on card', and return what was changed."""
-    if not card:
-        return []
-    arms = [a for a in card.get("arms") or []] + [card.get("comparison_group") or ""]
-    rounds = [(r.get("since_baseline") or r.get("name") or "") for r in card.get("rounds") or []]
-    pops = list(card.get("populations") or [])
-    changed = []
-    for key, options in (("arm", arms), ("time_point", rounds), ("subgroup_or_population", pops)):
-        value = row.get(key)
-        if value and options and not on_card(value, options):
-            row[key] = "not on card"
-            changed.append(key)
-    return changed
+    """The card is a hint, not a restriction: a label the table prints is kept even when the card omits it.
+
+    Nothing is replaced. "not on card" is never written over a printed qualifier.
+    """
+    return []

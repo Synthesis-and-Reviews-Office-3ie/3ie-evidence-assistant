@@ -160,3 +160,20 @@ def test_a_consistent_row_carries_no_flags():
                      "se_cell": "(121.73)"})
     estimate.update({"n_treatment": 700, "n_control": 900, "sample_size": 1600})
     assert rows_for("p", DOC, {"estimates": [estimate]}, "m")[0]["quality_flags"] is None
+
+
+def test_the_structured_label_columns_are_written():
+    estimate = _row({"outcome": "Income", "estimate_cell": "155.43*** (121.73)", "se_cell": "(121.73)"})
+    estimate.update({"time_point": "2005", "population": "other poor women",
+                     "effect_type": "percent change vs control mean", "specification": "D4",
+                     "estimand": "ITT", "quantile": "q50"})
+    row = rows_for("p", DOC, {"estimates": [estimate]}, "m")[0]
+    assert row["time_point"] == "2005" and row["population"] == "other poor women"
+    assert row["effect_type"] == "percent change vs control mean"
+    assert row["specification"] == "D4" and row["estimand"] == "ITT" and row["quantile"] == "q50"
+
+
+def test_effect_type_defaults_to_main():
+    estimate = _row({"outcome": "Income", "estimate_cell": "155.43*** (121.73)", "se_cell": "(121.73)"})
+    estimate.pop("effect_type", None)
+    assert rows_for("p", DOC, {"estimates": [estimate]}, "m")[0]["effect_type"] == "main"

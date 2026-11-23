@@ -57,12 +57,12 @@ def test_on_card_accepts_a_listed_label_and_rejects_another():
     assert not on_card("blanket grants", CARD["arms"])
 
 
-def test_an_arm_not_on_the_card_is_marked_not_on_card():
+def test_a_printed_arm_not_on_the_card_is_kept():
+    # The card is a hint: a printed label is never replaced with "not on card".
     row = {"arm": "some unlisted arm", "time_point": "after 2 years", "subgroup_or_population": "other poor women"}
     changed = validate_labels(row, CARD)
-    assert row["arm"] == "not on card" and "arm" in changed
+    assert row["arm"] == "some unlisted arm" and changed == []
     assert row["time_point"] == "after 2 years"
-    assert row["subgroup_or_population"] == "other poor women"
 
 
 def test_entry_text_shows_stored_rows_not_stored_and_rule():
