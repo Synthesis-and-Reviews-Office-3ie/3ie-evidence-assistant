@@ -620,3 +620,51 @@ def test_roles_are_not_read_unless_asked(monkeypatch):
     calls = _fake_chat(monkeypatch, [extract])
     asyncio.run(module.extract_document([{"type": "table", "page_idx": 0, "text": table}], "m", "k"))
     assert len(calls) == 1  # only the extraction call; no role call
+
+
+def test_the_outcome_label_is_the_table_cell_the_model_points_at():
+    # Gallery fmt-subgroup-subheading-asadullah2016-t2: the outcome is the row label, not the sub-heading.
+    table = ("| Primary occupation | T2005*SUP | T2008*SUP |\n"
+             "| --- | --- | --- |\n"
+             "| Female | | |\n"
+             "| Farm-self employment | 34.7*** | 25.6*** |\n")
+    e = to_estimate({"estimate_cell": "34.7***", "row_number": 2, "column_number": 2,
+                     "row_label": "Farm-self employment", "outcome_row": 3, "outcome_column": 1},
+                    "Table 2", 8, table)
+    assert e.outcome == "Farm-self employment"
+
+
+def test_a_subgroup_subheading_is_not_an_outcome():
+    table = ("| Primary occupation | T2005*SUP | T2008*SUP |\n"
+             "| --- | --- | --- |\n"
+             "| Female | | |\n"
+             "| Farm-self employment | 34.7*** | 25.6*** |\n")
+    e = to_estimate({"estimate_cell": "34.7***", "row_number": 2, "column_number": 2,
+                     "row_label": "Farm-self employment", "outcome_row": 2, "outcome_column": 1},
+                    "Table 2", 8, table)
+    assert e.outcome == "Farm-self employment"
+    assert "Female" in e.subgroup
+
+
+def test_a_block_heading_names_the_outcome_and_specification():
+    # Gallery rct-pvalue-column-gilligan2024-ta6: a shaded block heading carries the outcome.
+    table = ("| Consumption (log) | Coef. | p-value |\n"
+             "| --- | --- | --- |\n"
+             "| Programme | 0.21*** | 0.01 |\n")
+    e = to_estimate({"estimate_cell": "0.21***", "row_number": 1, "column_number": 2,
+                     "row_label": "Programme", "outcome_row": 1, "outcome_column": 1},
+                    "Table A6", 9, table)
+    assert e.outcome == "Consumption (log)"
+
+
+def test_the_after_two_years_row_keeps_its_own_header():
+    # The row is the arm ("Programme effect after 2 years"); the outcome is the column header. The row's
+    # own time point must survive on the stored row, not another panel's.
+    table = ("| Group | Consumption |\n"
+             "| --- | --- |\n"
+             "| Programme effect after 2 years | 0.1*** |\n")
+    e = to_estimate({"estimate_cell": "0.1***", "row_number": 1, "column_number": 2,
+                     "row_label": "Programme effect after 2 years", "outcome_row": 1, "outcome_column": 2},
+                    "Table 2", 9, table)
+    assert e.outcome == "Consumption"
+    assert "after 2 years" in f"{e.arm} {e.subgroup} {e.row_label}"

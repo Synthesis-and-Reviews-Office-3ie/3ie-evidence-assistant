@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import os
 import re
 from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, List, Optional
@@ -139,6 +140,25 @@ def _unspace_minus(text: object) -> str:
     """
     folded = _GLYPH_MINUS.sub("-", str(text or ""))
     return _MINUS_SPACE.sub("-", folded)
+
+
+def clean_label(text: object) -> str:
+    """A label copied from a table cell: only whitespace and line-break hyphenation are normalised.
+
+    The outcome label is the table's own text. Re-wording it makes the same outcome read differently on two
+    passes of the same table, so this collapses runs of whitespace and joins a word broken across a line
+    ("house-\\nhold" -> "household") and changes nothing else.
+    """
+    value = str(text or "")
+    value = re.sub(r"(\w)-\s*\n\s*(\w)", r"\1\2", value)
+    return re.sub(r"\s+", " ", value).strip()
+
+
+# A heading with no numbers that names who an estimate is for, not what is measured. When the model points
+# the outcome at such a cell, it is a subgroup.
+_SUBGROUP_HEADING = re.compile(
+    r"^(?:female|male|men|women|boys|girls|urban|rural|young|old|youth|children|adults|"
+    r"treatment|control|comparison|poor|non-?poor|ultra-?poor|eligible|non-?eligible)\b", re.I)
 
 
 def _printed_decimals(token: str) -> int:
@@ -642,6 +662,12 @@ If it is a results table, list every estimate of a treatment effect on an outcom
 - row_number and column_number: where that cell sits in the table shown, counting rows from 1 on the
   first data row and columns from 1 on the first column (the label column is 1). The pipeline opens this
   address to check the cell, so a wrong number is wasted.
+- outcome_row and outcome_column: where the outcome's own label sits: the row-header cell, the
+  column-header cell, or a block heading above the rows. Count rows from 1 on the FIRST ROW OF THE TABLE AS
+  SHOWN, header rows included, and columns from 1. The reader copies that cell's text verbatim, so point at
+  the cell that names what is measured. An indented or italic sub-heading with no numbers (Female, Male) is
+  a subgroup, not an outcome: point at the row label that names the outcome, and put the sub-heading in
+  subgroup.
 - se_row_number and se_column_number: where the standard error cell sits, by the same counting. When the
   error is printed in the same cell as the coefficient, use the same address. It must be the cell beside
   the coefficient: the next column on the same row, or the same column on the next row.
@@ -947,6 +973,30 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
     notes = [] if grounded else ["cell not found verbatim in the table"]
     outcome = str(raw.get("outcome") or "")
     row_label = str(raw.get("row_label") or "")
+    # The outcome label is the table's own cell, copied by code. The model gives the address of the cell that
+    # names what is measured (row header, column header, or a block heading). A sub-heading with no numbers
+    # (Female, Male) is a subgroup: the outcome is then the row label.
+    heading_hint = ""
+    try:
+        outcome_row = int(float(raw.get("outcome_row")))
+        outcome_column = int(float(raw.get("outcome_column")))
+    except (TypeError, ValueError):
+        outcome_row = outcome_column = None
+    if outcome_row and outcome_column:
+        if grid is None:
+            from src.extraction.table_structure import parse_markdown_table
+
+            grid = parse_markdown_table(table_text)
+        full = grid.headers + grid.body
+        if 1 <= outcome_row <= len(full) and 1 <= outcome_column <= len(full[outcome_row - 1]):
+            cell_text = clean_label(full[outcome_row - 1][outcome_column - 1])
+            if cell_text and not re.search(r"\d", cell_text) and _SUBGROUP_HEADING.match(cell_text) \
+                    and len(cell_text.split()) <= 4:
+                heading_hint = cell_text
+                if row_label:
+                    outcome = clean_label(row_label)
+            elif cell_text:
+                outcome = cell_text
     header = arm_hint or str(raw.get("column_label") or "")
     panel_match = re.search(r"panel\s+([a-z0-9]+)", str(table_label or ""), re.I)
     panel = f"Panel {panel_match.group(1)}" if panel_match else ""
@@ -960,7 +1010,8 @@ def to_estimate(raw: Dict[str, Any], table_label: str, page: Optional[int], tabl
     outcome, arm_value, estimation_method, subgroup_value = assign_roles(
         outcome, arm_value, row_label, header, panel, str(raw.get("subgroup") or ""),
         str(raw.get("arm") or ""))
-    subgroup_value = derive_subgroup(row_label, header, table_label, subgroup_value, outcome)
+    existing_subgroup = " - ".join(x for x in (subgroup_value, heading_hint) if x)
+    subgroup_value = derive_subgroup(row_label, header, table_label, existing_subgroup, outcome)
     return Estimate(
         table_label=table_label, page=page, table_index=table_index,
         outcome=outcome,
@@ -1097,8 +1148,13 @@ def merge_reads(rows: List["Estimate"]) -> List["Estimate"]:
 
 
 async def _chat(client: httpx.AsyncClient, model: str, prompt: str) -> str:
+    # Reasoning is at its lowest setting by default; READER_REASONING=off disables it, so a repeated read
+    # can be measured both ways.
+    reasoning = {"effort": "low", "exclude": True}
+    if os.environ.get("READER_REASONING") == "off":
+        reasoning = {"enabled": False}
     body = {"model": model, "temperature": 0, "max_tokens": 16000,
-            "reasoning": {"effort": "low", "exclude": True},
+            "reasoning": reasoning,
             "response_format": {"type": "json_object"},
             "messages": [{"role": "user", "content": prompt}]}
     for attempt in range(3):
