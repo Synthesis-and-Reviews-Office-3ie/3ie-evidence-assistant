@@ -59,6 +59,32 @@ because nothing is lost. A stricter reading gives arm A 39 of 120 (33%).
 - **Hossain 2017 and Jalal 2009** are poor in every sample (2 of 56 rows correct), mostly through bare column
   numbers or headers stored as the outcome and missing model labels.
 
+## Second round: arms D and E (recorded before the key was revealed)
+
+D is the reader with the copied outcome label and the gallery, without the card. E is D with the card as a hint
+(a card value is preferred when one fits, otherwise the table's text is kept). Both write time point,
+population, effect type, specification and estimand to their own columns, and both compute the effect flag.
+Samples R and S, 60 rows each, independent, seed 20261125. Same classes, with two stricter rules: text in the
+wrong field is (e), and a row that does not name its specification when the table prints several is (e).
+
+| Sample | Correct (a) | Not an effect (b) | Wrong label or value (e) | Duplicate (d) | Not found (x) |
+| --- | --: | --: | --: | --: | --: |
+| R | 26 (43%) | 9 | 23 | 1 | 1 |
+| S | 21 (35%) | 7 | 32 | 0 | 0 |
+
+For comparison on the same standard: arm A's independent sample P scored 22 of 60 (37%), arm B's Q 15 of 60
+(25%). With 60 rows a share has a standard error of about 6 points, so only differences of more than about 15
+points are clear.
+
+**The effect flag now works in part.** In R it hides 5 of 9 non-effects and 4 of 49 real effects. In S it hides
+3 of 7 non-effects and 2 of 53 real effects. Lee bounds stored as rows (Roy Table 4) and mediation first-stage
+coefficients (Hossain annex) are still shown.
+
+**Faults.** Wrong outcome dominates both samples (17 each): values attached to a neighbouring row (Raza Table 4),
+the number's own text or a column number as the outcome, outcome and arm swapped. In S, five rows also carry a
+wrong effect type, for example a within-subgroup effect labelled "difference in effect between subgroups", or
+a matched programme-versus-comparison estimate labelled "difference between arms".
+
 ## What this implies
 
 1. Keep the copied outcome label. Do not adopt the card lists as a restriction. The card should add qualifiers
