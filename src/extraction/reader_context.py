@@ -71,7 +71,7 @@ def _norm_tag(tag: str) -> set:
     return set(re.sub(r"[^a-z0-9]+", " ", str(tag).lower()).split())
 
 
-def pick_entries(tags: Dict[str, List[str]], entries: List[Dict[str, Any]], k: int = 3) -> List[Dict[str, Any]]:
+def pick_entries(tags: Dict[str, List[str]], entries: List[Dict[str, Any]], k: int = 2) -> List[Dict[str, Any]]:
     """The k closest entries by shared tag words, method weighted above layout."""
     want_method = set().union(*[_norm_tag(t) for t in tags.get("method", [])]) if tags.get("method") else set()
     want_format = set().union(*[_norm_tag(t) for t in tags.get("format", [])]) if tags.get("format") else set()
@@ -92,7 +92,7 @@ def entry_text(entry: Dict[str, Any]) -> str:
     """A worked example as prompt text: the table, the rows to store, the cells not to store, the rule."""
     stored = entry.get("stored_rows") or []
     lines = [f"EXAMPLE {entry.get('id', '')}", "TABLE:",
-             str(entry.get("snippet") or "")[:2500], "STORE (the correct rows):"]
+             str(entry.get("snippet") or "")[:1200], "STORE (the correct rows):"]
     for row in stored[:40]:
         lines.append("- " + json.dumps({k: row.get(k) for k in
                                         ("outcome", "arm", "time_point", "subgroup_or_population", "value",
