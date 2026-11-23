@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 
 from fastapi import Depends, HTTPException, Request, status
+from fastapi.concurrency import run_in_threadpool
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt, JWTError
 from supabase import create_client, Client
@@ -232,9 +233,8 @@ async def get_current_user(
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-    token = credentials.credentials
-    user = verify_supabase_token(token)
-    
+    user = await _verify_bearer(credentials.credentials)
+
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -255,8 +255,19 @@ async def get_optional_user(
     """
     if not credentials or not settings.supabase_url:
         return None
-    
-    return verify_supabase_token(credentials.credentials)
+
+    return await _verify_bearer(credentials.credentials)
+
+
+async def _verify_bearer(token: str) -> Optional[AuthenticatedUser]:
+    """Supabase tokens are checked as before. EvidenceLoop tokens (only with
+    EVIDENCELOOP_AUTH_ENABLED) go to src.auth.tokens in the thread pool, because a JWK Set
+    fetch is a blocking network call."""
+    from src.auth.tokens import is_evidenceloop_token, verify_bearer_token  # avoids an import cycle
+
+    if is_evidenceloop_token(token):
+        return await run_in_threadpool(verify_bearer_token, token)
+    return verify_supabase_token(token)
 
 
 def is_multi_tenant_enabled() -> bool:

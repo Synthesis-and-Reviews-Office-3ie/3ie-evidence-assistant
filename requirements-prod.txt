@@ -67,6 +67,7 @@ asyncpg>=0.29.0
 # =============================================================================
 supabase>=2.0.0
 python-jose[cryptography]>=3.3.0
+PyJWT[crypto]>=2.15.1  # EvidenceLoop ES256 tokens: PyJWKClient with kid refetch cooldown (src/auth/evidenceloop.py)
 
 # =============================================================================
 # Zotero Integration

@@ -11,7 +11,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Optional
 
-from pydantic import Field, field_validator
+from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -70,7 +70,17 @@ class Settings(BaseSettings):
     supabase_anon_key: str = Field(default="", description="Supabase anonymous/public key")
     supabase_service_role_key: str = Field(default="", description="Supabase service role key (backend only)")
     supabase_jwt_secret: str = Field(default="", description="Supabase JWT secret for token verification")
-    
+
+    # =========================================================================
+    # EvidenceLoop sign-in (P6; docs/EVIDENCELOOP_AUTH_DESIGN.md). Off in production until
+    # EvidenceLoop is deployed. While off, every token goes to the Supabase verifier as before.
+    # =========================================================================
+    evidenceloop_auth_enabled: bool = Field(default=False, description="Accept EvidenceLoop access tokens alongside Supabase ones")
+    evidenceloop_issuer: str = Field(default="", description="EvidenceLoop JWT_ISSUER; tokens must carry exactly this iss")
+    evidenceloop_jwks_url: str = Field(default="", description="EvidenceLoop <API base>/.well-known/jwks.json")
+    evidenceloop_audience: str = Field(default="evidence-assistant", description="aud that EvidenceLoop tokens must contain")
+    evidenceloop_client_id: str = Field(default="", description="When set, tokens must be RFC 9068 (typ at+jwt) and carry this client_id (sr-platform D16)")
+
     # =========================================================================
     # Vector Database
     # =========================================================================
@@ -361,7 +371,16 @@ class Settings(BaseSettings):
     def resolve_path(cls, v: str | Path) -> Path:
         """Convert string paths to Path objects."""
         return Path(v) if isinstance(v, str) else v
-    
+
+    @model_validator(mode="after")
+    def require_evidenceloop_endpoints(self) -> "Settings":
+        """Refuse to start with EvidenceLoop sign-in on but no issuer or key set to check against."""
+        if self.evidenceloop_auth_enabled and not (self.evidenceloop_issuer and self.evidenceloop_jwks_url):
+            raise ValueError(
+                "EVIDENCELOOP_AUTH_ENABLED needs EVIDENCELOOP_ISSUER and EVIDENCELOOP_JWKS_URL"
+            )
+        return self
+
     # =========================================================================
     # Properties
     # =========================================================================

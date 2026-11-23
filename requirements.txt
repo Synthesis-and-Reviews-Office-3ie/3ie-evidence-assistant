@@ -67,6 +67,7 @@ alembic>=1.14.0
 # =============================================================================
 supabase>=2.0.0
 python-jose[cryptography]>=3.3.0  # JWT token verification
+PyJWT[crypto]>=2.15.1  # EvidenceLoop ES256 tokens: PyJWKClient with kid refetch cooldown (src/auth/evidenceloop.py)
 
 # Frontend
 gradio>=5.0.0
