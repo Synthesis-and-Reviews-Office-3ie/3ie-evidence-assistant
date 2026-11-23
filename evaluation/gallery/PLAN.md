@@ -111,3 +111,29 @@ populations; table list (label, page, role: main effect, heterogeneity, robustne
 descriptive, cost); and a page and quote for every field. Never copy findings the paper reports from other
 studies. Store with the document (Supabase or beside the extraction output). Write 16 cards, one per
 never-used document, as a readable file.
+
+## Reader changes to make (uncommitted until Lucas audits)
+
+Measured: label turnover is 28 to 66 percent between two readings, address turnover 0 to 26 percent.
+Reasoning off is cheaper but less stable. The fix is the card, not the reasoning setting.
+
+1. Outcome label from the row header, by code. In `to_estimate` (`src/extraction/table_estimates.py`), when
+   the outcome is in the rows (`outcome_in_columns` false), take the outcome from `grid.body[row_number-1][0]`,
+   the table's own row-header text, normalised only for whitespace and broken words (collapse runs of
+   whitespace, join a word split by a hyphen at a line break). Do not use the model's outcome text for this
+   case. When the outcome is in the columns, the column header is already the outcome; take it the same way.
+2. Arm, time point, population and subgroup from the card. Pass the document's card into `extract_document`.
+   The model may pick each of these only from the card's lists (`card_lists`: arms, time_points, populations)
+   or return "not on card". Anything else is dropped to "not on card" and flagged, not stored as free text.
+3. The card decides which tables hold results. `role_of_table(card, page, label)`; a table whose role is
+   balance, descriptive, first stage (as a table) or cost is not read for main effects. The table reader does
+   not run its own results-table decision when the card has an entry for the table.
+4. Page-image rows carry a cell address. Extend the vision prompt (`page_vision.VISION_PROMPT`) to return
+   `row_index` and `column_index` (1-based within the table) per estimate, and write them to `cell_row` and
+   `cell_column` in `_row`, so page-read rows can be compared and audited like text rows.
+5. Keep the number fixes: mangled minus, leading decimals, page-image routing. Remove a keyword rule only
+   where a gallery entry or a card rule covers the same case, and list every rule removed.
+
+Tests to add: the outcome is taken from the row header (Sulaiman after-2-years row keeps its own header), an
+arm not on the card becomes "not on card", a balance table from the card is not read, and a vision row
+carries a cell index.
