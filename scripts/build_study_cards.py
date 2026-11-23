@@ -47,6 +47,7 @@ async def main():
     ap.add_argument("--keys", help="JSON file with a list of document keys")
     ap.add_argument("--doc", action="append", default=[], help="a document key (repeatable)")
     ap.add_argument("--out", default=str(REVIEW))
+    ap.add_argument("--render-only", action="store_true", help="rewrite the review from saved cards")
     args = ap.parse_args()
 
     keys = list(args.doc)
@@ -63,6 +64,11 @@ async def main():
     async with httpx.AsyncClient(timeout=300,
                                  headers={"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}"}) as client:
         for key in keys:
+            if args.render_only:
+                path = out_dir / f"{key}.json"
+                if path.exists():
+                    cards.append(json.loads(path.read_text(encoding="utf-8")))
+                continue
             try:
                 content = load_content(s3, bucket, key).get("content_list") or []
             except Exception as exc:
@@ -95,7 +101,9 @@ async def main():
                       f"{r.get('name','')} ({r.get('dates','')}; {r.get('since_baseline','')})"
                       for r in card['rounds']) or "(none)"),
                   f"- Populations: {', '.join(card['populations']) or '(none)'}",
-                  f"- Sign conventions and units: " + ("; ".join(card['sign_conventions']) or "(none)"), ""]
+                  f"- Sign conventions and units: " + ("; ".join(
+                      (c.get("convention") if isinstance(c, dict) else c) for c in card['sign_conventions'])
+                      or "(none)"), ""]
         if card["tables"]:
             lines += ["| Table | Page | Role | Evidence |", "| --- | --- | --- | --- |"]
             for t in card["tables"]:

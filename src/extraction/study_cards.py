@@ -39,17 +39,22 @@ Answer with JSON only, no explanation, using exactly these keys:
   "control"). Include the comparison group.
 - "rounds": every survey round, each {"name": "...", "dates": "...", "since_baseline": "..."}.
 - "comparison_group": the group the effects are measured against, as printed.
-- "sign_conventions": every convention the authors define, each a short string. Take each one from a table,
-  that table's notes, or the methods text, and give its page and a quote in "evidence". Never take a
-  convention from a sentence that reports a result: Raza 2018 Table 2 prints -0.125 for a wasting reduction,
-  so a prose sentence calling it "12.5pp" must not become a convention that flips signs. Include units the
-  authors define.
+- "sign_conventions": every convention the authors define, each a short string. Take each one from a table's
+  column headers, that table's notes, or the methods text, and give its page and a quote in "evidence". For
+  every table whose header subtracts two groups, such as "A-B" or "Control - Program", record a convention
+  that names the two groups and the direction: the header "Benefit attributable to program (%) A-B", with
+  A = Control and B = Program, defines the benefit as comparison minus programme. Never take a convention from
+  a sentence that reports a result: Raza 2018 Table 2 prints -0.125 for a wasting reduction, so a prose
+  sentence calling it "12.5pp" must not become a convention that flips signs. Include units the authors
+  define.
 - "populations": every spillover or subgroup population the paper studies, each a short string (e.g. "other
   poor women", "non-poor households").
 - "tables": every table that holds an estimate, each {"label": "...", "page": <int 1-based>,
   "role": one of {roles}, "evidence": {"page": <int>, "quote": "<a short quote>"}}. Use the TABLE LIST to name
   them all, including tables late in a long document. A table whose numbers are means, balance, attrition or
-  counts is "balance" or "descriptive", not "main effect".
+  counts is "balance" or "descriptive", not "main effect". A plain follow-up difference (a means table with a
+  difference column) is "descriptive" when the paper estimates the same outcomes with a model, such as a
+  regression or a difference-in-differences, in another table.
 - "evidence": a page and a short quote for methods, for arms, for rounds and for sign_conventions, each
   {"page": <int>, "quote": "<short quote>"}.
 
@@ -114,10 +119,20 @@ def normalise_card(card: Dict[str, Any]) -> Dict[str, Any]:
     if not isinstance(card, dict):
         return out
     out["title"] = str(card.get("title") or "").strip()
-    for key in ("methods", "arms", "sign_conventions", "populations"):
+    for key in ("methods", "arms", "populations"):
         value = card.get(key)
         if isinstance(value, list):
             out[key] = [str(x).strip() for x in value if str(x).strip()]
+    conventions = []
+    for item in card.get("sign_conventions") or []:
+        if isinstance(item, dict):
+            text = str(item.get("convention") or item.get("text") or "").strip()
+            if text:
+                conventions.append({"convention": text,
+                                    "evidence": item.get("evidence") if isinstance(item.get("evidence"), dict) else {}})
+        elif str(item).strip():
+            conventions.append({"convention": str(item).strip(), "evidence": {}})
+    out["sign_conventions"] = conventions
     out["comparison_group"] = str(card.get("comparison_group") or "").strip()
     rounds = card.get("rounds")
     if isinstance(rounds, list):

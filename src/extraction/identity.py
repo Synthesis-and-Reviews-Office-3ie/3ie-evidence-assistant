@@ -47,15 +47,19 @@ def _size(value: Any) -> str:
 
 def row_key(source: str, page: int | None, outcome: Any, arm: Any, subgroup: Any,
             effect_size: Any, table_index: int | None = None, cell_row: int | None = None,
-            cell_column: int | None = None, effect_type: Any = "") -> str:
+            cell_column: int | None = None, effect_type: Any = "", time_point: Any = "",
+            specification: Any = "", estimand: Any = "", quantile: Any = "") -> str:
     """The hex identity of one stored estimate.
 
     Where the cell has an address, the key is the address itself: source, page, table, cell row, cell column
     and effect type. Two estimates at different cells never collide, even when the labels and the value are
     equal, which is what lets the time point, the specification, the estimand and the quantile leave the
     labels: Asadullah 2016 Table 2 prints the same 1.2 for "Unemployed" men in 2005 and 2008, and Misha 2019
-    Table 4 prints the same -0.098 for formal loans in D4 and D5. Only a row with no address falls back to the
-    label key, page and outcome and arm and subgroup and value.
+    Table 4 prints the same -0.098 for formal loans in D4 and D5.
+
+    A row with no address falls back to the labels, and the fallback key now includes the time point, the
+    specification, the estimand and the quantile as well as the outcome, arm, subgroup and value, so two
+    unaddressed rows cannot collide on those axes either.
 
     The database uses md5 of the same pipe-joined string, with the estimate rounded to nine decimals on both
     sides so a float rendered by Python and by Postgres gives the same key.
@@ -67,5 +71,6 @@ def row_key(source: str, page: int | None, outcome: Any, arm: Any, subgroup: Any
             _part(effect_type)])
     else:
         payload = "|".join(["label", _part(source), "" if page is None else str(int(page)), _outcome(outcome),
-                            _part(arm), _part(subgroup), _size(effect_size)])
+                            _part(arm), _part(subgroup), _size(effect_size), _part(time_point),
+                            _part(specification), _part(estimand), _part(quantile)])
     return hashlib.md5(payload.encode("utf-8")).hexdigest()

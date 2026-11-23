@@ -111,25 +111,14 @@ def test_a_row_without_an_address_still_uses_the_label_key():
         row_key("tables_v1", 3, "Income", None, None, 1.2, table_index=2, cell_row=4, cell_column=3)
 
 
-def test_a_value_the_new_run_missed_is_carried_forward():
-    from src.extraction.store_estimates import carried_forward
+def test_a_run_that_loses_many_rows_is_flagged_not_patched():
+    from src.extraction.store_estimates import shrink_flag
 
-    new = [{"page": 3, "effect_size": 155.43, "outcome_name": "Income"},
-           {"page": 3, "effect_size": 107.0, "outcome_name": "Income per capita"}]
-    stored = [{"page": 3, "effect_size": 155.43, "outcome_name": "Total income"},
-              {"page": 3, "effect_size": 107.0, "outcome_name": "Income per capita"},
-              {"page": 3, "effect_size": 76.5, "outcome_name": "Consumption"},
-              {"page": 9, "effect_size": 107.0, "outcome_name": "Income per capita"}]
-    kept = carried_forward(new, stored)
-    assert [row["effect_size"] for row in kept] == [76.5, 107.0]
-    assert [row["page"] for row in kept] == [3, 9]
-
-
-def test_a_label_change_alone_does_not_carry_a_row():
-    from src.extraction.store_estimates import carried_forward
-
-    assert carried_forward([{"page": 3, "effect_size": 155.43}],
-                           [{"page": 3, "effect_size": 155.43, "outcome_name": "something else"}]) == []
+    # No carry-forward: a run keeps exactly what it read. A big drop is flagged for review instead.
+    assert shrink_flag(5, 10)                 # half the rows: flag
+    assert shrink_flag(0, 40)                 # none: flag
+    assert not shrink_flag(8, 10)             # a small drop is normal churn
+    assert not shrink_flag(0, 0)              # a new document is not a shrink
 
 
 def test_a_duplicate_identity_in_one_run_is_written_once():

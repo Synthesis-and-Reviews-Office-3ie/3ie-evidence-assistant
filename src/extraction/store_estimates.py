@@ -142,7 +142,9 @@ def unify_keys(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
             row["row_key"] = row_key(row.get("source") or SOURCE, row.get("page"), row.get("outcome_name"),
                                      row.get("treatment_arm"), row.get("subgroup"), row.get("effect_size"),
                                      table_index=row.get("table_index"), cell_row=row.get("cell_row"),
-                                     cell_column=row.get("cell_column"), effect_type=row.get("effect_type"))
+                                     cell_column=row.get("cell_column"), effect_type=row.get("effect_type"),
+                                     time_point=row.get("time_point"), specification=row.get("specification"),
+                                     estimand=row.get("estimand"), quantile=row.get("quantile"))
     # The identity is unique in the table, so a run that returns the same estimate twice keeps one: a
     # repeated key would otherwise make the whole document's insert fail.
     unique, seen = [], set()
@@ -182,28 +184,15 @@ async def _post(db: httpx.AsyncClient, rows: List[Dict[str, Any]]) -> Optional[s
     return last
 
 
-def carried_forward(new_rows: List[Dict[str, Any]], stored: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    """Stored rows whose value the new run did not produce, so replacing the document cannot lose them.
+def shrink_flag(new_count: int, stored_count: int, floor: float = 0.7) -> bool:
+    """True when a run stores many fewer rows than before, so the document needs review.
 
-    The identity of an estimate for this purpose is the page and the value, not the label: a run may word
-    an outcome differently and still have read the same estimate. Anything stored that is absent by that
-    test is kept, which makes a replacement run unable to shrink what was found before.
+    Replacement used to carry forward every stored value the new run did not reproduce. That kept a
+    sign-lost +0.005 beside the corrected -0.005, and kept covariate rows after the reader learned to skip
+    them, for ever. With prune on, the stored rows are exactly what the current reader produces; a run that
+    loses a large share of a document is flagged for a person to look at, not silently patched.
     """
-    by_page: Dict[Any, List[float]] = {}
-    for row in new_rows:
-        value = row.get("effect_size")
-        if value is not None:
-            by_page.setdefault(row.get("page"), []).append(float(value))
-    keep = []
-    for row in stored:
-        value = row.get("effect_size")
-        if value is None:
-            continue
-        same = any(abs(float(value) - other) <= max(1e-9, abs(float(value)) * 1e-9)
-                   for other in by_page.get(row.get("page"), []))
-        if not same:
-            keep.append(row)
-    return keep
+    return stored_count > 0 and new_count < floor * stored_count
 
 
 async def _stored_rows(db: httpx.AsyncClient, project_id: str, name: str) -> List[Dict[str, Any]]:
@@ -236,9 +225,9 @@ async def extract_and_store(
     Extract, embed and store estimates for a project's completed documents (all of them,
     or only `doc_keys`).
 
-    Each run replaces the document's rows, but a stored row whose page and value the new run did not
-    produce is carried forward, so a replacement cannot lose a value the previous run found. `prune=True`
-    replaces without carrying forward, for a deliberate clean-up after a change.
+    Each run replaces the document's rows with exactly what the reader produced. A run that stores many
+    fewer rows than the document held before is flagged in the log for review, rather than keeping the old
+    rows. A failed insert is still restored, so a document is never left with nothing.
     """
     from src.retrieval.study_cards import embed_documents
 
@@ -247,7 +236,7 @@ async def extract_and_store(
     headers = {"apikey": key, "Authorization": f"Bearer {key}", "Content-Type": "application/json"}
     bucket, s3 = os.environ.get("R2_BUCKET_NAME", "devchat-pdfs"), _r2()
     wanted = set(doc_keys) if doc_keys is not None else None
-    totals = {"docs": 0, "estimates": 0, "kept": 0, "results_tables": 0, "tables": 0, "errors": 0, "second_pass_units": 0, "second_pass_rows": 0, "carried": 0, "restored": 0,
+    totals = {"docs": 0, "estimates": 0, "kept": 0, "results_tables": 0, "tables": 0, "errors": 0, "second_pass_units": 0, "second_pass_rows": 0, "reduced": 0, "restored": 0,
               "vision_pages": 0, "vision_rows": 0, "outcome_misses": 0, "prose_rows": 0, "role_disagreements": 0, "cost_usd": 0.0}
 
     async with httpx.AsyncClient(base_url=url, headers=headers, timeout=120) as db:
@@ -417,14 +406,12 @@ async def extract_and_store(
                     log(f"  ✗ {name[:60]}: {type(e).__name__}: {str(e)[:120]}")
                     return
                 try:
-                    carried = 0
                     previous = await _stored_rows(db, project_id, name)
-                    if not prune:
-                        keep = carried_forward(rows, previous)
-                        # Server-managed columns are not part of an insert payload.
-                        rows.extend({k: v for k, v in row.items() if k not in ("id", "created_at")}
-                                    for row in keep)
-                        carried = len(keep)
+                    # No carry-forward: the stored rows must be exactly what the reader produced.
+                    if shrink_flag(len(rows), len(previous)):
+                        totals["reduced"] += 1
+                        log(f"    ! {name[:50]}: new run stores {len(rows)} rows against "
+                            f"{len(previous)} before; review")
                     rows = unify_keys(rows)
                     # A gateway timeout on one document used to lose the whole document's write and need a
                     # manual re-run. Retry the write as a unit, with a pause, before giving up on it.
@@ -443,9 +430,6 @@ async def extract_and_store(
                                 raise
                             log(f"    retrying the write for {name[:50]} after a pause")
                             await asyncio.sleep(30)
-                    totals["carried"] += carried
-                    if carried:
-                        log(f"    kept {carried} stored row(s) this run did not reproduce")
                 except Exception as e:
                     totals["errors"] += 1
                     log(f"  ✗ {name[:60]}: {type(e).__name__}: {str(e)[:120]}")
