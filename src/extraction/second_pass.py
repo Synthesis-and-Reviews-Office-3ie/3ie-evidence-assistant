@@ -140,7 +140,8 @@ async def run_second_pass(content_list: Sequence[dict[str, Any]], names: Sequenc
             prompt = PROMPT.format(context=(unit["caption"] + "\n" + unit["context"]).strip()[:4000] or "(none)",
                                    table=unit["text"], page=unit["page"] if unit["page"] is not None else "?",
                                    structure=_structure_hint(result) or "(none)",
-                                   view="the whole table. " + hint)
+                                   view="the whole table. " + hint,
+                                   card="(none)", examples="(none)")
             label = str(unit.get("caption") or "")[:40] or f"table at item {unit['index']}"
             try:
                 data = _parse_json(await _chat(client, model, prompt))

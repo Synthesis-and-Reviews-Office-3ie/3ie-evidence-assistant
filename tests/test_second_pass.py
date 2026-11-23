@@ -30,6 +30,25 @@ def test_nothing_is_selected_when_nothing_matches():
     assert selected == {"tables": [], "texts": []}
 
 
+def test_the_second_pass_prompt_has_every_format_key(monkeypatch):
+    # Regression: the shared PROMPT gained {card} and {examples}; the second pass formatted it without
+    # those keys and raised KeyError('card') on every document, losing its rows.
+    import asyncio
+
+    import src.extraction.table_estimates as module
+    from src.extraction.second_pass import run_second_pass
+
+    async def fake_chat(client, model, prompt):
+        assert "{card}" not in prompt and "{examples}" not in prompt
+        return json.dumps({"results_table": True, "table_label": "Table 1", "estimates": [
+            {"outcome": "Expenditure", "estimate_cell": "0.11***", "row_number": 1, "column_number": 2,
+             "row_label": "Expenditure", "outcome_row": 3, "outcome_column": 1}]})
+
+    monkeypatch.setattr(module, "_chat", fake_chat)
+    out = asyncio.run(run_second_pass(CONTENT, ["Expenditure"], "m", "k"))
+    assert out["estimates"] and out["estimates"][0]["effect_size"] == 0.11
+
+
 def test_the_selection_is_capped():
     listed = [{"type": "table", "page_idx": i, "text": "| Outcome | Coef |\n| --- | --- |\n| Expenditure | 1*** |"}
               for i in range(20)]

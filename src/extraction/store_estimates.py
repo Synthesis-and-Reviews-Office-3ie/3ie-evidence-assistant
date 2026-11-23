@@ -223,6 +223,40 @@ async def _post(db: httpx.AsyncClient, rows: List[Dict[str, Any]]) -> Optional[s
     return last
 
 
+async def _upsert(db: httpx.AsyncClient, rows: List[Dict[str, Any]]) -> Optional[str]:
+    """Upsert on the natural row key, with retries. Returns an error message, or None.
+
+    New rows go into place before old rows are removed, so a document is never left empty: a row whose
+    row_key is unchanged is updated, a new row is inserted, and only afterwards are the old rows the run did
+    not reproduce deleted by id.
+    """
+    last = ""
+    for attempt in range(5):
+        try:
+            r = await db.post("/effect_estimates", json=rows,
+                              params={"on_conflict": "rag_project_id,doc_key,row_key"},
+                              headers={"Prefer": "resolution=merge-duplicates,return=minimal"})
+            if r.status_code < 400:
+                return None
+            last = f"upsert {r.status_code}: {r.text[:300]}"
+            if r.status_code < 500:
+                return last
+        except Exception as e:
+            last = f"{type(e).__name__}: {e}"[:200]
+        await asyncio.sleep(5 * (attempt + 1))
+    return last
+
+
+def should_skip_replace(rows: List[Dict[str, Any]]) -> bool:
+    """A run that stores nothing must not empty a document: the stored rows are kept."""
+    return not rows
+
+
+def stale_row_ids(previous: List[Dict[str, Any]], new_row_keys: set) -> List[str]:
+    """The ids of stored rows the new run did not reproduce. These are deleted after the insert."""
+    return [row["id"] for row in previous if row.get("row_key") not in new_row_keys]
+
+
 def shrink_flag(new_count: int, stored_count: int, floor: float = 0.7) -> bool:
     """True when a run stores many fewer rows than before, so the document needs review.
 
@@ -240,7 +274,7 @@ async def _stored_rows(db: httpx.AsyncClient, project_id: str, name: str) -> Lis
     while True:
         r = await db.get("/effect_estimates", params={
             "select": "*", "rag_project_id": f"eq.{project_id}", "doc_key": f"eq.{name}",
-            "source": f"eq.{SOURCE}", "limit": "1000", "offset": str(offset)})
+            "source": f"eq.{SOURCE}", "limit": "1000", "offset": str(offset), "order": "id"})
         if r.status_code >= 400:
             return rows
         batch = r.json() or []
@@ -459,15 +493,28 @@ async def extract_and_store(
                     rows = unify_keys(rows)
                     # A gateway timeout on one document used to lose the whole document's write and need a
                     # manual re-run. Retry the write as a unit, with a pause, before giving up on it.
+                    # Insert (upsert) the new rows first, so the document is never left empty, then remove
+                    # only the old rows this run did not reproduce, by id. A run that stores nothing keeps the
+                    # stored rows, so a reader failure cannot empty a document.
+                    if should_skip_replace(rows):
+                        totals["reduced"] += 1
+                        log(f"    ! {name[:50]}: new run stores 0 rows; keeping the stored rows for review")
+                        return
+                    new_keys = {row["row_key"] for row in rows}
+                    stale_ids = stale_row_ids(previous, new_keys)
                     for attempt in range(2):
                         try:
-                            await db.delete("/effect_estimates", params={
-                                "rag_project_id": f"eq.{project_id}", "doc_key": f"eq.{name}",
-                                "source": f"eq.{SOURCE}"})
                             for i in range(0, len(rows), INSERT_BATCH):
-                                err = await _post(db, rows[i:i + INSERT_BATCH])
+                                err = await _upsert(db, rows[i:i + INSERT_BATCH])
                                 if err:
                                     raise RuntimeError(err)
+                            for i in range(0, len(stale_ids), 100):
+                                batch = stale_ids[i:i + 100]
+                                r = await db.delete("/effect_estimates", params={
+                                    "rag_project_id": f"eq.{project_id}",
+                                    "id": f"in.({','.join(batch)})"})
+                                if r.status_code >= 400:
+                                    raise RuntimeError(f"delete {r.status_code}: {r.text[:200]}")
                             break
                         except Exception:
                             if attempt == 1:
@@ -478,14 +525,14 @@ async def extract_and_store(
                     totals["errors"] += 1
                     log(f"  ✗ {name[:60]}: {type(e).__name__}: {str(e)[:120]}")
                     if prune and previous:
-                        # A prune deletes before it inserts, so a failed insert would leave the document with
-                        # nothing. Put back what was there.
+                        # Insert-first means the document is not empty; this restores any old row a partial
+                        # delete removed, and never conflicts with a row the new run already upserted.
                         restored = unify_keys([{k: v for k, v in row.items() if k not in ("id", "created_at")}
                                                for row in previous])
                         for i in range(0, len(restored), INSERT_BATCH):
-                            if await _post(db, restored[i:i + INSERT_BATCH]) is None:
+                            if await _upsert(db, restored[i:i + INSERT_BATCH]) is None:
                                 totals["restored"] += len(restored[i:i + INSERT_BATCH])
-                        log(f"    restored {totals.get('restored', 0)} row(s) after the failed prune")
+                        log(f"    restored {totals.get('restored', 0)} row(s) after the failed write")
                     return
                 results = sum(t["results_table"] for t in out["tables"])
                 totals["docs"] += 1

@@ -142,3 +142,5 @@ evaluation/gallery/review.html
 # Blinded audit samples and per-arm row files, 23 November 2026.
 !evaluation/results/audit_sample_*_2026-11-23.csv
 !evaluation/results/arm_*_rows_2026-11-23.jsonl
+evaluation/results/effect_estimates_snapshot_before_full_run_*.jsonl
+evaluation/results/effect_estimates_snapshot_*.jsonl

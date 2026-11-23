@@ -177,3 +177,20 @@ def test_effect_type_defaults_to_main():
     estimate = _row({"outcome": "Income", "estimate_cell": "155.43*** (121.73)", "se_cell": "(121.73)"})
     estimate.pop("effect_type", None)
     assert rows_for("p", DOC, {"estimates": [estimate]}, "m")[0]["effect_type"] == "main"
+
+
+def test_a_run_that_stores_nothing_does_not_empty_a_document():
+    # Insert-first, then delete by id: an empty run must skip the replacement entirely.
+    from src.extraction.store_estimates import should_skip_replace
+
+    assert should_skip_replace([]) is True
+    assert should_skip_replace([{"row_key": "a"}]) is False
+
+
+def test_only_rows_the_new_run_did_not_reproduce_are_deleted():
+    from src.extraction.store_estimates import stale_row_ids
+
+    previous = [{"id": "1", "row_key": "a"}, {"id": "2", "row_key": "b"}, {"id": "3", "row_key": "c"}]
+    assert stale_row_ids(previous, {"a", "b"}) == ["3"]
+    assert stale_row_ids(previous, {"a", "b", "c"}) == []
+    # Unchanged rows are kept (upserted), never deleted: the document is not emptied.
