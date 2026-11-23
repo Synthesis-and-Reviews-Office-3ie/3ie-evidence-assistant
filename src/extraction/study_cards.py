@@ -31,19 +31,25 @@ card records the paper's own definitions, so the reader never guesses an arm, a 
 a sign. It must not copy a finding the paper reports from another study.
 
 Answer with JSON only, no explanation, using exactly these keys:
+- "title": the authors and year as "Author (Year)", never a section heading or the journal name.
 - "methods": every evaluation method the paper uses, each as a short string (e.g. "randomised controlled
-  trial with ITT", "difference-in-differences", "propensity score matching", "IV/2SLS", "bounds").
+  trial with ITT", "difference-in-differences", "propensity score matching", "IV/2SLS", "bounds"). Read the
+  methods and data sections, not only the abstract.
 - "arms": every treatment or comparison group, named as the paper prints it (e.g. "grants only", "hybrid",
   "control"). Include the comparison group.
 - "rounds": every survey round, each {"name": "...", "dates": "...", "since_baseline": "..."}.
 - "comparison_group": the group the effects are measured against, as printed.
-- "sign_conventions": every convention the authors define, each a short string (e.g. "benefit (A-B) is
-  control minus program, so a positive is a reduction"). Include units the authors define.
+- "sign_conventions": every convention the authors define, each a short string. Take each one from a table,
+  that table's notes, or the methods text, and give its page and a quote in "evidence". Never take a
+  convention from a sentence that reports a result: Raza 2018 Table 2 prints -0.125 for a wasting reduction,
+  so a prose sentence calling it "12.5pp" must not become a convention that flips signs. Include units the
+  authors define.
 - "populations": every spillover or subgroup population the paper studies, each a short string (e.g. "other
   poor women", "non-poor households").
 - "tables": every table that holds an estimate, each {"label": "...", "page": <int 1-based>,
-  "role": one of {roles}, "evidence": {"page": <int>, "quote": "<a short quote>"}}. A table whose numbers
-  are means, balance, attrition or counts is "balance" or "descriptive", not "main effect".
+  "role": one of {roles}, "evidence": {"page": <int>, "quote": "<a short quote>"}}. Use the TABLE LIST to name
+  them all, including tables late in a long document. A table whose numbers are means, balance, attrition or
+  counts is "balance" or "descriptive", not "main effect".
 - "evidence": a page and a short quote for methods, for arms, for rounds and for sign_conventions, each
   {"page": <int>, "quote": "<short quote>"}.
 
@@ -60,20 +66,46 @@ def _parse_json(text: str) -> Dict[str, Any]:
     return json.loads(match.group(0) if match else text)
 
 
-def document_text(content_list: List[Dict[str, Any]], limit: int = 60000) -> tuple:
-    """The title and the running text of a document, which covers the abstract, methods and results."""
+def document_text(content_list: List[Dict[str, Any]], limit: int = 120000) -> tuple:
+    """The title and the reading material of a document: its table list, headings and running text.
+
+    The table list and the headings come first, so a long document does not lose its later tables to a cut:
+    Jalal 2009 is a 143-page thesis and its Table 3.10 sits at page 70. The running text follows.
+    """
     title = next((str(i.get("text") or "") for i in content_list if i.get("type") == "title"), "")
-    parts = []
-    for item in content_list:
-        if item.get("type") in ("text", "title", "section_header"):
-            parts.append(str(item.get("text") or ""))
-    text = "\n".join(parts)
-    return title, text[:limit]
+    labels = []
+    for idx, item in enumerate(content_list):
+        if item.get("type") != "table":
+            continue
+        label = ""
+        for prior in reversed(content_list[:idx]):
+            text = str(prior.get("text") or "").strip()
+            if text:
+                label = text.splitlines()[0][:120]
+                break
+        labels.append(f"{label or '(no label)'} (page {item.get('page_idx', 0) + 1})")
+    headings = [str(i.get("text") or "").strip() for i in content_list
+                if i.get("type") == "section_header" and str(i.get("text") or "").strip()]
+    body = "\n".join(str(i.get("text") or "") for i in content_list
+                     if i.get("type") in ("text", "title", "section_header"))
+    digest = ("TABLE LIST:\n" + "\n".join(labels[:400])
+              + "\n\nHEADINGS:\n" + "\n".join(headings[:300])
+              + "\n\nTEXT:\n" + body)
+    return title, digest[:limit]
+
+
+_AUTHOR_YEAR = re.compile(r"_([A-Za-z][A-Za-z'\-]+)_\((\d{4})\)")
+
+
+def author_year(doc_key: str) -> str:
+    """The author and year from a document key, such as "Roy (2015)". Empty when the key has neither."""
+    match = _AUTHOR_YEAR.search(str(doc_key or ""))
+    return f"{match.group(1)} ({match.group(2)})" if match else ""
 
 
 def empty_card() -> Dict[str, Any]:
-    return {"methods": [], "arms": [], "rounds": [], "comparison_group": "", "sign_conventions": [],
-            "populations": [], "tables": [], "evidence": {}}
+    return {"title": "", "methods": [], "arms": [], "rounds": [], "comparison_group": "",
+            "sign_conventions": [], "populations": [], "tables": [], "evidence": {}}
 
 
 def normalise_card(card: Dict[str, Any]) -> Dict[str, Any]:
@@ -81,6 +113,7 @@ def normalise_card(card: Dict[str, Any]) -> Dict[str, Any]:
     out = empty_card()
     if not isinstance(card, dict):
         return out
+    out["title"] = str(card.get("title") or "").strip()
     for key in ("methods", "arms", "sign_conventions", "populations"):
         value = card.get(key)
         if isinstance(value, list):

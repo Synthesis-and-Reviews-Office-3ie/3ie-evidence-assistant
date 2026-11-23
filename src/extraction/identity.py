@@ -46,12 +46,26 @@ def _size(value: Any) -> str:
 
 
 def row_key(source: str, page: int | None, outcome: Any, arm: Any, subgroup: Any,
-            effect_size: Any) -> str:
+            effect_size: Any, table_index: int | None = None, cell_row: int | None = None,
+            cell_column: int | None = None, effect_type: Any = "") -> str:
     """The hex identity of one stored estimate.
 
-    The database uses md5 of the same pipe-joined string, with the estimate rounded to nine decimals on
-    both sides so a float rendered by Python and by Postgres gives the same key.
+    Where the cell has an address, the key is the address itself: source, page, table, cell row, cell column
+    and effect type. Two estimates at different cells never collide, even when the labels and the value are
+    equal, which is what lets the time point, the specification, the estimand and the quantile leave the
+    labels: Asadullah 2016 Table 2 prints the same 1.2 for "Unemployed" men in 2005 and 2008, and Misha 2019
+    Table 4 prints the same -0.098 for formal loans in D4 and D5. Only a row with no address falls back to the
+    label key, page and outcome and arm and subgroup and value.
+
+    The database uses md5 of the same pipe-joined string, with the estimate rounded to nine decimals on both
+    sides so a float rendered by Python and by Postgres gives the same key.
     """
-    payload = "|".join([_part(source), "" if page is None else str(int(page)), _outcome(outcome),
-                        _part(arm), _part(subgroup), _size(effect_size)])
+    if cell_row is not None and cell_column is not None:
+        payload = "|".join([
+            "cell", _part(source), "" if page is None else str(int(page)),
+            "" if table_index is None else str(int(table_index)), str(int(cell_row)), str(int(cell_column)),
+            _part(effect_type)])
+    else:
+        payload = "|".join(["label", _part(source), "" if page is None else str(int(page)), _outcome(outcome),
+                            _part(arm), _part(subgroup), _size(effect_size)])
     return hashlib.md5(payload.encode("utf-8")).hexdigest()

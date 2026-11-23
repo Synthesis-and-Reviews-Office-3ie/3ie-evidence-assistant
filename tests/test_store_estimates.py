@@ -79,6 +79,38 @@ def test_the_same_estimate_gets_the_same_key_whatever_the_reader():
     assert first["row_key"] == second["row_key"]
 
 
+def test_two_rounds_with_equal_labels_and_values_do_not_collide_when_addressed():
+    from src.extraction.store_estimates import unify_keys
+
+    # Asadullah 2016 Table 2, "Unemployed" men, 1.2 in 2005 and 1.2 in 2008. The round has left the label,
+    # so the label key is the same; the cell address keeps the two apart.
+    a = {"outcome_name": "Unemployed", "treatment_arm": "Men", "effect_size": 1.2, "page": 12,
+         "table_index": 2, "cell_row": 4, "cell_column": 3, "effect_type": "main", "time_point": "2005"}
+    b = dict(a, cell_row=5, time_point="2008")
+    rows = unify_keys([a, b])
+    assert len(rows) == 2 and rows[0]["row_key"] != rows[1]["row_key"]
+
+
+def test_two_specifications_with_equal_values_do_not_collide_when_addressed():
+    from src.extraction.store_estimates import unify_keys
+
+    # Misha 2019 Table 4, formal loans, -0.098 in D4 and D5.
+    a = {"outcome_name": "Formal loans", "effect_size": -0.098, "page": 30, "table_index": 4,
+         "cell_row": 6, "cell_column": 4, "specification": "D4", "effect_type": "main"}
+    b = dict(a, cell_column=5, specification="D5")
+    rows = unify_keys([a, b])
+    assert len(rows) == 2 and rows[0]["row_key"] != rows[1]["row_key"]
+
+
+def test_a_row_without_an_address_still_uses_the_label_key():
+    from src.extraction.identity import row_key
+
+    assert row_key("tables_v1", 3, " Income ", None, None, 155.43) == \
+        row_key("tables_v1", 3, "income", "", "", 155.4300000001)
+    assert row_key("tables_v1", 3, "Income", None, None, 1.2) != \
+        row_key("tables_v1", 3, "Income", None, None, 1.2, table_index=2, cell_row=4, cell_column=3)
+
+
 def test_a_value_the_new_run_missed_is_carried_forward():
     from src.extraction.store_estimates import carried_forward
 

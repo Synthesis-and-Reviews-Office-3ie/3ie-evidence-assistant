@@ -25,7 +25,7 @@ sys.path.insert(0, str(ROOT))
 load_dotenv(ROOT / ".env")
 
 from src.extraction.store_estimates import DEFAULT_MODEL  # noqa: E402
-from src.extraction.study_cards import build_card, document_text  # noqa: E402
+from src.extraction.study_cards import author_year, build_card, document_text  # noqa: E402
 
 PROJECT = "7efdc60e-e863-480c-929e-616574725e5f"
 REVIEW = ROOT / "evaluation/results/study_cards_review.md"
@@ -70,7 +70,8 @@ async def main():
                 continue
             title, text = document_text(content)
             card = await build_card(client, DEFAULT_MODEL, title, text)
-            card["doc_key"], card["title"] = key, title
+            card["doc_key"] = key
+            card["title"] = author_year(key) or card.get("title") or title
             cards.append(card)
             (out_dir / f"{key}.json").write_text(json.dumps(card, indent=1), encoding="utf-8")
             try:

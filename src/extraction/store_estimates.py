@@ -140,7 +140,9 @@ def unify_keys(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     for row in rows:
         if not row.get("row_key"):
             row["row_key"] = row_key(row.get("source") or SOURCE, row.get("page"), row.get("outcome_name"),
-                                     row.get("treatment_arm"), row.get("subgroup"), row.get("effect_size"))
+                                     row.get("treatment_arm"), row.get("subgroup"), row.get("effect_size"),
+                                     table_index=row.get("table_index"), cell_row=row.get("cell_row"),
+                                     cell_column=row.get("cell_column"), effect_type=row.get("effect_type"))
     # The identity is unique in the table, so a run that returns the same estimate twice keeps one: a
     # repeated key would otherwise make the whole document's insert fail.
     unique, seen = [], set()
