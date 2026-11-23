@@ -59,12 +59,15 @@ Otherwise return JSON only:
    "standard_error": <number or null>,
    "p_value": <number between 0 and 1, or null>,
    "stars": <count of significance stars, 0 if none>,
-   "sample_size": <number or null>
- }]}
+   "sample_size": <number or null>,
+   "row_index": <1-based row of the estimate cell in the table, counting the header row as row 1>,
+   "column_index": <1-based column of the estimate cell, counting the first column as 1>
+  }]}
 
 Copy the numbers exactly as printed. If a cell holds "estimate (standard error)", put the whole text
 in estimate_cell and split it into coefficient and standard_error. Do not invent values, and do not
-report control-group means, observations, R2 or constants as outcomes."""
+report control-group means, observations, R2 or constants as outcomes. Always give row_index and
+column_index so the cell can be compared and audited like a text-layer cell."""
 
 
 def table_image_pages(content_list: Sequence[Dict[str, Any]], max_pages: int = 12) -> List[int]:
@@ -376,6 +379,14 @@ def _row(project_id: str, doc: Dict[str, Any], page: int, label: str, model: str
     stars = raw.get("stars") if isinstance(raw.get("stars"), int) else cell.count("*")
     n = parse_number(raw.get("sample_size"))
     outcome = str(raw.get("outcome") or raw.get("row_label") or "?")[:500]
+    try:
+        cell_row = int(raw.get("row_index")) - 1 if raw.get("row_index") is not None else None
+        cell_column = int(raw.get("column_index")) - 1 if raw.get("column_index") is not None else None
+    except (TypeError, ValueError):
+        cell_row = cell_column = None
+    if cell_row is not None and (cell_row < 0 or cell_column is None or cell_column < 0):
+        cell_row = cell_column = None
+    address = f", cell r{cell_row}c{cell_column}" if cell_row is not None else ""
     return {
         "rag_project_id": project_id, "document_id": doc["id"], "doc_key": doc["filename"],
         "source": "tables_v1",
@@ -390,8 +401,9 @@ def _row(project_id: str, doc: Dict[str, Any], page: int, label: str, model: str
         "ci_text": None,
         "sample_size": int(n) if n is not None and abs(n) < 2 ** 31 and n == int(n) else None,
         "literal_text": (cell + (" " + str(raw.get("se_cell")) if raw.get("se_cell") else ""))[:500],
-        "text_position": f"page {page}, vision read",
+        "text_position": f"page {page}, vision read{address}",
         "page": page, "extraction_method": model,
+        "cell_row": cell_row, "cell_column": cell_column,
     }
 
 

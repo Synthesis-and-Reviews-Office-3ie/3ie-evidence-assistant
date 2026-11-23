@@ -617,6 +617,13 @@ INFERRED STRUCTURE (from the headers, notes and arithmetic; may be empty or wron
 
 VIEW: {view}
 
+CARD (the paper's own definitions; arm, time point, population and subgroup must come from these lists,
+or be "not on card"; never flip a sign except as a convention here says):
+{card}
+
+WORKED EXAMPLES (real tables with the correct answer; follow their rule):
+{examples}
+
 If the column headers name outcomes (Tot, logTot, Food, Savings) and the first column names
 treatment arms (for example TUP*2014), return one estimate for each arm and column, and read the
 standard error from the row printed directly beneath that arm in parentheses. Use the arm exactly as
@@ -1321,7 +1328,8 @@ async def attach_effect_roles(estimates: List["Estimate"], units: List[Dict[str,
 
 async def extract_document(content_list: List[Dict[str, Any]], model: str, api_key: str,
                            page_image=None, read_roles: bool = False,
-                           drop_duplicates: bool = False) -> Dict[str, Any]:
+                           drop_duplicates: bool = False, card: Optional[Dict[str, Any]] = None,
+                           gallery_entries: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
     """All estimates in a document's tables, plus per-table decisions for auditing.
 
     `drop_duplicates` is off by default: on the extracted rows so far the merge rule finds nothing,
@@ -1329,11 +1337,21 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
     in the paper, and keeping it loses no real estimate.
     """
     from src.extraction.dedupe import dedupe_estimates
+    from src.extraction.study_cards import role_of_table
     from src.extraction.table_rules import DESCRIPTIVE
 
     units = table_units(content_list)
     sem = asyncio.Semaphore(TABLE_CONCURRENCY)
     retry_budget = {"left": RETRIES_PER_DOC}
+    gallery_log: List[Dict[str, Any]] = []
+    from src.extraction.reader_context import (
+        card_block,
+        examples_block,
+        on_card,
+        pick_entries,
+        table_tags,
+        validate_labels,
+    )
     async with httpx.AsyncClient(timeout=300, headers={"Authorization": f"Bearer {api_key}"}) as client:
         async def one(u):
             kind, result, has_estimate = _table_analysis(u)
@@ -1344,9 +1362,15 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
                     f"'{u['arm_hint']}'. Return one entry for every outcome row in this view, with "
                     "that header as the arm, including a row whose cell carries no stars.") if u.get("arm_hint") \
                 else "the whole table"
+            selected = pick_entries(table_tags(u.get("caption") or "", u["text"]), gallery_entries or []) \
+                if gallery_entries else []
+            if selected:
+                gallery_log.append({"page": u.get("page"), "table": (u.get("caption") or "")[:50],
+                                    "entries": [e.get("id") for e in selected]})
             prompt = PROMPT.format(context=(u["caption"] + "\n" + u["context"]).strip()[:4000] or "(none)",
                                    table=u["text"], page=u["page"] if u["page"] is not None else "?",
-                                   structure=structure or "(none)", view=view)
+                                   structure=structure or "(none)", view=view,
+                                   card=card_block(card), examples=examples_block(selected))
             async with sem:
                 for attempt in range(2):
                     try:
@@ -1382,6 +1406,7 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
     estimates, tables = [], []
     role_disagreements: List[str] = []
     role_decisions: List[Dict[str, Any]] = []
+    card_disagreements: List[str] = []
     per_item: Dict[int, List[Estimate]] = {}
     views_of: Dict[int, int] = {}
     for u, data, err, kind in results:
@@ -1389,6 +1414,17 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
         if u.get("arm_hint"):
             views_of[u["index"]] = views_of.get(u["index"], 0) + 1
         is_results = bool(data.get("results_table"))
+        # The card decides which tables hold results. The reader's own check is the safety net: where the
+        # two disagree, or the card has no entry for the table, the table is read anyway and its rows are
+        # flagged, never skipped.
+        card_role = role_of_table(card, u.get("page"), u.get("caption") or "") if card else ""
+        card_effect = card_role in ("main effect", "heterogeneity", "robustness")
+        if card and card_role and not card_effect and not is_results:
+            continue  # both the card and the reader say this is not a results table
+        card_flag = bool(card) and (not card_role or card_effect != is_results)
+        if card_flag:
+            card_disagreements.append(f"p{u.get('page')} {label[:60]}: card={card_role or 'none'} "
+                                      f"reader={'results' if is_results else 'not'}")
         raw = (data.get("estimates") or []) if is_results else []
         if is_results:
             from src.extraction.table_rules import (
@@ -1427,6 +1463,16 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
         rows = [to_estimate(r, label, u["page"], u["text"], u.get("arm_hint") or "", u.get("n_hint"), u.get("control_n"),
                         u.get("arm_row") or "", u.get("table_index"), u.get("unit_index"))
                 for r in raw if isinstance(r, dict)]
+        if card:
+            arms = [a for a in card.get("arms") or []] + [card.get("comparison_group") or ""]
+            for estimate in rows:
+                # An arm the card does not list is not a finding about this programme: mark it, do not
+                # store it as free text.
+                if estimate.arm and arms and not on_card(estimate.arm, [a for a in arms if a]):
+                    estimate.notes.append(f"arm not on card: {estimate.arm[:40]}")
+                    estimate.arm = "not on card"
+                if card_flag:
+                    estimate.notes.append("card_disagreement")
         for estimate in rows:
             estimate.source_cell = locate_source_cell(u["text"], _merge_outcome(estimate.row_label),
                                                        _merge_outcome(estimate.column_label),
@@ -1465,4 +1511,5 @@ async def extract_document(content_list: List[Dict[str, Any]], model: str, api_k
     return {"estimates": estimate_dicts, "tables": tables, "duplicates": duplicates,
             "address_repairs": address_repairs, "unverified_se": unverified,
             "role_disagreements": role_disagreements, "role_decisions": role_decisions,
+            "card_disagreements": card_disagreements, "gallery_log": gallery_log,
             "cost_usd": round(COST["usd"], 6)}

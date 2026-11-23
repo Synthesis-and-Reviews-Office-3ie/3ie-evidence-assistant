@@ -278,3 +278,19 @@ def test_a_figure_reading_keeps_its_series_and_wave():
     assert len(rows) == 1
     assert rows[0]["treatment_arm"] == "Full cost" and rows[0]["subgroup"] == "Endline"
     assert rows[0]["effect_size"] == -0.123
+
+
+def test_a_page_read_row_carries_a_cell_address():
+    from src.extraction.page_vision import _row
+
+    row = _row("p", DOC, 4, "Table 2", "m",
+               {"outcome": "Income", "coefficient": 0.5, "row_index": 3, "column_index": 2})
+    assert row["cell_row"] == 2 and row["cell_column"] == 1
+    assert "r2c1" in row["text_position"]
+
+
+def test_a_page_read_row_without_an_index_has_no_address():
+    from src.extraction.page_vision import _row
+
+    row = _row("p", DOC, 4, "Table 2", "m", {"outcome": "Income", "coefficient": 0.5})
+    assert row["cell_row"] is None and row["cell_column"] is None

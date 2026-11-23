@@ -14,6 +14,7 @@ import json
 import math
 import os
 import time
+from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, List, Optional
 
 import httpx
@@ -29,6 +30,38 @@ SOURCE = "tables_v1"
 DEFAULT_MODEL = "anthropic/claude-haiku-5.5"
 DOC_CONCURRENCY = int(os.environ.get("DOC_CONCURRENCY") or 2)
 INSERT_BATCH = 50  # rows carry 1536-d vectors, and the small Supabase instance drops large writes
+ROOT = Path(__file__).resolve().parents[2]
+
+
+def _load_gallery(root: Path) -> List[Dict[str, Any]]:
+    """The worked gallery entries. Empty when the folder is absent, which leaves the reader unchanged."""
+    folder = root / "evaluation" / "gallery" / "entries"
+    entries = []
+    if folder.exists():
+        for path in sorted(folder.glob("*.json")):
+            try:
+                entries.append(json.loads(path.read_text(encoding="utf-8")))
+            except Exception:
+                continue
+    return entries
+
+
+GALLERY = _load_gallery(ROOT)
+
+
+def _load_card(s3, bucket: str, project_id: str, name: str, root: Path) -> Optional[Dict[str, Any]]:
+    """The document's study card, from R2 beside the extraction output, else from data/study_cards."""
+    try:
+        return json.loads(s3.get_object(Bucket=bucket, Key=f"rags/{project_id}/study_cards/{name}.json")["Body"].read())
+    except Exception:
+        pass
+    local = root / "data" / "study_cards" / f"{name}.json"
+    if local.exists():
+        try:
+            return json.loads(local.read_text(encoding="utf-8"))
+        except Exception:
+            return None
+    return None
 
 
 def _finite(x: Any) -> Optional[float]:
@@ -280,8 +313,12 @@ async def extract_and_store(
                         pdf = await load_pdf()
                         return await asyncio.to_thread(page_data_url, pdf, page) if pdf else None
 
+                    context_mode = os.environ.get("READER_CONTEXT", "full")
+                    card = _load_card(s3, bucket, project_id, name, ROOT) if context_mode != "off" else None
+                    gallery = GALLERY if context_mode != "off" else None
                     out = await extract_document(content, model, os.environ["OPENROUTER_API_KEY"],
-                                                 page_image=page_image, read_roles=True)
+                                                 page_image=page_image, read_roles=True,
+                                                 card=card, gallery_entries=gallery)
                     totals["cost_usd"] = max(totals["cost_usd"], float(out.get("cost_usd") or 0.0))
                     role_notes = out.get("role_disagreements") or []
                     if role_notes:
