@@ -1,6 +1,8 @@
 """Test p-value bracket extraction."""
 import sys
-sys.path.insert(0, r'c:\Users\LucasSempe\OneDrive - International Initiative for Impact Evaluation\Desktop\Gen AI tools\devchat_v2_sota')
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from extraction_pipeline.parsing.cells import parse_cell_comprehensive
 

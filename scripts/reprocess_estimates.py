@@ -11,7 +11,7 @@ import os
 import sys
 from pathlib import Path
 
-ROOT = Path(r"C:\Users\LucasSempe\OneDrive - International Initiative for Impact Evaluation\Desktop\Gen AI tools\apps\devchat")
+ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 os.chdir(ROOT)
 from dotenv import load_dotenv  # noqa: E402

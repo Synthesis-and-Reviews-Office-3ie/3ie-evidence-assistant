@@ -24,8 +24,8 @@ st.set_page_config(
     layout="wide"
 )
 
-# Paths - hardcoded to avoid path resolution issues
-BASE_DIR = Path(r"C:\Users\LucasSempe\OneDrive - International Initiative for Impact Evaluation\Desktop\Gen AI tools\devchat_v2_sota")
+# Paths, relative to the repo root
+BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_PATH = BASE_DIR / "extraction_pipeline" / "outputs" / "full_corpus_for_validation.csv"
 FULL_DATA_PATH = BASE_DIR / "extraction_pipeline" / "outputs" / "full_corpus_all_studies.csv"
 VALIDATION_PATH = BASE_DIR / "validation_app" / "validation_results.json"
