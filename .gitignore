@@ -64,6 +64,7 @@ data/
 !evaluation/results/final_audit_sample_2026-11-20.csv
 !evaluation/results/never_used_sample_2026-11-20.csv
 !package.json
+!package-lock.json
 !vercel.json
 !tsconfig.json
 !tsconfig*.json
