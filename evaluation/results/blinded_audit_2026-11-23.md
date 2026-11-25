@@ -85,6 +85,20 @@ the number's own text or a column number as the outcome, outcome and arm swapped
 wrong effect type, for example a within-subgroup effect labelled "difference in effect between subgroups", or
 a matched programme-versus-comparison estimate labelled "difference between arms".
 
+**Key, revealed after the verdicts were recorded:** R = D (copied label and gallery, no card), S = E (D with the
+card as a hint).
+
+| Arm | What it adds | Independent sample correct |
+| --- | --- | --: |
+| A | current reader | 22 of 60 (37%) |
+| B | card as a restriction, gallery, copied label | 15 of 60 (25%) |
+| D | copied label, gallery | 26 of 60 (43%) |
+| E | D with the card as a hint | 21 of 60 (35%) |
+
+D is the best arm, but its lead over A is within sampling error. The card lowered the score in both rounds,
+as a restriction and as a hint. The five wrong effect types in S suggest the card's labels push the reader
+towards wrong categories.
+
 ## What this implies
 
 1. Keep the copied outcome label. Do not adopt the card lists as a restriction. The card should add qualifiers
