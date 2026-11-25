@@ -75,7 +75,7 @@ class Settings(BaseSettings):
     # EvidenceLoop sign-in (P6; docs/EVIDENCELOOP_AUTH_DESIGN.md). Off in production until
     # EvidenceLoop is deployed. While off, every token goes to the Supabase verifier as before.
     # =========================================================================
-    evidenceloop_auth_enabled: bool = Field(default=False, description="Accept EvidenceLoop access tokens alongside Supabase ones")
+    evidenceloop_auth_enabled: bool = Field(default=False, description="Accept EvidenceLoop access tokens alongside Supabase ones. Turn on only after migration B (app_users foreign keys)")
     evidenceloop_issuer: str = Field(default="", description="EvidenceLoop JWT_ISSUER; tokens must carry exactly this iss")
     evidenceloop_jwks_url: str = Field(default="", description="EvidenceLoop <API base>/.well-known/jwks.json")
     evidenceloop_audience: str = Field(default="evidence-assistant", description="aud that EvidenceLoop tokens must contain")

@@ -16,6 +16,7 @@ import threading
 import time
 import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from types import SimpleNamespace
 from typing import Any
 
 import jwt
@@ -29,6 +30,7 @@ from jwt.algorithms import ECAlgorithm, RSAAlgorithm
 
 import src.auth.supabase_auth as supabase_auth
 import src.auth.tokens as tokens
+from src.auth.app_users import AppUserDirectory, AppUserUnavailable
 from src.auth.evidenceloop import (
     EvidenceLoopTokenError,
     EvidenceLoopUnavailable,
@@ -378,9 +380,38 @@ SUPABASE_USER = supabase_auth.AuthenticatedUser(id="00000000-0000-0000-0000-0000
                                                 email="s@example.org", role="authenticated")
 
 
+APP_USER_ID = "5f0c6a52-58a4-4d8e-9a43-0b6a3c1f2e77"
+
+
+class FakeSupabase:
+    """Stands in for the service-role client: records rpc calls and returns one app-user id."""
+
+    def __init__(self, data: Any = APP_USER_ID, error: Exception | None = None) -> None:
+        self.data, self.error, self.calls = data, error, []
+
+    def rpc(self, name: str, params: dict[str, Any]):
+        self.calls.append((name, params))
+        outer = self
+
+        class _Query:
+            def execute(self):
+                if outer.error:
+                    raise outer.error
+                return SimpleNamespace(data=outer.data)
+
+        return _Query()
+
+
 @pytest.fixture
-def routing(monkeypatch, jwks):
-    """Settings for the dispatcher, a recording Supabase verifier, and the test JWK Set."""
+def database(monkeypatch) -> FakeSupabase:
+    fake = FakeSupabase()
+    monkeypatch.setattr(tokens, "app_user_directory", AppUserDirectory(client_factory=lambda: fake))
+    return fake
+
+
+@pytest.fixture
+def routing(monkeypatch, jwks, database):
+    """Settings for the dispatcher, a recording Supabase verifier, the test JWK Set, a fake database."""
     seen: list[str] = []
 
     def fake_supabase(token: str):
@@ -416,12 +447,26 @@ def test_with_the_flag_on_supabase_tokens_still_go_to_supabase(routing, monkeypa
     assert routing == ["supabase-good", supabase_shaped]
 
 
-def test_with_the_flag_on_a_valid_evidenceloop_token_is_not_yet_provisioned(routing, monkeypatch, signer):
+def test_with_the_flag_on_a_valid_evidenceloop_token_becomes_its_app_user(routing, monkeypatch, signer, database):
     monkeypatch.setattr(settings, "evidenceloop_auth_enabled", True)
+    user = tokens.verify_bearer_token(mint(signer))
+    assert (user.id, user.provider, user.role) == (APP_USER_ID, "evidenceloop", "authenticated")
+    assert database.calls == [("app_user_for_evidenceloop", {"p_issuer": ISSUER, "p_sub": "42"})]
+    assert routing == []  # never shown to the Supabase verifier
+
+
+def test_a_bad_evidenceloop_token_never_reaches_the_database(routing, monkeypatch, signer, database):
+    monkeypatch.setattr(settings, "evidenceloop_auth_enabled", True)
+    assert tokens.verify_bearer_token(mint(signer, iss=ISSUER, aud=["assay"])) is None
+    assert database.calls == []
+
+
+def test_with_the_flag_on_a_database_outage_is_503(routing, monkeypatch, signer, database):
+    monkeypatch.setattr(settings, "evidenceloop_auth_enabled", True)
+    database.error = ConnectionError("database unreachable")
     with pytest.raises(HTTPException) as caught:
         tokens.verify_bearer_token(mint(signer))
-    assert caught.value.status_code == 501
-    assert routing == []  # never shown to the Supabase verifier
+    assert caught.value.status_code == 503
 
 
 def test_with_the_flag_on_a_bad_evidenceloop_token_is_401_not_a_supabase_retry(routing, monkeypatch, signer):
@@ -472,6 +517,76 @@ def test_evidenceloop_tokens_through_the_dependencies(app_client, monkeypatch, s
     monkeypatch.setattr(settings, "evidenceloop_auth_enabled", True)
     good = {"Authorization": f"Bearer {mint(signer)}"}
     wrong_aud = {"Authorization": f"Bearer {mint(signer, aud=['assay'])}"}
-    assert app_client.get("/private", headers=good).status_code == 501
+    assert app_client.get("/private", headers=good).json() == {"id": APP_USER_ID}
+    assert app_client.get("/public", headers=good).json() == {"id": APP_USER_ID}
     assert app_client.get("/private", headers=wrong_aud).status_code == 401
     assert app_client.get("/public", headers=wrong_aud).json() == {"id": None}
+
+
+def test_an_evidenceloop_user_reaches_their_own_private_project_and_not_others(routing, monkeypatch, signer):
+    # authorize_project compares the project's user_id with user.id. For an EvidenceLoop user, that id is
+    # the app-user id, so ownership works as it does for Supabase users once migration B is applied.
+    import api.routes.dependencies as deps
+
+    monkeypatch.setattr(settings, "evidenceloop_auth_enabled", True)
+    mine = {"id": "p1", "user_id": APP_USER_ID, "is_public": False}
+    theirs = {"id": "p2", "user_id": SUPABASE_USER.id, "is_public": False}
+    monkeypatch.setattr(deps, "resolve_project", {"p1": mine, "p2": theirs}.get)
+    user = tokens.verify_bearer_token(mint(signer))
+    assert deps.authorize_project("p1", user) is mine
+    with pytest.raises(HTTPException) as caught:
+        deps.authorize_project("p2", user)
+    assert caught.value.status_code == 403
+
+
+# --- the app-user directory -------------------------------------------------------------------
+
+
+def test_the_directory_caches_and_expires(monkeypatch):
+    fake, now = FakeSupabase(), [1000.0]
+    directory = AppUserDirectory(client_factory=lambda: fake, ttl_seconds=300, clock=lambda: now[0])
+    assert directory.for_evidenceloop(ISSUER, "42") == APP_USER_ID
+    assert directory.for_evidenceloop(ISSUER, "42") == APP_USER_ID
+    assert len(fake.calls) == 1
+    now[0] += 301
+    directory.for_evidenceloop(ISSUER, "42")
+    assert len(fake.calls) == 2
+
+
+def test_the_directory_keys_on_issuer_and_subject(monkeypatch):
+    fake = FakeSupabase()
+    directory = AppUserDirectory(client_factory=lambda: fake)
+    directory.for_evidenceloop(ISSUER, "42")
+    directory.for_evidenceloop("https://staging.evidenceloop.test", "42")
+    directory.for_evidenceloop(ISSUER, "43")
+    assert [c[1] for c in fake.calls] == [
+        {"p_issuer": ISSUER, "p_sub": "42"},
+        {"p_issuer": "https://staging.evidenceloop.test", "p_sub": "42"},
+        {"p_issuer": ISSUER, "p_sub": "43"},
+    ]
+
+
+@pytest.mark.parametrize("data", [APP_USER_ID, [APP_USER_ID], [{"app_user_for_evidenceloop": APP_USER_ID}]])
+def test_the_directory_reads_the_shapes_postgrest_returns(data):
+    assert AppUserDirectory(client_factory=lambda: FakeSupabase(data=data)).for_evidenceloop(ISSUER, "42") == APP_USER_ID
+
+
+@pytest.mark.parametrize("data", [None, "", "42", [], [APP_USER_ID, APP_USER_ID], {"id": "nope"}])
+def test_the_directory_refuses_anything_but_one_uuid(data):
+    with pytest.raises(AppUserUnavailable):
+        AppUserDirectory(client_factory=lambda: FakeSupabase(data=data)).for_evidenceloop(ISSUER, "42")
+
+
+def test_a_failed_lookup_is_not_cached():
+    fake = FakeSupabase(error=RuntimeError("relation app_users does not exist"))
+    directory = AppUserDirectory(client_factory=lambda: fake)
+    with pytest.raises(AppUserUnavailable):
+        directory.for_evidenceloop(ISSUER, "42")
+    fake.error = None
+    assert directory.for_evidenceloop(ISSUER, "42") == APP_USER_ID
+
+
+@pytest.mark.parametrize("issuer,sub", [("", "42"), (ISSUER, "")])
+def test_the_directory_needs_issuer_and_subject(issuer, sub):
+    with pytest.raises(ValueError):
+        AppUserDirectory(client_factory=FakeSupabase).for_evidenceloop(issuer, sub)

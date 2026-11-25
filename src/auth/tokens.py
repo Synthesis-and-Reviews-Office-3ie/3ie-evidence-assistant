@@ -6,10 +6,9 @@ production). The unverified ``iss`` claim picks the verifier. The chosen verifie
 token against its own pinned keys and algorithm, so the token never chooses its own key or algorithm.
 With the flag off, every token goes to the Supabase verifier exactly as before.
 
-EvidenceLoop users are not yet provisioned here. Under option (b) of
-``docs/EVIDENCELOOP_AUTH_DESIGN.md`` their rows hang off an ``app_users`` table that step 2 adds. Until
-then a valid EvidenceLoop token is answered with 501 rather than handed to routes that expect an app
-user id.
+A verified EvidenceLoop user becomes an ``AuthenticatedUser`` whose ``id`` is their ``app_users`` id
+(option (b) of ``docs/EVIDENCELOOP_AUTH_DESIGN.md``). Routes compare that id with ``user_id`` columns
+exactly as they do for Supabase users, whose app-user id is their Supabase id.
 """
 
 from __future__ import annotations
@@ -17,6 +16,7 @@ from __future__ import annotations
 import jwt
 from fastapi import HTTPException, status
 
+from src.auth.app_users import AppUserUnavailable, app_user_directory
 from src.auth.evidenceloop import (
     EvidenceLoopIdentity,
     EvidenceLoopTokenError,
@@ -28,6 +28,8 @@ from src.config.settings import settings
 from src.utils.logging import get_logger
 
 logger = get_logger(__name__)
+
+PROVIDER_EVIDENCELOOP = "evidenceloop"
 
 
 def _unverified_issuer(token: str) -> str | None:
@@ -48,16 +50,26 @@ def is_evidenceloop_token(token: str) -> bool:
     )
 
 
-def resolve_evidenceloop_user(identity: EvidenceLoopIdentity) -> AuthenticatedUser:  # noqa: ARG001 (used in step 2)
-    """Map a verified EvidenceLoop identity to this app's user. Step 2 (``app_users``) fills this in."""
-    raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="EvidenceLoop accounts are not yet available in the Evidence Assistant",
+def _unavailable() -> HTTPException:
+    return HTTPException(
+        status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+        detail="Sign-in could not be checked. Try again shortly.",
     )
 
 
+def resolve_evidenceloop_user(identity: EvidenceLoopIdentity) -> AuthenticatedUser:
+    """The app user for a verified EvidenceLoop identity, created on first sight."""
+    try:
+        app_user_id = app_user_directory.for_evidenceloop(settings.evidenceloop_issuer, identity.sub)
+    except AppUserUnavailable as exc:
+        raise _unavailable() from exc
+    # Profile details (email, name) come later from EvidenceLoop's userinfo endpoint (D16).
+    # No route reads user.email today.
+    return AuthenticatedUser(id=app_user_id, email="", role="authenticated", provider=PROVIDER_EVIDENCELOOP)
+
+
 def verify_bearer_token(token: str) -> AuthenticatedUser | None:
-    """Verify *token* with the right verifier. ``None`` means 401. Raises 503 if EvidenceLoop is down."""
+    """Verify *token* with the right verifier. ``None`` means 401. Raises 503 when a dependency is down."""
     if not is_evidenceloop_token(token):
         return verify_supabase_token(token)
     try:
@@ -66,8 +78,5 @@ def verify_bearer_token(token: str) -> AuthenticatedUser | None:
         logger.debug(f"EvidenceLoop token refused: {exc}")
         return None
     except EvidenceLoopUnavailable as exc:
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="Sign-in could not be checked. Try again shortly.",
-        ) from exc
+        raise _unavailable() from exc
     return resolve_evidenceloop_user(identity)

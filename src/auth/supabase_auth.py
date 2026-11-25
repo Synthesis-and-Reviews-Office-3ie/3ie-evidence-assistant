@@ -26,9 +26,10 @@ bearer_scheme = HTTPBearer(auto_error=False)
 @dataclass
 class AuthenticatedUser:
     """Represents an authenticated user from Supabase."""
-    id: str  # UUID
+    id: str  # UUID: the app_users id, which for a Supabase user is their Supabase id
     email: str
     role: str  # 'authenticated', 'anon', etc.
+    provider: str = "supabase"  # who signed the user in: "supabase" or "evidenceloop"
     
     
 @lru_cache()
